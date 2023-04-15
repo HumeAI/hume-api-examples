@@ -1,5 +1,7 @@
+import wretch from 'wretch';
 import { z } from 'zod';
-import { JobIdResponse } from '~/schemas';
+import { internalApiClient } from '~/lib/client';
+import { JobIdResponse } from '~/lib/schemas';
 
 /**
  * @name processTextFile
@@ -32,19 +34,11 @@ export async function processTextFile(fileUrl: string) {
  * @description sends the file to the Hume API via a POST request to our Next.js API Route and returns the job id
  */
 async function sendFile(fileUrl: string) {
-  const request = new Request('/api/send', {
-    method: 'POST',
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify({
-      fileUrl,
-    }),
-  });
-
   try {
-    return await fetch(request)
-      .then((res) => res.json())
+    return await internalApiClient
+      .url('/send')
+      .post({ fileUrl })
+      .json((json) => z.object({ job_id: z.string() }).parse(json))
       .then((json) => json.job_id);
   } catch (e) {
     return undefined;
@@ -58,17 +52,14 @@ async function sendFile(fileUrl: string) {
 async function pollForResultsUrl(jobId: string, maxAttempts: number) {
   let attempts = 0;
 
-  const request = new Request(`/api/results?job_id=${jobId}`, {
-    method: 'GET',
-  });
-
   async function retry(id: string) {
     let response: z.infer<typeof JobIdResponse> | undefined = undefined;
 
     try {
-      response = await fetch(request)
-        .then((res) => res.json())
-        .then((json) => JobIdResponse.parse(json));
+      response = await internalApiClient
+        .query({ job_id: jobId })
+        .get('/results')
+        .json(JobIdResponse.parse);
 
       if (response !== undefined && response.status === 'COMPLETED') {
         return response.completed.predictions_url;
@@ -93,7 +84,7 @@ async function pollForResultsUrl(jobId: string, maxAttempts: number) {
 
 async function fetchResultsFile(url: string) {
   try {
-    return await fetch(url).then((res) => res.json());
+    return await wretch(url).get('').json();
   } catch {
     return undefined;
   }

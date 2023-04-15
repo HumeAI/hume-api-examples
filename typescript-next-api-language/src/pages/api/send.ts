@@ -1,7 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { apiKey } from '~/env';
-import { StartJobResponse } from '~/schemas';
+import { apiKey } from '~/lib/env';
+import { humeBatchClient } from '~/lib/client';
+import { StartJobResponse } from '~/lib/schemas';
 
 type Data = {
   job_id: string;
@@ -22,11 +23,7 @@ export default async function handler(
 
   const fileUrl = req.body.fileUrl;
 
-  const humeBatchUrl = new URL('https://api.hume.ai/v0/batch/jobs');
-
-  humeBatchUrl.searchParams.append('apiKey', apiKey);
-
-  const body = JSON.stringify({
+  const body = {
     models: {
       language: {
         identify_speakers: false,
@@ -39,22 +36,13 @@ export default async function handler(
     },
     urls: [fileUrl],
     notify: false,
-  });
+  };
 
-  const humeBatchRequest = new Request(humeBatchUrl, {
-    method: 'POST',
-    headers: new Headers({
-      'Content-Type': 'application/json',
-      'Accept-Encoding': 'gzip,deflate',
-    }),
-    body,
-  });
-
-  const response = await fetch(humeBatchRequest)
-    .then((res) => res.json())
-    .then((json) => {
-      return StartJobResponse.parse(json);
-    });
+  const response = await humeBatchClient
+    .query({ apiKey })
+    .url('/jobs')
+    .post(body)
+    .json(StartJobResponse.parse);
 
   return res.send({ job_id: response.job_id });
 }

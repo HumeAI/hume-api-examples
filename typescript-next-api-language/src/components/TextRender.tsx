@@ -52,19 +52,23 @@ export const TextRender: FC<{ data: unknown }> = ({ data }) => {
 
   return (
     <div>
-      <div className={'pb-2'}>
+      <div className={'pb-2 px-px'}>
         <select
           onChange={(e) => setSelectedEmotion(e.target.value)}
           className={'border'}
         >
           {emotionsList.map((emotion) => (
-            <option key={emotion} value={emotion}>
+            <option
+              key={emotion}
+              value={emotion}
+              selected={selectedEmotion === emotion}
+            >
               {emotion}
             </option>
           ))}
         </select>
       </div>
-      <div className={'flex flex-wrap gap-y-1.5 gap-x-1'}>
+      <div className={'flex flex-wrap gap-y-1.5 gap-x-1 px-px'}>
         {predictions.map((entry, index) => {
           const Emotion =
             entry.emotions.find((e) => e.name === selectedEmotion)?.score ?? 0;
@@ -138,7 +142,7 @@ export const TextRender: FC<{ data: unknown }> = ({ data }) => {
                       <strong
                         className={'block text-xs font-medium text-slate-500'}
                       >
-                        Top Score
+                        Top Scoring Emotion
                       </strong>{' '}
                       {topEmotion.name} ({topEmotion.score.toFixed(3)})
                     </p>

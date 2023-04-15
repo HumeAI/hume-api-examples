@@ -5,7 +5,7 @@ import { useZorm } from 'react-zorm';
 import { z } from 'zod';
 import { Introduction } from '~/components/Introduction';
 import { TextRender } from '~/components/TextRender';
-import { processTextFile } from '~/mutations/processTextFile';
+import { processTextFile } from '~/lib/mutations/processTextFile';
 
 const inter = Inter({ subsets: ['latin'] });
 
