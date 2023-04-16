@@ -4,7 +4,7 @@
 | ------- | ---------- | -------------------- |
 | `batch` | `language` | Next.js (TypeScript) |
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/humeai/hume-api-examples/tree/main/typescript-next-api-language)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/HumeAI/hume-api-examples/tree/main/typescript-next-api-language)
 
 ![Cover](./.github/preview.png)
 
