@@ -1,8 +1,13 @@
 import { TooltipTrigger } from '@radix-ui/react-tooltip';
+import chroma from 'chroma-js';
 import { FC, useState } from 'react';
-import { match } from 'ts-pattern';
 import { z } from 'zod';
 import { Tooltip, TooltipContent, TooltipPortal } from './Tooltip';
+
+const scale = chroma.scale('PuBuGn').domain([0, 1]);
+
+const getTextColor = (c: chroma.Color) =>
+  c.get('lab.l') < 60 ? chroma('white') : chroma('black');
 
 const ResultsSchema = z.array(
   z.object({
@@ -42,7 +47,11 @@ export const TextRender: FC<{ data: unknown }> = ({ data }) => {
   const parsedData = ResultsSchema.safeParse(data);
 
   if (!parsedData.success) {
-    return null;
+    return (
+      <div>
+        <div className={'pb-2 px-px'}>Unable to render text</div>
+      </div>
+    );
   }
 
   const predictions =
@@ -70,44 +79,8 @@ export const TextRender: FC<{ data: unknown }> = ({ data }) => {
       </div>
       <div className={'flex flex-wrap gap-y-1.5 gap-x-1 px-px'}>
         {predictions.map((entry, index) => {
-          const Emotion =
+          const emotionScore =
             entry.emotions.find((e) => e.name === selectedEmotion)?.score ?? 0;
-
-          const classNames = [
-            'rounded px-1 py-1 block cursor-default hover:ring-1 hover:ring-slate-900 rounded',
-            match(Emotion)
-              .when(
-                (n) => n > 0.07,
-                () => 'bg-green-700 text-green-200'
-              )
-              .when(
-                (n) => n > 0.06,
-                () => 'bg-green-600 text-green-200'
-              )
-              .when(
-                (n) => n > 0.05,
-                () => 'bg-green-500 text-green-800'
-              )
-              .when(
-                (n) => n > 0.04,
-                () => 'bg-green-400 text-green-800'
-              )
-              .when(
-                (n) => n > 0.03,
-                () => 'bg-green-300 text-green-600'
-              )
-              .when(
-                (n) => n > 0.02,
-                () => 'bg-green-200 text-green-600'
-              )
-              .when(
-                (n) => n > 0.01,
-                () => 'bg-green-100 text-green-600'
-              )
-              .otherwise(() => ''),
-          ]
-            .filter(Boolean)
-            .join(' ');
 
           const topEmotion = entry.emotions.reduce(
             (prev, current) => {
@@ -122,10 +95,23 @@ export const TextRender: FC<{ data: unknown }> = ({ data }) => {
             }
           );
 
+          const bgColor = scale(emotionScore);
+          const textColor = getTextColor(bgColor);
+
           return (
             <Tooltip key={entry.word + index} delayDuration={0}>
               <TooltipTrigger asChild>
-                <span className={classNames}>{entry.word}</span>
+                <span
+                  className={
+                    'rounded px-1 py-1 block cursor-default hover:ring-1 hover:ring-slate-900'
+                  }
+                  style={{
+                    backgroundColor: bgColor.hex(),
+                    color: textColor.hex(),
+                  }}
+                >
+                  {entry.word}
+                </span>
               </TooltipTrigger>
               <TooltipPortal>
                 <TooltipContent side={'bottom'}>
@@ -136,7 +122,7 @@ export const TextRender: FC<{ data: unknown }> = ({ data }) => {
                       >
                         Selected Emotion
                       </strong>
-                      {selectedEmotion} ({Emotion.toFixed(3)})
+                      {selectedEmotion} ({emotionScore.toFixed(3)})
                     </p>
                     <p>
                       <strong
