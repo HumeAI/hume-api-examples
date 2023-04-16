@@ -1,5 +1,9 @@
 # Next.js Emotional Language Example
 
+| API     | Models     | Framework            |
+| ------- | ---------- | -------------------- |
+| `batch` | `language` | Next.js (TypeScript) |
+
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/humeai/hume-api-examples/tree/main/typescript-next-api-language)
 
 ![Cover](./.github/cover.png)
