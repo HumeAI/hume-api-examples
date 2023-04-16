@@ -1,0 +1,14 @@
+{
+    "folders": [
+        {
+            "path": "typescript-next-api-language"
+        },
+        {
+            "path": ".",
+            "name": "<root>"
+        }
+    ],
+    "settings": {
+        "window.title": "Hume API Examples"
+    }
+}
