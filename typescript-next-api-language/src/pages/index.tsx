@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { Inter } from 'next/font/google';
+import { useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 import { useZorm } from 'react-zorm';
 import { z } from 'zod';
@@ -17,8 +18,12 @@ const FormSchema = z.object({
 });
 
 export default function Home() {
+  const [status, setStatus] = useState('Loading...');
+
   const { data, isLoading, mutate } = useMutation({
-    mutationFn: processTextFile,
+    mutationFn: processTextFile((status) => {
+      setStatus(status);
+    }),
   });
 
   const form = useZorm('textAnalysis', FormSchema, {
@@ -62,7 +67,7 @@ export default function Home() {
       <div className={'grow md:overflow-hidden w-full'}>
         {isLoading && (
           <div className={'w-full h-full grid place-items-center'}>
-            <div>Loading...</div>
+            <div>{status}</div>
           </div>
         )}
         {data && typeof data === 'object' && (

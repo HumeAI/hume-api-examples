@@ -26,23 +26,29 @@ export default async function handler(
   const body = {
     models: {
       language: {
+        granularity: 'word',
         identify_speakers: false,
         sentiment: {},
         toxicity: {},
-        language: 'en',
-        granularity: 'word',
-        use_existing_partition: true,
       },
     },
     urls: [fileUrl],
     notify: false,
   };
 
-  const response = await humeBatchClient
-    .query({ apiKey })
-    .url('/jobs')
-    .post(body)
-    .json(StartJobResponse.parse);
+  try {
+    const response = await humeBatchClient
+      .headers({
+        'Content-Type': 'application/json',
+        'X-Hume-Api-Key': apiKey,
+      })
+      .url('/jobs')
+      .post(body)
+      .json(StartJobResponse.parse);
 
-  return res.send({ job_id: response.job_id });
+    return res.send({ job_id: response.job_id });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({ job_id: '' });
+  }
 }

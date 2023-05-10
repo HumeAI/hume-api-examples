@@ -4,24 +4,47 @@ export const StartJobResponse = z.object({
   job_id: z.string(),
 });
 
-export const JobIdResponse = z.union([
-  z.object({
-    status: z.literal('COMPLETED'),
-    completed: z.object({
-      predictions_url: z.string(),
-      errors_url: z.string(),
-      artifacts_url: z.string(),
-      num_predictions: z.number(),
-      num_errors: z.number(),
-    }),
-  }),
-  z.object({
-    status: z.literal('FAILED'),
-  }),
-  z.object({
-    status: z.literal('QUEUED'),
-  }),
-  z.object({
-    status: z.literal('IN_PROGRESS'),
-  }),
+export const JobStatus = z.enum([
+  'COMPLETED',
+  'IN_PROGRESS',
+  'FAILED',
+  'QUEUED',
 ]);
+
+export const LanguageModelConfig = z.object({
+  granularity: z.string(),
+  identify_speakers: z.boolean(),
+  sentiment: z.object({}).nullable(),
+  toxicity: z.object({}).nullable(),
+});
+
+export const JobIdResponse = z.object({
+  user_id: z.string(),
+  job_id: z.string(),
+  request: z.object({
+    callback_url: z.string().or(z.null()),
+    files: z.array(z.string()),
+    urls: z.array(z.string()),
+    models: z.object({
+      language: LanguageModelConfig.optional().nullable(),
+    }),
+    notify: z.boolean(),
+  }),
+  state: z.object({
+    status: JobStatus,
+    created_timestamp_ms: z
+      .string()
+      .transform((d) => new Date(d))
+      .optional(),
+    ended_timestamp_ms: z
+      .string()
+      .transform((d) => new Date(d))
+      .optional(),
+    started_timestamp_ms: z
+      .string()
+      .transform((d) => new Date(d))
+      .optional(),
+    num_errors: z.string().optional(),
+    num_predictions: z.string().optional(),
+  }),
+});
