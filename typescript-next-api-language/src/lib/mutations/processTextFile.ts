@@ -1,44 +1,56 @@
 import wretch from 'wretch';
 import { z } from 'zod';
-import { internalApiClient } from '~/lib/client';
+import { humeBatchClient, internalApiClient } from '~/lib/client';
 import { JobIdResponse } from '~/lib/schemas';
 
 /**
  * @name processTextFile
  * @description Mutation used by react-query that takes a file URL and returns the results of the text processing from the Hume API
  */
-export async function processTextFile(fileUrl: string) {
-  const jobId = await sendFile(fileUrl);
+export const processTextFile =
+  (onStatusChange: (status: string) => void) => async (fileUrl: string) => {
+    const jobId = await sendFile(fileUrl);
 
-  if (typeof jobId !== 'string') {
-    throw new Error('Failed to get job id');
-  }
+    onStatusChange('Uploading File');
 
-  const resultsUrl = await pollForResultsUrl(jobId, 10);
+    if (typeof jobId !== 'string') {
+      throw new Error('Failed to get job id');
+    }
 
-  if (typeof resultsUrl !== 'string') {
-    throw new Error('Failed to get results');
-  }
+    onStatusChange('Waiting for results');
 
-  const json = await fetchResultsFile(resultsUrl);
+    const resultsStatus = await pollForResultsUrl(jobId, 10);
 
-  if (json === undefined) {
-    throw new Error('Failed to get results');
-  }
+    if (resultsStatus !== 'DONE') {
+      throw new Error('Results timed out');
+    }
 
-  return json;
-}
+    onStatusChange('Downloading results');
+
+    const json = await fetchResultsFile(jobId);
+
+    if (json === undefined) {
+      console.log(json);
+      throw new Error('Failed to get results');
+    }
+
+    onStatusChange('Ready');
+
+    return json;
+  };
 
 /**
  * @name sendFile
  * @description sends the file to the Hume API via a POST request to our Next.js API Route and returns the job id
  */
 async function sendFile(fileUrl: string) {
+  const responseShape = z.object({ job_id: z.string() });
+
   try {
     return await internalApiClient
       .url('/send')
       .post({ fileUrl })
-      .json((json) => z.object({ job_id: z.string() }).parse(json))
+      .json(responseShape.parse)
       .then((json) => json.job_id);
   } catch (e) {
     return undefined;
@@ -61,10 +73,12 @@ async function pollForResultsUrl(jobId: string, maxAttempts: number) {
         .get('/results')
         .json(JobIdResponse.parse);
 
-      if (response !== undefined && response.status === 'COMPLETED') {
-        return response.completed.predictions_url;
+      if (response !== undefined && response.state.status === 'COMPLETED') {
+        return 'DONE';
       }
-    } catch {
+    } catch (e) {
+      console.log(e);
+      console.log(response);
       response = undefined;
     }
 
@@ -82,10 +96,14 @@ async function pollForResultsUrl(jobId: string, maxAttempts: number) {
   return await retry(jobId);
 }
 
-async function fetchResultsFile(url: string) {
+async function fetchResultsFile(jobId: string) {
   try {
-    return await wretch(url).get('').json();
-  } catch {
+    return await internalApiClient
+      .query({ job_id: jobId })
+      .get('/predictions')
+      .json();
+  } catch (e) {
+    console.log(e);
     return undefined;
   }
 }
