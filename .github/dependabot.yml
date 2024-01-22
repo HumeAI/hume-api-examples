@@ -1,0 +1,26 @@
+version: 2
+
+updates:
+  # check for updated versions of github actions on a weekly basis
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'America/New_York'
+    commit-message:
+      prefix: '[github actions] '
+    open-pull-requests-limit: 20
+
+  # check for updated versions of npm dependencies on a daily basis
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+      time: '06:00'
+      timezone: 'America/New_York'
+    commit-message:
+      prefix: '[npm] '
+    open-pull-requests-limit: 20
+    versioning-strategy: 'increase'
