@@ -23,7 +23,7 @@
     "eslint-config-next": "13.3.0",
     "eslint-plugin-import": "^2.27.5",
     "next": "13.5.1",
-    "postcss": "8.4.21",
+    "postcss": "8.4.31",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.0",
@@ -35,6 +35,6 @@
     "ts-pattern": "^4.2.2",
     "typescript": "5.0.4",
     "wretch": "^2.5.2",
-    "zod": "^3.21.4"
+    "zod": "^3.22.3"
   }
 }
