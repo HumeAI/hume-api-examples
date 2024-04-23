@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "National Park";
+  src: url("/fonts/NationalPark-VariableVF.woff") format("woff");
+}
+
+body {
+  font-family: "National Park", sans-serif;
+}
+
