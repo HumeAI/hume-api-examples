@@ -13,7 +13,8 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 
 ## [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview)
 
-| Name                                                          | Language   | Framework  | 
-| ------------------------------------------------------------- | ---------- | ---------- |
-| [`evi-typescript-example`](/evi-typescript-example/README.md) | Typescript | Vanilla JS |
-| [meld](/meld/README.md)                                       | Typescript | React      |
+| Name                                                                | Language   | Framework  | 
+| ------------------------------------------------------------------- | ---------- | ---------- |
+| [`evi-typescript-example`](/evi-typescript-example/README.md)       | Typescript | Vanilla JS |
+| [`evi-custom-language-model`](/evi-custom-language-model/README.md) | Python     |            |
+| [meld](/meld/README.md)                                             | Typescript | React      |
