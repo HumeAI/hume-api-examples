@@ -1,0 +1,46 @@
+{
+  "name": "meld",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@humeai/voice": "0.0.0-beta.22",
+    "@humeai/voice-react": "0.0.0-beta.22",
+    "@react-spring/web": "^9.7.3",
+    "axios": "^1.6.8",
+    "clsx": "^2.1.0",
+    "expression-colors": "github:HumeAI/colors",
+    "framer-motion": "^11.0.20",
+    "openai": "^4.29.2",
+    "priorityqueuejs": "^2.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^2.2.2",
+    "ts-pattern": "^5.0.8",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/priorityqueuejs": "^1.0.4",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "postcss": "^8.4.37",
+    "prettier": "3.2.5",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  }
+}
