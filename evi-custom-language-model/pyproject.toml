@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "evi-custom-language-model-demo"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+websockets = "^12.0"
+fastapi = "^0.110.0"
+uvicorn = {extras = ["standard"], version = "^0.28.0"}
+python-dotenv = "^1.0.1"
+openai = "^1.14.1"
+inflect = "^7.0.0"
+pytest = "^8.1.1"
+langchain = "^0.1.14"
+langchain-openai = "^0.1.1"
+google-search-results = "^2.4.2"
+langchainhub = "^0.1.15"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
