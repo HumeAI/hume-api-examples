@@ -11,10 +11,14 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`typescript-streaming-sandbox`](./typescript-streaming-sandbox/README.md) | `language`, `face`, `burst`, `speech` | Typescript | Next.js   | 
 | [`visualization-example`](./visualization-example/example-notebook.ipynb)  | `face`                                | Python     |           |
 
+
 ## [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview)
 
-| Name                                                                | Language   | Framework  | 
-| ------------------------------------------------------------------- | ---------- | ---------- |
-| [`evi-typescript-example`](/evi-typescript-example/README.md)       | Typescript | Vanilla JS |
-| [`evi-custom-language-model`](/evi-custom-language-model/README.md) | Python     |            |
-| [`meld`](/meld/README.md)                                           | Typescript | React      |
+| Name | Language | Framework | Description |
+| ------------------------------------------------------------------- | ---------- | ---------- | ----------- |
+| [`evi-typescript-example`](/evi-typescript-example/README.md) | Typescript | Vanilla JS | |
+| [`evi-custom-language-model`](/evi-custom-language-model/README.md) | Python | | |
+| [`meld`](/meld/README.md) | Typescript | React | |
+| [`next-app`](https://github.com/HumeAI/empathic-voice-api-js/tree/main/examples/next-app) | Typescript | Next.js | |
+| [`vite-app-embed`](https://github.com/HumeAI/empathic-voice-api-js/tree/main/examples/vite-app-embed) | Typescript | Vite | |
+| [`vite-app`](https://github.com/HumeAI/empathic-voice-api-js/tree/main/examples/vite-app) | Typescript | Vite | |
