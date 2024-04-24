@@ -8,8 +8,6 @@
 
 ## Overview
 
-This project is not yet ready for general access. This project will be set up for use by our general audience with the release of EVI this month! If you would like to be notified when EVI is release, please sign up for our waitlist [here](https://share.hsforms.com/15hCR14R4S-e-dlMwN42tkwcjsur).
-
 This project features a sample implementation of Hume's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) using Hume's Typescript SDK.
 
 ## Prerequisites
