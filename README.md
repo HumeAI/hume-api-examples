@@ -17,4 +17,4 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | ------------------------------------------------------------------- | ---------- | ---------- |
 | [`evi-typescript-example`](/evi-typescript-example/README.md)       | Typescript | Vanilla JS |
 | [`evi-custom-language-model`](/evi-custom-language-model/README.md) | Python     |            |
-| [meld](/meld/README.md)                                             | Typescript | React      |
+| [`meld`](/meld/README.md)                                           | Typescript | React      |
