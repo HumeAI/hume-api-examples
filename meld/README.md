@@ -1,12 +1,14 @@
-# EVI brainstorming team example
+# Meld: a sample React application for brainstorming with EVIs
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Description
 
-This is an example of how to use Hume AI's Empathic Voice Interface (EVI), designed to enhance brainstorming sessions. Utilizing a unique system prompt, EVI can adopt three distinct personas, providing diverse insights tailored to your topics.
+This example project showcases the use of Hume AI's Empathic Voice Interface (EVI) to boost brainstorming sessions through a React-based application. 
 
-With our [System Prompt](https://github.com/HumeAI/meld/blob/main/src/system_prompt.txt) we define three distinct personas EVI will take to provide insights our topic.
+Utilizing a unique system prompt, EVI can adopt three distinct personas, providing diverse insights tailored to your topics. With our [System Prompt](https://github.com/HumeAI/meld/blob/main/src/system_prompt.txt) we define three distinct personas EVI will take to provide insights our topic.
+
+This project leverages [Hume's React SDK](https://github.com/HumeAI/empathic-voice-api-js/tree/main/packages/react), a straightforward React interface, designed to seamlessly integrate EVI capabilities into your React applications.
 
 ## Table of Contents
 
