@@ -73,7 +73,6 @@ class Agent:
             agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
         )
 
-
     def add_prosody_to_utterance(self, utterance: str, prosody: dict) -> str:
         """
         Enhances an utterance by appending prosody information derived from prosody analysis.
@@ -101,6 +100,9 @@ class Agent:
             tuple[str, list]: A tuple containing the last user message and the constructed chat history.
         """
 
+        custom_session_id = messages_payload["custom_session_id"]
+        print(custom_session_id)
+        messages_payload = messages_payload["messages"]
         last_user_message = messages_payload[-1]["message"]["content"]
 
         chat_history = [SystemMessage(content=self.system_prompt)]
@@ -112,7 +114,9 @@ class Agent:
             message_object = message["message"]
 
             # Extract the prosody model scores, if available
-            prosody_scores = message.get("models", {}).get("prosody", {}).get("scores", {})
+            prosody_scores = (
+                message.get("models", {}).get("prosody", {}).get("scores", {})
+            )
 
             # Sort the prosody scores based on score, in descending order
             sorted_entries = sorted(
@@ -160,12 +164,12 @@ class Agent:
         )
         output = response["output"]
 
-        numbers = re.findall(r'\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b', output)
+        numbers = re.findall(r"\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b", output)
         for number in numbers:
             words = self.number_to_words(number)
             output = output.replace(number, words, 1)
         return output
-    
+
     def number_to_words(self, number):
         """
         Converts a number in string format into its word representation. For example,
