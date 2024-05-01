@@ -139,7 +139,6 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
    * captures and records audio stream
    */
   async function captureAudio(): Promise<void> {
-    console.log("capturing audio");
     audioStream = await getAudioStream();
     // ensure there is only one audio audio track in the stream
     checkForAudioTracks(audioStream);
@@ -147,7 +146,6 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
     recorder = new MediaRecorder(audioStream, { mimeType });
   
     recorder.ondataavailable = async ({ data }) => {
-      console.log(data)
       if (data.size > 0) {
         // convert Blob to binary
         const buffer = await data.arrayBuffer();
