@@ -1,7 +1,6 @@
 import {
   base64ToBlob,
   checkForAudioTracks,
-  createConfig,
   getAudioStream,
   getSupportedMimeType,
   VoiceClient,
@@ -99,15 +98,16 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
    * instantiates interface config and client, sets up Web Socket handlers, and establishes secure Web Socket connection
    */
   async function connect(): Promise<void> {
-    // creates minimal EVI configuration
-    const config = createConfig({
+    // instantiates the VoiceClient
+    client = VoiceClient.create({
+      hostname: 'api.hume.ai',
+      reconnectAttempts: 30,
+      debug: false,
       auth: {
         type: 'accessToken',
         value: accessToken,
       },
     });
-    // instantiates the VoiceClient with configuration
-    client = VoiceClient.create(config);
     // handler for Web Socket open event, triggered when connection is first established
     client.on('open', async () => {
       console.log('Web socket connection opened');
@@ -135,6 +135,10 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
           stopAudio();
           break;
       }
+    });
+    // handler for Web Socket error event, triggered when error is received
+    client.on('error', (error) => {
+      console.error(error.message);
     });
     // handler for Web Socket close event, triggered when connection is closed
     client.on('close', () => {
