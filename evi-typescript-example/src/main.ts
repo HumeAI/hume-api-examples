@@ -1,12 +1,11 @@
+import { HumeClient } from 'hume';
+import { StreamSocket } from 'hume/wrapper/empathicVoice/chat/StreamSocket';
 import {
   base64ToBlob,
   checkForAudioTracks,
   getAudioStream,
   getSupportedMimeType,
-} from '@humeai/voice';
-
-import { HumeClient } from "hume";
-import { StreamSocket } from 'hume/wrapper/empathicVoice/chat/StreamSocket';
+} from './utils';
 
 /**
  * type safe getElement utility function
@@ -21,25 +20,28 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
 
 (async () => {
   const startBtn = getElementById<HTMLButtonElement>('start-btn');
-  const endBtn = getElementById<HTMLButtonElement>('end-btn');
+  const stopBtn = getElementById<HTMLButtonElement>('stop-btn');
   const chat = getElementById<HTMLDivElement>('chat');
 
   startBtn?.addEventListener('click', connect);
-  endBtn?.addEventListener('click', disconnect);
+  stopBtn?.addEventListener('click', disconnect);
 
   /**
    * audio playback queue
    */
   const audioQueue: Blob[] = [];
-  const result = getSupportedMimeType();
   /**
    * mimeType supported by the browser the application is running in
    */
+  const result = getSupportedMimeType();
   const mimeType = result.success ? result.mimeType : 'audio/webm';
   /**
-   * the Hume EVI VoiceClient, includes methods for connecting to the interface and managing the Web Socket connection
+   * the Hume Client, includes methods for connecting to EVI and managing the Web Socket connection
    */
   let client: HumeClient | null = null;
+  /**
+   * the WebSocket instance
+   */
   let socket: StreamSocket | null = null;
   /**
    * flag which denotes whether audio is currently playing
@@ -62,32 +64,31 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
    * instantiates interface config and client, sets up Web Socket handlers, and establishes secure Web Socket connection
    */
   async function connect(): Promise<void> {
-    // instantiates the VoiceClient with configuration
-    if (client == null)  {
+    // instantiates the HumeClient
+    if (client == null) {
       const apiKey = import.meta.env.VITE_HUME_API_KEY || '';
-      const clientSecret = import.meta.env.VITE_HUME_CLIENT_SECRET || '';  
+      const clientSecret = import.meta.env.VITE_HUME_CLIENT_SECRET || '';
 
-      client = new HumeClient({
-        apiKey,
-        clientSecret,
-      })
+      client = new HumeClient({ apiKey, clientSecret });
     }
-
+    // instantiates WebSocket and establishes an authenticated connection
     socket = await client.empathicVoice.chat.connect({
-      // handler for Web Socket open event, triggered when connection is first established
+      // handler for WebSocket open event, triggered when connection is first established
       onOpen: async () => {
         console.log('Web socket connection opened');
         await captureAudio();
       },
+      // handler for WebSocket message event, triggered when a message is received
       onMessage: async (message) => {
-        console.log('Received message:', message);
-        switch(message.type) {
-          case "user_message":
-          case "assistant_message":
+        switch (message.type) {
+          // append user and assistant messages to UI for chat visibility
+          case 'user_message':
+          case 'assistant_message':
             const { role, content } = message.message;
-            appendMessage(role, content ?? "");
+            appendMessage(role, content ?? '');
             break;
-          case "audio_output":
+          // add received audio to the playback queue, and play next audio output
+          case 'audio_output':
             const audioOutput = message.data;
             const blob = base64ToBlob(audioOutput, mimeType);
             audioQueue.push(blob);
@@ -95,18 +96,24 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
               playAudio();
             }
             break;
-          case "user_interruption":
+          // stop audio playback and clear playback queue
+          case 'user_interruption':
             stopAudio();
             break;
         }
-      }, 
+      },
+      // handler for WebSocket error event, triggered when an error is received
+      onError: (error) => {
+        console.error(error.message);
+      },
+      // handler for WebSocket error event, triggered when connection is closed
       onClose: () => {
         console.log('Web socket connection closed');
-      }
+      },
     });
     // update ui state
     if (startBtn) startBtn.disabled = true;
-    if (endBtn) endBtn.disabled = false;
+    if (stopBtn) stopBtn.disabled = false;
   }
 
   /**
@@ -115,7 +122,7 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
   function disconnect(): void {
     // update ui state
     if (startBtn) startBtn.disabled = false;
-    if (endBtn) endBtn.disabled = true;
+    if (stopBtn) stopBtn.disabled = true;
     // stop audio playback
     stopAudio();
     // stop audio capture
@@ -195,10 +202,7 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
    * @param role the speaker associated with the audio transcription
    * @param content transcript of the audio
    */
-  function appendMessage(
-    role: string,
-    content: string
-  ): void {
+  function appendMessage(role: string, content: string): void {
     const timestamp = new Date().toLocaleTimeString();
     const messageEl = document.createElement('p');
     messageEl.innerHTML = `<strong>[${timestamp}] ${role}:</strong> ${content}`;
