@@ -80,6 +80,7 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
         await captureAudio();
       },
       onMessage: async (message) => {
+        console.log('Received message:', message);
         switch(message.type) {
           case "user_message":
           case "assistant_message":
@@ -131,13 +132,15 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
    * captures and records audio stream
    */
   async function captureAudio(): Promise<void> {
+    console.log("capturing audio");
     audioStream = await getAudioStream();
     // ensure there is only one audio audio track in the stream
     checkForAudioTracks(audioStream);
 
     recorder = new MediaRecorder(audioStream, { mimeType });
-
+  
     recorder.ondataavailable = async ({ data }) => {
+      console.log(data)
       if (data.size > 0) {
         // convert Blob to binary
         const buffer = await data.arrayBuffer();
