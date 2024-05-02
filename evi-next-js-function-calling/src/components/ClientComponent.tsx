@@ -60,7 +60,7 @@ const handleToolCall = async (
         tool_call_id: toolCall.tool_call_id,
         error: 'Weather tool error',
         code: 'weather_tool_error',
-        level: 'error',
+        level: 'warn',
         content: 'There was an error with the weather tool',
       };
     }
