@@ -1,9 +1,15 @@
 "use client";
-import { VoiceProvider, ToolCall, ToolResponse, ToolError } from "@humeai/voice-react";
+import { 
+  VoiceProvider, 
+  ToolCall, 
+  ToolCallHandler,
+  ToolResponse, 
+  ToolError, 
+} from "@humeai/voice-react";
 import Messages from "./Controls";
 import Controls from "./Messages";
 
-const handleToolCall = async (
+const handleToolCall: ToolCallHandler = async (
   toolCall: ToolCall
 ): Promise<ToolResponse | ToolError> => {
   console.log("Tool call received", toolCall);
