@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@humeai/voice": "0.1.3-beta.1",
-    "@humeai/voice-react": "0.1.3-beta.1",
+    "@humeai/voice": "^0.1.3",
+    "@humeai/voice-react": "^0.1.3",
     "next": "14.2.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
