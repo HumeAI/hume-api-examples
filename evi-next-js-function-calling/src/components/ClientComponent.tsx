@@ -70,7 +70,7 @@ const handleToolCall = async (
       tool_call_id: toolCall.tool_call_id,
       error: 'Tool not found',
       code: 'tool_not_found',
-      level: 'warning',
+      level: 'warn',
       content: 'The tool you requested was not found',
     };
   }
