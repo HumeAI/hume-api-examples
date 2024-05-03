@@ -6,7 +6,7 @@ export function blobToBase64(blob: Blob): Promise<string> {
       if (!reader.result) return;
 
       const result = reader.result as string;
-      resolve(result.split(",")[1]);
+      resolve(result.split(',')[1]);
     };
 
     reader.readAsDataURL(blob);
@@ -28,11 +28,11 @@ export function base64ToBlob(base64: string, contentType: string): Blob {
 export const checkForAudioTracks = (stream: MediaStream) => {
   const tracks = stream.getAudioTracks();
 
-  if (tracks.length === 0) throw new Error("No audio tracks");
+  if (tracks.length === 0) throw new Error('No audio tracks');
 
-  if (tracks.length > 1) throw new Error("Multiple audio tracks");
+  if (tracks.length > 1) throw new Error('Multiple audio tracks');
 
-  if (!tracks[0]) throw new Error("No audio track");
+  if (!tracks[0]) throw new Error('No audio track');
 };
 
 export const getAudioStream = async (): Promise<MediaStream> => {
@@ -47,9 +47,9 @@ export const getAudioStream = async (): Promise<MediaStream> => {
 };
 
 enum MimeType {
-  WEBM = "audio/webm",
-  MP4 = "audio/mp4",
-  WAV = "audio/wav",
+  WEBM = 'audio/webm',
+  MP4 = 'audio/mp4',
+  WAV = 'audio/wav',
 }
 
 type MimeTypeSuccessResult = { success: true; mimeType: MimeType };
@@ -57,10 +57,10 @@ type MimeTypeFailureResult = { success: false; error: Error };
 type MimeTypeResult = MimeTypeSuccessResult | MimeTypeFailureResult;
 
 export function getSupportedMimeType(): MimeTypeResult {
-  if (typeof MediaRecorder === "undefined") {
+  if (typeof MediaRecorder === 'undefined') {
     return {
       success: false,
-      error: new Error("MediaRecorder is not supported"),
+      error: new Error('MediaRecorder is not supported'),
     };
   }
 
@@ -72,7 +72,7 @@ export function getSupportedMimeType(): MimeTypeResult {
   if (!supportedMimeType) {
     return {
       success: false,
-      error: new Error("Browser does not support any compatible mime types"),
+      error: new Error('Browser does not support any compatible mime types'),
     };
   }
 
