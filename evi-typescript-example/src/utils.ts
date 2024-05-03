@@ -63,7 +63,7 @@ export const getAudioStream = async (): Promise<MediaStream> => {
   });
 };
 
-enum MimeType {
+export enum MimeType {
   WEBM = 'audio/webm',
   MP4 = 'audio/mp4',
   WAV = 'audio/wav',

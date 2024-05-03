@@ -12,6 +12,7 @@ import {
   base64ToBlob,
   checkForAudioTracks,
   getAudioStream,
+  MimeType,
   getSupportedMimeType,
 } from './utils';
 
@@ -24,19 +25,6 @@ import {
   stopBtn?.addEventListener('click', disconnect);
 
   /**
-   * audio playback queue
-   */
-  const audioQueue: Blob[] = [];
-
-  /**
-   * mimeType supported by the browser the application is running in
-   */
-  const mimeType = (() => {
-    const result = getSupportedMimeType();
-    return result.success ? result.mimeType : 'audio/webm';
-  })();
-
-  /**
    * the Hume Client, includes methods for connecting to EVI and managing the Web Socket connection
    */
   let client: HumeClient | null = null;
@@ -47,14 +35,9 @@ import {
   let socket: StreamSocket | null = null;
 
   /**
-   * flag which denotes whether audio is currently playing
+   * the recorder responsible for recording the audio stream to be prepared as the audio input
    */
-  let isPlaying = false;
-
-  /**
-   * the current audio element to be played
-   */
-  let currentAudio: HTMLAudioElement | null = null;
+  let recorder: MediaRecorder | null = null;
 
   /**
    * the stream of audio captured from the user's microphone
@@ -62,9 +45,27 @@ import {
   let audioStream: MediaStream | null = null;
 
   /**
-   * the recorder responsible for recording the audio stream to be prepared as the audio input
+   * the current audio element to be played
    */
-  let recorder: MediaRecorder | null = null;
+  let currentAudio: HTMLAudioElement | null = null;
+
+  /**
+   * flag which denotes whether audio is currently playing
+   */
+  let isPlaying = false;
+
+  /**
+   * audio playback queue
+   */
+  const audioQueue: Blob[] = [];
+
+  /**
+   * mime type supported by the browser the application is running in
+   */
+  const mimeType: MimeType = (() => {
+    const result = getSupportedMimeType();
+    return result.success ? result.mimeType : MimeType.WEBM;
+  })();
 
   /**
    * instantiates interface config and client, sets up Web Socket handlers, and establishes secure Web Socket connection
@@ -117,7 +118,7 @@ import {
    */
   async function captureAudio(): Promise<void> {
     audioStream = await getAudioStream();
-    // ensure there is only one audio audio track in the stream
+    // ensure there is only one audio track in the stream
     checkForAudioTracks(audioStream);
 
     // instantiate the media recorder
@@ -279,7 +280,7 @@ import {
   }
 
   /**
-   * toggles `start` and `stop` button states
+   * toggles `start` and `stop` buttons' disabled states
    */
   function toggleBtnStates(): void {
     if (startBtn) startBtn.disabled = !startBtn.disabled;
