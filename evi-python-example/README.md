@@ -2,7 +2,7 @@
 
 This is a short example of streaming a session with EVI using your device's microphone.
 
-Please note that the Python SDK is currently supported on Mac and Linux, and not yet on Windows.
+NOTE: The Python SDK is currently supported on Mac and Linux, and not yet on Windows.
 
 ## Dependencies
 
@@ -28,10 +28,12 @@ brew install ffmpeg
 
 #### Linux
 
+You will need to install the following dependencies:
+
 - `libasound2-dev`
 - `libportaudio2`
 
-You can install these dependencies with:
+You can install them with:
 
 ```bash
 sudo apt-get --yes update
@@ -69,7 +71,7 @@ and you can edit it to save your API key. This can be more convenient than using
 
 To get your API key,log into the portal and visit the [API keys page](https://beta.hume.ai/settings/keys).
 
-**NOTE:** Your API key is like your password. Do not post any code containing it to any public forum such as Discord, and do not commit it to GitHub. 
+**NOTE:** Your API key is like your password. Do not post any code containing it to any public forum such as Discord, and do not commit it to GitHub.
 
 ```python
 async def main() -> None:
@@ -108,11 +110,11 @@ which might return a large or small list depending on what you have installed. A
   13 ZoomAudioDevice, Core Audio (2 in, 2 out)
 ```
 
-and if we want to use the MacBook Pro Microphone, we would change
+and if we want to use the MacBook Pro Microphone, we would change the line
 
 `await MicrophoneInterface.start(socket)`
 
-to
+on line 14 of `main()` to
 
 `await MicrophoneInterface.start(socket, device=4))`
 
