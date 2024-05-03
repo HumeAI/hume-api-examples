@@ -42,7 +42,7 @@ export function base64ToBlob(base64: string, contentType: string): Blob {
   return new Blob([byteArray], { type: contentType });
 }
 
-export const checkForAudioTracks = (stream: MediaStream) => {
+export const checkForAudioTracks = (stream: MediaStream): void => {
   const tracks = stream.getAudioTracks();
 
   if (tracks.length === 0) throw new Error('No audio tracks');

@@ -1,6 +1,11 @@
 import { HumeClient } from 'hume';
 import { StreamSocket } from 'hume/wrapper/empathicVoice/chat/StreamSocket';
-import { AudioInput, Role } from 'hume/api/resources/empathicVoice';
+import {
+  AudioInput,
+  Error_,
+  Role,
+  SubscribeEvent,
+} from 'hume/api/resources/empathicVoice';
 import {
   getElementById,
   blobToBase64,
@@ -65,62 +70,24 @@ import {
    * instantiates interface config and client, sets up Web Socket handlers, and establishes secure Web Socket connection
    */
   async function connect(): Promise<void> {
-    // instantiates the HumeClient
-    if (client == null) {
-      const apiKey = import.meta.env.VITE_HUME_API_KEY || '';
-      const clientSecret = import.meta.env.VITE_HUME_CLIENT_SECRET || '';
-
-      client = new HumeClient({ apiKey, clientSecret });
+    // instantiate the HumeClient with credentials to make authenticated requests
+    if (!client) {
+      client = new HumeClient({
+        apiKey: import.meta.env.VITE_HUME_API_KEY || '',
+        clientSecret: import.meta.env.VITE_HUME_CLIENT_SECRET || '',
+      });
     }
 
     // instantiates WebSocket and establishes an authenticated connection
     socket = await client.empathicVoice.chat.connect({
-      // handler for WebSocket open event, triggered when connection is first established
-      onOpen: async () => {
-        console.log('Web socket connection opened');
-        await captureAudio();
-      },
-
-      // handler for WebSocket message event, triggered when a message is received
-      onMessage: async (message) => {
-        switch (message.type) {
-          // append user and assistant messages to UI for chat visibility
-          case 'user_message':
-          case 'assistant_message':
-            const { role, content } = message.message;
-            appendMessage(role, content ?? '');
-            break;
-
-          // add received audio to the playback queue, and play next audio output
-          case 'audio_output':
-            const audioOutput = message.data;
-            const blob = base64ToBlob(audioOutput, mimeType);
-            audioQueue.push(blob);
-            if (audioQueue.length <= 1) {
-              playAudio();
-            }
-            break;
-
-          // stop audio playback, clear audio playback queue, and update audio playback state on interrupt
-          case 'user_interruption':
-            stopAudio();
-            break;
-        }
-      },
-
-      // handler for WebSocket error event, triggered when an error is received
-      onError: (error) => {
-        console.error(error.message);
-      },
-
-      // handler for WebSocket error event, triggered when connection is closed
-      onClose: () => {
-        console.log('Web socket connection closed');
-      },
+      onOpen: handleWebSocketOpenEvent,
+      onMessage: handleWebSocketMessageEvent,
+      onError: handleWebSocketErrorEvent,
+      onClose: handleWebSocketCloseEvent,
     });
+
     // update ui state
-    if (startBtn) startBtn.disabled = true;
-    if (stopBtn) stopBtn.disabled = false;
+    toggleBtnStates();
   }
 
   /**
@@ -128,8 +95,7 @@ import {
    */
   function disconnect(): void {
     // update ui state
-    if (startBtn) startBtn.disabled = false;
-    if (stopBtn) stopBtn.disabled = true;
+    toggleBtnStates();
 
     // stop audio playback
     stopAudio();
@@ -187,7 +153,7 @@ import {
    * play the audio within the playback queue, converting each Blob into playable HTMLAudioElements
    */
   function playAudio(): void {
-    // IF there is nothing in the audioQueue OR if audio is currently playing do nothing
+    // IF there is nothing in the audioQueue OR audio is currently playing then do nothing
     if (!audioQueue.length || isPlaying) return;
 
     // update isPlaying state
@@ -196,7 +162,7 @@ import {
     // pull next audio output from the queue
     const audioBlob = audioQueue.shift();
 
-    // IF audioBlob is unexpectedly undefined do nothing
+    // IF audioBlob is unexpectedly undefined then do nothing
     if (!audioBlob) return;
 
     // converts Blob to AudioElement for playback
@@ -232,6 +198,64 @@ import {
   }
 
   /**
+   * handles WebSocket open event
+   */
+  async function handleWebSocketOpenEvent(): Promise<void> {
+    // place logic here which you would like invoked when the socket opens
+    console.log('Web socket connection opened');
+    await captureAudio();
+  }
+
+  /**
+   * handles WebSocket message event
+   */
+  function handleWebSocketMessageEvent(message: SubscribeEvent): void {
+    // place logic here which you would like to invoke when receiving a message through the socket
+    switch (message.type) {
+      // append user and assistant messages to UI for chat visibility
+      case 'user_message':
+      case 'assistant_message':
+        const { role, content } = message.message;
+        appendMessage(role, content ?? '');
+        break;
+
+      // add received audio to the playback queue, and play next audio output
+      case 'audio_output':
+        // convert base64 encoded audio to a Blob
+        const audioOutput = message.data;
+        const blob = base64ToBlob(audioOutput, mimeType);
+
+        // add audio Blob to audioQueue
+        audioQueue.push(blob);
+
+        // play the next audio output
+        if (audioQueue.length === 1) playAudio();
+        break;
+
+      // stop audio playback, clear audio playback queue, and update audio playback state on interrupt
+      case 'user_interruption':
+        stopAudio();
+        break;
+    }
+  }
+
+  /**
+   * handles WebSocket error event
+   */
+  function handleWebSocketErrorEvent(error: Error_): void {
+    // place logic here which you would like invoked when receiving an error through the socket
+    console.error(error);
+  }
+
+  /**
+   * handles WebSocket close event
+   */
+  function handleWebSocketCloseEvent(): void {
+    // place logic here which you would like invoked when the socket closes
+    console.log('Web socket connection closed');
+  }
+
+  /**
    * adds message to Chat in the webpage's UI
    *
    * @param role the speaker associated with the audio transcription
@@ -252,5 +276,13 @@ import {
 
     // append new message to the chat, making chat message visible in UI
     chat?.appendChild(messageEl);
+  }
+
+  /**
+   * toggles `start` and `stop` button states
+   */
+  function toggleBtnStates(): void {
+    if (startBtn) startBtn.disabled = !startBtn.disabled;
+    if (stopBtn) stopBtn.disabled = !stopBtn.disabled;
   }
 })();
