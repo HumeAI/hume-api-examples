@@ -1,6 +1,6 @@
 # evi-python-example
 
-This is a short example of streaming a session with EVI using your device's microphone.
+This is a short example of streaming a session with EVI using your device's microphone. Install the [dependencies](#dependencies) listed below and then run `python run-evi.py` to run the example.
 
 NOTE: The Python SDK is currently supported on Mac and Linux, and not yet on Windows.
 
