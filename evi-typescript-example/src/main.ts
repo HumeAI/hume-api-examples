@@ -1,24 +1,14 @@
 import { HumeClient } from 'hume';
 import { StreamSocket } from 'hume/wrapper/empathicVoice/chat/StreamSocket';
-import { AudioInput } from 'hume/api/resources/empathicVoice';
+import { AudioInput, Role } from 'hume/api/resources/empathicVoice';
 import {
+  getElementById,
   blobToBase64,
   base64ToBlob,
   checkForAudioTracks,
   getAudioStream,
   getSupportedMimeType,
 } from './utils';
-
-/**
- * type safe getElement utility function
- *
- * @param id safe getElement utility function
- * @returns the HTML element if found
- */
-function getElementById<T extends HTMLElement>(id: string): T | null {
-  const element = document.getElementById(id);
-  return element as T | null;
-}
 
 (async () => {
   const startBtn = getElementById<HTMLButtonElement>('start-btn');
@@ -187,6 +177,7 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
       // send audio_input message
       socket?.sendAudioInput(json);
     };
+
     // capture audio input at a rate of 100ms (recommended)
     const timeSlice = 100;
     recorder.start(timeSlice);
@@ -229,9 +220,14 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
    * stops audio playback, clears audio playback queue, and updates audio playback state
    */
   function stopAudio(): void {
+    // stop the audio playback
     currentAudio?.pause();
     currentAudio = null;
+
+    // update audio playback state
     isPlaying = false;
+
+    // clear the audioQueue
     audioQueue.length = 0;
   }
 
@@ -241,10 +237,20 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
    * @param role the speaker associated with the audio transcription
    * @param content transcript of the audio
    */
-  function appendMessage(role: string, content: string): void {
+  function appendMessage(role: Role, content: string): void {
+    // get timestamp for the message
     const timestamp = new Date().toLocaleTimeString();
+
+    // create new message element
     const messageEl = document.createElement('p');
-    messageEl.innerHTML = `<strong>[${timestamp}] ${role}:</strong> ${content}`;
+
+    // construct message with timestamp, role, and message content
+    const message = `<strong>[${timestamp}] ${role}:</strong> ${content}`;
+
+    // set message element's inner html to be the newly constructed message
+    messageEl.innerHTML = message;
+
+    // append new message to the chat, making chat message visible in UI
     chat?.appendChild(messageEl);
   }
 })();

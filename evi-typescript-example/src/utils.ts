@@ -1,3 +1,17 @@
+/**
+ * type safe getElement utility function
+ *
+ * @param id safe getElement utility function
+ * @returns the HTML element if found
+ */
+export function getElementById<T extends HTMLElement>(id: string): T | null {
+  const element = document.getElementById(id);
+  return element as T | null;
+}
+
+/**
+ * converts a Blob to a base64 encoded buffer (string)
+ */
 export function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve: (value: string) => void, _) => {
     const reader = new FileReader();
@@ -13,6 +27,9 @@ export function blobToBase64(blob: Blob): Promise<string> {
   });
 }
 
+/**
+ * converts base64 encoded buffer (string) to a Blob
+ */
 export function base64ToBlob(base64: string, contentType: string): Blob {
   const binaryString = window.atob(base64);
   const bytes = new Array(binaryString.length);
