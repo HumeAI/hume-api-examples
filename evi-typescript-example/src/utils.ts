@@ -42,6 +42,9 @@ export function base64ToBlob(base64: string, contentType: string): Blob {
   return new Blob([byteArray], { type: contentType });
 }
 
+/**
+ * checks media stream for audio tracks, and throws an error IF the numbers tracks is not 1
+ */
 export const checkForAudioTracks = (stream: MediaStream): void => {
   const tracks = stream.getAudioTracks();
 
@@ -52,6 +55,9 @@ export const checkForAudioTracks = (stream: MediaStream): void => {
   if (!tracks[0]) throw new Error('No audio track');
 };
 
+/**
+ * wraps the Navigator interface to get media (audio) stream from media device (microphone)
+ */
 export const getAudioStream = async (): Promise<MediaStream> => {
   return navigator.mediaDevices.getUserMedia({
     audio: {
@@ -73,6 +79,9 @@ type MimeTypeSuccessResult = { success: true; mimeType: MimeType };
 type MimeTypeFailureResult = { success: false; error: Error };
 type MimeTypeResult = MimeTypeSuccessResult | MimeTypeFailureResult;
 
+/**
+ * gets the supported mime type of the browser the application is running in
+ */
 export function getSupportedMimeType(): MimeTypeResult {
   if (typeof MediaRecorder === 'undefined') {
     return {
