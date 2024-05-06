@@ -61,15 +61,20 @@ import asyncio
 
 ### 2. Authenticate and Connect
 
-In the `run-evi.py` code, the API key has been saved to an environment variable. Avoid hard coding secrets in your project to prevent them from being leaked. You can either set an environment variable in the terminal by running this command prior to running the code:
+In the `run-evi.py` code, the API key has been saved to an environment variable. Avoid hard coding secrets in your project to prevent them from being leaked.
+
+You can set the environment variable in two ways:
+
+  1. You can set an environment variable in the terminal by running this command prior to running the code. Note that you will need to run this every time you have a new terminal session, for example if you close the window or after restarting the computer.
 
 `export HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
 
-or, you can edit the provided placeholder `.env` file (Note: it's a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make them viewable in the finder). The `.env` file is a persistent local store of your API key, and it's set in the `.gitignore` file to not be committed to GitHub. The included `.env` file in this repo just reads:
 
-`HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
+  2. Alternatively, you can edit the provided placeholder `.env` file (Note: it's a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make them viewable in the finder). The `.env` file is a persistent local store of your API key, and it's set in the `.gitignore` file to not be committed to GitHub. The included `.env` file in this repo just reads:
 
-and you can edit it to save your API key. This can be more convenient than using the `export` command above, since you don't have to run it every time you start a new terminal, and it works inside Jupyter notebooks.
+  `HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
+
+  and you can edit it to save your API key. This can be more convenient than using the `export` command above, since you don't have to run it every time you start a new terminal, and it works inside Jupyter notebooks.
 
 To get your API key,log into the portal and visit the [API keys page](https://beta.hume.ai/settings/keys).
 
