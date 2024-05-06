@@ -50,7 +50,7 @@ Not yet supported.
 
 First we import the required Hume libraries, as well as `load_dotenv` to enable the use of `.env` files to store environment variables, and asyncio for asynchronous functions calls.
 
-> **NOTE:** The `dotenv` package is used to load environment variables from a `.env` file into the process's environment. This practice is for configuration settings that shouldn't be hard-coded into the code, such as API keys. By using `dotenv`, environment variables are consistently available across different execution environments. For example, environment variables set in the terminal do not persist when you run a Jupyter notebook. By using a `.env` file and loading it with `dotenv`, you can ensure that all necessary environment variables are automatically set, regardless of where the code is executed.
+> **NOTE:** The `dotenv` package can be used to load environment variables from a `.env` file into the process's environment. This practice is for configuration settings that shouldn't be hard-coded into the code, such as API keys. By using `dotenv`, environment variables are consistently available across different execution environments. For example, environment variables set in the terminal do not persist when you run a Jupyter notebook. By using a `.env` file and loading it with `dotenv`, you can ensure that all necessary environment variables are automatically set, regardless of where the code is executed.
 
 ```python
 import os
@@ -61,11 +61,11 @@ import asyncio
 
 ### 2. Authenticate and Connect
 
-In the `run-evi.py` code, the API key has been saved to an environment variable. Avoid hard coding secrets in your project to prevent them from being leaked. You can either set an environment variable like this prior to running the code:
+In the `run-evi.py` code, the API key has been saved to an environment variable. Avoid hard coding secrets in your project to prevent them from being leaked. You can either set an environment variable in the terminal by running this command prior to running the code:
 
 `export HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
 
-Or, you can edit the provided `.env` file (Note: it's a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make them viewable in the finder). The `.env` file is a persistent local store of your API key, and it's set in the `.gitignore` file to not be committed to GitHub. The included `.env` file in this repo just reads:
+or, you can edit the provided placeholder `.env` file (Note: it's a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make them viewable in the finder). The `.env` file is a persistent local store of your API key, and it's set in the `.gitignore` file to not be committed to GitHub. The included `.env` file in this repo just reads:
 
 `HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
 
