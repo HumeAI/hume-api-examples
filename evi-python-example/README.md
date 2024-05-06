@@ -50,6 +50,8 @@ Not yet supported.
 
 First we import the required Hume libraries, as well as `load_dotenv` to enable the use of `.env` files to store environment variables, and asyncio for asynchronous functions calls.
 
+> **NOTE:** The `dotenv` package is used to load environment variables from a `.env` file into the process's environment. This practice is for configuration settings that shouldn't be hard-coded into the code, such as API keys. By using `dotenv`, environment variables are consistently available across different execution environments. For example, environment variables set in the terminal do not persist when you run a Jupyter notebook. By using a `.env` file and loading it with `dotenv`, you can ensure that all necessary environment variables are automatically set, regardless of where the code is executed.
+
 ```python
 import os
 from hume import HumeVoiceClient, MicrophoneInterface
