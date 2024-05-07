@@ -4,6 +4,23 @@ This is a short example of streaming a session with EVI using your device's micr
 
 NOTE: The Python SDK is currently supported on Mac and Linux, and not yet on Windows.
 
+## Setting up a virtual environment (optional)
+
+Before you install the dependencies, you might want to create a virtual environment to isolate your package installations. To create a virtual environment, run the following commands in your terminal:
+
+```bash
+# Create a virtual environment in the directory 'evi-env'
+python -m venv evi-env
+
+# Activate the virtual environment
+# On Mac/Linux:
+source evi-env/bin/activate
+# On Windows:
+evi-env\Scripts\activate
+```
+
+After activating the virtual environment, you can proceed with the installation of dependencies as described below.
+
 ## Dependencies
 
 Python versions 3.9, 3.10, and 3.11 are supported. To use the basic functionality of `HumeVoiceClient`, `HumeBatchClient` or `HumeStreamClient`, there are no additional system dependencies. However, using the audio playback functionality of the EVI `MicrophoneInterface` may require a few extra dependencies depending on your operating system.
