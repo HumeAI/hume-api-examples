@@ -100,23 +100,19 @@ class Agent:
             tuple[str, list]: A tuple containing the last user message and the constructed chat history.
         """
 
-        custom_session_id = messages_payload["custom_session_id"]
-        print(custom_session_id)
-        messages_payload = messages_payload["messages"]
-        last_user_message = messages_payload[-1]["message"]["content"]
+        messages = messages_payload["messages"]
+        last_user_message = messages[-1]["message"]["content"]
 
         chat_history = [SystemMessage(content=self.system_prompt)]
 
         # Iterate through each message in the data except the last one
-        for message in messages_payload[:-1]:
+        for message in messages[:-1]:
 
             # Extract the message role and content
             message_object = message["message"]
 
             # Extract the prosody model scores, if available
-            prosody_scores = (
-                message.get("models", {}).get("prosody", {}).get("scores", {})
-            )
+            prosody_scores = message.get("models", {}).get("prosody", {}).get("scores", {})
 
             # Sort the prosody scores based on score, in descending order
             sorted_entries = sorted(
@@ -136,13 +132,13 @@ class Agent:
             if message_object["role"] == "user":
                 chat_history.append(HumanMessage(content=contextualized_utterance))
             elif message_object["role"] == "assistant":
-                chat_history.append(SystemMessage(content=contextualized_utterance))
+                chat_history.append(AIMessage(content=contextualized_utterance))
 
         return [last_user_message, chat_history]
 
-    def get_response(self, message: str, chat_history=None) -> str:
+    def get_responses(self, message: str, chat_history=None) -> list[str]:
         """
-        Generates a response to the user's message based on the current chat history and the
+        Generates responses to the user's message based on the current chat history and the
         capabilities of the integrated language model and tools.
 
         Args:
@@ -150,7 +146,7 @@ class Agent:
             chat_history (list, optional): The chat history up to this point. Defaults to None.
 
         Returns:
-            str: The generated response from the agent.
+            list[str]: The stream of generated responses from the agent.
         """
 
         if chat_history is None:
@@ -163,12 +159,17 @@ class Agent:
             }
         )
         output = response["output"]
+        responses = []
 
         numbers = re.findall(r"\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b", output)
         for number in numbers:
             words = self.number_to_words(number)
             output = output.replace(number, words, 1)
-        return output
+
+        responses.append(json.dumps({"type": "assistant_input", "text": output}))
+        responses.append(json.dumps({"type": "assistant_end"}))
+
+        return responses
 
     def number_to_words(self, number):
         """
@@ -189,4 +190,4 @@ class Agent:
 
 if __name__ == "__main__":
     agent = Agent()
-    print(agent.get_response("Hello"))
+    print("\n".join(agent.get_responses("Hello")))

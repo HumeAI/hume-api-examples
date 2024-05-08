@@ -54,9 +54,12 @@ async def websocket_endpoint(websocket: WebSocket):
         print(message)
         print(chat_history)
 
-        # Generate a response based on the last message and the chat history.
-        response = agent.get_response(message, chat_history)
+        # Generate responses based on the last message and the chat history.
+        responses = agent.get_responses(message, chat_history)
 
-        # Send the generated response back to the client via the WebSocket connection.
-        await websocket.send_text(response)
+        # Print the responses for logging purposes.
+        print(responses)
 
+        # Send the generated responses back to the client via the WebSocket connection.
+        for response in responses:
+            await websocket.send_text(response)
