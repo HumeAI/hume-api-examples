@@ -15,8 +15,6 @@ python -m venv evi-env
 # Activate the virtual environment
 # On Mac/Linux:
 source evi-env/bin/activate
-# On Windows:
-evi-env\Scripts\activate
 ```
 
 After activating the virtual environment, you can proceed with the installation of dependencies as described below.
