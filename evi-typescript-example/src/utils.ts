@@ -43,7 +43,7 @@ export function base64ToBlob(base64: string, contentType: string): Blob {
 }
 
 /**
- * checks media stream for audio tracks, and throws an error IF the numbers tracks is not 1
+ * checks media stream for audio tracks, and throws an error IF the number of tracks is not 1
  */
 export const checkForAudioTracks = (stream: MediaStream): void => {
   const tracks = stream.getAudioTracks();
