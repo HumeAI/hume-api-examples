@@ -1,20 +1,24 @@
-import { HumeClient } from 'hume';
-import { StreamSocket } from 'hume/wrapper/empathicVoice/chat/StreamSocket';
 import {
-  AudioInput,
-  Error_,
-  Role,
-  SubscribeEvent,
-} from 'hume/api/resources/empathicVoice';
-import {
-  getElementById,
-  blobToBase64,
-  base64ToBlob,
-  checkForAudioTracks,
+  Hume,
+  HumeClient,
+  convertBlobToBase64,
+  convertBase64ToBlob,
+  ensureSingleValidAudioTrack,
   getAudioStream,
+  getBrowserSupportedMimeType,
   MimeType,
-  getSupportedMimeType,
-} from './utils';
+} from 'hume';
+
+/**
+ * type safe getElement utility function
+ *
+ * @param id safe getElement utility function
+ * @returns the HTML element if found
+ */
+function getElementById<T extends HTMLElement>(id: string): T | null {
+  const element = document.getElementById(id);
+  return element as T | null;
+}
 
 (async () => {
   const startBtn = getElementById<HTMLButtonElement>('start-btn');
@@ -32,7 +36,7 @@ import {
   /**
    * the WebSocket instance
    */
-  let socket: StreamSocket | null = null;
+  let socket: Hume.empathicVoice.StreamSocket | null = null;
 
   /**
    * the recorder responsible for recording the audio stream to be prepared as the audio input
@@ -50,7 +54,7 @@ import {
   let currentAudio: HTMLAudioElement | null = null;
 
   /**
-   * flag which denotes whether audio is currently playing
+   * flag which denotes whether audio is currently playing or not
    */
   let isPlaying = false;
 
@@ -63,7 +67,7 @@ import {
    * mime type supported by the browser the application is running in
    */
   const mimeType: MimeType = (() => {
-    const result = getSupportedMimeType();
+    const result = getBrowserSupportedMimeType();
     return result.success ? result.mimeType : MimeType.WEBM;
   })();
 
@@ -119,7 +123,7 @@ import {
   async function captureAudio(): Promise<void> {
     audioStream = await getAudioStream();
     // ensure there is only one audio track in the stream
-    checkForAudioTracks(audioStream);
+    ensureSingleValidAudioTrack(audioStream);
 
     // instantiate the media recorder
     recorder = new MediaRecorder(audioStream, { mimeType });
@@ -130,10 +134,10 @@ import {
       if (data.size < 1) return;
 
       // base64 encode audio data
-      const encodedAudioData = await blobToBase64(data);
+      const encodedAudioData = await convertBlobToBase64(data);
 
       // define the audio_input message JSON
-      const audioInput: AudioInput = {
+      const audioInput: Hume.empathicVoice.AudioInput = {
         type: 'audio_input',
         data: encodedAudioData,
       };
@@ -210,7 +214,9 @@ import {
   /**
    * handles WebSocket message event
    */
-  function handleWebSocketMessageEvent(message: SubscribeEvent): void {
+  function handleWebSocketMessageEvent(
+    message: Hume.empathicVoice.SubscribeEvent
+  ): void {
     // place logic here which you would like to invoke when receiving a message through the socket
     switch (message.type) {
       // append user and assistant messages to UI for chat visibility
@@ -224,7 +230,7 @@ import {
       case 'audio_output':
         // convert base64 encoded audio to a Blob
         const audioOutput = message.data;
-        const blob = base64ToBlob(audioOutput, mimeType);
+        const blob = convertBase64ToBlob(audioOutput, mimeType);
 
         // add audio Blob to audioQueue
         audioQueue.push(blob);
@@ -243,7 +249,9 @@ import {
   /**
    * handles WebSocket error event
    */
-  function handleWebSocketErrorEvent(error: Error_): void {
+  function handleWebSocketErrorEvent(
+    error: Hume.empathicVoice.WebSocketError
+  ): void {
     // place logic here which you would like invoked when receiving an error through the socket
     console.error(error);
   }
@@ -262,7 +270,7 @@ import {
    * @param role the speaker associated with the audio transcription
    * @param content transcript of the audio
    */
-  function appendMessage(role: Role, content: string): void {
+  function appendMessage(role: Hume.empathicVoice.Role, content: string): void {
     // get timestamp for the message
     const timestamp = new Date().toLocaleTimeString();
 
