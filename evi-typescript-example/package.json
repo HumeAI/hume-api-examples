@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@humeai/voice": "^0.1.2"
+    "hume": "^0.5.13"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
