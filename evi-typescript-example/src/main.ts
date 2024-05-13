@@ -119,6 +119,9 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
 
   /**
    * captures and records audio stream, and sends audio stream through the socket
+   * 
+   * API Reference:
+   * - `audio_input`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#send.Audio%20Input.type
    */
   async function captureAudio(): Promise<void> {
     audioStream = await getAudioStream();
@@ -137,16 +140,12 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
       const encodedAudioData = await convertBlobToBase64(data);
 
       // define the audio_input message JSON
-      const audioInput: Hume.empathicVoice.AudioInput = {
-        type: 'audio_input',
+      const audioInput: Omit<Hume.empathicVoice.AudioInput, 'type'> = {
         data: encodedAudioData,
       };
-
-      // stringify the JSON to be sent over the socket
-      const json = JSON.stringify(audioInput);
-
+      
       // send audio_input message
-      socket?.sendAudioInput(json);
+      socket?.sendAudioInput(audioInput);
     };
 
     // capture audio input at a rate of 100ms (recommended)
@@ -203,26 +202,35 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
   }
 
   /**
-   * handles WebSocket open event
+   * callback function to handle a WebSocket opened event
    */
   async function handleWebSocketOpenEvent(): Promise<void> {
-    // place logic here which you would like invoked when the socket opens
+    /* place logic here which you would like invoked when the socket opens */
     console.log('Web socket connection opened');
     await captureAudio();
   }
 
   /**
-   * handles WebSocket message event
+   * callback function to handle a WebSocket message event
+   * 
+   * API Reference:
+   * - `user_message`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.User%20Message.type
+   * - `assistant_message`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.Assistant%20Message.type
+   * - `audio_output`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.Audio%20Output.type
+   * - `user_interruption`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.User%20Interruption.type
    */
   function handleWebSocketMessageEvent(
     message: Hume.empathicVoice.SubscribeEvent
   ): void {
-    // place logic here which you would like to invoke when receiving a message through the socket
+    /* place logic here which you would like to invoke when receiving a message through the socket */
+
+    // handle messages received through the WebSocket (messages are distinguished by their "type" field.)
     switch (message.type) {
       // append user and assistant messages to UI for chat visibility
       case 'user_message':
       case 'assistant_message':
         const { role, content } = message.message;
+
         appendMessage(role, content ?? '');
         break;
 
@@ -247,20 +255,20 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
   }
 
   /**
-   * handles WebSocket error event
+   * callback function to handle a WebSocket error event
    */
   function handleWebSocketErrorEvent(
     error: Hume.empathicVoice.WebSocketError
   ): void {
-    // place logic here which you would like invoked when receiving an error through the socket
+    /* place logic here which you would like invoked when receiving an error through the socket */
     console.error(error);
   }
 
   /**
-   * handles WebSocket close event
+   * callback function to handle a WebSocket closed event
    */
   function handleWebSocketCloseEvent(): void {
-    // place logic here which you would like invoked when the socket closes
+    /* place logic here which you would like invoked when the socket closes */
     console.log('Web socket connection closed');
   }
 
