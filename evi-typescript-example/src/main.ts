@@ -137,16 +137,12 @@ function getElementById<T extends HTMLElement>(id: string): T | null {
       const encodedAudioData = await convertBlobToBase64(data);
 
       // define the audio_input message JSON
-      const audioInput: Hume.empathicVoice.AudioInput = {
-        type: 'audio_input',
+      const audioInput: Omit<Hume.empathicVoice.AudioInput, 'type'> = {
         data: encodedAudioData,
       };
-
-      // stringify the JSON to be sent over the socket
-      const json = JSON.stringify(audioInput);
-
+      
       // send audio_input message
-      socket?.sendAudioInput(json);
+      socket?.sendAudioInput(audioInput);
     };
 
     // capture audio input at a rate of 100ms (recommended)
