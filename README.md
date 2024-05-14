@@ -10,6 +10,7 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`evi-next-js-app-router`](/evi-next-js-app-router/README.md)       | Typescript | Next.js   |
 | [`evi-next-js-pages-router`](/evi-next-js-pages-router/README.md)   | Typescript | Next.js   |
 | [`evi-typescript-example`](/evi-typescript-example/README.md)       | Typescript |           |
+| [`evi-embed-vue`](/evi-embed-vue/README.md) | Typescript     | Vue           |
 | [`evi-python-example`](/evi-python-example/README.md)               | Python     |           |
 | [`meld`](/meld/README.md) (`evi-react-example`)                     | Typescript | React     |
 
