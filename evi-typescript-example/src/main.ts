@@ -9,21 +9,10 @@ import {
   MimeType,
 } from 'hume';
 
-/**
- * type safe getElement utility function
- *
- * @param id safe getElement utility function
- * @returns the HTML element if found
- */
-function getElementById<T extends HTMLElement>(id: string): T | null {
-  const element = document.getElementById(id);
-  return element as T | null;
-}
-
 (async () => {
-  const startBtn = getElementById<HTMLButtonElement>('start-btn');
-  const stopBtn = getElementById<HTMLButtonElement>('stop-btn');
-  const chat = getElementById<HTMLDivElement>('chat');
+  const startBtn = document.querySelector<HTMLButtonElement>('button#start-btn');
+  const stopBtn = document.querySelector<HTMLButtonElement>('button#stop-btn');
+  const chat = document.querySelector<HTMLDivElement>('div#chat');
 
   startBtn?.addEventListener('click', connect);
   stopBtn?.addEventListener('click', disconnect);
