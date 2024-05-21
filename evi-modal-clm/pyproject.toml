@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "evi-modal-clm"
+version = "0.1.0"
+description = ""
+authors = ["Brian Kitano <brian@hume.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+fastapi = "^0.111.0"
+modal = "^0.62.178"
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
