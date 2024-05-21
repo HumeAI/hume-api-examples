@@ -1,6 +1,6 @@
 # EVI ELIZA on Modal
 
-This project sets up a WebSocket server on [Modal](https://modal.com/) for the AI Assistant API, enabling real-time interactions with the EVI agent using the [ELIZA](https://en.wikipedia.org/wiki/ELIZA) chatbot model for human-like conversations.
+This project sets up a WebSocket server on [Modal](https://modal.com/) for the [EVI Custom Language Model integration](https://dev.hume.ai/docs/empathic-voice-interface-evi/custom-language-model), enabling real-time interactions with the EVI agent using the [ELIZA](https://en.wikipedia.org/wiki/ELIZA) chatbot model for human-like conversations.
 
 ## Prerequisites
 
