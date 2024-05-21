@@ -7,6 +7,7 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | Name                                                                | Language   | Framework |
 | ------------------------------------------------------------------- | ---------- | --------- |
 | [`evi-custom-language-model`](/evi-custom-language-model/README.md) | Python     |           |
+| [`evi-modal-clm`](/evi-modal-clm/README.md) | Python     | Modal          |
 | [`evi-next-js-app-router`](/evi-next-js-app-router/README.md)       | Typescript | Next.js   |
 | [`evi-next-js-pages-router`](/evi-next-js-pages-router/README.md)   | Typescript | Next.js   |
 | [`evi-typescript-example`](/evi-typescript-example/README.md)       | Typescript |           |
