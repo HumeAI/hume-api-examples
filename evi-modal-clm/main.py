@@ -1,5 +1,6 @@
 from modal import Image, App, asgi_app
 import re
+import json
 
 # Define a list of reflections to mirror the user's input
 reflections = {
@@ -364,6 +365,17 @@ def endpoint():
         await websocket.accept()
         while True:
             data = await websocket.receive_text()
-            await websocket.send_text(eliza_response(data))
+
+            hume_payload = json.loads(data)
+            last_message = hume_payload["messages"][-1]["message"]["content"]
+
+            user_text = last_message.split("{")[0] or ""
+
+            await websocket.send_text(
+                json.dumps(
+                    {"type": "assistant_input", "text": eliza_response(user_text)}
+                )
+            )
+            await websocket.send_text(json.dumps({"type": "assistant_end"}))
 
     return app

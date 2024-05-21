@@ -13,6 +13,10 @@ For detailed instructions on how to set these up, [see this guide.](./docs/detai
 
 ## Setup Steps
 
+### 0. Local development
+
+Run the app with a hot-loading Modal development serve via `modal serve main.py`.
+
 ### 1. Deploy the WebSocket Modal app
 
 First, deploy the Modal app to a server. This app will act as the WebSocket server for the AI Assistant API. To deploy the app, simply run:
