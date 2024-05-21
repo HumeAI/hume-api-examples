@@ -347,7 +347,6 @@ def eliza_response(user_input):
 
 # ------- MODAL --------
 # deploy with `poetry run python -m modal deploy main.py`
-# connect: `wss://hume-brian--hume-eliza-endpoint.modal.run`
 
 app = App("hume-eliza")
 app.image = Image.debian_slim().pip_install("fastapi", "websockets")
