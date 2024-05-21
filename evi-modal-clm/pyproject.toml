@@ -6,9 +6,9 @@ authors = ["Brian Kitano <brian@hume.ai>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-modal = "^0.62.178"
 fastapi = "^0.111.0"
+modal = "^0.62.178"
+python = "^3.11"
 
 
 [build-system]
