@@ -68,10 +68,6 @@ To run the project, use the command: `pnpm run dev`
 
 This will start the Next.js development server, and you can access the application at `http://localhost:3000`.
 
-## Contributing
-
-Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/HumeAI/hume-api-examples/blob/main/LICENSE) file for details.
