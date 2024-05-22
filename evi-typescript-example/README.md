@@ -62,8 +62,7 @@ Below are the steps to run the project locally:
 
 This implementation of Hume's Empathic User Interface (EVI) is minimal, using default configurations for the interface and a basic UI to authenticate, connect to, and disconnect from the interface.
 
-1. Click the `Authenticate` button to fetch your access token. This step is neccessary to establish an authenticated connection with the interface.
-2. Click the `Start` button to establish an authenticated connection and to begin capturing audio.
-3. Upon clicking start, you will be prompted for permissions to use your microphone. Grant the permission to the application to continue.
-4. Once permission is granted, you can begin speaking with the interface. The transcript of the conversation will be displayed on the webpage in realtime.
-5. Click `Disconnect` when finished speaking with the interface to stop audio capture and to disconnect the Web Socket.
+1. Click the `Start` button to establish an authenticated connection and to begin capturing audio.
+2. Upon clicking `Start`, you will be prompted for permissions to use your microphone. Grant the permission to the application to continue.
+3. Once permission is granted, you can begin speaking with the interface. The transcript of the conversation will be displayed on the webpage in realtime.
+4. Click `Stop` when finished speaking with the interface to stop audio capture and to disconnect the Web Socket.
