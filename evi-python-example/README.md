@@ -38,7 +38,7 @@ pip install python-dotenv
 To use microphone functionality in the `MicrophoneInterface` as shown below on either Mac or Linux, run:
 
 ```bash
-pip install hume[microphone]
+pip install "hume[microphone]"
 ```
 
 ### 3. Audio playback
