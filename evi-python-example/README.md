@@ -23,7 +23,17 @@ After activating the virtual environment, you can proceed with the installation 
 
 Python versions 3.9, 3.10, and 3.11 are supported. To use the basic functionality of `HumeVoiceClient`, `HumeBatchClient` or `HumeStreamClient`, there are no additional system dependencies. However, using the audio playback functionality of the EVI `MicrophoneInterface` may require a few extra dependencies depending on your operating system.
 
-### 1. Microphone
+### 1. Environment Variables
+
+The `python-dotenv` package can be used to load variables from a `.env` file into the process's environment. This practice is for configuration settings that shouldn't be hard-coded into the code, such as API keys.
+
+To install it, run:
+
+```bash
+pip install python-dotenv
+```
+
+### 2. Microphone
 
 To use microphone functionality in the `MicrophoneInterface` as shown below on either Mac or Linux, run:
 
@@ -31,7 +41,7 @@ To use microphone functionality in the `MicrophoneInterface` as shown below on e
 pip install "hume[microphone]"
 ```
 
-### 2. Audio playback
+### 3. Audio playback
 
 For audio playback, install the following dependencies:
 
@@ -65,8 +75,6 @@ Not yet supported.
 
 First we import the required Hume libraries, as well as `load_dotenv` to enable the use of `.env` files to store environment variables, and asyncio for asynchronous functions calls.
 
-> **NOTE:** The `dotenv` package can be used to load environment variables from a `.env` file into the process's environment. This practice is for configuration settings that shouldn't be hard-coded into the code, such as API keys. By using `dotenv`, environment variables are consistently available across different execution environments. For example, environment variables set in the terminal do not persist when you run a Jupyter notebook. By using a `.env` file and loading it with `dotenv`, you can ensure that all necessary environment variables are automatically set, regardless of where the code is executed.
-
 ```python
 import os
 from hume import HumeVoiceClient, MicrophoneInterface
@@ -89,7 +97,11 @@ You can set the environment variable in two ways:
 
   `HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
 
-  and you can edit it to save your API key. This can be more convenient than using the `export` command above, since you don't have to run it every time you start a new terminal, and it works inside Jupyter notebooks.
+—and you can edit it to save your API key.
+
+By using this method, environment variables are auotmatically set regardless of where the code is executed. As such, they are consistently available across different execution environments. This can be more convenient than using the `export` command above, since you don't have to run it every time you start a new terminal.
+
+> For example, environment variables set in the terminal do not persist when you run a Jupyter notebook.
 
 To get your API key,log into the portal and visit the [API keys page](https://beta.hume.ai/settings/keys).
 
