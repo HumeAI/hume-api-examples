@@ -47,7 +47,7 @@ echo "NEXT_PUBLIC_HUME_CLIENT_SECRET = <YOUR_HUME_CLIENT_SECRET>" >> .env
 echo "NEXT_PUBLIC_HUME_CONFIG_ID = <YOUR_HUME_CONFIG_ID>" >> .env
 ```
 
-4. Add the Geocoding API key to your environment variables (free to use from [from geocode.maps.co](https://geocode.maps.co/)).
+4. Add the Geocoding API key to your environment variables (free to use from [geocode.maps.co](https://geocode.maps.co/)).
 
 ```bash
 echo "NEXT_PUBLIC_GEOCODING_API_KEY = <YOUR_GEOCODING_API_KEY>" >> .env
