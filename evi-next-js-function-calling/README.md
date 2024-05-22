@@ -13,7 +13,7 @@ echo "NEXT_PUBLIC_HUME_API_KEY = <YOUR_HUME_API_KEY>" >> .env
 echo "NEXT_PUBLIC_HUME_CLIENT_SECRET = <YOUR_HUME_CLIENT_SECRET>" >> .env
 ```
 
-2. [Create a tool](https://dev.hume.ai/reference/empathic-voice-interface-evi/tools/create-new-tool) with the following payload:
+2. [Create a tool](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#create-a-tool) with the following payload:
 
 ```json
 {
@@ -23,7 +23,7 @@ echo "NEXT_PUBLIC_HUME_CLIENT_SECRET = <YOUR_HUME_CLIENT_SECRET>" >> .env
 }
 ```
 
-3. [Create a config](https://dev.hume.ai/reference/empathic-voice-interface-evi/configs/create-new-config) equipped with that tool:
+3. [Create a config](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#create-a-configuration) equipped with that tool:
 
 ```json
 {
@@ -47,6 +47,12 @@ echo "NEXT_PUBLIC_HUME_CLIENT_SECRET = <YOUR_HUME_CLIENT_SECRET>" >> .env
 echo "NEXT_PUBLIC_HUME_CONFIG_ID = <YOUR_HUME_CONFIG_ID>" >> .env
 ```
 
+4. Add the Geocoding API key to your environment variables (free to use from [from geocode.maps.co](https://geocode.maps.co/)).
+
+```bash
+echo "NEXT_PUBLIC_GEOCODING_API_KEY = <YOUR_GEOCODING_API_KEY>" >> .env
+```
+
 ## Installation
 
 To install the project, follow these steps:
@@ -54,7 +60,7 @@ To install the project, follow these steps:
 1. Clone the repository: `git clone https://github.com/yourusername/evi-next-js-function-calling.git`
 2. Navigate into the project directory: `cd evi-next-js-function-calling`
 3. Install the dependencies: `pnpm install`
-4. Add your environment variables, including your Config ID and Geocoding API key (free to use from [from geocode.maps.co](https://geocode.maps.co/)).
+4. Add your environment variables, including your Config ID and Geocoding API key.
 
 ## Usage
 
@@ -68,4 +74,4 @@ Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) fo
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/HumeAI/hume-api-examples/blob/main/LICENSE) file for details.

@@ -89,7 +89,7 @@ export default function ClientComponent({
 }) {
   return (
     <VoiceProvider
-      configId={process.env.NEXT_PUBLIC_HUME_VOICE_WEATHER_CONFIG_ID}
+      configId={process.env.NEXT_PUBLIC_HUME_CONFIG_ID}
       auth={{ type: "accessToken", value: accessToken }}
       onToolCall={handleToolCall}
       onMessage={(message: unknown) => console.log(message)}
