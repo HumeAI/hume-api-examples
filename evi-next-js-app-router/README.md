@@ -1,9 +1,6 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
   <h1>EVI Next.js App Router Example</h1>
-  <p>
-    <strong>Jumpstart your development with Hume's Empathic Voice Interface!</strong>
-  </p>
 </div>
 
 ## Overview
