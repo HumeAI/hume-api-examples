@@ -49,9 +49,7 @@ export VITE_HUME_CLIENT_SECRET=<YOUR_CLIENT_SECRET>
 ```
 
 You can make these environment variables persistent by adding them to a file named `.env` in the root folder of the repo.
-> There is an example file called `.env.example` with placeholder values, which you can simply rename to `.env`.
-
-Once the API secrets have been added to the `.env` file, they will persist there and you do not have to set them as environment variables going forward. Importantly, the `.env` file is listed in the `.gitignore` of the repository, so there is no risk of accidentally committing these secrets to a public repository. 
+> There is an example file called [`.env.example`](https://github.com/HumeAI/hume-api-examples/blob/main/evi-typescript-example/.env.example) with placeholder values, which you can simply rename to `.env`.
 
 ## Serve project
 
