@@ -1,7 +1,7 @@
 "use client";
 import { useVoice } from "@humeai/voice-react";
 
-export default function Controls() {
+export default function Messages() {
   const { messages } = useVoice();
 
   return (
