@@ -28,6 +28,16 @@ import {
   let socket: Hume.empathicVoice.StreamSocket | null = null;
 
   /**
+   * flag which denotes the intended state of the WebSocket
+   */
+  let connected = false;
+
+  /**
+   * The ChatGroup ID used to resume the chat if disconnected unexpectedly
+   */
+  let chatGroupId: string | undefined;
+
+  /**
    * the recorder responsible for recording the audio stream to be prepared as the audio input
    */
   let recorder: MediaRecorder | null = null;
@@ -74,6 +84,7 @@ import {
 
     // instantiates WebSocket and establishes an authenticated connection
     socket = await client.empathicVoice.chat.connect({
+      resumedChatGroupId: chatGroupId,
       onOpen: handleWebSocketOpenEvent,
       onMessage: handleWebSocketMessageEvent,
       onError: handleWebSocketErrorEvent,
@@ -99,6 +110,12 @@ import {
     recorder = null;
     audioStream = null;
 
+    // set connected state to false to prevent automatic reconnect
+    connected = false;
+
+    // reset chatGroupId so a new conversation is started when reconnecting
+    chatGroupId = undefined; 
+
     // closed the Web Socket connection
     socket?.close();
 
@@ -108,7 +125,7 @@ import {
 
   /**
    * captures and records audio stream, and sends audio stream through the socket
-   * 
+   *
    * API Reference:
    * - `audio_input`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#send.Audio%20Input.type
    */
@@ -132,7 +149,7 @@ import {
       const audioInput: Omit<Hume.empathicVoice.AudioInput, 'type'> = {
         data: encodedAudioData,
       };
-      
+
       // send audio_input message
       socket?.sendAudioInput(audioInput);
     };
@@ -196,12 +213,16 @@ import {
   async function handleWebSocketOpenEvent(): Promise<void> {
     /* place logic here which you would like invoked when the socket opens */
     console.log('Web socket connection opened');
+
+    // ensures socket will reconnect if disconnected unintentionally
+    connected = true;
+
     await captureAudio();
   }
 
   /**
    * callback function to handle a WebSocket message event
-   * 
+   *
    * API Reference:
    * - `user_message`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.User%20Message.type
    * - `assistant_message`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.Assistant%20Message.type
@@ -215,6 +236,11 @@ import {
 
     // handle messages received through the WebSocket (messages are distinguished by their "type" field.)
     switch (message.type) {
+      // save chat_group_id to resume chat if disconnected
+      case 'chat_metadata':
+        chatGroupId = message.chatGroupId;
+        break;
+
       // append user and assistant messages to UI for chat visibility
       case 'user_message':
       case 'assistant_message':
@@ -256,8 +282,14 @@ import {
   /**
    * callback function to handle a WebSocket closed event
    */
-  function handleWebSocketCloseEvent(): void {
+  async function handleWebSocketCloseEvent(): Promise<void> {
     /* place logic here which you would like invoked when the socket closes */
+
+    // reconnect to the socket if disconnect was unintentional
+    if (connected) {
+      await connect();
+    }
+
     console.log('Web socket connection closed');
   }
 
