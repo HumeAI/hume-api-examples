@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   hume:
-    specifier: ^0.5.17
-    version: 0.5.17
+    specifier: ^0.6.2
+    version: 0.6.2
 
 devDependencies:
   typescript:
@@ -413,6 +413,11 @@ packages:
       '@esbuild/win32-x64': 0.19.12
     dev: true
 
+  /form-data-encoder@4.0.2:
+    resolution: {integrity: sha512-KQVhvhK8ZkWzxKxOr56CPulAhH3dobtuQ4+hNQ+HekH/Wp5gSOafqRAeTphQUJAIk0GBvHZgJ2ZGRWd5kphMuw==}
+    engines: {node: '>= 18'}
+    dev: false
+
   /form-data@4.0.0:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
     engines: {node: '>= 6'}
@@ -420,6 +425,11 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
+    dev: false
+
+  /formdata-node@6.0.3:
+    resolution: {integrity: sha512-8e1++BCiTzUno9v5IZ2J6bv4RU+3UKDmqWUQD0MIMVCd9AdhWkO1gw57oo1mNEX1dMq2EGI+FbWz4B92pscSQg==}
+    engines: {node: '>= 18'}
     dev: false
 
   /fsevents@2.3.3:
@@ -474,10 +484,12 @@ packages:
       function-bind: 1.1.2
     dev: false
 
-  /hume@0.5.17:
-    resolution: {integrity: sha512-54cEtVB4S+MSlll9OTADB3hRZaZuM+YbZ0bb3bXFYmauNcoO3xC8g7QWxWk81xRiMHCLNdEhnlW6N1622/5/wQ==}
+  /hume@0.6.2:
+    resolution: {integrity: sha512-g++HW/dTuCO3kEBYIVjmtgOhZ0LUYpTvVK27Xp+pq4n6dSrVZSK6zFQqS3sAOzddNlRmac5Rdm5HB0qbWXEBHg==}
     dependencies:
       form-data: 4.0.0
+      form-data-encoder: 4.0.2
+      formdata-node: 6.0.3
       node-fetch: 2.7.0
       qs: 6.11.2
       url-join: 4.0.1
