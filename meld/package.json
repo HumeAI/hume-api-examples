@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@humeai/voice": "0.0.0-beta.22",
-    "@humeai/voice-react": "0.0.0-beta.22",
+    "@humeai/voice": "^0.1.6",
+    "@humeai/voice-react": "^0.1.6",
     "@react-spring/web": "^9.7.3",
     "axios": "^1.6.8",
     "clsx": "^2.1.0",
