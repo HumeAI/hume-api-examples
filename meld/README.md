@@ -4,7 +4,7 @@
 
 ## Description
 
-This example project showcases the use of Hume AI's Empathic Voice Interface (EVI) to boost brainstorming sessions through a React-based application. 
+This example project showcases the use of Hume AI's Empathic Voice Interface (EVI) to boost brainstorming sessions through a React-based application.
 
 Utilizing a unique system prompt, EVI can adopt three distinct personas, providing diverse insights tailored to your topics. With our [System Prompt](https://github.com/HumeAI/meld/blob/main/src/system_prompt.txt) we define three distinct personas EVI will take to provide insights our topic.
 
@@ -23,11 +23,11 @@ This project leverages [Hume's React SDK](https://github.com/HumeAI/empathic-voi
 
 ### Configuring Environment Variables
 
-Start by setting up your environment variables. Create a .env file and add your [API Key and your Client Secret](https://beta.hume.ai/settings/keys):
+Start by setting up your environment variables. Create a .env file and add your [API Key and your Secret Key](https://beta.hume.ai/settings/keys):
 
 ```bash
 echo "VITE_HUME_API_KEY= <YOUR HUME API KEY>" >> .env
-echo "VITE_HUME_CLIENT_SECRET = <YOUR HUME CLIENT SECRET>" >> .env
+echo "VITE_HUME_SECRET_KEY = <YOUR HUME SECRET KEY>" >> .env
 ```
 
 ### Installing Dependencies
