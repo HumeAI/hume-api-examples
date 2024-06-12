@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   hume:
-    specifier: ^0.6.2
-    version: 0.6.2
+    specifier: ^0.7.0
+    version: 0.7.0
 
 devDependencies:
   typescript:
@@ -484,8 +484,8 @@ packages:
       function-bind: 1.1.2
     dev: false
 
-  /hume@0.6.2:
-    resolution: {integrity: sha512-g++HW/dTuCO3kEBYIVjmtgOhZ0LUYpTvVK27Xp+pq4n6dSrVZSK6zFQqS3sAOzddNlRmac5Rdm5HB0qbWXEBHg==}
+  /hume@0.7.0:
+    resolution: {integrity: sha512-z3JWmx+Y9rlTWcMrE5x+mi6QYhQ3jb4Mghk+kP0p/gIUw1yE7GJaarSbZbnlGa6O1TDYcP8YSpOPgM7fJnNnpQ==}
     dependencies:
       form-data: 4.0.0
       form-data-encoder: 4.0.2
