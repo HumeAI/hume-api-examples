@@ -1,11 +1,11 @@
 // ./app/page.tsx
-import ClientComponent from "@/components/ClientComponent";
-import { fetchAccessToken } from "@humeai/voice";
+import ClientComponent from '@/components/ClientComponent';
+import { fetchAccessToken } from '@humeai/voice';
 
 export default async function Page() {
   const accessToken = await fetchAccessToken({
     apiKey: String(process.env.HUME_API_KEY),
-    clientSecret: String(process.env.HUME_CLIENT_SECRET),
+    secretKey: String(process.env.HUME_SECRET_KEY),
   });
 
   if (!accessToken) {
