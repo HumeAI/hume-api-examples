@@ -79,23 +79,23 @@ def get_access_token() -> str:
         str: The access token.
 
     Raises:
-        SystemExit: If API key or client secret are not set.
+        SystemExit: If API key or Secret key are not set.
     """
     load_dotenv()
 
-    # Attempt to retrieve API key and client secret from environment variables
+    # Attempt to retrieve API key and Secret key from environment variables
     HUME_API_KEY = os.getenv("HUME_API_KEY")
-    HUME_CLIENT_SECRET = os.getenv("HUME_CLIENT_SECRET")
+    HUME_SECRET_KEY = os.getenv("HUME_SECRET_KEY")
 
-    # Ensure API key and client secret are set
-    if HUME_API_KEY is None or HUME_CLIENT_SECRET is None:
+    # Ensure API key and Secret key are set
+    if HUME_API_KEY is None or HUME_SECRET_KEY is None:
         print(
-            "Error: HUME_API_KEY and HUME_CLIENT_SECRET must be set either in a .env file or as environment variables."
+            "Error: HUME_API_KEY and HUME_SECRET_KEY must be set either in a .env file or as environment variables."
         )
         exit()
 
-    # Create an instance of Authenticator with the API key and client secret
-    authenticator = Authenticator(HUME_API_KEY, HUME_CLIENT_SECRET)
+    # Create an instance of Authenticator with the API key and Secret key
+    authenticator = Authenticator(HUME_API_KEY, HUME_SECRET_KEY)
 
     # Fetch the access token
     access_token = authenticator.fetch_access_token()

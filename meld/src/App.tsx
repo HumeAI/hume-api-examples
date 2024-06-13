@@ -10,9 +10,9 @@ function App() {
     const fetchToken = async () => {
       // make sure to set these environment variables
       const apiKey = import.meta.env.VITE_HUME_API_KEY || '';
-      const clientSecret = import.meta.env.VITE_HUME_CLIENT_SECRET || '';
-      
-      const token = (await fetchAccessToken({ apiKey, clientSecret })) || '';
+      const secretKey = import.meta.env.VITE_HUME_SECRET_KEY || '';
+
+      const token = (await fetchAccessToken({ apiKey, secretKey })) || '';
 
       setAccessToken(token);
     };

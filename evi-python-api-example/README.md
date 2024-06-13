@@ -32,30 +32,31 @@ In order to run it, you need to install the `requirements.txt` using `pip`:
 ### Mac
 
 ```bash
-pip install -r requirements_mac.txt 
+pip install -r requirements_mac.txt
 ```
 
 ### Linux
 
 ```bash
-pip install -r requirements_linux.txt 
+pip install -r requirements_linux.txt
 ```
 
 ## Environment variables
 
-Either create a `.env` file or set environment variables for HUME_API_KEY and HUME_CLIENT_SECRET.
+Either create a `.env` file or set environment variables for HUME_API_KEY and HUME_SECRET_KEY.
 
 Example `.env` file:
 
 ```bash
-HUME_API_KEY="autj04acqK3jpfERQJpkg7829AATGUEvlAR7SYmmOB5ZZVbZD"
-HUME_CLIENT_SECRET="gnxftyfpcagTyB1hgffGis2zHgkUiQZN3Fo46Tj9vMchBBupgAXhM8pamd2Aw9Qd"
+HUME_API_KEY="<YOUR API KEY>"
+HUME_SECRET_KEY="<YOUR SECRET KEY>"
 ```
 
 Example terminal commands to set environment variables manually:
+
 ```bash
-export HUME_API_KEY="autj04acqK3jpfERQJpkg7829AATGUEvlAR7SYmmOB5ZZVbZD"
-export HUME_CLIENT_SECRET="gnxftyfpcagTyB1hgffGis2zHgkUiQZN3Fo46Tj9vMchBBupgAXhM8pamd2Aw9Qd"
+export HUME_API_KEY="<YOUR API KEY>"
+export HUME_SECRET_KEY="<YOUR SECRET KEY>"
 ```
 
 ## Usage
@@ -64,5 +65,3 @@ export HUME_CLIENT_SECRET="gnxftyfpcagTyB1hgffGis2zHgkUiQZN3Fo46Tj9vMchBBupgAXhM
 cd src
 python main.py
 ```
-
-

@@ -78,7 +78,7 @@ import {
     if (!client) {
       client = new HumeClient({
         apiKey: import.meta.env.VITE_HUME_API_KEY || '',
-        clientSecret: import.meta.env.VITE_HUME_CLIENT_SECRET || '',
+        secretKey: import.meta.env.VITE_HUME_SECRET_KEY || '',
       });
     }
 
@@ -114,7 +114,7 @@ import {
     connected = false;
 
     // reset chatGroupId so a new conversation is started when reconnecting
-    chatGroupId = undefined; 
+    chatGroupId = undefined;
 
     // closed the Web Socket connection
     socket?.close();

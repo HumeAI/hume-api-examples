@@ -10,21 +10,21 @@ class Authenticator:
 
     Attributes:
         api_key (str): The API key provided by Hume AI.
-        client_secret (str): The client secret provided by Hume AI.
+        secret_key (str): The secret key provided by Hume AI.
         host (str): The host URL of the API (default is "test-api.hume.ai").
     """
 
-    def __init__(self, api_key: str, client_secret: str, host: str = "test-api.hume.ai"):
+    def __init__(self, api_key: str, secret_key: str, host: str = "test-api.hume.ai"):
         """
-        Initialize the Authenticator with the provided API key, client secret, and host.
+        Initialize the Authenticator with the provided API key, Secret key, and host.
 
         Args:
             api_key (str): The API key provided by Hume AI.
-            client_secret (str): The client secret provided by Hume AI.
+            secret_key (str): The Secret key provided by Hume AI.
             host (str, optional): The host URL of the API. Defaults to "test-api.hume.ai".
         """
         self.api_key = api_key
-        self.client_secret = client_secret
+        self.secret_key = secret_key
         self.host = host
 
     def fetch_access_token(self) -> str:
@@ -42,7 +42,7 @@ class Authenticator:
             ValueError: If the access token is not found in the response.
         """
         # Prepare the authorization string
-        auth_string = f"{self.api_key}:{self.client_secret}"
+        auth_string = f"{self.api_key}:{self.secret_key}"
         encoded = base64.b64encode(auth_string.encode()).decode()
 
         # Set up the headers

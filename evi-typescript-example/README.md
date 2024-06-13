@@ -37,7 +37,7 @@ This command will show the version of `pnpm` that is installed, like `8.10.0`.
 
 If you haven't installed these tools yet, running these commands will result in a message indicating that the command was not found. In that case, you would need to install them first. Node.js can be installed from its official website or via a package manager like Homebrew, and `pnpm` can be installed via npm (which comes with Node.js) by running `npm install -g pnpm` in the terminal.
 
-Next you'll need to set your environment variables necessary for authentication. You'll need your API key and client secret which are accessible from the portal. See our documentation on [getting your api keys](https://hume.docs.buildwithfern.com/docs/introduction/getting-your-api-key).
+Next you'll need to set your environment variables necessary for authentication. You'll need your API key and Secret key which are accessible from the portal. See our documentation on [getting your api keys](https://hume.docs.buildwithfern.com/docs/introduction/getting-your-api-key).
 
 After obtaining your API keys, you need to set them as environment variables. A quick way to do this is to run the following commands, however the variables will be lost when the terminal window is closed or the computer is rebooted.
 
@@ -45,10 +45,11 @@ Note the `VITE` prefix to the environment variables. This prefix is required for
 
 ```sh
 export VITE_HUME_API_KEY=<YOUR_API_KEY>
-export VITE_HUME_CLIENT_SECRET=<YOUR_CLIENT_SECRET>
+export VITE_HUME_SECRET_KEY=<YOUR_SECRET_KEY>
 ```
 
 You can make these environment variables persistent by adding them to a file named `.env` in the root folder of the repo.
+
 > There is an example file called [`.env.example`](https://github.com/HumeAI/hume-api-examples/blob/main/evi-typescript-example/.env.example) with placeholder values, which you can simply rename to `.env`.
 
 ## Serve project
