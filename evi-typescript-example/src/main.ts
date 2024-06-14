@@ -115,7 +115,7 @@ import './styles.css';
     // set connected state to false to prevent automatic reconnect
     connected = false;
 
-    // reset chatGroupId so a new conversation is started when reconnecting
+    // reset chatGroupId so a new conversation is started when reconnecting, comment out to utilize chat resumability
     chatGroupId = undefined;
 
     // closed the Web Socket connection
