@@ -5,10 +5,6 @@ body {
   align-items: center;
 }
 
-h2 {
-  margin-bottom: 0px;
-}
-
 button {
   padding: 10px 20px;
   margin: 5px;
@@ -19,7 +15,7 @@ button {
   border: 2px solid #333;
   border-radius: 5px;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -42,9 +38,8 @@ button:disabled {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 80%;
+  width: 72%;
   min-width: 900px;
-
   padding: 24px;
   margin: 0px;
 }
@@ -64,7 +59,7 @@ button:disabled {
   border-radius: 8px;
   padding: 12px;
   margin: 12px 0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
   position: relative;
   width: 600px;
 }
