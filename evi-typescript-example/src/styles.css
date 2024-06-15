@@ -1,0 +1,99 @@
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  align-items: center;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  width: 100px;
+  font-size: 1em;
+  color: #333;
+  background-color: white;
+  border: 2px solid #333;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+button:hover,
+button:focus {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
+
+button:disabled {
+  background-color: #e0e0e0;
+  color: #666;
+  border-color: #999;
+  cursor: not-allowed;
+}
+
+#app {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 72%;
+  min-width: 900px;
+  padding: 24px;
+  margin: 0px;
+}
+
+#btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#chat {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+  position: relative;
+  width: 600px;
+}
+
+.chat-card .role {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.chat-card .timestamp {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.8em;
+  color: gray;
+}
+
+.chat-card .content {
+  margin-top: 12px;
+}
+
+.chat-card .scores {
+  display: flex;
+  justify-content: space-between;
+  width: 64%;
+  margin-top: 12px;
+  font-size: 0.8em;
+  color: gray;
+}
+
+.chat-card.user {
+  align-self: flex-start;
+}
+
+.chat-card.assistant {
+  align-self: flex-end;
+}

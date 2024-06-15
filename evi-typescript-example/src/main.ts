@@ -8,6 +8,7 @@ import {
   getBrowserSupportedMimeType,
   MimeType,
 } from 'hume';
+import './styles.css';
 
 (async () => {
   const startBtn = document.querySelector<HTMLButtonElement>('button#start-btn');
@@ -84,6 +85,7 @@ import {
 
     // instantiates WebSocket and establishes an authenticated connection
     socket = await client.empathicVoice.chat.connect({
+      // configId: '<YOUR_CONFIG_ID>',
       resumedChatGroupId: chatGroupId,
       onOpen: handleWebSocketOpenEvent,
       onMessage: handleWebSocketMessageEvent,
@@ -113,14 +115,11 @@ import {
     // set connected state to false to prevent automatic reconnect
     connected = false;
 
-    // reset chatGroupId so a new conversation is started when reconnecting
+    // reset chatGroupId so a new conversation is started when reconnecting, comment out to utilize chat resumability
     chatGroupId = undefined;
 
     // closed the Web Socket connection
     socket?.close();
-
-    // adds "conversation ended" message to the chat
-    appendMessage('system', 'Conversation ended.');
   }
 
   /**
@@ -229,9 +228,7 @@ import {
    * - `audio_output`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.Audio%20Output.type
    * - `user_interruption`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.User%20Interruption.type
    */
-  function handleWebSocketMessageEvent(
-    message: Hume.empathicVoice.SubscribeEvent
-  ): void {
+  function handleWebSocketMessageEvent(message: Hume.empathicVoice.SubscribeEvent): void {
     /* place logic here which you would like to invoke when receiving a message through the socket */
 
     // handle messages received through the WebSocket (messages are distinguished by their "type" field.)
@@ -245,8 +242,8 @@ import {
       case 'user_message':
       case 'assistant_message':
         const { role, content } = message.message;
-
-        appendMessage(role, content ?? '');
+        const topThreeEmotions = extractTopThreeEmotions(message);
+        appendMessage(role, content ?? '', topThreeEmotions);
         break;
 
       // add received audio to the playback queue, and play next audio output
@@ -272,9 +269,7 @@ import {
   /**
    * callback function to handle a WebSocket error event
    */
-  function handleWebSocketErrorEvent(
-    error: Hume.empathicVoice.WebSocketError
-  ): void {
+  function handleWebSocketErrorEvent(error: Hume.empathicVoice.WebSocketError): void {
     /* place logic here which you would like invoked when receiving an error through the socket */
     console.error(error);
   }
@@ -298,22 +293,23 @@ import {
    *
    * @param role the speaker associated with the audio transcription
    * @param content transcript of the audio
+   * @param topThreeEmotions the top three emotion prediction scores for the message
    */
-  function appendMessage(role: Hume.empathicVoice.Role, content: string): void {
-    // get timestamp for the message
-    const timestamp = new Date().toLocaleTimeString();
+  function appendMessage(
+    role: Hume.empathicVoice.Role,
+    content: string,
+    topThreeEmotions: { emotion: string; score: any }[]
+  ): void {
+    // generate chat card component with message content and emotion scores
+    const chatCard = new ChatCard({
+      role,
+      timestamp: new Date().toLocaleTimeString(),
+      content,
+      scores: topThreeEmotions,
+    });
 
-    // create new message element
-    const messageEl = document.createElement('p');
-
-    // construct message with timestamp, role, and message content
-    const message = `<strong>[${timestamp}] ${role}:</strong> ${content}`;
-
-    // set message element's inner html to be the newly constructed message
-    messageEl.innerHTML = message;
-
-    // append new message to the chat, making chat message visible in UI
-    chat?.appendChild(messageEl);
+    // append chat card to the UI
+    chat?.appendChild(chatCard.render());
   }
 
   /**
@@ -323,4 +319,91 @@ import {
     if (startBtn) startBtn.disabled = !startBtn.disabled;
     if (stopBtn) stopBtn.disabled = !stopBtn.disabled;
   }
+
+  /**
+   * takes a received `user_message` or `assistant_message` and extracts the top 3 emotions from the
+   * predicted expression measurement scores.
+   */
+  function extractTopThreeEmotions(
+    message: Hume.empathicVoice.UserMessage | Hume.empathicVoice.AssistantMessage
+  ): { emotion: string; score: string }[] {
+    // extract emotion scores from the message
+    const scores = message.models.prosody?.scores;
+
+    // convert the emotions object into an array of key-value pairs
+    const scoresArray = Object.entries(scores || {});
+
+    // sort the array by the values in descending order
+    scoresArray.sort((a, b) => b[1] - a[1]);
+
+    // extract the top three emotions and convert them back to an object
+    const topThreeEmotions = scoresArray.slice(0, 3).map(([emotion, score]) => ({
+      emotion,
+      score: (Math.round(Number(score) * 100) / 100).toFixed(2),
+    }));
+
+    return topThreeEmotions;
+  }
 })();
+
+/**
+ * The code below does not pertain to the EVI implementation, and only serves to style the UI.
+ */
+
+interface Score {
+  emotion: string;
+  score: string;
+}
+
+interface ChatMessage {
+  role: Hume.empathicVoice.Role;
+  timestamp: string;
+  content: string;
+  scores: Score[];
+}
+
+class ChatCard {
+  private message: ChatMessage;
+
+  constructor(message: ChatMessage) {
+    this.message = message;
+  }
+
+  private createScoreItem(score: Score): HTMLElement {
+    const scoreItem = document.createElement('div');
+    scoreItem.className = 'score-item';
+    scoreItem.innerHTML = `${score.emotion}: <strong>${score.score}</strong>`;
+    return scoreItem;
+  }
+
+  public render(): HTMLElement {
+    const card = document.createElement('div');
+    card.className = `chat-card ${this.message.role}`;
+
+    const role = document.createElement('div');
+    role.className = 'role';
+    role.textContent =
+      this.message.role.charAt(0).toUpperCase() + this.message.role.slice(1);
+
+    const timestamp = document.createElement('div');
+    timestamp.className = 'timestamp';
+    timestamp.innerHTML = `<strong>${this.message.timestamp}</strong>`;
+
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.textContent = this.message.content;
+
+    const scores = document.createElement('div');
+    scores.className = 'scores';
+    this.message.scores.forEach((score) => {
+      scores.appendChild(this.createScoreItem(score));
+    });
+
+    card.appendChild(role);
+    card.appendChild(timestamp);
+    card.appendChild(content);
+    card.appendChild(scores);
+
+    return card;
+  }
+}
