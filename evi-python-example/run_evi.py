@@ -1,21 +1,31 @@
+# Import the asyncio library for asynchronous programming
 import asyncio
+# Import the os library for interacting with the operating system
 import os
 
-from dotenv import load_dotenv
+# Import the load_dotenv function from the dotenv library to load environment variables
+from dotenv import load_dotenv 
+# Import a custom function to print ASCII art
 from helper_functions import print_ascii_art
+# Import necessary classes from the Hume library
+from hume import HumeVoiceClient, MicrophoneInterface, VoiceSocket 
+ 
+# ================================================
+# Global Variables
+# ================================================
 
-from hume import HumeVoiceClient, MicrophoneInterface, VoiceSocket
+# Global variable to count messages
+message_counter = 0
 
-## Global variables.
-messageCounter = 0
+# ================================================
+# Event Handlers
+# ================================================
 
+# Handler for when the connection is opened
 def on_open():
     print_ascii_art("Say hello to EVI, Hume AI's Empathic Voice Interface!")
 
-
-# Define a global variable for message counter
-message_counter = 0
-
+# Asynchronous handler for incoming messages
 async def on_message(message):
     global message_counter
     message_counter += 1
@@ -60,19 +70,24 @@ async def on_message(message):
     message_box += f"{'='*60}\n"
     print(message_box)
 
+# Function to get the top N emotions based on their scores
 def get_top_n_emotions(prosody_inferences, number):
     sorted_inferences = sorted(prosody_inferences.items(), key=lambda item: item[1], reverse=True)
     return sorted_inferences[:number]
 
-
+# Handler for when an error occurs
 async def on_error(error):
     print(f"Error: {error}")
 
-
+# Handler for when the connection is closed
 async def on_close():
     print_ascii_art("Thank you for using EVI, Hume AI's Empathic Voice Interface!")
 
+# ================================================
+# User Input Handler
+# ================================================
 
+# Asynchronous handler for user input
 async def user_input_handler(socket: VoiceSocket):
     while True:
         user_input = await asyncio.to_thread(input, "Type a message to send or 'Q' to quit: ")
@@ -83,11 +98,11 @@ async def user_input_handler(socket: VoiceSocket):
         else:
             await socket.send_text_input(user_input)
 
+# ================================================
+# Main Function
+# ================================================
 
-async def send_input(socket: VoiceSocket):
-    """Send a sample input message to test the connection."""
-    await socket.send_text_input("Hello, this is a test message")
-
+# Asynchronous main function to set up and run the client
 async def main() -> None:
     try:
         # Retrieve any environment variables stored in the .env file
@@ -118,10 +133,14 @@ async def main() -> None:
             # Start the user input handler
             user_input_task = asyncio.create_task(user_input_handler(socket))
 
-            # Wait for the microphone interface and user input handler to complete
+            # The gather function is used to run both async tasks simultaneously
             await asyncio.gather(microphone_task, user_input_task)
     except Exception as e:
         print(f"Exception occurred: {e}")
 
+# ================================================
+# Run the Main Function
+# ================================================
 
+# Run the main function using asyncio
 asyncio.run(main())

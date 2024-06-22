@@ -1,2 +1,3 @@
 .DS_Store
 evi-python-example/.env
+evi-python-example/__pycache__
