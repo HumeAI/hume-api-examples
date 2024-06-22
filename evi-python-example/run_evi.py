@@ -161,11 +161,11 @@ async def main() -> None:
 
         # Start streaming EVI over your device's microphone and speakers
         async with client.connect_with_handlers(
-            on_open=on_open,
-            on_message=on_message,
-            on_error=on_error,
-            on_close=on_close,
-            enable_audio=True,
+            on_open=on_open,                # Handler for when the connection is opened
+            on_message=on_message,          # Handler for when a message is received
+            on_error=on_error,              # Handler for when an error occurs
+            on_close=on_close,              # Handler for when the connection is closed
+            enable_audio=True,              # Flag to enable audio playback (True by default)
         ) as socket:
             # Start the microphone interface in the background; add "device=NUMBER" to specify device
             microphone_task = asyncio.create_task(MicrophoneInterface.start(socket))

@@ -103,14 +103,33 @@ By using this method, environment variables are automatically set regardless of 
 
 ```python
 async def main() -> None:
-  # Retrieve the Hume API key from the environment variables
-  HUME_API_KEY = os.getenv("HUME_API_KEY")
-  # Connect and authenticate with Hume
-  client = HumeVoiceClient(HUME_API_KEY)
+    # Retrieve any environment variables stored in the .env file
+    load_dotenv()
 
-  # Start streaming EVI over your device's microphone and speakers
-  async with client.connect() as socket:
-      await MicrophoneInterface.start(socket)
+    # Retrieve the Hume API key from the environment variables
+    HUME_API_KEY = os.getenv("HUME_API_KEY")
+    HUME_SECRET_KEY = os.getenv("HUME_SECRET_KEY")
+
+    # Connect and authenticate with Hume
+    client = HumeVoiceClient(HUME_API_KEY, HUME_SECRET_KEY)
+
+    # Start streaming EVI over your device's microphone and speakers
+    async with client.connect_with_handlers(
+        on_open=on_open,                # Handler for when the connection is opened
+        on_message=on_message,          # Handler for when a message is received
+        on_error=on_error,              # Handler for when an error occurs
+        on_close=on_close,              # Handler for when the connection is closed
+        enable_audio=True,              # Flag to enable playback (True by default)
+    ) as socket:
+        # Start the microphone interface in the background; add "device=NUMBER" to specify device
+        microphone_task = asyncio.create_task(MicrophoneInterface.start(socket))
+
+        # Start the user input handler
+        user_input_task = asyncio.create_task(user_input_handler(socket))
+
+        # The gather function is used to run both async tasks simultaneously
+        await asyncio.gather(microphone_task, user_input_task)
+
 ```
 
 #### Optional: Specify device
@@ -153,49 +172,4 @@ Initialize, execute, and manage the lifecycle of the event loop in the asyncio-b
 
 ```python
 asyncio.run(main())
-```
-
-## Putting it all together
-
-Here is the complete code from the steps above to run this example:
-
-```python
-import os
-from hume import HumeVoiceClient, MicrophoneInterface
-from dotenv import load_dotenv
-import asyncio
-
-async def main() -> None:
-  # Retrieve the Hume API key from the environment variables
-  HUME_API_KEY = os.getenv("HUME_API_KEY")
-  # Connect and authenticate with Hume
-  client = HumeVoiceClient(HUME_API_KEY)
-
-  # Start streaming EVI over your device's microphone and speakers 
-  async with client.connect() as socket:
-      await MicrophoneInterface.start(socket)
-asyncio.run(main())
-```
-
-## Troubleshooting with the `sounddevice` library:
-
-It may be the case that your system's default audio device is not the correct audio *capture* device. As such, you may use the following code to check.
-
-```py
-import sounddevice as sd
-devices = sd.query_devices()
-```
-> Note that the provided `helper_functions.py` file contains methods `list_capture_devices()` and `list_audio_devices()` which you can use.
-
-Once you've found the device in the list, identify its number and be sure to pass it into the MicrophoneInterface constructor.
-
-```py
-MicrophoneInterface.start(socket, device=CORRECT_DEVICE_NUMBER)
-```
-
-If this still does not work, try to set the default audio device to your chosen capture device using the following code:
-```py
-import sounddevice as sd
-device_index = 0  # For example, use device index 0
-sd.default.device = device_index
 ```
