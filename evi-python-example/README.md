@@ -93,6 +93,7 @@ To get your API key,log into the portal and visit the [API keys page](https://be
 Set the environment variable by editing the provided placeholder `.env` file, which is a persistent local store of your API key. To prevent API key leakage, it is set in the `.gitignore` file to not be committed to GitHub. The included `.env` file in this repo just reads:
 
   `HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
+  
   `HUME_SECRET_KEY="PASTE_HUME_SECRET_KEY_HERE"`
 
 > `.gitignore` is a hidden file, so on Mac you would need to hit `COMMAND-SHIFT .` to make it viewable in the finder. 
