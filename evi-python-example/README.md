@@ -1,6 +1,6 @@
 # evi-python-example
 
-This is a short example of streaming a session with EVI using your device's microphone. Install the [dependencies](#dependencies) listed below and then run `python run-evi.py` to run the example.
+This is a short example of streaming a session with EVI using your device's microphone. Install the [dependencies](#dependencies) listed below and then run `python run_evi.py` to run the example.
 
 NOTE: The Python SDK is currently supported on Mac and Linux, and not yet on Windows.
 
@@ -33,17 +33,18 @@ To install it, run:
 pip install python-dotenv
 ```
 
-### 2. Microphone
+### 2. SDK module
 
-To use microphone functionality in the `MicrophoneInterface` as shown below on either Mac or Linux, run:
+The `hume` package contains the classes you need to use EVI, with and without message handling and audio playback.
 
+To install it, run:
 ```bash
-pip install "hume[microphone]"
+pip install "hume"
 ```
 
 ### 3. Audio playback
 
-For audio playback, install the following dependencies:
+For audio playback, install the following system dependencies:
 
 #### Mac
 
@@ -69,7 +70,7 @@ sudo apt-get --yes install libasound2-dev libportaudio2 ffmpeg
 
 Not yet supported.
 
-## Explanation of code in `run-evi.py`
+## Explanation of code in `run_evi.py`
 
 ### 1. Import libraries
 
@@ -77,33 +78,26 @@ First we import the required Hume libraries, as well as `load_dotenv` to enable 
 
 ```python
 import os
-from hume import HumeVoiceClient, MicrophoneInterface
+from hume import HumeVoiceClient, MicrophoneInterface, VoiceSocket
 from dotenv import load_dotenv
 import asyncio
 ```
 
 ### 2. Authenticate and Connect
 
-In the `run-evi.py` code, the API key has been saved to an environment variable. Avoid hard coding secrets in your project to prevent them from being leaked.
+To get your API key,log into the portal and visit the [API keys page](https://beta.hume.ai/settings/keys).
 
-You can set the environment variable in two ways:
+`run_evi.py` uses an environment variable to access your API key and Secret key for token authentification.
+> Learn more about authentication strategies with EVI [here](https://dev.hume.ai/docs/introduction/api-key).
 
-  1. **Manual method:** You can set an environment variable in the terminal by running this command prior to running the code. Note that you will need to run this every time you have a new terminal session, for example if you close the window or after restarting the computer.
-
-`export HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
-
-
-  2. **.env file method:** Alternatively, you can edit the provided placeholder `.env` file (Note: it's a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make them viewable in the finder). The `.env` file is a persistent local store of your API key, and it's set in the `.gitignore` file to not be committed to GitHub. The included `.env` file in this repo just reads:
+Set the environment variable by editing the provided placeholder `.env` file, which is a persistent local store of your API key. To prevent API key leakage, it is set in the `.gitignore` file to not be committed to GitHub. The included `.env` file in this repo just reads:
 
   `HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
+  `HUME_SECRET_KEY="PASTE_HUME_SECRET_KEY_HERE"`
 
-—and you can edit it to save your API key.
+> `.gitignore` is a hidden file, so on Mac you would need to hit `COMMAND-SHIFT .` to make it viewable in the finder. 
 
-By using this method, environment variables are auotmatically set regardless of where the code is executed. As such, they are consistently available across different execution environments. This can be more convenient than using the `export` command above, since you don't have to run it every time you start a new terminal.
-
-> For example, environment variables set in the terminal do not persist when you run a Jupyter notebook.
-
-To get your API key,log into the portal and visit the [API keys page](https://beta.hume.ai/settings/keys).
+By using this method, environment variables are automatically set regardless of where the code is executed. As such, they are consistently available across different execution environments.
 
 **NOTE:** Your API key is like your password. Do not post any code containing it to any public forum such as Discord, and do not commit it to GitHub.
 
@@ -181,4 +175,27 @@ async def main() -> None:
   async with client.connect() as socket:
       await MicrophoneInterface.start(socket)
 asyncio.run(main())
+```
+
+## Troubleshooting with the `sounddevice` library:
+
+It may be the case that your system's default audio device is not the correct audio *capture* device. As such, you may use the following code to check.
+
+```py
+import sounddevice as sd
+devices = sd.query_devices()
+```
+> Note that the provided `helper_functions.py` file contains methods `list_capture_devices()` and `list_audio_devices()` which you can use.
+
+Once you've found the device in the list, identify its number and be sure to pass it into the MicrophoneInterface constructor.
+
+```py
+MicrophoneInterface.start(socket, device=CORRECT_DEVICE_NUMBER)
+```
+
+If this still does not work, try to set the default audio device to your chosen capture device using the following code:
+```py
+import sounddevice as sd
+device_index = 0  # For example, use device index 0
+sd.default.device = device_index
 ```
