@@ -161,7 +161,7 @@ pyobjc-framework-VideoToolbox==10.1
 pyobjc-framework-Virtualization==10.1
 pyobjc-framework-Vision==10.1
 pyobjc-framework-WebKit==10.1
-requests==2.31.0
+requests==2.32.2
 setuptools==69.1.1
 simpleaudio==1.0.4
 sounddevice==0.4.6
