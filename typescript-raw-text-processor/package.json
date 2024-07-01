@@ -1,0 +1,19 @@
+{
+  "name": "hume-raw-text-processor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "build": "tsc",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "format": "prettier --write 'src/**/*.{ts,tsx}'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.7",
+    "typescript": "^5.2.2"
+  }
+}

@@ -24,3 +24,4 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`visualization-example`](./visualization-example/example-notebook.ipynb)  | `face`                                | Python     |           |
 | [`typescript-next-api-language`](./typescript-next-api-language/README.md) | `language`                            | Typescript | Next.js   |
 | [`typescript-streaming-sandbox`](./typescript-streaming-sandbox/README.md) | `language`, `face`, `burst`, `speech` | Typescript | Next.js   |
+| [`typescript-raw-text-processor`](./typescript-raw-text-processor/README.md) | `language` | Typescript |  |
