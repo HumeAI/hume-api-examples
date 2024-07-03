@@ -12,7 +12,7 @@ This project serves as an example implementation of our Expression Measurement (
 
 3. Install dependencies with `npm i`
 
-4. Setup Environment Variables
+4. Setup environment variables
 
    a. Create `.env` file based off of `.env.example`
 
