@@ -2,7 +2,7 @@
 
 import Controls from '@/components/Controls';
 import Messages from '@/components/Messages';
-import { fetchAccessToken } from '@humeai/voice';
+import { fetchAccessToken } from 'hume';
 import { VoiceProvider } from '@humeai/voice-react';
 import { InferGetServerSidePropsType } from 'next';
 
@@ -32,7 +32,7 @@ type PageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function Page({ accessToken }: PageProps) {
   return (
-    <VoiceProvider auth={{ type: 'accessToken', value: accessToken }}>
+    <VoiceProvider accessToken={accessToken}>
       <Messages />
       <Controls />
     </VoiceProvider>
