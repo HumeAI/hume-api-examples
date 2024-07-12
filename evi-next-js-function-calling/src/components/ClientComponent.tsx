@@ -57,13 +57,13 @@ const handleToolCall: ToolCallHandler = async (
 
       return {
         type: 'tool_response',
-        tool_call_id: toolCall.tool_call_id,
+        toolCallId: toolCall.toolCallId,
         content: JSON.stringify(forecast),
       };
     } catch (error) {
       return {
         type: 'tool_error',
-        tool_call_id: toolCall.tool_call_id,
+        toolCallId: toolCall.toolCallId,
         error: 'Weather tool error',
         code: 'weather_tool_error',
         level: 'warn',
@@ -73,7 +73,7 @@ const handleToolCall: ToolCallHandler = async (
   } else {
     return {
       type: 'tool_error',
-      tool_call_id: toolCall.tool_call_id,
+      toolCallId: toolCall.toolCallId,
       error: 'Tool not found',
       code: 'tool_not_found',
       level: 'warn',
@@ -90,7 +90,7 @@ export default function ClientComponent({
   return (
     <VoiceProvider
       configId={process.env.NEXT_PUBLIC_HUME_CONFIG_ID}
-      auth={{ type: "accessToken", value: accessToken }}
+      accessToken={accessToken}
       onToolCall={handleToolCall}
       onMessage={(message: unknown) => console.log(message)}
     >

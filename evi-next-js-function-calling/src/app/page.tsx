@@ -1,6 +1,6 @@
 // ./app/page.tsx
 import ClientComponent from '@/components/ClientComponent';
-import { fetchAccessToken } from '@humeai/voice';
+import { fetchAccessToken } from 'hume';
 
 export default async function Page() {
   console.log(process.env.NEXT_PUBLIC_HUME_API_KEY);
