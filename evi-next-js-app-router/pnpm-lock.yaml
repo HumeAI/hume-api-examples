@@ -12,8 +12,8 @@ importers:
         specifier: file:../../empathic-voice-api-js/packages/react/humeai-voice-react-0.1.10.tgz
         version: file:../../empathic-voice-api-js/packages/react/humeai-voice-react-0.1.10.tgz(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       hume:
-        specifier: 0.8.1-beta9
-        version: 0.8.1-beta9
+        specifier: 0.8.1-beta10
+        version: 0.8.1-beta10
       next:
         specifier: 14.2.3
         version: 14.2.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -869,6 +869,9 @@ packages:
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
+
+  hume@0.8.1-beta10:
+    resolution: {integrity: sha512-tPs1bIyss8TJoNfRe9AhUvZhIGWsyK2f2nagisHu/0hW5I4CMPhZ6l7kL/qOrQiJmv1zfWBn0XKypbbvXZKbAA==}
 
   hume@0.8.1-beta9:
     resolution: {integrity: sha512-KXUoG74lnF/Y0hEaTC/y0RcosIqnWc5ZCqIjZSeiX2yetyvUkePWQbxBtuUdg6kpy4/XpH9GkB2pkzPTVMIXyw==}
@@ -2730,6 +2733,21 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  hume@0.8.1-beta10:
+    dependencies:
+      form-data: 4.0.0
+      form-data-encoder: 4.0.2
+      formdata-node: 6.0.3
+      node-fetch: 2.7.0
+      qs: 6.11.2
+      url-join: 4.0.1
+      uuid: 9.0.1
+      ws: 8.18.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
 
   hume@0.8.1-beta9:
     dependencies:
