@@ -9,7 +9,7 @@ export default function ClientComponent({
   accessToken: string;
 }) {
   return (
-    <VoiceProvider auth={{ type: "accessToken", value: accessToken }}>
+    <VoiceProvider accessToken={accessToken}>
       <Messages />
       <Controls />
     </VoiceProvider>
