@@ -1,7 +1,6 @@
 body {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   align-items: center;
 }
 
@@ -37,11 +36,11 @@ button:disabled {
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  height: 100vh;
   width: 72%;
   min-width: 900px;
   padding: 24px;
   margin: 0px;
+  overflow: hidden;
 }
 
 #btn-container {
@@ -52,6 +51,9 @@ button:disabled {
 #chat {
   display: flex;
   flex-direction: column;
+  height: 560px;
+  overflow-y: auto;
+  padding: 0 16px;
 }
 
 .chat-card {

@@ -44,13 +44,14 @@ After obtaining your API keys, you need to set them as environment variables. A 
 Note the `VITE` prefix to the environment variables. This prefix is required for vite to expose the environment variable to the client. For more information, see the [vite documentation](https://vitejs.dev/guide/env-and-mode) on environment variables and modes.
 
 ```sh
-export VITE_HUME_API_KEY=<YOUR_API_KEY>
-export VITE_HUME_SECRET_KEY=<YOUR_SECRET_KEY>
+VITE_HUME_API_KEY="<YOUR_API_KEY>"
+VITE_HUME_SECRET_KEY="<YOUR_SECRET_KEY>"
+VITE_HUME_CONFIG_ID="<YOUR_CONFIG_ID>" // optional
 ```
 
 You can make these environment variables persistent by adding them to a file named `.env` in the root folder of the repo.
 
-> There is an example file called [`.env.example`](https://github.com/HumeAI/hume-api-examples/blob/main/evi-typescript-example/.env.example) with placeholder values, which you can simply rename to `.env`.
+> There is an example file called [`.env.example`](https://github.com/HumeAI/hume-api-examples/blob/main/evi-typescript-example/.env.example). Create a `.env` file, copy/paste the contents of the `.env.example` file, and fill in your environment variables. The config ID is optional, however if a config is not specified EVI will be configured with the [default configuration options](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration#default-configuration).
 
 ## Serve project
 
