@@ -28,17 +28,12 @@ import './styles.css';
   /**
    * the WebSocket instance
    */
-  let socket: Hume.empathicVoice.StreamSocket | null = null;
+  let socket: Hume.empathicVoice.chat.ChatSocket | null = null;
 
   /**
    * flag which denotes the intended state of the WebSocket
    */
   let connected = false;
-
-  /**
-   * The ChatGroup ID used to resume the chat if disconnected unexpectedly
-   */
-  let chatGroupId: string | undefined;
 
   /**
    * the recorder responsible for recording the audio stream to be prepared as the audio input
@@ -53,12 +48,23 @@ import './styles.css';
   /**
    * the current audio element to be played
    */
-  let currentAudio: HTMLAudioElement | null = null;
 
+  let currentAudio: HTMLAudioElement | null = null;
+  
   /**
    * flag which denotes whether audio is currently playing or not
    */
   let isPlaying = false;
+
+  /**
+   * flag which denotes whether to utilize chat resumability (preserve context from one chat to the next)
+   */
+  let resumeChats = true;
+
+  /**
+   * The ChatGroup ID used to resume the chat if disconnected unexpectedly
+   */
+  let chatGroupId: string | undefined;
 
   /**
    * audio playback queue
@@ -88,13 +94,14 @@ import './styles.css';
     // instantiates WebSocket and establishes an authenticated connection
     socket = await client.empathicVoice.chat.connect({
       // configuration that includes the get_current_weather tool
-      configId: import.meta.env.VITE_HUME_WEATHER_ASSISTANT_CONFIG_ID,
+      configId: import.meta.env.VITE_HUME_WEATHER_ASSISTANT_CONFIG_ID || null,
       resumedChatGroupId: chatGroupId,
-      onOpen: handleWebSocketOpenEvent,
-      onMessage: handleWebSocketMessageEvent,
-      onError: handleWebSocketErrorEvent,
-      onClose: handleWebSocketCloseEvent,
     });
+
+    socket.on("open", handleWebSocketOpenEvent);
+    socket.on("message", handleWebSocketMessageEvent);
+    socket.on("error", handleWebSocketErrorEvent);
+    socket.on("close", handleWebSocketCloseEvent);
 
     // update ui state
     toggleBtnStates();
@@ -118,8 +125,10 @@ import './styles.css';
     // set connected state to false to prevent automatic reconnect
     connected = false;
 
-    // reset chatGroupId so a new conversation is started when reconnecting, comment out to utilize chat resumability
-    chatGroupId = undefined;
+    // IF resumeChats flag is false, reset chatGroupId so a new conversation is started when reconnecting
+    if (!resumeChats) {
+      chatGroupId = undefined;
+    }
 
     // closed the Web Socket connection
     socket?.close();
@@ -233,9 +242,9 @@ import './styles.css';
    * - `user_interruption`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.User%20Interruption.type
    * - `tool_call`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.Tool%20Call%20Message.type
    */
-  function handleWebSocketMessageEvent(
+  async function handleWebSocketMessageEvent(
     message: Hume.empathicVoice.SubscribeEvent
-  ): void {
+  ): Promise<void> {
     /* place logic here which you would like to invoke when receiving a message through the socket */
     console.log(message);
 
@@ -264,7 +273,7 @@ import './styles.css';
         audioQueue.push(blob);
 
         // play the next audio output
-        if (audioQueue.length === 1) playAudio();
+        if (audioQueue.length >= 1) playAudio();
         break;
 
       // stop audio playback, clear audio playback queue, and update audio playback state on interrupt
@@ -282,9 +291,7 @@ import './styles.css';
   /**
    * callback function to handle a WebSocket error event
    */
-  function handleWebSocketErrorEvent(
-    error: Hume.empathicVoice.Error_
-  ): void {
+  function handleWebSocketErrorEvent(error: Error): void {
     /* place logic here which you would like invoked when receiving an error through the socket */
     console.error(error);
   }
@@ -296,9 +303,7 @@ import './styles.css';
     /* place logic here which you would like invoked when the socket closes */
 
     // reconnect to the socket if disconnect was unintentional
-    if (connected) {
-      await connect();
-    }
+    if (connected) await connect();
 
     console.log("Web socket connection closed");
   }
@@ -325,6 +330,9 @@ import './styles.css';
 
     // append chat card to the UI
     chat?.appendChild(chatCard.render());
+
+    // scroll to the bottom to view most recently added message
+    if (chat) chat.scrollTop = chat.scrollHeight;
   }
 
   /**
