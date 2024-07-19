@@ -12,8 +12,8 @@ importers:
         specifier: ^16.4.5
         version: 16.4.5
       hume:
-        specifier: ^0.7.2
-        version: 0.7.2
+        specifier: ^0.8.3
+        version: 0.8.3
     devDependencies:
       typescript:
         specifier: ^5.2.2
@@ -308,8 +308,8 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  hume@0.7.2:
-    resolution: {integrity: sha512-92TGLCJICJG9lXqcTv1+tAXvqxwPFdEW0Q+C70X9H6IVWwO1ZToU28yNAie9vBpVnjsJio9vThmONZXtdPVZGg==}
+  hume@0.8.3:
+    resolution: {integrity: sha512-9uh6+nnx7nlElJ7Tzvq/zgkyRjr0MowhH5i5I4XAhzU0GUldpYYYzXpx8A7KuNJCBE872vJX2D63pN7myoDeXw==}
 
   mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
@@ -424,6 +424,9 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
 
@@ -632,7 +635,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  hume@0.7.2:
+  hume@0.8.3:
     dependencies:
       form-data: 4.0.0
       form-data-encoder: 4.0.2
@@ -642,6 +645,7 @@ snapshots:
       url-join: 4.0.1
       uuid: 9.0.1
       ws: 8.17.0
+      zod: 3.23.8
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -734,3 +738,5 @@ snapshots:
       webidl-conversions: 3.0.1
 
   ws@8.17.0: {}
+
+  zod@3.23.8: {}

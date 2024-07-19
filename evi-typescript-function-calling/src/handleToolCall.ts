@@ -37,7 +37,7 @@ async function fetchWeather(location: string, format: string): Promise<string> {
  * */ 
 export async function handleToolCallMessage(
   toolCallMessage: Hume.empathicVoice.ToolCallMessage,
-  socket: Hume.empathicVoice.StreamSocket | null): Promise<void> {
+  socket: Hume.empathicVoice.chat.ChatSocket | null): Promise<void> {
   if (toolCallMessage.name === "get_current_weather") {
     try{
       // parse the parameters from the ToolCall message
