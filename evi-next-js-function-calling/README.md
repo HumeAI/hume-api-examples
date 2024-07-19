@@ -9,8 +9,8 @@ This project is an example of how to call functions in a Next.js application usi
 1. Create a .env file and add your [API Key and your Secret Key](https://beta.hume.ai/settings/keys):
 
 ```bash
-echo "NEXT_PUBLIC_HUME_API_KEY = <YOUR_HUME_API_KEY>" >> .env
-echo "NEXT_PUBLIC_HUME_SECRET_KEY = <YOUR_HUME_SECRET_KEY>" >> .env
+echo "HUME_API_KEY = <YOUR_HUME_API_KEY>" >> .env
+echo "HUME_SECRET_KEY = <YOUR_HUME_SECRET_KEY>" >> .env
 ```
 
 2. [Create a tool](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#create-a-tool) with the following payload:
