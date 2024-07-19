@@ -48,7 +48,9 @@ import './styles.css';
   /**
    * the current audio element to be played
    */
+
   let currentAudio: HTMLAudioElement | null = null;
+  
   /**
    * flag which denotes whether audio is currently playing or not
    */
