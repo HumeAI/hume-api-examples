@@ -1,18 +1,18 @@
-"use client";
-import { 
-  VoiceProvider, 
-  ToolCall, 
+'use client';
+import {
+  VoiceProvider,
+  ToolCall,
   ToolCallHandler,
-  ToolResponse, 
-  ToolError, 
-} from "@humeai/voice-react";
-import Messages from "./Controls";
-import Controls from "./Messages";
+  ToolResponse,
+  ToolError,
+} from '@humeai/voice-react';
+import Messages from './Controls';
+import Controls from './Messages';
 
 const handleToolCall: ToolCallHandler = async (
   toolCall: ToolCall
 ): Promise<ToolResponse | ToolError> => {
-  console.log("Tool call received", toolCall);
+  console.log('Tool call received', toolCall);
 
   if (toolCall.name === 'weather_tool') {
     try {
@@ -22,7 +22,7 @@ const handleToolCall: ToolCallHandler = async (
       };
 
       const location = await fetch(
-        `https://geocode.maps.co/search?q=${args.location}&api_key=${process.env.NEXT_PUBLIC_GEOCODING_API_KEY}`,
+        `https://geocode.maps.co/search?q=${args.location}&api_key=${process.env.GEOCODING_API_KEY}`
       );
 
       const locationResults = (await location.json()) as {
@@ -32,7 +32,9 @@ const handleToolCall: ToolCallHandler = async (
 
       const { lat, lon } = locationResults[0];
 
-      const pointMetadataEndpoint: string = `https://api.weather.gov/points/${parseFloat(lat).toFixed(3)},${parseFloat(lon).toFixed(3)}`;
+      const pointMetadataEndpoint: string = `https://api.weather.gov/points/${parseFloat(
+        lat
+      ).toFixed(3)},${parseFloat(lon).toFixed(3)}`;
 
       const result = await fetch(pointMetadataEndpoint, {
         method: 'GET',
@@ -82,15 +84,11 @@ const handleToolCall: ToolCallHandler = async (
   }
 };
 
-export default function ClientComponent({
-  accessToken,
-}: {
-  accessToken: string;
-}) {
+export default function ClientComponent({ accessToken }: { accessToken: string }) {
   return (
     <VoiceProvider
-      configId={process.env.NEXT_PUBLIC_HUME_CONFIG_ID}
-      auth={{ type: "accessToken", value: accessToken }}
+      configId={process.env.HUME_CONFIG_ID}
+      auth={{ type: 'accessToken', value: accessToken }}
       onToolCall={handleToolCall}
       onMessage={(message: unknown) => console.log(message)}
     >
