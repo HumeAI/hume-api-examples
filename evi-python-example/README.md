@@ -93,7 +93,7 @@ You can set the environment variable in two ways:
 `export HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
 
 
-  2. **.env file method:** Alternatively, you can edit the provided placeholder `.env` file (Note: it's a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make them viewable in the finder). The `.env` file is a persistent local store of your API key, and it's set in the `.gitignore` file to not be committed to GitHub. The included `.env` file in this repo just reads:
+  2. **.env file method:** Alternatively, you can edit the provided placeholder `.env.example` file; to do so, rename the file to `.env` and place your API credentials inside. (Note: it's a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make them viewable in the finder). The `.env` file is a persistent local store of your API key, and it's set in the `.gitignore` file to not be committed to GitHub. The included `.env.example` file in this repo just reads:
 
   `HUME_API_KEY="PASTE_HUME_API_KEY_HERE"`
 

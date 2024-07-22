@@ -25,3 +25,4 @@ dist-ssr
 
 # Secrets
 .env
+.env*.local
