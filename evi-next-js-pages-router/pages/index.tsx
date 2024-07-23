@@ -9,7 +9,7 @@ const Chat = dynamic(() => import("@/components/Chat"), {
 export const getServerSideProps = async () => {
   const accessToken = await fetchAccessToken({
     apiKey: String(process.env.HUME_API_KEY),
-    clientSecret: String(process.env.HUME_SECRET_KEY),
+    secretKey: String(process.env.HUME_SECRET_KEY),
   });
 
   if (!accessToken) {

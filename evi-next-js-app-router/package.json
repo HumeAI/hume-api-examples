@@ -1,5 +1,5 @@
 {
-  "name": "hume-evi-next-js-starter",
+  "name": "hume-evi-next-js-app-router",
   "version": "0.1.0",
   "private": true,
   "homepage": "https://github.com/humeai/hume-evi-next-js-starter",
@@ -10,8 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@humeai/voice": "^0.1.6",
-    "@humeai/voice-react": "^0.1.6",
+    "@humeai/voice": "^0.1.10",
+    "@humeai/voice-react": "^0.1.10",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toggle": "^1.0.3",
