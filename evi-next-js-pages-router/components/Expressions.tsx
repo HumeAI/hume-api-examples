@@ -24,7 +24,7 @@ export default function Expressions({
       }
     >
       {top3.map(([key, value]) => (
-        <div className={"w-full overflow-hidden"}>
+        <div key={key} className={"w-full overflow-hidden"}>
           <div className={"flex items-center justify-between gap-1 font-mono pb-1"}>
             <div className={"font-medium truncate"}>{key}</div>
             <div className={"tabular-nums opacity-50"}>{value.toFixed(2)}</div>
