@@ -33,7 +33,7 @@ const Messages = forwardRef<
                     "w-[80%]",
                     "bg-card",
                     "border border-border rounded",
-                    msg.type === "user_message" ? "ml-auto" : ""
+                    msg.type === "user_message" ? "ml-auto" : "",
                   )}
                   initial={{
                     opacity: 0,
@@ -50,7 +50,7 @@ const Messages = forwardRef<
                 >
                   <div
                     className={cn(
-                      "text-xs capitalize font-medium leading-none opacity-50 pt-4 px-3"
+                      "text-xs capitalize font-medium leading-none opacity-50 pt-4 px-3",
                     )}
                   >
                     {msg.message.role}

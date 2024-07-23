@@ -7,7 +7,13 @@ import { cn } from "@/utils";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <div className={cn(GeistSans.variable, GeistMono.variable, "flex flex-col min-h-screen")}>
+    <div
+      className={cn(
+        GeistSans.variable,
+        GeistMono.variable,
+        "flex flex-col min-h-screen",
+      )}
+    >
       <Nav />
       <Component {...pageProps} />
     </div>

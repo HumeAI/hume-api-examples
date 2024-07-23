@@ -1,3 +1,3 @@
 module.exports = {
-    transpilePackages: ["geist"]
-}
+  transpilePackages: ["geist"],
+};

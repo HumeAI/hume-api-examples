@@ -56,6 +56,8 @@ export const expressionColors = {
   Triumph: "#ec8132",
 } as const;
 
-export const isExpressionColor = (color: string): color is keyof typeof expressionColors => {
+export const isExpressionColor = (
+  color: string,
+): color is keyof typeof expressionColors => {
   return color in expressionColors;
-}
+};

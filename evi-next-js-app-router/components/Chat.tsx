@@ -13,7 +13,7 @@ export default function ClientComponent({
 }) {
   const timeout = useRef<number | null>(null);
   const ref = useRef<ComponentRef<typeof Messages> | null>(null);
-  
+
   return (
     <div
       className={

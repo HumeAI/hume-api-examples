@@ -14,7 +14,7 @@ export default function Expressions({
     R.entries(),
     R.sortBy(R.pathOr([1], 0)),
     R.reverse(),
-    R.take(3)
+    R.take(3),
   );
 
   return (
@@ -25,7 +25,9 @@ export default function Expressions({
     >
       {top3.map(([key, value]) => (
         <div key={key} className={"w-full overflow-hidden"}>
-          <div className={"flex items-center justify-between gap-1 font-mono pb-1"}>
+          <div
+            className={"flex items-center justify-between gap-1 font-mono pb-1"}
+          >
             <div className={"font-medium truncate"}>{key}</div>
             <div className={"tabular-nums opacity-50"}>{value.toFixed(2)}</div>
           </div>
@@ -53,7 +55,7 @@ export default function Expressions({
                 width: `${R.pipe(
                   value,
                   R.clamp({ min: 0, max: 1 }),
-                  (value) => `${value * 100}%`
+                  (value) => `${value * 100}%`,
                 )}`,
               }}
             />
