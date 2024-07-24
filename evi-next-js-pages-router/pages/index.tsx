@@ -1,5 +1,5 @@
-import { fetchAccessToken } from '@humeai/voice';
-import { InferGetServerSidePropsType } from 'next';
+import { fetchAccessToken } from "@humeai/voice";
+import { InferGetServerSidePropsType } from "next";
 import dynamic from "next/dynamic";
 
 const Chat = dynamic(() => import("@/components/Chat"), {
@@ -15,7 +15,7 @@ export const getServerSideProps = async () => {
   if (!accessToken) {
     return {
       redirect: {
-        destination: '/',
+        destination: "/",
         statusCode: 500,
       },
     };

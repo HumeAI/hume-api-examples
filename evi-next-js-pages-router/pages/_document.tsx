@@ -5,9 +5,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-      <body className={cn(
-          "flex flex-col min-h-screen"
-        )}>
+      <body className={cn("flex flex-col min-h-screen")}>
         <Main />
         <NextScript />
       </body>
