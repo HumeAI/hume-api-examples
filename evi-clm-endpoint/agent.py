@@ -1,6 +1,4 @@
-from modal import Image, App, asgi_app
 import re
-import json
 
 # Define a list of reflections to mirror the user's input
 reflections = {
@@ -344,38 +342,3 @@ def eliza_response(user_input):
             response = responses[0].format(*[reflect(g) for g in match.groups()])
             return response
     return "I see. Please tell me more."
-
-
-# ------- MODAL --------
-# deploy with `poetry run python -m modal deploy main.py`
-
-app = App("hume-eliza")
-app.image = Image.debian_slim().pip_install("fastapi", "websockets")
-
-
-@app.function()
-@asgi_app()
-def endpoint():
-    from fastapi import FastAPI, WebSocket
-
-    app = FastAPI()
-
-    @app.websocket("/ws")
-    async def websocket_handler(websocket: WebSocket) -> None:
-        await websocket.accept()
-        while True:
-            data = await websocket.receive_text()
-
-            hume_payload = json.loads(data)
-            last_message = hume_payload["messages"][-1]["message"]["content"]
-
-            user_text = last_message.split("{")[0] or ""
-
-            await websocket.send_text(
-                json.dumps(
-                    {"type": "assistant_input", "text": eliza_response(user_text)}
-                )
-            )
-            await websocket.send_text(json.dumps({"type": "assistant_end"}))
-
-    return app
