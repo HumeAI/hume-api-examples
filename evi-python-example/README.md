@@ -76,7 +76,7 @@ Upon doing so, the `.env` file becomes a persistent local store of your API key,
 The `hume` package contains Hume's Python SDK, including the asynchronous WebSocket infrastructure for using EVI. To install it, run:
 
 ```bash
-pip install "hume"
+pip install "hume[microphone]"
 ```
 
 For audio playback and processing, additional system-level dependencies are required. Below are download instructions for each supported operating system.
