@@ -1,4 +1,4 @@
-import { fetchAccessToken } from "@humeai/voice";
+import { fetchAccessToken } from "hume";
 import { InferGetServerSidePropsType } from "next";
 import dynamic from "next/dynamic";
 
