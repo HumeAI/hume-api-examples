@@ -1,4 +1,4 @@
-import { fetchAccessToken } from '@humeai/voice';
+import { fetchAccessToken } from 'hume';
 import { VoiceProvider } from '@humeai/voice-react';
 import { useEffect, useState } from 'react';
 import ChatStage from '@components/ChatStage';
