@@ -1,3 +1,4 @@
+import { Hume } from 'hume';
 import { useVoice } from '@humeai/voice-react';
 import {
   FC,
@@ -17,7 +18,7 @@ type AvatarConfig = {
   name: string;
   prompt?: string;
   visual?: string;
-  prosody: Record<string, number> | undefined;
+  prosody: Hume.empathicVoice.EmotionScores | undefined;
 };
 
 const AvatarContext = createContext<AvatarContextType | null>(null);
@@ -26,12 +27,23 @@ export const useAvatars = () => useContext(AvatarContext) as AvatarContextType;
 
 export const AvatarProvider: FC<PropsWithChildren> = ({ children }) => {
   const { lastVoiceMessage } = useVoice();
-  const prosody = lastVoiceMessage?.models.prosody?.scores ?? {};
   const [activeAvatar, setActiveAvatar] = useState<string | null>(null);
   const [avatars, setAvatars] = useState<AvatarConfig[]>([
-    { name: 'Challenger', visual: 'bg-green-500', prosody: {} },
-    { name: 'Optimist', visual: 'bg-yellow-500', prosody: {} },
-    { name: 'Synthesizer', visual: 'bg-purple-500', prosody: {} },
+    {
+      name: 'Challenger',
+      visual: 'bg-green-500',
+      prosody: undefined,
+    },
+    {
+      name: 'Optimist',
+      visual: 'bg-yellow-500',
+      prosody: undefined,
+    },
+    {
+      name: 'Synthesizer',
+      visual: 'bg-purple-500',
+      prosody: undefined,
+    },
   ]);
 
   useEffect(() => {
@@ -39,7 +51,7 @@ export const AvatarProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const { content } = lastVoiceMessage.message;
     const regex = /^\[([^\]]+)\]:/;
-    const match = content.match(regex);
+    const match = content?.match(regex);
 
     if (match) {
       const avatarName = match[1];
@@ -53,15 +65,16 @@ export const AvatarProvider: FC<PropsWithChildren> = ({ children }) => {
     avatars.forEach((avatar: AvatarConfig) => {
       if (avatar.name !== name) return;
 
-      avatar.prosody = Object.entries(prosody)
+      const prosody = lastVoiceMessage?.models.prosody?.scores;
+
+      avatar.prosody = Object.entries(
+        prosody as Hume.empathicVoice.EmotionScores,
+      )
         .sort((a, b) => b[1] - a[1])
-        .reduce(
-          (obj, [key, value]) => {
-            obj[key as keyof typeof obj] = value;
-            return obj;
-          },
-          {} as Record<string, number>,
-        );
+        .reduce((obj, [key, value]) => {
+          obj[key as keyof typeof obj] = value;
+          return obj;
+        }, {} as Hume.empathicVoice.EmotionScores);
 
       setAvatars([...avatars]);
     });
