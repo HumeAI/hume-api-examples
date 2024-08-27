@@ -17,7 +17,7 @@ const Avatars: FC = () => {
     <div className="flex gap-32">
       {avatars.map(({ name, visual, prosody }, index) => {
         const isActive = activeAvatar === name;
-        const topProsody = prosody ? Object.keys(prosody)[0] : 'Neutral';
+        const topProsody = prosody ? Object.keys(prosody)[0] : 'neutral';
         const face = getFaceByEmotion(topProsody);
 
         return (
@@ -48,7 +48,10 @@ const Avatars: FC = () => {
                   initial={{ scale: 1 }}
                   animate={{ scale: isActive ? activeScale : inactiveScale }}
                   transition={{ duration: 0.5 }}
-                  className={cn('relative bg-inherit rounded-full opacity-20 size-48', visual)}
+                  className={cn(
+                    'relative bg-inherit rounded-full opacity-20 size-48',
+                    visual,
+                  )}
                 ></motion.div>
               </div>
             </div>

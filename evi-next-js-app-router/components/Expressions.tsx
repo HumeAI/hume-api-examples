@@ -1,4 +1,5 @@
 "use client";
+import { Hume } from "hume";
 import { expressionColors, isExpressionColor } from "@/utils/expressionColors";
 import { motion } from "framer-motion";
 import { CSSProperties } from "react";
@@ -7,8 +8,10 @@ import * as R from "remeda";
 export default function Expressions({
   values,
 }: {
-  values: Record<string, number>;
+  values: Hume.empathicVoice.EmotionScores | undefined;
 }) {
+  if (!values) return;
+
   const top3 = R.pipe(
     values,
     R.entries(),

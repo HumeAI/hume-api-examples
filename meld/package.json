@@ -10,13 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@humeai/voice": "^0.1.7",
-    "@humeai/voice-react": "^0.1.7",
+    "@humeai/voice-react": "^0.1.11",
     "@react-spring/web": "^9.7.3",
     "axios": "^1.6.8",
     "clsx": "^2.1.0",
     "expression-colors": "github:HumeAI/colors",
     "framer-motion": "^11.0.20",
+    "hume": "^0.8.6",
     "openai": "^4.29.2",
     "priorityqueuejs": "^2.0.0",
     "react": "^18.2.0",
