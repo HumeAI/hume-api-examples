@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@humeai/voice-react':
-    specifier: ^0.1.12-beta.3
-    version: 0.1.12-beta.3(react-dom@18.3.1)(react@18.3.1)
+    specifier: ^0.1.12-beta.6
+    version: 0.1.12-beta.6(react-dom@18.3.1)(react@18.3.1)
   hume:
     specifier: ^0.8.6
     version: 0.8.6
@@ -121,17 +121,18 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     dev: true
 
-  /@humeai/voice-react@0.1.12-beta.3(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-fZkE4bu1PuFt78afEiIc6KJ/h2IfXKWo5zN3NIcsvndNMmgzWObVwU6X2/XweEVKdIPURTr+ssLHgpBOiTCRGw==}
+  /@humeai/voice-react@0.1.12-beta.6(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-Zp8riR2uMdCrKG9EvztQS9rQa7ny6JNcMPuQZvidzkV7c1h3DN+cF3jct5L3leaWAjzrnNrEPO/KHdPF3kmq2A==}
     peerDependencies:
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
     dependencies:
       date-fns: 3.6.0
-      hume: 0.8.7
+      hume: 0.8.8
       meyda: 5.6.3
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+      type-fest: 4.26.0
       zod: 3.23.8
     transitivePeerDependencies:
       - bufferutil
@@ -1699,8 +1700,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /hume@0.8.7:
-    resolution: {integrity: sha512-GVJekpcp5CfZAAaxawf8ICk/uKcHKbkPBTvbAqDUqFUbI2FtccipyM7FfU7SXs4wgGlbs05PxIHVGN2P/O2m7Q==}
+  /hume@0.8.8:
+    resolution: {integrity: sha512-JTWJUGmV4ZH2ikMIHGNOKbFDoQdZo3Iljd2smja3+KYB6e1oxY0+S89mMnR513byA98YP/n0uT7m1RVbVwoAPw==}
     dependencies:
       form-data: 4.0.0
       form-data-encoder: 4.0.2
@@ -3017,6 +3018,11 @@ packages:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
     dev: true
+
+  /type-fest@4.26.0:
+    resolution: {integrity: sha512-OduNjVJsFbifKb57UqZ2EMP1i4u64Xwow3NYXUtBbD4vIwJdQd4+xl8YDou1dlm4DVrtwT/7Ky8z8WyCULVfxw==}
+    engines: {node: '>=16'}
+    dev: false
 
   /typed-array-buffer@1.0.2:
     resolution: {integrity: sha512-gEymJYKZtKXzzBzM4jqa9w6Q1Jjm7x2d+sh19AdsD4wqnMPDYyvwpsIc2Q/835kHuo3BEQ7CjelGhfTsoBb2MQ==}
