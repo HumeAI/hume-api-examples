@@ -1,98 +1,62 @@
-"use client";
-import { 
-  VoiceProvider, 
-  ToolCall, 
+'use client';
+import { Hume } from 'hume';
+import {
+  VoiceProvider,
   ToolCallHandler,
-  ToolResponse, 
-  ToolError, 
-} from "@humeai/voice-react";
-import Messages from "./Controls";
-import Controls from "./Messages";
+  ToolResponse,
+  ToolError,
+} from '@humeai/voice-react';
+import { fetchWeather } from '@/utils/fetchWeather';
+import Messages from './Controls';
+import Controls from './Messages';
 
 const handleToolCall: ToolCallHandler = async (
-  toolCall: ToolCall
+  message: Hume.empathicVoice.ToolCallMessage,
 ): Promise<ToolResponse | ToolError> => {
-  console.log("Tool call received", toolCall);
+  console.log('Tool call received: ', message);
 
-  if (toolCall.name === 'weather_tool') {
+  if (message.name === 'get_current_weather') {
     try {
-      const args = JSON.parse(toolCall.parameters) as {
-        location: string;
-        format: 'fahrenheit' | 'celsius';
-      };
-
-      const location = await fetch(
-        `https://geocode.maps.co/search?q=${args.location}&api_key=${process.env.NEXT_PUBLIC_GEOCODING_API_KEY}`,
-      );
-
-      const locationResults = (await location.json()) as {
-        lat: string;
-        lon: string;
-      }[];
-
-      const { lat, lon } = locationResults[0];
-
-      const pointMetadataEndpoint: string = `https://api.weather.gov/points/${parseFloat(lat).toFixed(3)},${parseFloat(lon).toFixed(3)}`;
-
-      const result = await fetch(pointMetadataEndpoint, {
-        method: 'GET',
-      });
-
-      const json = (await result.json()) as {
-        properties: {
-          forecast: string;
-        };
-      };
-      const { properties } = json;
-      const { forecast: forecastUrl } = properties;
-
-      const forecastResult = await fetch(forecastUrl);
-
-      const forecastJson = (await forecastResult.json()) as {
-        properties: {
-          periods: unknown[];
-        };
-      };
-      const forecast = forecastJson.properties.periods;
+      const currentWeather = await fetchWeather(message.parameters);
 
       return {
         type: 'tool_response',
-        tool_call_id: toolCall.tool_call_id,
-        content: JSON.stringify(forecast),
-      };
+        toolCallId: message.toolCallId,
+        content: currentWeather,
+        receivedAt: new Date(),
+      } as ToolResponse;
     } catch (error) {
+      console.error("Error: there was an error with the weather tool.")
       return {
         type: 'tool_error',
-        tool_call_id: toolCall.tool_call_id,
+        toolCallId: message.toolCallId,
         error: 'Weather tool error',
         code: 'weather_tool_error',
         level: 'warn',
         content: 'There was an error with the weather tool',
-      };
+        receivedAt: new Date(),
+      } as ToolError;
     }
-  } else {
-    return {
-      type: 'tool_error',
-      tool_call_id: toolCall.tool_call_id,
-      error: 'Tool not found',
-      code: 'tool_not_found',
-      level: 'warn',
-      content: 'The tool you requested was not found',
-    };
   }
+  console.error(`Error: the ${message.name} tool could not be found.`);
+  return {
+    type: 'tool_error',
+    toolCallId: message.toolCallId,
+    error: 'Tool not found',
+    code: 'tool_not_found',
+    level: 'warn',
+    content: 'The tool you requested was not found',
+    receivedAt: new Date(),
+  } as ToolError;
 };
 
-export default function ClientComponent({
-  accessToken,
-}: {
-  accessToken: string;
-}) {
+export default function ClientComponent({ accessToken }: { accessToken: string }) {
   return (
     <VoiceProvider
       configId={process.env.NEXT_PUBLIC_HUME_CONFIG_ID}
-      auth={{ type: "accessToken", value: accessToken }}
+      auth={{ type: 'accessToken', value: accessToken }}
       onToolCall={handleToolCall}
-      onMessage={(message: unknown) => console.log(message)}
+      onError={(error) => console.log({ error })}
     >
       <Messages />
       <Controls />
