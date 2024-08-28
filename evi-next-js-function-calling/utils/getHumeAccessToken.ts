@@ -1,5 +1,5 @@
-import "server-only";
-import { fetchAccessToken } from "@humeai/voice";
+import 'server-only';
+import { fetchAccessToken } from 'hume';
 
 export const getHumeAccessToken = async () => {
   const accessToken = await fetchAccessToken({
@@ -7,7 +7,7 @@ export const getHumeAccessToken = async () => {
     secretKey: String(process.env.HUME_SECRET_KEY),
   });
 
-  if (accessToken === "undefined") {
+  if (accessToken === 'undefined') {
     return null;
   }
 
