@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@humeai/voice-react": "^0.1.11",
+    "@humeai/voice-react": "^0.1.12",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toggle": "^1.0.3",
