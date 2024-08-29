@@ -1,5 +1,5 @@
 // ./app/page.tsx
-import ClientComponent from '@/components/ClientComponent';
+import ClientComponent from './components/ClientComponent';
 import { getHumeAccessToken } from '@/utils/getHumeAccessToken';
 
 export default async function Page() {

@@ -6,7 +6,6 @@ import {
   ToolResponse,
   ToolError,
 } from '@humeai/voice-react';
-import { fetchWeather } from '@/utils/fetchWeather';
 import Messages from './Controls';
 import Controls from './Messages';
 
@@ -17,16 +16,26 @@ const handleToolCall: ToolCallHandler = async (
 
   if (message.name === 'get_current_weather') {
     try {
-      const currentWeather = await fetchWeather(message.parameters);
+      const response = await fetch('/api/fetchWeather', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ parameters: message.parameters }),
+      });
 
-      return {
-        type: 'tool_response',
-        toolCallId: message.toolCallId,
-        content: currentWeather,
-        receivedAt: new Date(),
-      } as ToolResponse;
+      const result = await response.json();
+
+      if (result.success) {
+        return {
+          type: 'tool_response',
+          toolCallId: message.toolCallId,
+          content: result.data,
+          receivedAt: new Date(),
+        } as ToolResponse;
+      } else {
+        throw new Error(result.error);
+      }
     } catch (error) {
-      console.error("Error: there was an error with the weather tool.")
+      console.error('Error: there was an error with the weather tool.');
       return {
         type: 'tool_error',
         toolCallId: message.toolCallId,
@@ -38,6 +47,7 @@ const handleToolCall: ToolCallHandler = async (
       } as ToolError;
     }
   }
+
   console.error(`Error: the ${message.name} tool could not be found.`);
   return {
     type: 'tool_error',
@@ -56,7 +66,6 @@ export default function ClientComponent({ accessToken }: { accessToken: string }
       configId={process.env.NEXT_PUBLIC_HUME_CONFIG_ID}
       auth={{ type: 'accessToken', value: accessToken }}
       onToolCall={handleToolCall}
-      onError={(error) => console.log({ error })}
     >
       <Messages />
       <Controls />
