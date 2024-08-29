@@ -5,7 +5,7 @@ export const fetchWeather = async (parameters: string): Promise<string> => {
   };
 
   // fetch latitude and longitude coordinates of location
-  const locationURL: string = `https://geocode.maps.co/search?q=${args.location}&api_key=${process.env.NEXT_PUBLIC_GEOCODING_API_KEY}`;
+  const locationURL: string = `https://geocode.maps.co/search?q=${args.location}&api_key=${process.env.GEOCODING_API_KEY}`;
   const locationResults = await fetch(locationURL, { method: 'GET' });
   const locationJson = (await locationResults.json()) as {
     lat: string;
