@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@humeai/voice-react':
-    specifier: ^0.1.12-beta.6
-    version: 0.1.12-beta.6(react-dom@18.3.1)(react@18.3.1)
+    specifier: ^0.1.12
+    version: 0.1.12(react-dom@18.3.1)(react@18.3.1)
   hume:
     specifier: ^0.8.6
     version: 0.8.6
@@ -121,8 +121,8 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     dev: true
 
-  /@humeai/voice-react@0.1.12-beta.6(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-Zp8riR2uMdCrKG9EvztQS9rQa7ny6JNcMPuQZvidzkV7c1h3DN+cF3jct5L3leaWAjzrnNrEPO/KHdPF3kmq2A==}
+  /@humeai/voice-react@0.1.12(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-uB04djXt2NDloxSJ989W0ApZbg77II81+OoCXBJlaH555eGl/k2L3PFDS6qHemb4nW5cK6WGGwxvTWJnCcbQ0A==}
     peerDependencies:
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
