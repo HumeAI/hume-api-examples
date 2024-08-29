@@ -1,15 +1,15 @@
-'use client';
-import { useVoice, VoiceReadyState } from '@humeai/voice-react';
-import React from 'react';
+"use client";
+import { useVoice, VoiceReadyState } from "@humeai/voice-react";
+import React from "react";
 
 export default function Controls() {
-  const { connect, disconnect, readyState } = useVoice();
+  const { connect, disconnect, status } = useVoice();
 
-  const handleConnect = async () => {
+  const handleConnect = () => {
     try {
-      await connect();
+      void connect();
     } catch (error) {
-      console.error('Error connecting:', error);
+      console.error("Error connecting:", error);
     }
   };
 
@@ -19,9 +19,10 @@ export default function Controls() {
 
   return (
     <button
-      onClick={readyState === VoiceReadyState.OPEN ? handleDisconnect : handleConnect}
+      disabled={status.value === "connecting"}
+      onClick={status.value === "connected" ? handleDisconnect : handleConnect}
     >
-      {readyState === VoiceReadyState.OPEN ? 'End Session' : 'Start Session'}
+      {status.value === "connected" ? "End Session" : "Start Session"}
     </button>
   );
 }

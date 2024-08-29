@@ -1,3 +1,4 @@
+import 'server-only';
 import { NextResponse } from 'next/server';
 import { fetchWeather } from '@/utils/fetchWeather';
 
