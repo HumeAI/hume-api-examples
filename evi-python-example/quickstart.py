@@ -67,7 +67,7 @@ class WebSocketInterface:
             message_text = message.message.content
             text = f"{role}: {message_text}"
             if message.from_text is False:
-                scores = message.models.prosody.scores
+                scores = dict(message.models.prosody.scores)
         elif message.type == "audio_output":
             message_str: str = message.data
             message_bytes = base64.b64decode(message_str.encode("utf-8"))
@@ -88,6 +88,9 @@ class WebSocketInterface:
         if len(scores) > 0:
             top_3_emotions = self._extract_top_n_emotions(scores, 3)
             self._print_emotion_scores(top_3_emotions)
+            print("")
+        else:
+            print("")
         
     async def on_close(self):
         """Logic invoked when the WebSocket connection is closed."""
@@ -113,7 +116,7 @@ class WebSocketInterface:
         now_str = now.strftime("%H:%M:%S")
         print(f"[{now_str}] {text}")
 
-    def _extract_top_n_emotions(emotion_scores: dict, n: int) -> dict:
+    def _extract_top_n_emotions(self, emotion_scores: dict, n: int) -> dict:
         """
         Extract the top N emotions based on confidence scores.
 
@@ -132,7 +135,7 @@ class WebSocketInterface:
 
         return top_n_emotions
 
-    def _print_emotion_scores(emotion_scores: dict) -> None:
+    def _print_emotion_scores(self, emotion_scores: dict) -> None:
         """
         Print the emotions and their scores in a formatted, single-line manner.
 
@@ -198,7 +201,7 @@ async def main() -> None:
         websocket_interface.set_socket(socket)
 
         # Create an asynchronous task to continuously detect and process input from the microphone, as well as play audio
-        microphone_task = asyncio.create_task(MicrophoneInterface.start(socket, allow_user_interrupt=True, byte_stream=websocket_interface.byte_strs))
+        microphone_task = asyncio.create_task(MicrophoneInterface.start(socket, allow_user_interrupt=False, byte_stream=websocket_interface.byte_strs))
         
         # Create an asynchronous task to send messages over the WebSocket connection
         message_sending_task = asyncio.create_task(sending_handler(socket))
