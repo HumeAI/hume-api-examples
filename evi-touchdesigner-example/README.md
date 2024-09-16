@@ -14,3 +14,8 @@ This project demonstrates a sample implementation of Hume AI's [Empathic Voice I
 3. *Optional:* Add a config id with a custom configuration
 
 ![setup.png](setup.png)
+
+## Using HumeTD
+
+1. Ensure you have the Script folder in the same directory as your project
+2. You can send a message from anywhere in your project using `op.HumeTD.Send_user_message('Your message here')`
