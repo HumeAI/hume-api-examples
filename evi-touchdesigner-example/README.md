@@ -7,23 +7,25 @@
 
 This project demonstrates a sample implementation of Hume AI's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) within a TouchDesigner environment. For now, this project uses text input only.
 
-- `HumeTD.tox` is a portable component you can drop in your project
+- `HumeTD.tox` is a portable component you can drop in your own project
 - `HumeTDDemo.toe` is a sample project using `HumeTD.tox`
 
 ## Setup
+Acquire your API key from [platform.hume.ai](https://platform.hume.ai/settings/keys)
 
-1. Acquire your API key from [platform.hume.ai](https://platform.hume.ai/settings/keys)
-2. Drop `HumeTD.tox` into your own project
+## Using `HumeTD.tox`
+1. Drop `HumeTD.tox` into your own project
 2. Add your API key in the `Custom` panel of the `HumeTD` component
 3. *Optional:* Add a custom EVI configuration 
-
-![setup.png](setup.png)
-
-## Using HumeTD.tox
-
-1. You can send a message from anywhere in your project using `op.HumeTD.Send_user_message('Your message here')`
-2. The `HumeTD` component has an audio output with EVI's audio responses
-
-Below is a network with a minimal implementation. You would simply right click and "Run Script" the pink `Text OP`
+4. You can send a message from any script in your project: `op.HumeTD.Send_user_message('Your message here')`
+5. The `HumeTD` component has an audio output with EVI's audio responses
 
 ![simple.png](simple.png)
+
+## Running the HumeTD demo
+1. Open `HumeTDDemo.toe`
+1. Select the `HumeTD` component
+2. Add your API key in the `Custom` panel of the `HumeTD` component
+3. Type your message and click `Go`
+
+![setup.png](setup.png)
