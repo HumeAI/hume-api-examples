@@ -14,6 +14,7 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`evi-embed-vue`](/evi-embed-vue/README.md)                         | Typescript | Vue             |
 | [`evi-python-example`](/evi-python-example/README.md)               | Python     | Hume Python SDK |
 | [`evi-python-api-example`](/evi-python-api-example/README.md)       | Python     |                 |
+| [`evi-touchdesigner-example`](/evi-touchdesigner-example/README.md) | Python     | TouchDesigner   |
 | [`meld`](/meld/README.md) (`evi-react-example`)                     | Typescript | React           |
 
 ## [Expression Measurement API](https://dev.hume.ai/docs/expression-measurement-api/overview)
