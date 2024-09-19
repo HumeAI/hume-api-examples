@@ -15,8 +15,5 @@ class HumeTDExt:
             "text": user_input
         }
 
-        # Print the message (for debugging purposes)
-        print(json.dumps(message))
-
         # Send the message as a JSON string via the WebSocket
         ws.sendText(json.dumps(message))

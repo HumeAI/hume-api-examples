@@ -2,7 +2,7 @@ import base64
 import os
 import time
 import wave
-import uuid  # Import uuid for generating unique filenames
+import uuid
 
 class MessagePlaybackExt:
     def __init__(self, owner_comp):
@@ -26,8 +26,7 @@ class MessagePlaybackExt:
             self.play_next_item()
 
     def Add_item(self, audio_data):
-        # Save the audio file with a unique filename
-        filename = f"audio_{uuid.uuid4()}.wav"  # Use UUID for unique filenames
+        filename = f"audio_{uuid.uuid4()}.wav"
         filepath = os.path.join(self.audio_dir, filename)
         with open(filepath, "wb") as audio_file:
             audio_file.write(audio_data)
@@ -62,4 +61,4 @@ class MessagePlaybackExt:
                 return duration
         except wave.Error as e:
             print(f'Wave error: {e}')
-            return 0  # Handle potential errors if the file format is not supported
+            return 0
