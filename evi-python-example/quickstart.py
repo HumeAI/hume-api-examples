@@ -13,12 +13,10 @@ from hume import MicrophoneInterface, Stream
 class WebSocketInterface:
     """Interface for containing the EVI WebSocket and associated socket handling behavior."""
 
-    # Queue to hold byte strings representing audio data
-    byte_strs = Stream.new()
-
     def __init__(self):
-        """Construct the WebSocketInterface, initially assigning the socket to None."""
+        """Construct the WebSocketInterface, initially assigning the socket to None and the byte stream to a new Stream object."""
         self.socket = None
+        self.byte_strs = Stream.new()
 
     def set_socket(self, socket: ChatWebsocketConnection):
         """Set the socket.
