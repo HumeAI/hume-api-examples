@@ -4,7 +4,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from typing import List
 from hume import AsyncHumeClient
-from hume.expression_measurement import Face, Models
+from hume.expression_measurement.batch import Face, Models
 from hume.expression_measurement.batch.types import UnionPredictResult
 
 async def main():
