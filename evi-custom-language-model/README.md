@@ -35,15 +35,17 @@ Note: Replace `8000` with your Uvicorn server's port if it's different.
 
 Note the Ngrok URL where it says `Forwarding`. It should appear something like this:
 
-`https://c021-2601-58b-1300-2100-d187-57d6-8104-a85c.ngrok-free.app`
+`https://81d0-142-190-60-211.ngrok-free.app`
 
-### 3. Create a voice configuration that specifies the socket
+### 3. Create an EVI configuration that specifies the socket
 
-In Hume's web portal, visit the Voice Configurations in the left navigation bar, or you can access it directly at https://beta.hume.ai/voice.
+In Hume's web portal, visit the Configurations in the left navigation bar, or you can access it directly at https://platform.hume.ai/evi/configs.
 
-Create a new voice configuration, give it a name and optionally a system prompt, and then use the following dropdown to specify `Custom language model` and specify the `wss` address of your socket as given by Ngrok in the previous step:
+Create a new voice configuration, give it a name and optionally a system prompt, and then use the following dropdown to specify `Custom language model` and specify the `wss` address of your socket as given by Ngrok in the previous step.
 
-![](./img/custom-language-model-config.jpg)
+The URL must be changed to be prefixed with `wss://` instead of `https://`, and suffixed with `/llm`, such as: `wss://81d0-142-190-60-211.ngrok-free.app/llm`:
+
+![](./img/custom-language-model-config.png)
 
 ### 4. Connect to the socket
 
