@@ -1,13 +1,11 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Empathic Voice Interface | Sample Python Implementation</h1>
-  <p>
-    <strong>Jumpstart your development with Hume's Empathic Voice Interface!</strong>
-  </p>
+  <h1>EVI Python Function Calling Example</h1>
 </div>
 
 ## Overview
-This project features a sample implementation of Hume's [Empathic Voice Interface](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's Python SDK.
+
+This project showcases how to call functions in a sample implementation of Hume's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) using Hume's Python SDK. Here, we have a simple EVI that calls a function to get the current weather for a given location.
 
 ## Prerequisites
 
@@ -15,20 +13,16 @@ The Hume Python SDK supports Python versions 3.9, 3.10, and 3.11 on macOS and Li
 
 ### Setting up a virtual environment (optional)
 
-You can create a virtual environment using either `conda` from Miniconda or Anaconda, or the built-in `venv` module in Python. Below are instructions for both methods.
-
-After activating the virtual environment using either method, you can proceed with the installation of dependencies.
+You can create a virtual environment using either `conda` from Miniconda or Anaconda, or the built-in `venv` module in Python. Instructions for both methods are provided below.
 
 #### Using `conda`
 1. Install `conda` using [Miniconda](https://docs.anaconda.com/miniconda/), the free minimal installer for it.
-2. Create a new virtual environment.
+2. Create a new virtual environment:
     ```bash
-    # Create a new conda environment named 'evi-env' with a specific Python version
     conda create --name evi-env python=3.11
     ```
-3. Activate the virtual environment.
+3. Activate the virtual environment:
     ```bash
-    # Activate the conda environment
     conda activate evi-env
     ```
 
@@ -36,77 +30,56 @@ After activating the virtual environment using either method, you can proceed wi
 
 To create a virtual environment with `venv`, run the following commands in your terminal:
 
-1. Create a new virtual environment.
+1. Create a new virtual environment:
     ```bash
-    # Create a virtual environment in the directory 'evi-env'
     python -m venv evi-env
     ```
-2. Activate the virtual environment.
+2. Activate the virtual environment:
     ```bash
-    # Activate the virtual environment
     source evi-env/bin/activate
     ```
 
 ### Package and system dependencies
 
-Below are the necessary steps to install the required packages and system dependencies for using environment variables, EVI, and handling audio input/output.
+Follow these steps to install the required packages and system dependencies for using environment variables, EVI, and handling audio input/output.
 
 #### Environment Variables
 
-The `python-dotenv` package can be used to load variables from a `.env` file into the process's environment. This practice is for configuration settings that shouldn't be hard-coded into the code, such as API keys.
-
-To install it, run:
+Install the `python-dotenv` package to load variables from a `.env` file:
 
 ```bash
 pip install python-dotenv
 ```
 
-To get your API credentials, log into the Hume Platform and visit the [API keys page](https://platform.hume.ai/settings/keys).
+#### Asynchronous HTTP requests
 
-Implement your credentials by editing the provided placeholder `.env.example` file.
-   1. Rename the file to `.env`.
-   2. Place your API credentials inside.
+Install the `aiohttp` package to make asynchronous HTTP requests in the weather fetching function:
 
-Upon doing so, the `.env` file becomes a persistent local store of your API key, Secret key, and EVI config ID. The `.gitignore` file contains local env file paths so that they are not committed to GitHub.
-   
-(Note: `.env` is a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make it viewable in the finder).
+```bash
+pip install aiohttp
+```
 
 #### EVI and audio input/output
 
-The `hume` package contains Hume's Python SDK, including the asynchronous WebSocket infrastructure for using EVI. To install it, run:
+Install the Hume Python SDK with microphone support:
 
 ```bash
 pip install "hume[microphone]"
 ```
 
-For audio playback and processing, additional system-level dependencies are required. Below are download instructions for each supported operating system.
+For audio playback and processing, additional system-level dependencies are required:
 
 ##### macOS
 
-To ensure audio playback functionality, you will need to install `ffmpeg`, a powerful multimedia framework that handles audio and video processing.
+Install `ffmpeg` using Homebrew:
 
-One of the most common ways to install `ffmpeg` on macOS is by using [Homebrew](https://brew.sh/). Homebrew is a popular package manager for macOS that simplifies the installation of software by automating the process of downloading, compiling, and setting up packages.
-
-To install `ffmpeg` using Homebrew, follow these steps:
-
-1. Install Homebrew onto your system according to the instructions on the [Homebrew website](https://brew.sh/).
-
-2. Once Homebrew is installed, you can install `ffmpeg` with:
-    ```bash
-    brew install ffmpeg
-    ```
-
-If you prefer not to use Homebrew, you can download a pre-built `ffmpeg` binary directly from the [FFmpeg website](https://ffmpeg.org/download.html) or use other package managers like [MacPorts](https://www.macports.org/).
+```bash
+brew install ffmpeg
+```
 
 ##### Linux
 
-On Linux systems, you will need to install a few additional packages to support audio input/output and playback:
-
-- `libasound2-dev`: This package contains development files for the ALSA (Advanced Linux Sound Architecture) sound system.
-- `libportaudio2`: PortAudio is a cross-platform audio I/O library that is essential for handling audio streams.
-- `ffmpeg`: Required for processing audio and video files.
-
-To install these dependencies, use the following commands:
+Install the required packages:
 
 ```bash
 sudo apt-get --yes update
@@ -117,12 +90,72 @@ sudo apt-get --yes install libasound2-dev libportaudio2 ffmpeg
 
 Not yet supported.
 
-## Usage
-This minimal implementation of Hume's Empathic User Interface (EVI) demonstrates how to authenticate, connect to, and display output from the interface in a terminal application.
+## EVI setup
 
-Below are the steps to run the project:
-1. Create a virtual environment using venv, conda or other method.
-2. Activate the virtual environment.
-3. Install the required packages and system dependencies.
-4. Execute the script by running `python quickstart.py`.
-5. Terminate the script by pressing `Ctrl+C`.
+Before running this project, you'll need to set up EVI with the ability to leverage tools or call functions. Follow these steps for authentication, creating a Tool, and adding it to a configuration.
+
+1. Create a `.env` file in the root folder of the repo and add your [API Key and Secret Key](https://dev.hume.ai/docs/introduction/api-key):
+
+```sh
+HUME_API_KEY=<YOUR API KEY>
+HUME_SECRET_KEY=<YOUR SECRET KEY>
+```
+
+2. [Create a tool](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#setup) with the following payload:
+
+```json
+{
+  "name": "get_current_weather",
+  "description": "This tool is for getting the current weather.",
+  "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }"
+}
+```
+
+3. Create a configuration equipped with that tool: 
+
+```json
+{
+  "name": "Weather Assistant Config",
+  "language_model": {
+    "model_provider": "OPEN_AI",
+    "model_resource": "gpt-3.5-turbo"
+  },
+  "tools": [
+    {
+      "id": "<YOUR_TOOL_ID>",
+      "version": 0
+    }
+  ]
+}
+```
+
+4. Add the Config ID to your environmental variables in your `.env` file:
+
+```bash
+HUME_CONFIG_ID=<YOUR CONFIG ID>
+```
+
+5. Add your Geocoding API key to your environmental variables (free to use from geocode.maps.co):
+
+```bash
+GEOCODING_API_KEY=<YOUR GEOCODING API KEY>
+```
+
+## Usage
+
+This implementation of Hume's Empathic User Interface (EVI) is minimal, using default configurations for the interface and a basic terminal application to authenticate, connect to, and disconnect from the interface.
+
+To run the project:
+
+1. Ensure you have set up your virtual environment and installed all required dependencies.
+2. Execute the script by running `python main.py`.
+3. Once the script is running, you can begin speaking with the interface. The transcript of the conversation will be displayed in the terminal in real-time.
+4. The EVI is equipped with a tool to fetch weather information. You can ask about the weather in different locations, and the EVI will use the tool to provide current weather data.
+5. Terminate the script by pressing `Ctrl+C` when you're finished.
+
+## Example Conversation
+
+Here's an example of how you might interact with the EVI to get weather information:
+
+User: "What's the weather like in New York City?"
+EVI: (Uses the get_current_weather tool to fetch data) "Currently in New York City, it's 72°F (22°C) and partly cloudy. The forecast calls for a high of 78°F (26°C) and a low of 65°F (18°C) today."
