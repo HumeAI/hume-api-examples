@@ -162,10 +162,10 @@ async def sending_handler(socket: ChatWebsocketConnection):
     await asyncio.sleep(3)
 
     # Construct a user input message
-    user_input_message = UserInput(text="Hello there!")
+    # user_input_message = UserInput(text="Hello there!")
 
     # Send the user input as text to the socket
-    await socket.send_user_input(user_input_message)
+    # await socket.send_user_input(user_input_message)
 
 async def main() -> None:
     # Retrieve any environment variables stored in the .env file
