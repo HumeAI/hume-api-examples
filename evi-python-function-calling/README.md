@@ -51,14 +51,6 @@ Install the `python-dotenv` package to load variables from a `.env` file:
 pip install python-dotenv
 ```
 
-#### Asynchronous HTTP requests
-
-Install the `aiohttp` package to make asynchronous HTTP requests in the weather fetching function:
-
-```bash
-pip install aiohttp
-```
-
 #### EVI and audio input/output
 
 Install the Hume Python SDK with microphone support:

@@ -1,17 +1,17 @@
-import aiohttp
 import asyncio
 import base64
-import datetime
 import json
 import os
 from dotenv import load_dotenv
 from typing import Union
+import httpx
 from hume.client import AsyncHumeClient
 from hume.empathic_voice.chat.socket_client import ChatConnectOptions, ChatWebsocketConnection
 from hume.empathic_voice.chat.types import SubscribeEvent
 from hume.empathic_voice import UserInput, ToolCallMessage, ToolErrorMessage, ToolResponseMessage
 from hume.core.api_error import ApiError
 from hume import MicrophoneInterface, Stream
+from utils import print_prompt, extract_top_n_emotions, print_emotion_scores
 
 class WebSocketInterface:
     """Interface for containing the EVI WebSocket and associated socket handling behavior."""
@@ -61,7 +61,6 @@ class WebSocketInterface:
             return
 
         if tool_name == "get_current_weather":
-            # Obtain the parameter values
             obtained_location = tool_parameters.get('location')
             obtained_format = tool_parameters.get('format', 'text')
 
@@ -75,7 +74,6 @@ class WebSocketInterface:
                 print(f"(Sent ToolErrorMessage for tool_call_id {tool_call_id} due to missing location parameter.)\n")
                 return
 
-            # Perform the function of the tool call
             weather = await fetch_weather(location=obtained_location, format=obtained_format)
 
             if weather.startswith("ERROR"):
@@ -147,13 +145,11 @@ class WebSocketInterface:
             message_type = message.type.upper()
             text = f"<{message_type}>"
         
-        # Print the formatted message
-        self._print_prompt(text)
+        print_prompt(text)
 
-        # Extract and print the top 3 emotions inferred from user and assistant expressions
         if len(scores) > 0:
-            top_3_emotions = self._extract_top_n_emotions(scores, 3)
-            self._print_emotion_scores(top_3_emotions)
+            top_3_emotions = extract_top_n_emotions(scores, 3)
+            print_emotion_scores(top_3_emotions)
             print("")
         else:
             print("")
@@ -171,48 +167,6 @@ class WebSocketInterface:
             error (Exception): The error that occurred during the WebSocket communication.
         """
         print(f"Error: {error}")
-
-    def _print_prompt(self, text: str) -> None:
-        """Print a formatted message with a timestamp.
-
-        Args:
-            text (str): The message text to be printed.
-        """
-        now = datetime.datetime.now(tz=datetime.timezone.utc)
-        now_str = now.strftime("%H:%M:%S")
-        print(f"[{now_str}] {text}")
-
-    def _extract_top_n_emotions(self, emotion_scores: dict, n: int) -> dict:
-        """
-        Extract the top N emotions based on confidence scores.
-
-        Args:
-            emotion_scores (dict): A dictionary of emotions and their corresponding confidence scores.
-            n (int): The number of top emotions to extract.
-
-        Returns:
-            dict: A dictionary containing the top N emotions as keys and their raw scores as values.
-        """
-        # Convert the dictionary into a list of tuples and sort by the score in descending order
-        sorted_emotions = sorted(emotion_scores.items(), key=lambda item: item[1], reverse=True)
-
-        # Extract the top N emotions
-        top_n_emotions = {emotion: score for emotion, score in sorted_emotions[:n]}
-
-        return top_n_emotions
-
-    def _print_emotion_scores(self, emotion_scores: dict) -> None:
-        """
-        Print the emotions and their scores in a formatted, single-line manner.
-
-        Args:
-            emotion_scores (dict): A dictionary of emotions and their corresponding confidence scores.
-        """
-        # Format the output string
-        formatted_emotions = ' | '.join([f"{emotion} ({score:.2f})" for emotion, score in emotion_scores.items()])
-        
-        # Print the formatted string
-        print(f"|{formatted_emotions}|")
 
 async def fetch_weather(location: str, format: str) -> str:
     """Fetch the weather forecast for all periods for a given location.
@@ -241,89 +195,84 @@ async def fetch_weather(location: str, format: str) -> str:
     if not GEOCODING_API_KEY:
         return "ERROR: Geocoding API key is not set."
 
-    # Fetch the location's geographic coordinates using the Geocoding API
+    # Construct the URL for the Geocoding API request
     location_api_url = f"https://geocode.maps.co/search?q={location}&api_key={GEOCODING_API_KEY}"
 
-    async with aiohttp.ClientSession() as session:
-        # First Request: Get location data
+    # Create an HTTP client that automatically follows redirects
+    async with httpx.AsyncClient(follow_redirects=True) as client:
         try:
-            async with session.get(location_api_url) as location_response:
-                if location_response.status != 200:
-                    return f"ERROR: Failed to fetch location data. Status code: {location_response.status}"
-                location_data = await location_response.json()
-        except Exception as e:
-            return f"ERROR: Exception occurred while fetching location data: {e}"
+            # Step 1: Fetch location data
+            location_response = await client.get(location_api_url)
+            location_response.raise_for_status()
+            location_data = location_response.json()
+        except httpx.HTTPError as e:
+            return f"ERROR: Failed to fetch location data. {str(e)}"
 
         if not location_data:
             return "ERROR: No location data found."
 
-        # Extract latitude and longitude from fetched location data
         try:
+            # Extract latitude and longitude from the location data
             lat = location_data[0]['lat']
             lon = location_data[0]['lon']
         except (IndexError, KeyError):
             return "ERROR: Unable to extract latitude and longitude."
 
-        # Second Request: Get point metadata
+        # Construct the URL for the Weather.gov API points endpoint
         point_metadata_endpoint = f"https://api.weather.gov/points/{float(lat):.4f},{float(lon):.4f}"
 
         try:
-            async with session.get(point_metadata_endpoint) as point_metadata_response:
-                if point_metadata_response.status != 200:
-                    return f"ERROR: Failed to fetch point metadata. Status code: {point_metadata_response.status}"
-                point_metadata = await point_metadata_response.json()
-        except Exception as e:
-            return f"ERROR: Exception occurred while fetching point metadata: {e}"
+            # Step 2: Fetch point metadata
+            point_metadata_response = await client.get(point_metadata_endpoint)
+            point_metadata_response.raise_for_status()
+            point_metadata = point_metadata_response.json()
+        except httpx.HTTPError as e:
+            return f"ERROR: Failed to fetch point metadata. {str(e)}"
 
-        # Extract weather forecast URL from point metadata
         try:
+            # Extract the forecast URL from the point metadata
             forecast_url = point_metadata['properties']['forecast']
         except KeyError:
             return "ERROR: Unable to extract forecast URL from point metadata."
 
-        # Third Request: Get the weather forecast
         try:
-            async with session.get(forecast_url) as forecast_response:
-                if forecast_response.status != 200:
-                    return f"ERROR: Failed to fetch weather forecast. Status code: {forecast_response.status}"
-                forecast_data = await forecast_response.json()
-        except Exception as e:
-            return f"ERROR: Exception occurred while fetching weather forecast: {e}"
+            # Step 3: Fetch the weather forecast
+            forecast_response = await client.get(forecast_url)
+            forecast_response.raise_for_status()
+            forecast_data = forecast_response.json()
+        except httpx.HTTPError as e:
+            return f"ERROR: Failed to fetch weather forecast. {str(e)}"
 
-        # Extract the forecast periods
         try:
+            # Extract the forecast periods from the response
             periods = forecast_data['properties']['periods']
         except KeyError:
             return "ERROR: Unable to extract forecast periods."
 
-        # Validate and normalize the 'format' parameter
+        # Validate the desired temperature format
         desired_unit = format.lower()
         if desired_unit not in ['fahrenheit', 'celsius']:
             return "ERROR: Invalid format specified. Please use 'fahrenheit' or 'celsius'."
 
-        # Convert temperatures for all periods
+        # Convert temperatures for all periods to the desired unit
         for period in periods:
             temperature = period.get('temperature')
             temperature_unit = period.get('temperatureUnit')
 
             if temperature is not None and temperature_unit is not None:
                 if desired_unit == 'celsius' and temperature_unit == 'F':
-                    # Convert F to C
+                    # Convert Fahrenheit to Celsius
                     converted_temp = round((temperature - 32) * 5 / 9)
                     period['temperature'] = converted_temp
                     period['temperatureUnit'] = 'C'
                 elif desired_unit == 'fahrenheit' and temperature_unit == 'C':
-                    # Convert C to F
+                    # Convert Celsius to Fahrenheit
                     converted_temp = round((temperature * 9 / 5) + 32)
                     period['temperature'] = converted_temp
                     period['temperatureUnit'] = 'F'
-                else:
-                    # If units match, no conversion needed
-                    pass
 
-        # Return all forecast periods as JSON string
+        # Return the forecast data as a JSON-formatted string
         forecast = json.dumps(periods, indent=2)
-
         return forecast
 
 async def sending_handler(socket: ChatWebsocketConnection):
@@ -386,6 +335,5 @@ async def main() -> None:
         # Schedule the coroutines to occur simultaneously
         await asyncio.gather(microphone_task, message_sending_task)
 
-# Execute the main asynchronous function using asyncio's event loop
 if __name__ == "__main__":
     asyncio.run(main())
