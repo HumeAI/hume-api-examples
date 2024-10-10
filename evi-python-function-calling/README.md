@@ -93,7 +93,9 @@ HUME_API_KEY=<YOUR API KEY>
 HUME_SECRET_KEY=<YOUR SECRET KEY>
 ```
 
-2. [Create a tool](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#setup) with the following payload:
+> See our documentation on [Setup for Tool Use](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#setup) for no-code and full-code guides on creating a tool and adding it to a configuration.
+
+2. [Create a tool](https://dev.hume.ai/reference/empathic-voice-interface-evi/tools/create-tool) with the following payload:
 
 ```bash
 curl -X POST https://api.hume.ai/v0/evi/tools \
@@ -110,7 +112,7 @@ curl -X POST https://api.hume.ai/v0/evi/tools \
 
 This will yield a Tool ID, which you can assign to a new EVI configuration.
 
-3. [Create a configuration](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration#create-a-configuration) equipped with that tool: 
+3. [Create a configuration](https://dev.hume.ai/reference/empathic-voice-interface-evi/configs/create-config) equipped with that tool: 
 
 ```bash
 curl -X POST https://api.hume.ai/v0/evi/configs \
