@@ -48,33 +48,49 @@ VITE_HUME_API_KEY=<YOUR API KEY>
 VITE_HUME_SECRET_KEY=<YOUR SECRET KEY>
 ```
 
-2. [Create a tool](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#setup) with the following payload:
-
-```json
-{
-  "name": "get_current_weather",
-  "description": "This tool is for getting the current weather.",
-  "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }"
-}
-```
-
 > See our documentation on [Setup for Tool Use](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#setup) for no-code and full-code guides on creating a tool and adding it to a configuration.
 
-3. Create a configuration equiped with that tool: 
-```json
-{
+2. [Create a tool](https://dev.hume.ai/reference/empathic-voice-interface-evi/tools/create-tool) with the following payload:
+
+```bash
+curl -X POST https://api.hume.ai/v0/evi/tools \
+     -H "X-Hume-Api-Key: <YOUR_HUME_API_KEY>" \
+     -H "Content-Type: application/json" \
+     -d '{
+  "name": "get_current_weather",
+  "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }",
+  "version_description": "Fetches current weather and uses celsius or fahrenheit based on location of user.",
+  "description": "This tool is for getting the current weather.",
+  "fallback_content": "Unable to fetch current weather."
+}'
+```
+
+This will yield a Tool ID, which you can assign to a new EVI configuration.
+
+3. [Create a configuration](https://dev.hume.ai/reference/empathic-voice-interface-evi/configs/create-config) equipped with that tool: 
+
+```bash
+curl -X POST https://api.hume.ai/v0/evi/configs \
+     -H "X-Hume-Api-Key: <YOUR_HUME_API_KEY>" \
+     -H "Content-Type: application/json" \
+     -d '{
+  "evi_version": "2",
   "name": "Weather Assistant Config",
+  "voice": {
+    "provider": "HUME_AI",
+    "name": "ITO"
+  },
   "language_model": {
-    "model_provider": "OPEN_AI",
-    "model_resource": "gpt-3.5-turbo"
+    "model_provider": "ANTHROPIC",
+    "model_resource": "claude-3-5-sonnet-20240620",
+    "temperature": 1
   },
   "tools": [
     {
-      "id": "<YOUR_TOOL_ID>",
-      "version": 0
+      "id": "<YOUR_TOOL_ID>"
     }
   ]
-}
+}'
 ```
 
 4. Add the Config ID to your environmental variables in your `.env` file:
