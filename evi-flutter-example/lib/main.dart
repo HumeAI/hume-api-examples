@@ -10,7 +10,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'theme.dart';
 import 'chat_card.dart';
-import 'evi_message.dart';
+import 'evi_message.dart' as evi;
 
 class ConfigManager {
   static final ConfigManager _instance = ConfigManager._internal();
@@ -77,7 +77,8 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
           title: 'Flutter with EVI',
           home: ErrorMessage(
-            message: "Error: Please set your Hume API key in main.dart (or use fetchAccessToken)",
+            message:
+                "Error: Please set your Hume API key in main.dart (or use fetchAccessToken)",
           ),
           theme: appTheme);
     }
@@ -88,10 +89,9 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  static List<Score> extractTopThreeEmotions(Map<String, dynamic> json) {
+  static List<Score> extractTopThreeEmotions(evi.Inference models) {
     // extract emotion scores from the message
-    final scores =
-        (json['models']['prosody']?['scores'] ?? {}) as Map<String, dynamic>;
+    final scores = models.prosody?.scores ?? {};
 
     // convert the emotions object into an array of key-value pairs
     final scoresArray = scores.entries.toList();
@@ -137,8 +137,9 @@ class _MyHomePageState extends State<MyHomePage> {
   // define config here for recorder
   static const config = RecordConfig(
     encoder: AudioEncoder.pcm16bits,
-    bitRate:
-        48000 * 2 * 16, // 44100 samples per second * 2 channels (stereo) * 16 bits per sample
+    bitRate: 48000 *
+        2 *
+        16, // 48000 samples per second * 2 channels (stereo) * 16 bits per sample
     sampleRate: 48000,
     numChannels: 1,
     autoGain: true,
@@ -153,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
   WebSocketChannel? _chatChannel;
   bool _isConnected = false;
   bool _isMuted = false;
-  var messages = <ChatMessage>[];
+  var chatEntries = <ChatEntry>[];
 
   // As EVI speaks, it will send audio segments to be played back. Sometimes a new segment
   // will arrive before the old audio segment has had a chance to finish playing, so -- instead
@@ -164,22 +165,18 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> _audioInputBuffer = <int>[];
 
   // EVI sends back transcripts of both the user's speech and the assistants speech, along
-  // with an analysis of the emotional content of the speech. This method takes the JSON
-  // of a message from EVI, parses it into a `ChatMessage` type and adds it to `messages` so
+  // with an analysis of the emotional content of the speech. This method takes
+  // of a message from EVI, parses it into a `ChatMessage` type and adds it to `chatEntries` so
   // it can be displayed.
-  void appendNewChatMessage(Map<String, dynamic> json) {
-    final role =
-        json['message']['role'] == 'assistant' ? Role.assistant : Role.user;
-    final timestamp = DateTime.now().toString();
-    final content = json['message']['content'] as String;
-    final topThreeEmotions = MyApp.extractTopThreeEmotions(json);
-    final message = ChatMessage(
+  void appendNewChatMessage(evi.ChatMessage chatMessage, evi.Inference models) {
+    final role = chatMessage.role == 'assistant' ? Role.assistant : Role.user;
+    final entry = ChatEntry(
         role: role,
-        timestamp: timestamp,
-        content: content,
-        scores: topThreeEmotions);
+        timestamp: DateTime.now().toString(),
+        content: chatMessage.content,
+        scores: MyApp.extractTopThreeEmotions(models));
     setState(() {
-      messages.add(message);
+      chatEntries.add(entry);
     });
   }
 
@@ -219,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    Expanded(child: ChatDisplay(messages: messages)),
+                    Expanded(child: ChatDisplay(entries: chatEntries)),
                     Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -269,7 +266,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     if (ConfigManager.instance.humeApiKey.isNotEmpty &&
         ConfigManager.instance.humeAccessToken.isNotEmpty) {
-      throw Exception('Please use either an API key or an access token, not both');
+      throw Exception(
+          'Please use either an API key or an access token, not both');
     }
 
     var uri = 'wss://api.hume.ai/v0/evi/chat';
@@ -285,19 +283,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _chatChannel!.stream.listen(
       (event) async {
-        final message = EviMessage.decode(event);
+        final message = evi.EviMessage.decode(event);
         debugPrint("Received message: ${message.type}");
         // This message contains audio data for playback.
         switch (message) {
-          case (EviErrorMessage errorMessage):
-            debugPrint("Error: ${errorMessage.rawJson['message']}");
+          case (evi.ErrorMessage errorMessage):
+            debugPrint("Error: ${errorMessage.message}");
             break;
-          case (ChatMetadataMessage chatMetadataMessage):
+          case (evi.ChatMetadataMessage chatMetadataMessage):
             debugPrint("Chat metadata: ${chatMetadataMessage.rawJson}");
             _prepareAudioSettings();
             _startRecording();
             break;
-          case (AudioOutputMessage audioOutputMessage):
+          case (evi.AudioOutputMessage audioOutputMessage):
             final data = audioOutputMessage.data;
             final rawAudio = base64Decode(data);
             Source source;
@@ -309,19 +307,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
             _enqueueAudioSegment(source);
             break;
-          case (UserInterruptionMessage _):
+          case (evi.UserInterruptionMessage _):
             _handleInterruption();
             break;
           // These messages contain the transcript text of the user's or the assistant's speech
           // as well as emotional analysis of the speech.
-          case (AssistantMessage assistantMessage):
-            appendNewChatMessage(assistantMessage.rawJson);
+          case (evi.AssistantMessage assistantMessage):
+            appendNewChatMessage(
+                assistantMessage.message, assistantMessage.models);
             break;
-          case (UserMessage userMessage):
-            appendNewChatMessage(userMessage.rawJson);
+          case (evi.UserMessage userMessage):
+            appendNewChatMessage(userMessage.message, userMessage.models);
             _handleInterruption();
             break;
-          case (UnknownMessage unknownMessage):
+          case (evi.UnknownMessage unknownMessage):
             debugPrint("Unknown message: ${unknownMessage.rawJson}");
             break;
         }

@@ -19,13 +19,13 @@ class Score {
   }
 }
 
-class ChatMessage {
+class ChatEntry {
   final Role role;
   final String timestamp;
   final String content;
   final List<Score> scores;
 
-  ChatMessage(
+  ChatEntry(
       {required this.role,
       required this.timestamp,
       required this.content,
@@ -33,7 +33,7 @@ class ChatMessage {
 }
 
 class ChatCard extends StatelessWidget {
-  final ChatMessage message;
+  final ChatEntry message;
   const ChatCard({super.key, required this.message});
 
   @override
@@ -84,17 +84,17 @@ class ChatCard extends StatelessWidget {
 }
 
 class ChatDisplay extends StatelessWidget {
-  final List<ChatMessage> messages;
-  const ChatDisplay({super.key, required this.messages});
+  final List<ChatEntry> entries;
+  const ChatDisplay({super.key, required this.entries});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView.builder(
-        itemCount: messages.length,
+        itemCount: entries.length,
         itemBuilder: (context, index) {
-          return ChatCard(message: messages[index]);
+          return ChatCard(message: entries[index]);
         },
       ),
     );
