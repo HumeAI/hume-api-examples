@@ -84,17 +84,17 @@ class ChatCard extends StatelessWidget {
 }
 
 class ChatDisplay extends StatelessWidget {
-  final List<ChatEntry> messages;
-  const ChatDisplay({super.key, required this.messages});
+  final List<ChatEntry> entries;
+  const ChatDisplay({super.key, required this.entries});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView.builder(
-        itemCount: messages.length,
+        itemCount: entries.length,
         itemBuilder: (context, index) {
-          return ChatCard(message: messages[index]);
+          return ChatCard(message: entries[index]);
         },
       ),
     );

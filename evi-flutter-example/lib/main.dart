@@ -154,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
   WebSocketChannel? _chatChannel;
   bool _isConnected = false;
   bool _isMuted = false;
-  var messages = <ChatEntry>[];
+  var chatEntries = <ChatEntry>[];
 
   // As EVI speaks, it will send audio segments to be played back. Sometimes a new segment
   // will arrive before the old audio segment has had a chance to finish playing, so -- instead
@@ -166,17 +166,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // EVI sends back transcripts of both the user's speech and the assistants speech, along
   // with an analysis of the emotional content of the speech. This method takes
-  // of a message from EVI, parses it into a `ChatMessage` type and adds it to `messages` so
+  // of a message from EVI, parses it into a `ChatMessage` type and adds it to `chatEntries` so
   // it can be displayed.
   void appendNewChatMessage(evi.ChatMessage chatMessage, evi.Inference models) {
     final role = chatMessage.role == 'assistant' ? Role.assistant : Role.user;
-    final message = ChatEntry(
+    final entry = ChatEntry(
         role: role,
         timestamp: DateTime.now().toString(),
         content: chatMessage.content,
         scores: MyApp.extractTopThreeEmotions(models));
     setState(() {
-      messages.add(message);
+      chatEntries.add(entry);
     });
   }
 
@@ -216,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    Expanded(child: ChatDisplay(messages: messages)),
+                    Expanded(child: ChatDisplay(entries: chatEntries)),
                     Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
