@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
     encoder: AudioEncoder.pcm16bits,
     bitRate: 48000 *
         2 *
-        16, // 44100 samples per second * 2 channels (stereo) * 16 bits per sample
+        16, // 48000 samples per second * 2 channels (stereo) * 16 bits per sample
     sampleRate: 48000,
     numChannels: 1,
     autoGain: true,
