@@ -11,14 +11,16 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
 ## Instructions
 
-1. Replace `humeApiKey` and (optional) `humeConfigId` constants in `lib/main.dart`. See our documentation on [getting your api keys](https://hume.docs.buildwithfern.com/docs/introduction/getting-your-api-key).
+1. `flutter pub get` to install dependencies.
+
+2. Replace `humeApiKey` and (optional) `humeConfigId` constants in `lib/main.dart`. See our documentation on [getting your api keys](https://hume.docs.buildwithfern.com/docs/introduction/getting-your-api-key).
 
     **Note:** in a production flutter app, you should not hardcode the Hume API key into the client code, the client should fetch an access token from an endpoint on your server. You should supply
     the `MY_SERVER_AUTH_URL` environment variable and uncomment the call to `fetchAccessToken` in `lib/main.dart`.
 
-2. Use `flutter run` to start the app!
+3. Use `flutter run` to start the app!
 
-3. If you are using the Android emulator, make sure to send audio to the emulator from the host.
+4. If you are using the Android emulator, make sure to send audio to the emulator from the host.
 
 ![](host-audio-screenshot.png)
 
