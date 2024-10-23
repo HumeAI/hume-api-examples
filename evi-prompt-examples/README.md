@@ -4,4 +4,4 @@ This folder contains example prompts for Hume's Empathic Voice Interface (EVI), 
 
 ## Contents
 
-- `default_prompt.txt`: This is our default prompt for EVI, used when no custom prompt is provided. It demonstrates the principles outlined in the prompting guide working together. The prompt covers aspects such as role definition, communication style, response formatting, expression handling, tool use, and prompting for voice-only conversations.****
+- `default_prompt.txt`: This is our default prompt for EVI, used when no custom prompt is provided. It demonstrates the principles outlined in the prompting guide working together. The prompt covers aspects such as role definition, communication style, response formatting, expression handling, tool use, and prompting for voice-only conversations.
