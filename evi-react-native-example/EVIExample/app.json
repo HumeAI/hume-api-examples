@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "EVIExample",
+    "slug": "EVIExample",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.EVIExample",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app uses the microphone to allow the user to talk to the EVI conversational AI interface"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.example.EVIExample"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
