@@ -13,11 +13,11 @@ from hume.core.api_error import ApiError
 from hume import MicrophoneInterface, Stream
 from utils import print_prompt, extract_top_n_emotions, print_emotion_scores
 
-class WebSocketInterface:
-    """Interface for containing the EVI WebSocket and associated socket handling behavior."""
+class WebSocketHandler:
+    """Handler for containing the EVI WebSocket and associated socket handling behavior."""
 
     def __init__(self):
-        """Construct the WebSocketInterface, initially assigning the socket to None and the byte stream to a new Stream object."""
+        """Construct the WebSocketHandler, initially assigning the socket to None and the byte stream to a new Stream object."""
         self.socket = None
         self.byte_strs = Stream.new()
 
@@ -311,23 +311,29 @@ async def main() -> None:
     # See the full list of query parameters here: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#request.query
     options = ChatConnectOptions(config_id=HUME_CONFIG_ID, secret_key=HUME_SECRET_KEY)
 
-    # Instantiate the WebSocketInterface
-    websocket_interface = WebSocketInterface()
+    # Instantiate the WebSocketHandler
+    websocket_handler = WebSocketHandler()
 
-    # Open the WebSocket connection with the configuration options and the interface's handlers
+    # Open the WebSocket connection with the configuration options and the handler's functions
     async with client.empathic_voice.chat.connect_with_callbacks(
         options=options,
-        on_open=websocket_interface.on_open,
-        on_message=websocket_interface.on_message,
-        on_close=websocket_interface.on_close,
-        on_error=websocket_interface.on_error
+        on_open=websocket_handler.on_open,
+        on_message=websocket_handler.on_message,
+        on_close=websocket_handler.on_close,
+        on_error=websocket_handler.on_error
     ) as socket:
 
         # Set the socket instance in the handler
-        websocket_interface.set_socket(socket)
+        websocket_handler.set_socket(socket)
 
         # Create an asynchronous task to continuously detect and process input from the microphone, as well as play audio
-        microphone_task = asyncio.create_task(MicrophoneInterface.start(socket, allow_user_interrupt=False, byte_stream=websocket_interface.byte_strs))
+        microphone_task = asyncio.create_task(
+            MicrophoneInterface.start(
+                socket,
+                allow_user_interrupt=False,
+                byte_stream=websocket_handler.byte_strs
+            )
+        )
         
         # Create an asynchronous task to send messages over the WebSocket connection
         message_sending_task = asyncio.create_task(sending_handler(socket))
