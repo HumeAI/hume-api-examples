@@ -186,7 +186,7 @@ async def main() -> None:
     # Instantiate the WebSocketHandler
     websocket_handler = WebSocketHandler()
 
-    # Open the WebSocket connection with the configuration options and the interface's handlers
+    # Open the WebSocket connection with the configuration options and the handler's functions
     async with client.empathic_voice.chat.connect_with_callbacks(
         options=options,
         on_open=websocket_handler.on_open,
