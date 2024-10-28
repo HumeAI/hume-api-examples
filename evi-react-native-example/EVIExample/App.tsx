@@ -17,6 +17,14 @@ interface ChatEntry {
   content: string;
 }
 
+const isValidBase64 = (str: string) => {
+  try {
+    return btoa(atob(str)) === str;
+  } catch (err) {
+    return false;
+  }
+}
+
 const hume = new HumeClient({
   apiKey: process.env.EXPO_PUBLIC_HUME_API_KEY || ''
 })
@@ -42,28 +50,46 @@ const App = () => {
       const chatSocket = hume.empathicVoice.chat.connect({
         configId: process.env.EXPO_PUBLIC_HUME_CONFIG_ID,
       })
+      chatSocket.on('open', () => {
+        chatSocket.sendSessionSettings({
+          audio: {
+            // @ts-ignore
+            encoding: "linear16",
+            channels: 1,
+            sampleRate: 48000,
+          }
+        })
+        console.log("Socket opened");
+      })
       chatSocket.on('message', handleIncomingMessage);
 
       chatSocket.on('error', (error) => {
         console.error("WebSocket Error:", error);
       });
 
+      console.log('Registering handler')
       chatSocket.on('close', () => {
-        console.log("WebSocket Connection Closed");
+        console.log('Socket closing')
         setIsConnected(false);
       });
 
       chatSocketRef.current = chatSocket;
 
-      NativeAudio.onAudioInput(({base64EncodedAudio}: NativeAudio.AudioEventPayload) => {
-        chatSocket.sendAudioInput({data: base64EncodedAudio});
+      NativeAudio.onAudioInput(({ base64EncodedAudio }: NativeAudio.AudioEventPayload) => {
+        console.log('Sending audio input...')
+        chatSocket.sendAudioInput({ data: base64EncodedAudio });
       })
     } else {
       NativeAudio.stopRecording();
+      if (chatSocketRef.current) {
+        chatSocketRef.current.close();
+      }
     }
     return () => {
       NativeAudio.stopRecording();
-      chatSocketRef.current?.close();
+      if (chatSocketRef.current && chatSocketRef.current.readyState === WebSocket.OPEN) {
+        chatSocketRef.current?.close();
+      }
     }
   }, [isConnected]);
 
@@ -79,6 +105,8 @@ const App = () => {
         content: message.content,
       };
       setChatEntries((prev) => [...prev, chatEntry]);
+    } else {
+      console.log(message)
     }
   };
 
@@ -87,9 +115,6 @@ const App = () => {
   };
 
   const disconnectFromWebSocket = () => {
-    if (chatSocketRef.current) {
-      chatSocketRef.current.close();
-    }
     setIsConnected(false);
   };
 

@@ -2,10 +2,38 @@ import ExpoModulesCore
 import AVFoundation
 
 public class AudioModule: Module {
-    private var audioEngine: AVAudioEngine?
-    private var inputNode: AVAudioInputNode?
-    private var audioPlayerNode: AVAudioPlayerNode?
-    
+    private lazy var audioEngine = {
+        AVAudioEngine()
+    }()
+    private lazy var inputNode = {
+        do {
+            /// This outputs a lot of warnings to the console but still cancels the echo. I'd love to figure out why but haven't been unsuccessful so far
+            try inputNode.setVoiceProcessingEnabled(true)
+        } catch {
+            onError("Error enabling voice processing: \(error.localizedDescription)")
+        }
+        return self.audioEngine.inputNode
+    }()
+
+    private static let desiredInputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: sampleRate, channels: 1, interleaved: false)
+
+    private lazy var nativeInputFormat = {
+        self.inputNode.inputFormat(forBus: 0)
+    }()
+    private static var audioConverter = {
+        AVAudioConverter(from: nativeInputFormat, to: desiredInputFormat)
+    }()
+    private lazy var bufferSize: AVAudioFrameCount = {
+        // 100ms of audio
+        UInt32(self.nativeInputFormat.sampleRate * 0.1)
+    }()
+    private lazy var audioPlayerNode = {
+        AVAudioPlayerNode()
+    }()
+    private lazy var audioSession = {
+        AVAudioSession.sharedInstance()
+    }()
+
     private static let sampleRate: Double = 44100
     private static let channels: AVAudioChannelCount = 2
     private static let playbackAudioFormat = AVAudioFormat(
@@ -57,55 +85,42 @@ public class AudioModule: Module {
         }
     }
     
+    
     private func startRecording() {
+        // TODO: probably it would be good to surface error conditions here to the
+        // Javascript side in a way they can catch
         do {
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.playAndRecord, mode: .default, options: [])
-            try audioSession.setActive(true)
+            try self.audioSession.setCategory(.playAndRecord, mode: .default)
+            try self.audioSession.setActive(true)
         } catch {
             print("Failed to activate audio session: \(error.localizedDescription)")
             return
         }
-        
-        let audioEngine = AVAudioEngine()
-        self.audioEngine = audioEngine
-        let inputNode = audioEngine.inputNode
-        self.inputNode = inputNode
-        let format = inputNode.inputFormat(forBus: 0)
-        let bufferSize = AVAudioFrameCount(format.sampleRate * 0.1) // 100ms of audio
-        
-        inputNode.installTap(onBus: 0, bufferSize: bufferSize, format: format) { [weak self] (buffer, time) in
+
+        inputNode.installTap(onBus: 0, bufferSize: self.bufferSize, format: self.inputFormat) { [weak self] (buffer, time) in
             let byteLength = Int(buffer.frameLength) * Int(buffer.format.streamDescription.pointee.mBytesPerFrame)
             let audioData = Data(bytes: buffer.audioBufferList.pointee.mBuffers.mData!, count: byteLength)
             let base64String = audioData.base64EncodedString()
             self?.sendEvent("onAudioInput", ["base64EncodedAudio": base64String])
         }
         
-        do {
-            try audioEngine.start()
-            print("Audio engine started successfully")
-        } catch {
-            print("Failed to start audio engine: \(error.localizedDescription)")
+        if (!audioEngine.isRunning) {
+            do {
+                try audioEngine.start()
+                print("Audio engine started successfully")
+            } catch {
+                print("Failed to start audio engine: \(error.localizedDescription)")
+            }
         }
     }
     
     private func stopRecording() {
-        audioEngine?.stop()
-        self.inputNode?.removeTap(onBus: 0)
-    }
-    
-    private func initAudioPlayer() {
-        guard let audioEngine = self.audioEngine else { return }
-        let audioPlayerNode = AVAudioPlayerNode()
-        self.audioPlayerNode = audioPlayerNode
-        audioEngine.connect(audioPlayerNode, to: audioEngine.mainMixerNode, format: audioEngine.mainMixerNode.outputFormat(forBus: 0))
+        audioEngine.stop()
+        self.inputNode.removeTap(onBus: 0)
     }
     
     private func playBase64Audio(_ base64String: String) async throws -> Bool {
-        if self.audioPlayerNode == nil {
-            initAudioPlayer()
-        }
-        guard let audioPlayerNode else { return false }
+        self.audioEngine.connect(self.audioPlayerNode, to: self.audioEngine.mainMixerNode, format: self.audioEngine.mainMixerNode.outputFormat(forBus: 0))
         
         guard let audioData = Data(base64Encoded: base64String) else {
             throw NSError(domain: "AudioModule", code: 2, userInfo: [NSLocalizedDescriptionKey: "Invalid Base64 string"])
@@ -119,7 +134,7 @@ public class AudioModule: Module {
         
         audioData.withUnsafeBytes { bufferPtr in
             guard let audioPtr = bufferPtr.bindMemory(to: Float.self).baseAddress else { return }
-            buffer.floatChannelData?.pointee.assign(from: audioPtr, count: Int(frameLength))
+            buffer.floatChannelData?.pointee.update(from: audioPtr, count: Int(frameLength))
         }
         
         return try await withCheckedThrowingContinuation { continuation in

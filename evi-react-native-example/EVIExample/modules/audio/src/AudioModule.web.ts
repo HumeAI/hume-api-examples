@@ -3,11 +3,17 @@ import { EventEmitter } from 'expo-modules-core';
 const emitter = new EventEmitter({} as any);
 
 export default {
-  PI: Math.PI,
-  async setValueAsync(value: string): Promise<void> {
-    emitter.emit('onChange', { value });
+  async getPermissions() {
+    console.log('Pretending to get permissions...')
   },
-  hello() {
-    return 'Hello world! 👋';
+  async startRecording(): Promise<void> {
+    console.log('Pretending to start recording...')
   },
+  async stopRecording(): Promise<void> {
+    console.log('Pretending to stop recording...')
+    emitter.removeAllListeners('onAudioInput');
+  },
+  async playAudio(base64EncodedAudio: string): Promise<void> {
+    console.log('Pretending to play audio...')
+  }
 };
