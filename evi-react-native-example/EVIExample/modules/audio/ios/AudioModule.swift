@@ -20,6 +20,7 @@ public class AudioModule: Module {
     private lazy var nativeInputFormat = {
         self.inputNode.inputFormat(forBus: 0)
     }()
+
     private static var audioConverter = {
         AVAudioConverter(from: nativeInputFormat, to: desiredInputFormat)
     }()
