@@ -11,9 +11,15 @@ export default {
   },
   async stopRecording(): Promise<void> {
     console.log('Pretending to stop recording...')
-    emitter.removeAllListeners('onAudioInput');
+    //emitter.removeAllListeners('onAudioInput');
   },
   async playAudio(base64EncodedAudio: string): Promise<void> {
     console.log('Pretending to play audio...')
+  },
+  async mute(): Promise<void> {
+    console.log('Pretending to mute...')
+  },
+  async unmute(): Promise<void> {
+    console.log('Pretending to unmute...')
   }
 };
