@@ -1,0 +1,335 @@
+{
+  "version": "36.0.0",
+  "artifacts": {
+    "ElizaStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ElizaStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ElizaStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ElizaStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/914151f6f3dff61235ecc07604e20d47eefdda2a4051d47aff607ccea64c12dd.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ElizaStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ElizaStack.assets"
+      ],
+      "metadata": {
+        "/ElizaStack/ApplicationVpc/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpc8AE6A859"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet1Subnet7014005F"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet1RouteTable6A647E6A"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet1RouteTableAssociation802F127D"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet1DefaultRoute56736F6C"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet1EIP13A4D91E"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet1NATGateway945161E1"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet2SubnetE792D9E8"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet2RouteTableA5B5B5A5"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet2RouteTableAssociation396F9A40"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet2DefaultRoute7C19233F"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet2/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet2EIPC49DC683"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PublicSubnet2/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPublicSubnet2NATGatewayFE72F43F"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PrivateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPrivateSubnet1Subnet2EB6F2CA"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PrivateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPrivateSubnet1RouteTable77A0065C"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PrivateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPrivateSubnet1RouteTableAssociationAAD57E37"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PrivateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPrivateSubnet1DefaultRoute12A237D9"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PrivateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPrivateSubnet2SubnetD832FF78"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PrivateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPrivateSubnet2RouteTableAFAC3CEF"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PrivateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPrivateSubnet2RouteTableAssociation192E55E3"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/PrivateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcPrivateSubnet2DefaultRouteA08F9FF8"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcIGWAE2F3715"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcVPCGWF6FDF6ED"
+          }
+        ],
+        "/ElizaStack/ApplicationVpc/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationVpcRestrictDefaultSecurityGroupCustomResourceBAF9E77E"
+          }
+        ],
+        "/ElizaStack/LatestNodeRuntimeMap": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LatestNodeRuntimeMap"
+          }
+        ],
+        "/ElizaStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+          }
+        ],
+        "/ElizaStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+          }
+        ],
+        "/ElizaStack/Cluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ClusterEB0386A7"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/LB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceLB253350AD"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/LB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceLBSecurityGroupB7B95D8B"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/LB/SecurityGroup/to ElizaStackApplicationFargateServiceSecurityGroupDB87F235:8000": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceLBSecurityGrouptoElizaStackApplicationFargateServiceSecurityGroupDB87F23580008C03FB03"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/LB/PublicListener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceLBPublicListener96242D1D"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/LB/PublicListener/ECSGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceLBPublicListenerECSGroup416E2F95"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/LoadBalancerDNS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceLoadBalancerDNS4B3CC412"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/ServiceURL": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceServiceURL85241383"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/TaskDef/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceTaskDefTaskRole7E741D7D"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/TaskDef/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceTaskDefC9027561"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/TaskDef/web/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceTaskDefwebLogGroup9B9EE847"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/TaskDef/ExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceTaskDefExecutionRole3013AB55"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/TaskDef/ExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceTaskDefExecutionRoleDefaultPolicy0FE3C6D2"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/Service/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateService9E1CC844"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/Service/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceSecurityGroup344CD373"
+          }
+        ],
+        "/ElizaStack/ApplicationFargateService/Service/SecurityGroup/from ElizaStackApplicationFargateServiceLBSecurityGroup00A999D7:8000": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationFargateServiceSecurityGroupfromElizaStackApplicationFargateServiceLBSecurityGroup00A999D780006B052FCB"
+          }
+        ],
+        "/ElizaStack/LoadBalancerDNS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LoadBalancerDNS"
+          }
+        ],
+        "/ElizaStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ElizaStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ElizaStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ElizaStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ElizaStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
