@@ -55,7 +55,7 @@ public class AudioModule: Module {
             self.soundPlayer.stopPlayback()
         }
     }
-
+    
     private func getPermissions() async throws -> Bool {
         let audioSession = AVAudioSession.sharedInstance()
         switch audioSession.recordPermission {
@@ -77,7 +77,7 @@ public class AudioModule: Module {
     private func ensureInittedAudioSession() throws {
         if self.inittedAudioSession { return }
         let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.playAndRecord, mode: .default)
+        try audioSession.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP])
         try audioSession.setActive(true)
         inittedAudioSession = true
     }
