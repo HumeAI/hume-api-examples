@@ -84,15 +84,15 @@ You can sign up for a free SerpApi key that is good for 100 free searches. Once 
 * Sign up for an account [here.](https://serpapi.com/users/sign_up)
 
 ```text
-SERPAPI_API_KEY=9a71b5441a2983748991d9e47b8aa54eb235f282d058e7e6d95dad854e315433
-
+SERPAPI_API_KEY=<your-serpapi-api-key>
 ```
+
 ### 9. Sign up (if you haven't already) for an OpenAI API key and also add it to the `.env` file
 
 Your `.env` file should look something like this:
 ```text
-SERPAPI_API_KEY=9a71b5441a2983748991d9e47b8aa5482d058e7e6d95dad854e315433
-OPENAI_API_KEY=sk-pFgGbNkxB95472398475932NLfT3BlbkFJBC6YKGKjjjjkHezP48ZK7
+SERPAPI_API_KEY=<your-serpapi-api-key>
+OPENAI_API_KEY=<your-openai-api-key>
 
 ```
 
