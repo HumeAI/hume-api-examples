@@ -16,8 +16,9 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`evi-python-function-calling`](/evi-python-function-calling/README.md)          | Python     | Hume Python SDK |
 | [`evi-python-api-example`](/evi-python-api-example/README.md)                    | Python     |                 |
 | [`evi-touchdesigner-example`](/evi-touchdesigner-example/README.md)              | Python     | TouchDesigner   |
-| [`evi-custom-language-model`](/evi-custom-language-model/README.md)              | Python     |                 |
-| [`evi-modal-clm`](/evi-modal-clm/README.md)                                      | Python     | Modal           |
+| [`evi-custom-language-model-wss`](/evi-custom-language-model-wss/README.md)              | Python     |                 |
+| [`evi-custom-language-model-sse`](/evi-custom-language-model-sse/README.md)              | Python     |                 |
+| [`evi-wss-clm-endpoint`](/evi-wss-clm-endpoint/README.md)                                      | Python     | Modal           |
 
 ## [Expression Measurement API](https://dev.hume.ai/docs/expression-measurement-api/overview)
 
