@@ -9,7 +9,6 @@ import {
   LayoutAnimation,
 } from 'react-native';
 
-let outstanding = 0
 // We use Hume's low-level typescript SDK for this example.
 // The React SDK (@humeai/voice-react) does not support React Native.
 import { HumeClient, type Hume } from 'hume'
@@ -34,16 +33,14 @@ class AudioQueue {
   private currentClip: Promise<void> | null = null;
 
   private advance() {
-    console.log('Advancing audio queue...')
     if (this.tasks.length === 0) {
       this.currentClip = null;
-      return
+
+      this.currentClip = this.tasks.shift()!().then(() => this.advance())
     }
-    this.currentClip = this.tasks.shift()!().then(() => this.advance())
   }
 
   public add(playAudio: () => Promise<void>) {
-    console.log('Adding to queue...')
     this.tasks.push(playAudio)
 
     if (!this.currentClip) {
@@ -52,7 +49,6 @@ class AudioQueue {
   }
 
   public clear() {
-    console.log('Clearing audio queue...')
     this.tasks = []
     this.currentClip = null
   }
@@ -79,68 +75,75 @@ const App = () => {
 
   const chatSocketRef = useRef<Hume.empathicVoice.chat.ChatSocket | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      if (isConnected) {
-        try {
-          await NativeAudio.getPermissions()
-        } catch (error) {
-          console.error('Failed to get permissions:', error)
+  const handleConnect = async () => {
+    try {
+      await NativeAudio.getPermissions()
+    } catch (error) {
+      console.error('Failed to get permissions:', error)
+    }
+    try {
+      await NativeAudio.startRecording()
+    } catch (error) {
+      console.error('Failed to start recording:', error)
+    }
+
+    const chatSocket = hume.empathicVoice.chat.connect({
+      configId: process.env.EXPO_PUBLIC_HUME_CONFIG_ID,
+    })
+    chatSocket.on('open', () => {
+      // The code within the native modules converts the default system audio format
+      // system audio to linear 16 PCM, a standard format recognized by EVI. For linear16 PCM
+      // you must send a `session_settings` message to EVI to inform EVI of the 
+      // correct sampling rate.
+      chatSocket.sendSessionSettings({
+        audio: {
+          encoding: "linear16",
+          channels: 1,
+          sampleRate: NativeAudio.sampleRate,
         }
-        try {
-          await NativeAudio.startRecording()
-        } catch (error) {
-          console.error('Failed to start recording:', error)
-        }
+      })
+    })
+    chatSocket.on('message', handleIncomingMessage);
 
-        const chatSocket = hume.empathicVoice.chat.connect({
-          configId: process.env.EXPO_PUBLIC_HUME_CONFIG_ID,
-        })
-        chatSocket.on('open', () => {
-          // The code within the native modules converts the default system audio format
-          // system audio to linear 16 PCM, a standard format recognized by EVI. For linear16 PCM
-          // you must send a `session_settings` message to EVI to inform EVI of the 
-          // correct sampling rate.
-          chatSocket.sendSessionSettings({
-            audio: {
-              encoding: "linear16",
-              channels: 1,
-              sampleRate: NativeAudio.sampleRate,
-            }
-          })
-        })
-        chatSocket.on('message', handleIncomingMessage);
+    chatSocket.on('error', (error) => {
+      console.error("WebSocket Error:", error);
+    });
 
-        chatSocket.on('error', (error) => {
-          console.error("WebSocket Error:", error);
-        });
+    chatSocket.on('close', () => {
+      setIsConnected(false);
+    });
 
-        console.log('Registering handler')
-        chatSocket.on('close', () => {
-          console.log('Socket closing')
-          setIsConnected(false);
-        });
+    chatSocketRef.current = chatSocket;
 
-        chatSocketRef.current = chatSocket;
-
-        NativeAudio.onAudioInput(({ base64EncodedAudio }: NativeAudio.AudioEventPayload) => {
-          if (chatSocket.readyState !== WebSocket.OPEN) {
-            console.log('Socket not open, not sending audio input...')
-            return
-          }
-          chatSocket.sendAudioInput({ data: base64EncodedAudio });
-        })
-      } else {
-        try {
-          await NativeAudio.stopRecording()
-        } catch (error) {
-          console.error('Error while stopping recording', error)
-        }
-        if (chatSocketRef.current) {
-          chatSocketRef.current.close();
-        }
+    NativeAudio.onAudioInput(({ base64EncodedAudio }: NativeAudio.AudioEventPayload) => {
+      if (chatSocket.readyState !== WebSocket.OPEN) {
+        return
       }
-    })()
+      chatSocket.sendAudioInput({ data: base64EncodedAudio });
+    })
+  }
+  const handleDisconnect = async () => {
+    try {
+      await NativeAudio.stopRecording()
+      await NativeAudio.stopPlayback()
+    } catch (error) {
+      console.error('Error while stopping recording', error)
+    }
+    if (chatSocketRef.current) {
+      chatSocketRef.current.close();
+    }
+  }
+
+  useEffect(() => {
+    if (isConnected) {
+      handleConnect().catch((error) => {
+        console.error('Error while connecting:', error)
+      })
+    } else {
+      handleDisconnect().catch((error) => {
+        console.error('Error while disconnecting:', error)
+      })
+    }
     return () => {
       NativeAudio.stopRecording().catch((error) => {
         console.error('Error while stopping recording', error)
@@ -219,7 +222,6 @@ const App = () => {
         console.log(`Received unhandled message type: ${message.type}`);
         break;
       default:
-        const _: never = message;
         console.error(`Unexpected message`);
         console.error(message)
         break;
