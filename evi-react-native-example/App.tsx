@@ -72,6 +72,17 @@ const audioQueue = {
 };
 
 const App = () => {
+  if (!process.env.EXPO_PUBLIC_HUME_API_KEY) {
+    return (
+      <View style={styles.appBackground}>
+        <SafeAreaView style={styles.container}>
+          <Text style={styles.headerText}>
+            Please set the HUME_API_KEY environment variable in your .env file.
+          </Text>
+        </SafeAreaView>
+      </View>
+    );
+  }
   const [isConnected, setIsConnected] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [chatEntries, setChatEntries] = useState<ChatEntry[]>([]);
@@ -137,7 +148,6 @@ const App = () => {
         if (chatSocket.readyState !== WebSocket.OPEN) {
           return;
         }
-        console.log(typeof base64EncodedAudio)
         chatSocket.sendAudioInput({ data: base64EncodedAudio });
       }
     );
