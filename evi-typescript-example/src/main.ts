@@ -89,7 +89,7 @@ import './styles.css';
     }
 
     // instantiates WebSocket and establishes an authenticated connection
-    socket = await client.empathicVoice.chat.connect({
+    socket = client.empathicVoice.chat.connect({
       configId: import.meta.env.VITE_HUME_CONFIG_ID || null,
       resumedChatGroupId: chatGroupId,
     });
@@ -143,6 +143,7 @@ import './styles.css';
 
     // instantiate the media recorder
     recorder = new MediaRecorder(audioStream, { mimeType });
+    console.log(recorder)
 
     // callback for when recorded chunk is available to be processed
     recorder.ondataavailable = async ({ data }) => {
@@ -151,6 +152,7 @@ import './styles.css';
 
       // base64 encode audio data
       const encodedAudioData = await convertBlobToBase64(data);
+      console.log(encodedAudioData.slice(0, 20))
 
       // define the audio_input message JSON
       const audioInput: Omit<Hume.empathicVoice.AudioInput, 'type'> = {
