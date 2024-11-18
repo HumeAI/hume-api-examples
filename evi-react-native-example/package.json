@@ -4,7 +4,8 @@
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "android": "echo 'No android example yet, coming soon!' && exit 1"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
