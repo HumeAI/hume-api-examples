@@ -20,7 +20,7 @@ public class AudioModule: Module {
     public func definition() -> ModuleDefinition {
         Name("Audio")
         
-        Constants(["sampleRate": Microphone.sampleRate])
+        Constants(["sampleRate": Microphone.sampleRate, "isLinear16PCM": Microphone.isLinear16PCM])
         
         Events("onAudioInput", "onError")
         

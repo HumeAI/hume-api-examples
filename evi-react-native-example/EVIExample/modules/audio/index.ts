@@ -30,6 +30,7 @@ export async function unmute(): Promise<void> {
 }
 
 export const sampleRate = AudioModule.sampleRate
+export const isLinear16PCM = AudioModule.isLinear16PCM
 
 const emitter = new EventEmitter(AudioModule ?? NativeModulesProxy.Audio);
 export async function stopRecording(): Promise<void> {

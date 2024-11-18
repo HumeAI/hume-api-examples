@@ -110,13 +110,15 @@ const App = () => {
       // system audio to linear 16 PCM, a standard format recognized by EVI. For linear16 PCM
       // you must send a `session_settings` message to EVI to inform EVI of the
       // correct sampling rate.
-      chatSocket.sendSessionSettings({
-        audio: {
-          encoding: "linear16",
-          channels: 1,
-          sampleRate: NativeAudio.sampleRate,
-        },
-      });
+      if (NativeAudio.isLinear16PCM) {
+        chatSocket.sendSessionSettings({
+          audio: {
+            encoding: "linear16",
+            channels: 1,
+            sampleRate: NativeAudio.sampleRate,
+          },
+        });
+      }
     });
     chatSocket.on("message", handleIncomingMessage);
 
@@ -135,6 +137,7 @@ const App = () => {
         if (chatSocket.readyState !== WebSocket.OPEN) {
           return;
         }
+        console.log(typeof base64EncodedAudio)
         chatSocket.sendAudioInput({ data: base64EncodedAudio });
       }
     );
