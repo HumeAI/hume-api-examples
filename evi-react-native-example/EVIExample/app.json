@@ -17,16 +17,6 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app uses the microphone to allow the user to talk to the EVI conversational AI interface"
       }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.example.EVIExample"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }
