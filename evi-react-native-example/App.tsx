@@ -29,9 +29,6 @@ interface ChatEntry {
   content: string;
 }
 
-const hume = new HumeClient({
-  apiKey: process.env.EXPO_PUBLIC_HUME_API_KEY || "",
-});
 
 /**
  * An AudioClip is a function that you can call to play some audio.
@@ -71,24 +68,41 @@ const audioQueue = {
   },
 };
 
-const App = () => {
-  if (!process.env.EXPO_PUBLIC_HUME_API_KEY) {
-    return (
-      <View style={styles.appBackground}>
-        <SafeAreaView style={styles.container}>
-          <Text style={styles.headerText}>
-            Please set the HUME_API_KEY environment variable in your .env file.
-          </Text>
-        </SafeAreaView>
-      </View>
-    );
+// WARNING! For development only. In production, the app should hit your own backend server to get an access token, using "token authentication" (see https://dev.hume.ai/docs/introduction/api-key#token-authentication)
+const humeClientWithApiKey = () => {
+  return new HumeClient({
+    apiKey: process.env.EXPO_PUBLIC_HUME_API_KEY || "",
+  });
+}
+
+// For production use. Uncomment the call site within `startClient` to use.
+const humeClientWithAccessToken = async () => {
+  const url = process.env.EXPO_PUBLIC_MY_SERVER_AUTH_URL
+  if (!url) {
+    throw new Error("Please set EXPO_PUBLIC_MY_SERVER in your .env file");
   }
+  const response = await fetch(url);
+  const { accessToken } = await response.json();
+  return new HumeClient({
+    accessToken,
+  });
+}
+
+const App = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [chatEntries, setChatEntries] = useState<ChatEntry[]>([]);
+  const humeRef = useRef<HumeClient | null>(null);
   const addChatEntry = (entry: ChatEntry) => {
     setChatEntries((prev) => [...prev, entry]);
   };
+  const startClient = async () => {
+    // Uncomment this to use an access token in production.
+    // humeRef.current = await humeClientWithAccessToken();
+
+    // For development only.
+    humeRef.current = humeClientWithApiKey();
+  }
 
   // Scroll to the bottom of the chat display when new messages are added
   const scrollViewRef = useRef<ScrollView | null>(null);
@@ -102,6 +116,11 @@ const App = () => {
   const chatSocketRef = useRef<Hume.empathicVoice.chat.ChatSocket | null>(null);
 
   const handleConnect = async () => {
+    // Access tokens expire, so the best practice is to initialize
+    // a Hume Client with a new access token at the start of each
+    // chat session.
+    await startClient();
+    const hume = humeRef.current!;
     try {
       await NativeAudio.getPermissions();
     } catch (error) {
