@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   LayoutAnimation,
 } from "react-native";
-import {useEvent} from 'expo'
+import { useEvent } from 'expo'
 
 // We use Hume's low-level typescript SDK for this example.
 // The React SDK (@humeai/voice-react) does not support React Native.
@@ -89,16 +89,14 @@ const App = () => {
     } catch (error) {
       console.error("Failed to get permissions:", error);
     }
-    try {
-      await NativeAudio.startRecording();
-    } catch (error) {
-      console.error("Failed to start recording:", error);
-    }
 
     const chatSocket = hume.empathicVoice.chat.connect({
       configId: process.env.EXPO_PUBLIC_HUME_CONFIG_ID,
     });
     chatSocket.on("open", () => {
+      NativeAudio.startRecording().catch(error => {
+        console.error("Failed to start recording:", error);
+      });
       // The code within the native modules converts the default system audio format
       // system audio to linear 16 PCM, a standard format recognized by EVI. For linear16 PCM
       // you must send a `session_settings` message to EVI to inform EVI of the
@@ -124,7 +122,6 @@ const App = () => {
     });
 
     chatSocketRef.current = chatSocket;
-
 
     NativeAudio.addListener('onAudioInput',
       ({ base64EncodedAudio }: AudioEventPayload) => {
