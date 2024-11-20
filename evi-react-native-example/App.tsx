@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   LayoutAnimation,
 } from "react-native";
+import {useEvent} from 'expo'
 
 // We use Hume's low-level typescript SDK for this example.
 // The React SDK (@humeai/voice-react) does not support React Native.
@@ -20,7 +21,7 @@ import { HumeClient, type Hume } from "hume";
 //
 // The provided native module is a good starting place, but you should
 // modify it to fit the audio recording needs of your specific app.
-import * as NativeAudio from "./modules/audio";
+import NativeAudio, { AudioEventPayload } from "./modules/audio";
 
 // Represents a chat message in the chat display.
 interface ChatEntry {
@@ -162,8 +163,9 @@ const App = () => {
 
     chatSocketRef.current = chatSocket;
 
-    NativeAudio.onAudioInput(
-      ({ base64EncodedAudio }: NativeAudio.AudioEventPayload) => {
+
+    NativeAudio.addListener('onAudioInput',
+      ({ base64EncodedAudio }: AudioEventPayload) => {
         if (chatSocket.readyState !== WebSocket.OPEN) {
           return;
         }
@@ -195,7 +197,7 @@ const App = () => {
       });
     }
     const onUnmount = () => {
-      NativeAudio.stopRecording().catch((error) => {
+      NativeAudio.stopRecording().catch((error: any) => {
         console.error("Error while stopping recording", error);
       });
       if (

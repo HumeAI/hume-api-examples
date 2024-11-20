@@ -1,5 +1,15 @@
-import { requireNativeModule } from 'expo-modules-core';
+import { NativeModule, requireNativeModule } from 'expo';
 
-// It loads the native module object from the JSI or falls back to
-// the bridge module (from NativeModulesProxy) if the remote debugger is on.
-export default requireNativeModule('Audio');
+import { AudioModuleEvents } from './Audio.types';
+
+declare class AudioModule extends NativeModule<AudioModuleEvents> {
+  getPermissions(): Promise<void>;
+  startRecording(): Promise<void>;
+  playAudio(base64EncodedAudio: string): Promise<void>;
+  stopPlayback(): Promise<void>;
+  mute(): Promise<void>;
+  unmute(): Promise<void>;
+}
+
+// This call loads the native module object from the JSI.
+export default requireNativeModule<AudioModule>('Audio');
