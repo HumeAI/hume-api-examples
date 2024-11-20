@@ -2,6 +2,9 @@ import ExpoModulesCore
 import AVFoundation
 import Foundation
 
+enum MicrophoneError: Error {
+    case conversionFailed(details: String)
+}
 public class Microphone {
     public static let sampleRate: Double = 44100
     public static let isLinear16PCM: Bool = true
@@ -15,7 +18,7 @@ public class Microphone {
     private var audioEngine: AVAudioEngine
     private var inputNode: AVAudioInputNode
     private var isMuted: Bool = false
-    private var onError: ((Error) -> Void)?
+    private var onError: ((MicrophoneError) -> Void)?
     
     public init() {
         self.isMuted = false
@@ -78,10 +81,10 @@ public class Microphone {
                 return
             }
             if error != nil {
-                self.onError?(error!)
+                self.onError?(MicrophoneError.conversionFailed(details: error!.localizedDescription))
                 return
             }
-            self.onError?(NSError(domain: "AudioModule", code: 1, userInfo: [NSLocalizedDescriptionKey: "Unexpected status during audio conversion: \(status)"]))
+            self.onError?(MicrophoneError.conversionFailed(details: "Unexpected status during audio conversion: \(status)"))
         }
         
         if (!audioEngine.isRunning) {

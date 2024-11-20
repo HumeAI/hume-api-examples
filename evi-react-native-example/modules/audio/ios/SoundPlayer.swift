@@ -2,6 +2,11 @@ import ExpoModulesCore
 import AVFoundation
 import Foundation
 
+enum SoundPlayerError: Error {
+    case invalidBase64String
+    case couldNotPlayAudio
+}
+
 // This is a simple sound player that uses the AVAudioPlayer API to supports playing a single audio
 // clip at a time. Maintaining a queue of pending audio clips is left to the user (to be done
 // in Javascript).
@@ -24,7 +29,7 @@ public class SoundPlayer {
         return try await withUnsafeThrowingContinuation { continuation in
             do {
                 guard let data = Data(base64Encoded: base64String) else {
-                    continuation.resume(throwing: NSError(domain: "AudioModule", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid base64 string"]))
+                    continuation.resume(throwing: SoundPlayerError.invalidBase64String)
                     return
                 }
                 audioPlayer = try AVAudioPlayer(data: data, fileTypeHint: AVFileType.wav.rawValue)
@@ -44,7 +49,7 @@ public class SoundPlayer {
 
 
                 if (!result) {
-                    continuation.resume(throwing: NSError(domain: "AudioModule", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not play audio"]))
+                    continuation.resume(throwing: SoundPlayerError.couldNotPlayAudio)
                 }
             } catch {
                 continuation.resume(throwing: error)

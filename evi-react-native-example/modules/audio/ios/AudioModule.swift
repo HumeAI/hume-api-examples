@@ -1,5 +1,5 @@
-import ExpoModulesCore
 import AVFoundation
+import ExpoModulesCore
 import Foundation
 
 public class AudioModule: Module {
@@ -9,7 +9,12 @@ public class AudioModule: Module {
     private lazy var microphone: Microphone = {
         let microphone = Microphone()
         microphone.onError({ error in
-            self.sendEvent("onError", ["error": error.localizedDescription])
+            switch error {
+            case MicrophoneError.conversionFailed(let details):
+                self.sendEvent("onError", ["error": details])
+            default:
+                self.sendEvent("onError", ["error": "Unknown recording error"])
+            }
         })
         return microphone
     }()
@@ -19,27 +24,27 @@ public class AudioModule: Module {
 
     public func definition() -> ModuleDefinition {
         Name("Audio")
-        
+
         Constants(["sampleRate": Microphone.sampleRate, "isLinear16PCM": Microphone.isLinear16PCM])
-        
+
         Events("onAudioInput", "onError")
-        
+
         AsyncFunction("getPermissions") {
-            return try await self.getPermissions();
+            return try await self.getPermissions()
         }
-        
+
         AsyncFunction("startRecording") {
             try ensureInittedAudioSession()
             try self.microphone.startRecording(onBase64EncodedAudio: { (data: String) in
                 self.sendEvent("onAudioInput", ["base64EncodedAudio": data])
             })
         }
-        
+
         AsyncFunction("stopRecording") {
             try ensureInittedAudioSession()
             self.microphone.stopRecording()
         }
-        
+
         AsyncFunction("mute") {
             self.microphone.mute()
         }
@@ -55,7 +60,7 @@ public class AudioModule: Module {
             self.soundPlayer.stopPlayback()
         }
     }
-    
+
     private func getPermissions() async throws -> Bool {
         let audioSession = AVAudioSession.sharedInstance()
         switch audioSession.recordPermission {
@@ -70,14 +75,18 @@ public class AudioModule: Module {
                 }
             }
         @unknown default:
-            throw NSError(domain: "AudioModule", code: 1, userInfo: [NSLocalizedDescriptionKey: "Unknown permission state"])
+            throw NSError(
+                domain: "AudioModule", code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Unknown permission state"])
         }
     }
-    
+
     private func ensureInittedAudioSession() throws {
         if self.inittedAudioSession { return }
         let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP])
+        try audioSession.setCategory(
+            .playAndRecord, mode: .voiceChat,
+            options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP])
         try audioSession.setActive(true)
         inittedAudioSession = true
     }
