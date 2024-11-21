@@ -60,12 +60,18 @@ public class Microphone {
         // The sample rate is "samples per second", so multiplying by 0.1 should get us chunks of about 100ms
         let inputBufferSize = UInt32(nativeInputFormat.sampleRate * 0.1)
         self.inputNode.installTap(onBus: 0, bufferSize: inputBufferSize, format: nativeInputFormat) { (buffer, time) in
-            if self.isMuted {
-                return
-            }
             let convertedBuffer = AVAudioPCMBuffer(pcmFormat: Microphone.desiredInputFormat, frameCapacity: 1024)!
             
             var error: NSError? = nil
+
+            if self.isMuted {
+                // The standard behavior for muting is to send audio frames filled with empty data
+                // (versus not sending anything during mute). This helps audio systems distinguish
+                // between muted-but-still-active streams and streams that have become disconnected.
+                let silence = Data(repeating: 0, count: Int(convertedBuffer.frameCapacity) * Int(convertedBuffer.format.streamDescription.pointee.mBytesPerFrame))
+                onBase64EncodedAudio(silence.base64EncodedString())
+                return
+            }
             let inputAudioConverter = AVAudioConverter(from: nativeInputFormat, to: Microphone.desiredInputFormat)!
             let status = inputAudioConverter.convert(to: convertedBuffer, error: &error, withInputFrom: {inNumPackets, outStatus in
                 outStatus.pointee = .haveData

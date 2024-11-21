@@ -25,7 +25,6 @@ public class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     }
 
     public func enqueueAudio(_ base64String: String) async throws {
-        print("Enqueueing audio...")
         guard let data = Data(base64Encoded: base64String) else {
             throw SoundPlayerError.invalidBase64String
         }
