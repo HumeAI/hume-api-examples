@@ -5,7 +5,7 @@ import { AudioModuleEvents } from './Audio.types';
 declare class AudioModule extends NativeModule<AudioModuleEvents> {
   getPermissions(): Promise<void>;
   startRecording(): Promise<void>;
-  playAudio(base64EncodedAudio: string): Promise<void>;
+  enqueueAudio(base64EncodedAudio: string): Promise<void>;
   stopPlayback(): Promise<void>;
   mute(): Promise<void>;
   unmute(): Promise<void>;

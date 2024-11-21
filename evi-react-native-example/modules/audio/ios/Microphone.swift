@@ -2,7 +2,7 @@ import ExpoModulesCore
 import AVFoundation
 import Foundation
 
-enum MicrophoneError: Error {
+public enum MicrophoneError: Error {
     case conversionFailed(details: String)
 }
 public class Microphone {
@@ -43,7 +43,7 @@ public class Microphone {
         }
     }
     
-    public func onError(_ onError: @escaping (Error) -> Void) {
+    public func onError(_ onError: @escaping (MicrophoneError) -> Void) {
         self.onError = onError
     }
     

@@ -31,44 +31,6 @@ interface ChatEntry {
 }
 
 
-/**
- * An AudioClip is a function that you can call to play some audio.
- * It returns a promise that is resolved when the audio is finished playing.
- */
-type AudioClip = () => Promise<void>;
-
-// EVI can send audio output messages faster than they can be played back.
-// It is important to buffer them in a queue so as not to cut off a clip of
-// playing audio with a more recent clip. `audioQueue` is a global
-// audio queue that manages this buffering.
-const audioQueue = {
-  clips: [] as Array<AudioClip>,
-  currentlyPlaying: false,
-
-  advance() {
-    if (this.clips.length === 0) {
-      this.currentlyPlaying = false;
-      return;
-    }
-    const nextClip = this.clips.shift()!;
-    nextClip().then(() => this.advance());
-    this.currentlyPlaying = true;
-  },
-
-  add(clip: AudioClip) {
-    this.clips.push(clip);
-
-    if (!this.currentlyPlaying) {
-      this.advance();
-    }
-  },
-
-  clear() {
-    this.clips = [];
-    this.currentlyPlaying = false;
-  },
-};
-
 // WARNING! For development only. In production, the app should hit your own backend server to get an access token, using "token authentication" (see https://dev.hume.ai/docs/introduction/api-key#token-authentication)
 const humeClientWithApiKey = () => {
   return new HumeClient({
@@ -172,6 +134,9 @@ const App = () => {
         chatSocket.sendAudioInput({ data: base64EncodedAudio });
       }
     );
+    NativeAudio.addListener('onError', ({ message }) => {
+      console.error("NativeAudio Error:", message);
+    })
   };
 
   const handleDisconnect = async () => {
@@ -223,8 +188,6 @@ const App = () => {
   }, [isMuted]);
 
   const handleInterruption = () => {
-    console.log("Clearing audio queue...");
-    audioQueue.clear();
     NativeAudio.stopPlayback();
   };
 
@@ -243,7 +206,8 @@ const App = () => {
         console.log("Received chat metadata:", message);
         break;
       case "audio_output":
-        audioQueue.add(() => NativeAudio.playAudio(message.data));
+        console.log('Attempting to enqueue audio')
+        await NativeAudio.enqueueAudio(message.data);
         break;
       case "user_message":
       case "assistant_message":

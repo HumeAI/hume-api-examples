@@ -19,7 +19,20 @@ public class AudioModule: Module {
         return microphone
     }()
     private lazy var soundPlayer: SoundPlayer = {
-        SoundPlayer()
+        let soundPlayer = SoundPlayer()
+        soundPlayer.onError({ error in
+            switch error {
+            case SoundPlayerError.invalidBase64String:
+                self.sendEvent("onError", ["error": "Invalid base64 string"])
+            case SoundPlayerError.couldNotPlayAudio:
+                self.sendEvent("onError", ["error": "Could not play audio"])
+            case SoundPlayerError.decodeError(let details):
+                self.sendEvent("onError", ["error": details])
+            default:
+                self.sendEvent("onError", ["error": "Unknown playback error"])
+            }
+        })
+        return soundPlayer
     }()
 
     public func definition() -> ModuleDefinition {
@@ -52,9 +65,9 @@ public class AudioModule: Module {
             self.microphone.unmute()
         }
 
-        AsyncFunction("playAudio") { (base64EncodedAudio: String) in
+        AsyncFunction("enqueueAudio") { (base64EncodedAudio: String) in
             try ensureInittedAudioSession()
-            return try await self.soundPlayer.playBase64Audio(base64EncodedAudio)
+            return try await self.soundPlayer.enqueueAudio(base64EncodedAudio)
         }
         AsyncFunction("stopPlayback") {
             self.soundPlayer.stopPlayback()
