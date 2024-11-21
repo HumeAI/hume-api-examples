@@ -8,7 +8,7 @@ public enum SoundPlayerError: Error {
 }
 
 public class SoundPlayer: NSObject, AVAudioPlayerDelegate {
-    private var lastAudioPlayer: AVAudioPlayer?
+    private var audioPlayer: AVAudioPlayer?
     private var audioQueue: [Data] = []  // Queue for audio segments
     private var isPlaying: Bool = false  // Tracks if audio is currently playing
     private var onError: ((SoundPlayerError) -> Void)?
@@ -18,8 +18,8 @@ public class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     }
 
     public func stopPlayback() {
-        self.lastAudioPlayer?.stop()
-        self.lastAudioPlayer = nil
+        self.audioPlayer?.stop()
+        self.audioPlayer = nil
         self.audioQueue.removeAll()  // Clear the queue
         isPlaying = false
     }
@@ -48,12 +48,11 @@ public class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         isPlaying = true
         let data = audioQueue.removeFirst()
 
-        let audioPlayer = try AVAudioPlayer(data: data, fileTypeHint: AVFileType.wav.rawValue)
-        self.lastAudioPlayer = audioPlayer
+        self.audioPlayer = try AVAudioPlayer(data: data, fileTypeHint: AVFileType.wav.rawValue)
 
-        audioPlayer.delegate = self
-        audioPlayer.volume = 1.0
-        let result = audioPlayer.play()
+        self.audioPlayer!.delegate = self
+        self.audioPlayer!.volume = 1.0
+        let result = audioPlayer!.play()
         if !result {
             throw SoundPlayerError.couldNotPlayAudio
         }
