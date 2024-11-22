@@ -1,0 +1,25 @@
+{
+  "name": "eviexample",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "ios": "expo run:ios",
+    "android": "expo run:android"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~3.2.3",
+    "expo": "~52.0.8",
+    "expo-status-bar": "~2.0.0",
+    "hume": "^0.9.2",
+    "react": "18.3.1",
+    "react-dom": "18.2.0",
+    "react-native": "0.76.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@types/react": "~18.2.45",
+    "typescript": "^5.6.3"
+  },
+  "private": true
+}
