@@ -5,6 +5,7 @@ This guide provides a step-by-step example to configure an EVI custom language m
 ## Prerequisites
 
 Before starting, ensure you have the following prerequisites installed on your system:
+
 - Python
 - Poetry
 - Uvicorn
@@ -52,7 +53,7 @@ The URL must be changed to be prefixed with `wss://` instead of `https://`, and 
 With the configuration ID, you can now connect to EVI using your custom language model. Use the query parameter to pass the `config_id` argument, which is the ID shown for the voice configuration you created in the previous step. For example, if this were `config-gIblKUsH80lrH4NDs7uLy`, the URL would be:
 
 ```
-wss://api.hume.ai/v0/assistant/chat?config_id=config-gIblKUsH80lrH4NDs7uLy&api_key=<Your API Key>
+wss://api.hume.ai/v0/evi/chat?config_id=config-gIblKUsH80lrH4NDs7uLy&api_key=<Your API Key>
 ```
 
 Remember to change the `config_id` with the configuration ID you created in step 2, and also replace `<Your API Key>` with your actual API key.
@@ -107,6 +108,7 @@ The agent uses FastAPI, a modern web framework for building APIs with Python 3.7
 2. **Receiving Messages**: Once the connection is established, the server enters a loop where it listens for messages from the client using `await websocket.receive_text()`. This asynchronous call waits for the client to send a message through the WebSocket connection.
 
 3. **Processing Messages**: Upon receiving a message, the server (specifically, the agent in this case) processes it. This involves:
+
    - Deserializing the received JSON string to extract the message and any associated data.
    - Parsing the message and any conversational context to understand the user's intent.
    - Generating an appropriate response using the agent's logic, which may involve querying external APIs, performing computations, or simply crafting a reply based on the conversation history.

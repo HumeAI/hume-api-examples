@@ -51,7 +51,7 @@ async def main():
 
     # Construct the websocket URL with the access token
     socket_url = (
-        "wss://api.hume.ai/v0/assistant/chat?"
+        "wss://api.hume.ai/v0/evi/chat?"
         f"access_token={access_token}"
     )
 
