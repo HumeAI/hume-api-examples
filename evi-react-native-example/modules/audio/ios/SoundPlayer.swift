@@ -9,7 +9,12 @@ public enum SoundPlayerError: Error {
 
 public class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     private var audioPlayer: AVAudioPlayer?
+
+    // EVI can send audio output messages faster than they can be played back.
+    // It is important to buffer them in a queue so as not to cut off a clip of
+    // playing audio with a more recent clip.
     private var audioQueue: [Data] = []  // Queue for audio segments
+
     private var isPlaying: Bool = false  // Tracks if audio is currently playing
     private var onError: ((SoundPlayerError) -> Void)?
 

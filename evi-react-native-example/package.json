@@ -5,6 +5,7 @@
   "scripts": {
     "start": "expo start",
     "ios": "expo run:ios",
+    "web": "expo run:web",
     "android": "expo run:android"
   },
   "dependencies": {
@@ -14,7 +15,8 @@
     "hume": "^0.9.2",
     "react": "18.3.1",
     "react-dom": "18.2.0",
-    "react-native": "0.76.2"
+    "react-native": "0.76.2",
+    "react-native-web": "~0.19.13"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
