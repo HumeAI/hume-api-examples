@@ -251,6 +251,7 @@ import './styles.css';
       // append user and assistant messages to UI for chat visibility
       case 'user_message':
       case 'assistant_message':
+        if (message.type === 'user_message') stopAudio();
         const { role, content } = message.message;
         const topThreeEmotions = extractTopThreeEmotions(message);
         appendMessage(role, content ?? '', topThreeEmotions);
