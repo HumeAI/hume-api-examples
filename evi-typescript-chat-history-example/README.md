@@ -15,18 +15,19 @@
 - Compute the top three average emotion scores from user messages, leveraging the built-in `EmotionScores` interface.
 
 **Key Features:**
-- **Transcript Generation:** Outputs a human-readable `.txt` file capturing the conversation between user and assistant.
-- **Top 3 Emotions:** Identifies the three emotions with the highest average scores across all user messages, returning them as a `Partial<EmotionScores>` object.
+
+- **Transcript generation:** Outputs a human-readable `.txt` file capturing the conversation between user and assistant.
+- **Top 3 emotions:** Identifies the three emotions with the highest average scores across all user messages, returning them as a `Partial<EmotionScores>` object.
 
 ## Prerequisites
 
 Ensure your environment meets the following requirements:
 
-- **Node.js**: Version **18.0.0** or higher
-- **npm**: Version **8.0.0** or higher
+- **Node.js**: Version `18.0.0` or higher
+- **npm**: Version `8.0.0` or higher
 
 Check versions on macOS:
-```bash
+```sh
 node -v
 npm -v
 ```
@@ -34,16 +35,18 @@ npm -v
 If you need to update or install Node.js, visit the [official Node.js website](https://nodejs.org/en/).
 
 ### Setting up credentials
-- **Obtain Your API Key**: Follow the instructions in the Hume documentation to acquire your API key.
 
+- **Obtain Your API Key**: Follow the instructions in the Hume documentation to acquire your API key.
 - **Create a .env File**: In the project's root directory, create a .env file if it doesn't exist. Add your API key:
 
 ```sh
 HUME_API_KEY="<YOUR_API_KEY>"
 ```
+
 Refer to `.env.example` as a template.
 
 ### Specifying the Chat ID
+
 In the main function within src/index.ts (or the project's main file), set the `CHAT_ID`` variable to the target conversation ID:
 
 ```typescript
@@ -55,14 +58,14 @@ async function main(): Promise<void> {
 
 This determines which Chat's events to fetch and process.
 
-### Installation and Usage
-1. **Install Dependencies**:
-```bash
+### Installation and usage
+
+1. **Install dependencies**:
+```sh
 npm install
 ```
-
-2. **Run the Project**:
-```bash
+2. **Run the project**:
+```sh
 npm run dev
 ```
 
