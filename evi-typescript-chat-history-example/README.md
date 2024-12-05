@@ -2,78 +2,81 @@
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
   <h1>Empathic Voice Interface | Chat History</h1>
   <p>
-    <strong>Parse Chat Events for Chat transcription</strong>
+    <strong>Fetch Chat Events, Generate a Transcript, and Identify Top Emotions</strong>
   </p>
 </div>
 
 ## Overview
 
-This project demonstrates how to fetch all chat events from Hume's Empathic Voice Interface (EVI) using Hume's TypeScript SDK. It:
+This project demonstrates how to:
 
-- Fetches all chat events for a specified chat ID.
-- Parses user and assistant messages.
-- Saves the formatted transcript to a text file.
+- Retrieve all chat events for a specified Chat ID from Hume's Empathic Voice Interface (EVI) using the TypeScript SDK.
+- Parse user and assistant messages to produce a formatted chat transcript.
+- Compute the top three average emotion scores from user messages, leveraging the built-in `EmotionScores` interface.
+
+**Key Features:**
+- **Transcript Generation:** Outputs a human-readable `.txt` file capturing the conversation between user and assistant.
+- **Top 3 Emotions:** Identifies the three emotions with the highest average scores across all user messages, returning them as a `Partial<EmotionScores>` object.
 
 ## Prerequisites
 
-To run this project locally, ensure your development environment meets the following requirements:
+Ensure your environment meets the following requirements:
 
-- [Node.js](https://nodejs.org/en) (`v18.0.0` or higher)
-- [npm](https://pnpm.io/installation) (`v8.0.0` or higher)
+- **Node.js**: Version **18.0.0** or higher
+- **npm**: Version **8.0.0** or higher
 
-To check the versions of `npm` and `Node.js` installed on a Mac via the terminal, you can use the following commands:
-
-1. **For Node.js**, enter the following command and press Enter:
-
+Check versions on macOS:
 ```bash
 node -v
-```
-
-This command will display the version of Node.js currently installed on your system, for example, `v21.6.1`.
-
-2. **For npm**, type the following command and press Enter:
-
-```bash
 npm -v
 ```
 
-This command will show the version of `npm` that is installed, like `8.10.0`.
+If you need to update or install Node.js, visit the [official Node.js website](https://nodejs.org/en/).
 
-If needed, download Node.js from the [official website](https://nodejs.org/en/).
+### Setting up credentials
+- **Obtain Your API Key**: Follow the instructions in the Hume documentation to acquire your API key.
 
-### Set API credentials
-
-Next you'll need to set your environment variables necessary for authentication. You'll need your API key which is accessible from the Platform. See our documentation on [getting your api keys](https://hume.docs.buildwithfern.com/docs/introduction/getting-your-api-key).
-
-After obtaining your API key, you need to set them as environment variables within a file named `.env` in this project's root directory.
+- **Create a .env File**: In the project's root directory, create a .env file if it doesn't exist. Add your API key:
 
 ```sh
 HUME_API_KEY="<YOUR_API_KEY>"
 ```
+Refer to `.env.example` as a template.
 
-> There is an example file called [`.env.example`](https://github.com/HumeAI/hume-api-examples/blob/main/evi-typescript-example/.env.example). Create a `.env` file, copy/paste the contents of the `.env.example` file, and fill in your environment variables.
+### Specifying the Chat ID
+In the main function within src/index.ts (or the project's main file), set the `CHAT_ID`` variable to the target conversation ID:
 
-### Set the Chat ID
-
-Lastly, you'll need to set your Chat ID within the main function of the source code for which chat you want to fetch the transcript for.
-
-```TypeScript
-async function run() {
-  const chatId = "<YOUR_CHAT_ID>"; // Replace with your actual Chat ID
-
-  try {
-    const chatEvents = await fetchAllChatEvents(chatId);
-    parseAndSaveTranscript(chatId, chatEvents);
-  } catch (error) {
-    console.error("An error occurred:", error);
-  }
+```typescript
+async function main(): Promise<void> {
+  const CHAT_ID = "<YOUR_CHAT_ID>"; // Replace with your actual Chat ID
+  // ...
 }
 ```
 
-## Serve project
+This determines which Chat's events to fetch and process.
 
-Below are the steps to run the project locally:
+### Installation and Usage
+1. **Install Dependencies**:
+```bash
+npm install
+```
 
-1. Run `npm i` to install required dependencies.
-2. Run `npm run dev` to build and run the project.
+2. **Run the Project**:
+```bash
+npm run dev
+```
 
+#### What happens when run:
+
+- The script fetches all events for the specified CHAT_ID.
+- It generates a `transcript_<CHAT_ID>.txt` file containing the user and assistant messages with timestamps.
+- It logs the top 3 average emotions to the console:
+
+```json
+{
+  "Joy": 0.7419108072916666,
+  "Interest": 0.63111979166666666,
+  "Amusement": 0.63061116536458334
+}
+```
+(These keys and scores are just examples; the actual output depends on the chat's content.)
