@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",                   // Use the latest ECMAScript features
+    "module": "CommonJS",                // Node.js uses CommonJS modules
+    "rootDir": "src",                    // Directory containing TypeScript source files
+    "outDir": "dist",                    // Output directory for compiled files
+    "strict": true,                      // Enable strict type checking
+    "esModuleInterop": true,             // Allow default imports for CommonJS modules
+    "skipLibCheck": true,                // Skip checking type definitions of dependencies
+    "resolveJsonModule": true            // Enable importing JSON files
+  },
+  "include": ["src"],                    // Include files in the `src` folder
+  "exclude": ["node_modules"]            // Exclude dependencies
+}
