@@ -37,7 +37,7 @@ If you need to update or install Node.js, visit the [official Node.js website](h
 ### Setting up credentials
 
 - **Obtain Your API Key**: Follow the instructions in the Hume documentation to acquire your API key.
-- **Create a .env File**: In the project's root directory, create a .env file if it doesn't exist. Add your API key:
+- **Create a `.env` File**: In the project's root directory, create a `.env` file if it doesn't exist. Add your API key:
 
 ```sh
 HUME_API_KEY="<YOUR_API_KEY>"
@@ -47,7 +47,7 @@ Refer to `.env.example` as a template.
 
 ### Specifying the Chat ID
 
-In the main function within src/index.ts (or the project's main file), set the `CHAT_ID`` variable to the target conversation ID:
+In the main function within `src/index.ts`, set the `CHAT_ID` variable to the target conversation ID:
 
 ```typescript
 async function main(): Promise<void> {
@@ -71,7 +71,7 @@ npm run dev
 
 #### What happens when run:
 
-- The script fetches all events for the specified CHAT_ID.
+- The script fetches all events for the specified `CHAT_ID`.
 - It generates a `transcript_<CHAT_ID>.txt` file containing the user and assistant messages with timestamps.
 - It logs the top 3 average emotions to the console:
 
@@ -82,4 +82,4 @@ npm run dev
   "Amusement": 0.63061116536458334
 }
 ```
-(These keys and scores are just examples; the actual output depends on the chat's content.)
+(These keys and scores are just examples; the actual output depends on the Chat's content.)
