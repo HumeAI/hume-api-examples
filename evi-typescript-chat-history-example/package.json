@@ -1,7 +1,7 @@
 {
-  "name": "evi-chat-history-example",
+  "name": "evi-typescript-chat-history-example",
   "version": "1.0.0",
-  "description": "",
+  "description": "A sample implementation using Hume's TypeScript SDK to fetch, parse, and save chat event transcripts from the Empathic Voice Interface (EVI).",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
