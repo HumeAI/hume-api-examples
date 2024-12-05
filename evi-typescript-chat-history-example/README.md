@@ -8,7 +8,7 @@
 
 ## Overview
 
-This project demonstrates how to:
+**This project demonstrates how to:**
 
 - Retrieve all chat events for a specified Chat ID from Hume's Empathic Voice Interface (EVI) using the TypeScript SDK.
 - Parse user and assistant messages to produce a formatted chat transcript.
