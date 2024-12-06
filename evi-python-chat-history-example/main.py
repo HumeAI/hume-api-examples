@@ -53,8 +53,6 @@ def generate_transcript(chat_events: list[ReturnChatEvent]) -> str:
     for event in relevant_events:
         role = "User" if event.role == "USER" else "Assistant"
         timestamp = event.timestamp
-        # Convert timestamp (ms since epoch) to readable string
-        # Assuming event timestamps are in ms:
         from datetime import datetime
         dt = datetime.fromtimestamp(timestamp / 1000.0)
         readable_time = dt.strftime("%Y-%m-%d %H:%M:%S")
