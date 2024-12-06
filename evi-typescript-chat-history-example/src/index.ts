@@ -42,7 +42,7 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((err) => console.log("An error occurred:", error))
+main().catch((err) => console.log("An error occurred:", err))
 
 /**
  * Fetches all chat events for a given chat ID from the Hume API.

@@ -13,8 +13,9 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`evi-typescript-chat-history-example`](/evi-typescript-chat-history-example/README.md) | Typescript |                 |
 | [`evi-typescript-function-calling`](/evi-typescript-function-calling/README.md)         | Typescript |                 |
 | [`evi-embed-vue`](/evi-embed-vue/README.md)                                             | Typescript | Vue             |
-| [`evi-python-example`](/evi-python-example/README.md)                                   | Python     | Hume Python SDK |
-| [`evi-python-function-calling`](/evi-python-function-calling/README.md)                 | Python     | Hume Python SDK |
+| [`evi-python-example`](/evi-python-example/README.md)                                   | Python     |                 |
+| [`evi-python-chat-history-example`](/evi-python-chat-history-example/README.md)         | Python     |                 |
+| [`evi-python-function-calling`](/evi-python-function-calling/README.md)                 | Python     |                 |
 | [`evi-python-api-example`](/evi-python-api-example/README.md)                           | Python     |                 |
 | [`evi-touchdesigner-example`](/evi-touchdesigner-example/README.md)                     | Python     | TouchDesigner   |
 | [`evi-custom-language-model`](/evi-custom-language-model/README.md)                     | Python     |                 |
@@ -22,10 +23,10 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 
 ## [Expression Measurement API](https://dev.hume.ai/docs/expression-measurement-api/overview)
 
-| Name                                                                         | Models                                | Language   | Framework       |
-| ---------------------------------------------------------------------------- | ------------------------------------- | ---------- | --------------- |
-| [`python-top-emotions`](/python-top-emotions/top_emotions.py)                | `face`                                | Python     | Hume Python SDK |
-| [`visualization-example`](./visualization-example/example-notebook.ipynb)    | `face`                                | Python     |                 |
-| [`typescript-next-api-language`](./typescript-next-api-language/README.md)   | `language`                            | Typescript | Next.js         |
-| [`typescript-streaming-sandbox`](./typescript-streaming-sandbox/README.md)   | `language`, `face`, `burst`, `speech` | Typescript | Next.js         |
-| [`typescript-raw-text-processor`](./typescript-raw-text-processor/README.md) | `language`                            | Typescript |                 |
+| Name                                                                         | Models                                | Language   | Framework   |
+| ---------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------- |
+| [`python-top-emotions`](/python-top-emotions/top_emotions.py)                | `face`                                | Python     |             |
+| [`visualization-example`](./visualization-example/example-notebook.ipynb)    | `face`                                | Python     |             |
+| [`typescript-next-api-language`](./typescript-next-api-language/README.md)   | `language`                            | Typescript | Next.js     |
+| [`typescript-streaming-sandbox`](./typescript-streaming-sandbox/README.md)   | `language`, `face`, `burst`, `speech` | Typescript | Next.js     |
+| [`typescript-raw-text-processor`](./typescript-raw-text-processor/README.md) | `language`                            | Typescript |             |
