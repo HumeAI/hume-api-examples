@@ -6,7 +6,7 @@
 
 This example project showcases the use of Hume AI's Empathic Voice Interface (EVI) to boost brainstorming sessions through a React-based application.
 
-Utilizing a unique system prompt, EVI can adopt three distinct personas, providing diverse insights tailored to your topics. With our [System Prompt](https://github.com/HumeAI/meld/blob/main/src/system_prompt.txt) we define three distinct personas EVI will take to provide insights our topic.
+Utilizing a unique system prompt, EVI can adopt three distinct personas, providing diverse insights tailored to your topics. With our [System Prompt](src/system_prompt.txt) we define three distinct personas EVI will take to provide insights our topic.
 
 This project leverages [Hume's React SDK](https://github.com/HumeAI/empathic-voice-api-js/tree/main/packages/react), a straightforward React interface, designed to seamlessly integrate EVI capabilities into your React applications.
 
@@ -42,7 +42,7 @@ pnpm install
 
 ### Configuring EVI
 
-First, create an EVI configuration with the [provided system prompt](https://github.com/HumeAI/meld/blob/main/src/system_prompt.txt). Once the configuration has been created, set your `config_id` in `src/App.tsx`.
+First, create an EVI configuration with the [provided system prompt](src/system_prompt.txt). Once the configuration has been created, set your `config_id` in `src/App.tsx`.
 
 Learn how to create your config and get your `config_id` [here](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration).
 
