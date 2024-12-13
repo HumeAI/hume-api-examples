@@ -1,0 +1,33 @@
+{
+  "name": "prana_client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@humeai/voice-react": "^0.1.18",
+    "@langchain/community": "^0.3.15",
+    "@langchain/core": "^0.3.18",
+    "@langchain/openai": "^0.3.14",
+    "@langchain/qdrant": "^0.1.1",
+    "@qdrant/js-client-rest": "^1.12.0",
+    "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
+    "next": "15.0.3",
+    "next-connect": "^1.0.0",
+    "openai": "^4.72.0",
+    "pdf-parse": "^1.1.1",
+    "react": "19.0.0-rc-66855b96-20241106",
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "unstructured-client": "^0.18.2"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.14",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
+  }
+}
