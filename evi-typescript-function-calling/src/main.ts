@@ -267,7 +267,7 @@ import './styles.css';
       case "audio_output":
         // convert base64 encoded audio to a Blob
         const audioOutput = message.data;
-        const blob = convertBase64ToBlob(audioOutput, mimeType);
+        const blob = convertBase64ToBlob(audioOutput);
 
         // add audio Blob to audioQueue
         audioQueue.push(blob);
