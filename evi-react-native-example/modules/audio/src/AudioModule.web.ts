@@ -91,7 +91,7 @@ export default {
 
   async enqueueAudio(base64EncodedAudio: string): Promise<void> {
     audioQueue.add(() => new Promise((resolve) => {
-      const audioBlob = convertBase64ToBlob(base64EncodedAudio, mimeType!);
+      const audioBlob = convertBase64ToBlob(base64EncodedAudio);
       const audioUrl = URL.createObjectURL(audioBlob);
       currentAudio = new Audio(audioUrl);
       currentAudio.onended = () => resolve()
