@@ -8,9 +8,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/dotenv": "^8.2.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "hume": "^0.9.6"
+    "hume": "^0.9.8",
+    "vite": "^6.0.7"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
