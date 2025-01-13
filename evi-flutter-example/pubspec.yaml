@@ -39,7 +39,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   web_socket_channel: ^3.0.1
   record: ^5.1.2
-  audioplayers: ^6.1.0
+  just_audio: ^0.9.42
+  audio_session: ^0.1.23
   http: ^1.2.2
 
 dev_dependencies:
