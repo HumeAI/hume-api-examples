@@ -1,12 +1,10 @@
 import 'dart:convert';
 
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:record/record.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:audio/audio.dart';
 
 import 'theme.dart';
 import 'chat_card.dart';
@@ -135,34 +133,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // define config here for recorder
-  static const config = RecordConfig(
-    encoder: AudioEncoder.pcm16bits,
-    bitRate: 48000 *
-        2 *
-        16, // 48000 samples per second * 2 channels (stereo) * 16 bits per sample
-    sampleRate: 48000,
-    numChannels: 1,
-    autoGain: true,
-    echoCancel: true,
-    noiseSuppress: true,
-  );
-  static final audioInputBufferSize = config.bitRate ~/
-      10; // bitrate is "number of bits per second". Dividing by 10 should buffer approximately 100ms of audio at a time.
-
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  final AudioRecorder _audioRecorder = AudioRecorder();
+  final Audio _audio = Audio();
   WebSocketChannel? _chatChannel;
   bool _isConnected = false;
   bool _isMuted = false;
   var chatEntries = <ChatEntry>[];
-
-  // As EVI speaks, it will send audio segments to be played back. Sometimes a new segment
-  // will arrive before the old audio segment has had a chance to finish playing, so -- instead
-  // of directly playing an audio segment as it comes back, we queue them up here.
-  final List<Source> _playbackAudioQueue = [];
-
-  // Holds bytes of audio recorded from the user's microphone.
-  List<int> _audioInputBuffer = <int>[];
 
   // EVI sends back transcripts of both the user's speech and the assistants speech, along
   // with an analysis of the emotional content of the speech. This method takes
@@ -228,34 +203,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
-    _audioRecorder.dispose();
+    _audio.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final AudioContext audioContext = AudioContext(
-      iOS: AudioContextIOS(
-        category: AVAudioSessionCategory.playAndRecord,
-        options: const {
-          AVAudioSessionOptions.defaultToSpeaker,
-        },
-      ),
-      android: AudioContextAndroid(
-        isSpeakerphoneOn: false,
-        audioMode: AndroidAudioMode.normal,
-        stayAwake: false,
-        contentType: AndroidContentType.speech,
-        usageType: AndroidUsageType.voiceCommunication,
-        audioFocus: AndroidAudioFocus.gain,
-      ),
-    );
-    AudioPlayer.global.setAudioContext(audioContext);
-    _audioPlayer.onPlayerComplete.listen((event) {
-      _playNextAudioSegment();
-    });
   }
 
   // Opens a websocket connection to the EVI API and registers a listener to handle
@@ -296,16 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
             _startRecording();
             break;
           case (evi.AudioOutputMessage audioOutputMessage):
-            final data = audioOutputMessage.data;
-            final rawAudio = base64Decode(data);
-            Source source;
-            if (!kIsWeb) {
-              source = _urlSourceFromBytes(rawAudio);
-            } else {
-              source = BytesSource(rawAudio);
-            }
-
-            _enqueueAudioSegment(source);
+            _audio.enqueueAudio(audioOutputMessage.data);
             break;
           case (evi.UserInterruptionMessage _):
             _handleInterruption();
@@ -345,36 +285,16 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint("Disconnected");
   }
 
-  void _enqueueAudioSegment(Source audioSegment) {
-    debugPrint("Enqueueing audio segment");
-    if (!_isConnected) {
-      return;
-    }
-    if (_audioPlayer.state == PlayerState.playing) {
-      _playbackAudioQueue.add(audioSegment);
-    } else {
-      _audioPlayer.play(audioSegment);
-    }
-  }
-
-  void _flushAudio() {
-    if (_audioInputBuffer.isNotEmpty) {
-      _sendAudio(_audioInputBuffer);
-      _audioInputBuffer.clear();
-    }
-  }
 
   void _handleConnectionClosed() {
     setState(() {
       _isConnected = false;
     });
-    _audioInputBuffer.clear();
     _stopRecording();
   }
 
   void _handleInterruption() {
-    _playbackAudioQueue.clear();
-    _audioPlayer.stop();
+    _audio.stopPlayback();
   }
 
   void _muteInput() {
@@ -382,18 +302,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _isMuted = true;
     });
-    // When the user hits mute, we should send any audio that's in the buffer
-    // waiting to be sent. Otherwise, for example, if you are sending audio in
-    // 100ms chunks, and the user says something and immediately hits mute, the
-    // last 99ms of audio might not get sent.
-    _flushAudio();
-  }
-
-  void _playNextAudioSegment() {
-    if (_playbackAudioQueue.isNotEmpty) {
-      final audioSegment = _playbackAudioQueue.removeAt(0);
-      _audioPlayer.play(audioSegment);
-    }
   }
 
   void _prepareAudioSettings() {
@@ -409,8 +317,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }));
   }
 
-  void _sendAudio(List<int> audioBytes) {
-    final base64 = base64Encode(audioBytes);
+  void _sendAudio(String base64) {
     _chatChannel!.sink.add(jsonEncode({
       'type': 'audio_input',
       'data': base64,
@@ -418,32 +325,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _startRecording() async {
-    if (!await _audioRecorder.hasPermission()) {
-      return;
-    }
-    final audioStream = await _audioRecorder.startStream(config);
+    await _audio.startRecording();
 
-    audioStream.listen((data) async {
-      _audioInputBuffer.addAll(data);
-
-      if (_audioInputBuffer.length >= audioInputBufferSize) {
-        final bufferWasEmpty =
-            !_audioInputBuffer.any((element) => element != 0);
-        if (bufferWasEmpty) {
-          _audioInputBuffer = [];
-          return;
-        }
-        _sendAudio(_audioInputBuffer);
-        _audioInputBuffer = [];
-      }
+    _audio.audioStream.listen((data) async {
+      _sendAudio(data);
     });
-    audioStream.handleError((error) {
+    _audio.audioStream.handleError((error) {
       debugPrint("Error recording audio: $error");
     });
   }
 
   void _stopRecording() {
-    _audioRecorder.stop();
+    _audio.stopRecording();
   }
 
   void _unmuteInput() {
@@ -451,12 +344,5 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _isMuted = false;
     });
-  }
-
-  // In the `audioplayers` library, iOS does not support playing audio from a `ByteSource` but
-  // we can use a `UrlSource` with a data URL.
-  UrlSource _urlSourceFromBytes(List<int> bytes,
-      {String mimeType = "audio/wav"}) {
-    return UrlSource(Uri.dataFromBytes(bytes, mimeType: mimeType).toString());
   }
 }
