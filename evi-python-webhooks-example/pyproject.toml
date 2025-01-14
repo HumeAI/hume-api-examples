@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "evi-python-webhooks-example"
+version = "0.1.0"
+description = ""
+authors = ["zach <zachary.greathouse@hume.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+hume = "^0.7.5"
+python-dotenv = "^1.0.1"
+fastapi = "^0.115.6"
+uvicorn = "^0.34.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

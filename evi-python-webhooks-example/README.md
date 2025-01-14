@@ -1,0 +1,1 @@
+<div align="center"> <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png"> <h1>Empathic Voice Interface | Webhook Example</h1> <p> <strong>Receive and Handle Webhook Events from Hume's Empathic Voice Interface (EVI)</strong> </p> </div>
