@@ -1,31 +1,12 @@
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
-from typing import Union, Optional
-from pydantic import BaseModel
-from utils import fetch_all_chat_events, construct_transcript, save_transcript_to_file
+from hume_webhook_types import WebhookEvent, ChatStartedEvent, ChatEndedEvent 
+import logging
+from utils import get_chat_transcript, validate_headers
 import uvicorn
 
-# Shared schema for common fields
-class WebhookEventBase(BaseModel):
-    event_name: str
-    chat_group_id: str
-    chat_id: str
-    config_id: str
-    caller_number: Optional[str]
-    custom_session_id: Optional[str]
-
-# Schema for chat_started event
-class ChatStartedEvent(WebhookEventBase):
-    start_time: int
-    chat_start_type: str
-
-# Schema for chat_ended event
-class ChatEndedEvent(WebhookEventBase):
-    end_time: int
-    duration_seconds: int
-    end_reason: str
-
-# Type alias for webhook events
-WebhookEvent = Union[ChatStartedEvent, ChatEndedEvent]
+# load environment variables
+load_dotenv()
 
 # FastAPI app instance
 app = FastAPI()
@@ -36,26 +17,30 @@ async def hume_webhook_handler(request: Request, event: WebhookEvent):
     Handles incoming webhook events for chat_started and chat_ended.
     """
     try:
-        # Print the raw incoming payload for debugging
-        raw_payload = await request.json()
+        # Get the raw request body
+        raw_payload = await request.body()
+        payload_str = raw_payload.decode("utf-8")
+
+        # Validate the request headers to ensure security
+        # - Verifies the HMAC signature to confirm the payload was sent by Hume and not tampered with.
+        # - Checks the timestamp to prevent replay attacks using older requests.
+        # If validation fails, the request is rejected with an appropriate error.
+        validate_headers(payload_str, request.headers)
 
         if isinstance(event, ChatStartedEvent):
             # Process chat_started event
             print(f"Processing chat_started event: {event.dict()}")
+
             # Add additional chat_started processing logic here if needed
 
         elif isinstance(event, ChatEndedEvent):
             # Process chat_ended event
             print(f"Processing chat_ended event: {event.dict()}")
 
-            # Step 1: Fetch all chat events for the given chat_id
-            chat_events = await fetch_all_chat_events(event.chat_id)
+            # Fetch Chat events, construct a Chat transcript, and write transcript to a file
+            await get_chat_transcript(event.chat_id)
 
-            # Step 2: Construct a formatted transcript string
-            transcript = construct_transcript(chat_events)
-
-            # Step 3: Save the transcript to a .txt file
-            save_transcript_to_file(transcript, event.chat_id)
+            # Add additional chat_ended processing logic here if needed
 
         else:
             # This case is unlikely due to type validation by FastAPI
