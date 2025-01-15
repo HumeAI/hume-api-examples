@@ -101,11 +101,18 @@ def validate_hmac_signature(payload: str, timestamp: str, signature: str) -> Non
         digestmod=hashlib.sha256,
     ).hexdigest()
 
+    print("Debugging HMAC Validation:")
+    print("Payload:", payload)
+    print("Timestamp:", timestamp)
+    print("Generated Signature:", expected_sig)
+    print("Received Signature:", signature)
+
     valid_signature = hmac.compare_digest(signature, expected_sig)
     if not valid_signature:
         print(f"Error: Invalid HMAC signature. Expected: {expected_sig}, Received: {signature}")
         raise ValueError("Invalid HMAC signature")
 
+    print("HMAC validation successful!")
 
 def validate_timestamp(timestamp: str) -> None:
     """
@@ -131,6 +138,7 @@ def validate_timestamp(timestamp: str) -> None:
         print(f"Error: The timestamp on the request is too old. Current time: {current_time}, Timestamp: {timestamp}")
         raise ValueError("The timestamp on the request is too old")
 
+    print("Timestamp validation successful!")
 
 def validate_headers(payload: str, headers: Headers) -> None:
     """

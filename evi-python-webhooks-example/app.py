@@ -14,7 +14,7 @@ app = FastAPI()
 @app.post("/hume-webhook")
 async def hume_webhook_handler(request: Request, event: WebhookEvent):
     """
-    Handles incoming webhook events for chat_started and chat_ended.
+    Handles incoming chat_started and chat_ended webhook events.
     """
     try:
         # Get the raw request body
