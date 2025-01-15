@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
-from hume_webhook_types import WebhookEvent, ChatStartedEvent, ChatEndedEvent 
+from hume_webhook_types import WebhookEvent, WebhookEventChatStarted, WebhookEventChatEnded 
 import logging
 from utils import get_chat_transcript, validate_headers
 import uvicorn
@@ -27,13 +27,13 @@ async def hume_webhook_handler(request: Request, event: WebhookEvent):
         # If validation fails, the request is rejected with an appropriate error.
         validate_headers(payload_str, request.headers)
 
-        if isinstance(event, ChatStartedEvent):
+        if isinstance(event, WebhookEventChatStarted):
             # Process chat_started event
             print(f"Processing chat_started event: {event.dict()}")
 
             # Add additional chat_started processing logic here if needed
 
-        elif isinstance(event, ChatEndedEvent):
+        elif isinstance(event, WebhookEventChatEnded):
             # Process chat_ended event
             print(f"Processing chat_ended event: {event.dict()}")
 
