@@ -66,13 +66,13 @@ def save_transcript_to_file(transcript: str, chat_id: str) -> None:
 
 async def get_chat_transcript(chat_id: str) -> None:
     # Fetch all chat events for the given chat_id
-    chat_events = await fetch_all_chat_events(event.chat_id)
+    chat_events = await fetch_all_chat_events(chat_id)
 
     # Construct a formatted transcript string
     transcript = construct_transcript(chat_events)
 
     # Save the transcript to a .txt file
-    save_transcript_to_file(transcript, event.chat_id)
+    save_transcript_to_file(transcript, chat_id)
 
 def validate_hmac_signature(payload: str, timestamp: str, signature: str) -> None:
     """
