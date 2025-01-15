@@ -30,8 +30,7 @@ async def hume_webhook_handler(request: Request, event: WebhookEvent):
     # - Checks the timestamp to prevent replay attacks using older requests.
     # If validation fails, the request is rejected with an appropriate error.
     try:
-        pass
-        # validate_headers(payload_str, request.headers)
+        validate_headers(payload_str, request.headers)
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
 
