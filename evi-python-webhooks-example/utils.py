@@ -74,7 +74,6 @@ async def get_chat_transcript(chat_id: str) -> None:
     # Save the transcript to a .txt file
     save_transcript_to_file(transcript, event.chat_id)
 
-
 def validate_hmac_signature(payload: str, timestamp: str, signature: str) -> None:
     """
     Validates the HMAC signature of an incoming request.
@@ -101,11 +100,6 @@ def validate_hmac_signature(payload: str, timestamp: str, signature: str) -> Non
         msg=message,
         digestmod=hashlib.sha256,
     ).hexdigest()
-
-    print(f"Payload for HMAC: {payload}")
-    print(f"Timestamp for HMAC: {timestamp}")
-    print(f"Expected Signature: {expected_sig}")
-    print(f"Received Signature: {signature}")
 
     valid_signature = hmac.compare_digest(signature, expected_sig)
     if not valid_signature:
