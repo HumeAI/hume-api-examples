@@ -17,6 +17,7 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`evi-python-chat-history-example`](/evi-python-chat-history-example/README.md)         | Python     |                 |
 | [`evi-python-function-calling`](/evi-python-function-calling/README.md)                 | Python     |                 |
 | [`evi-python-api-example`](/evi-python-api-example/README.md)                           | Python     |                 |
+| [`evi-python-webhooks-example`](/evi-python-webhooks-example/README.md)                 | Python     | FastAPI         |
 | [`evi-touchdesigner-example`](/evi-touchdesigner-example/README.md)                     | Python     | TouchDesigner   |
 | [`evi-custom-language-model`](/evi-custom-language-model/README.md)                     | Python     |                 |
 | [`evi-modal-clm`](/evi-modal-clm/README.md)                                             | Python     | Modal           |
