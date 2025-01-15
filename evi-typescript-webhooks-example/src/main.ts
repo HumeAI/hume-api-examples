@@ -1,95 +1,67 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import { HumeClient } from 'hume';
-import type Hume from 'hume'
-import fs from 'fs/promises';
-import { ReturnChatEvent } from 'hume/api/resources/empathicVoice';
+import express from "express";
+import dotenv from "dotenv";
+import { HumeClient } from "hume";
+import fs from "fs/promises";
+import {
+  WebhookEvent,
+} from "hume/api/resources/empathicVoice";
+import {
+  getChatTranscript,
+  validateHmacSignature,
+  validateTimestamp,
+} from "./util";
 
 dotenv.config();
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 
-// Initialize Hume Client
-const humeClient = new HumeClient({ apiKey: process.env.HUME_API_KEY! });
+app.use(
+  (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ): void => {
+    if (req.originalUrl === "/hume-webhook") {
+      next();
+    } else {
+      express.json()(req, res, next);
+    }
+  },
+);
 
-app.use(express.json());
+app.post(
+  "/hume-webhook",
+  // Stripe requires the raw body to construct the event
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    validateHmacSignature(req.body, req.headers);
+    validateTimestamp(req.headers);
 
-const handleChatStartedEvent = async (event: any) => {
-	let label = "New"
-	if (event.chat_start_type === 'resumed') {
-		label = "Resumed"
-	}
-	console.log(`${label} chat ${event.chat_id} started at ${event.start_time}`);
-}
+    const event = JSON.parse(req.body) as WebhookEvent;
 
-async function fetchAllChatEvents(chatId: string): Promise<ReturnChatEvent[]> {
-  const allChatEvents: ReturnChatEvent[] = [];
+    try {
+      if (event.eventName === "chat_started") {
+        console.log("Processing chat_started event:", event);
 
-  const chatEventsIterator = await humeClient.empathicVoice.chats.listChatEvents(chatId, {
-    pageNumber: 0,
-  });
+        // Add your logic for handling chat_started events here
+      } else if (event.eventName === "chat_ended") {
+        console.log("Processing chat_ended event:", event);
+        await getChatTranscript(event.chatId);
 
-  for await (const chatEvent of chatEventsIterator) {
-    allChatEvents.push(chatEvent);
-  }
+        // Add your your logic for handling chat_ended events here
+      } else {
+        res.status(400).json({ error: "Unsupported event type" });
+        return;
+      }
 
-  return allChatEvents;
-}
-
-function generateTranscript(chatEvents: ReturnChatEvent[]): string {
-  const relevantChatEvents = chatEvents.filter(
-    (chatEvent) => chatEvent.type === "USER_MESSAGE" || chatEvent.type === "AGENT_MESSAGE"
-  );
-
-  const transcriptLines = relevantChatEvents.map((chatEvent) => {
-    const role = chatEvent.role === "USER" ? "User" : "Assistant";
-    const timestamp = new Date(chatEvent.timestamp).toLocaleString(); // Human-readable date/time
-    return `[${timestamp}] ${role}: ${chatEvent.messageText}`;
-  });
-
-  return transcriptLines.join("\n");
-}
-
-const handleChatEndedEvent = async (event: any) => {
-  const chatId = event.chat_id
-  const chatEvents = await fetchAllChatEvents(chatId);
-	console.log(`Chat ${event.chat_id} ended at ${event.end_time}`);
-
-  // Generate a transcript string from the fetched chat events
-  const transcript = generateTranscript(chatEvents);
-
-  // Define the transcript file name
-  const transcriptFileName = `transcript_${chatId}.txt`;
-
-  // Write the transcript to a text file
-  try {
-    await fs.writeFile(transcriptFileName, transcript, "utf8");
-    console.log(`Transcript saved to ${transcriptFileName}`);
-  } catch (fileError) {
-    console.error(`Error writing to file ${transcriptFileName}:`, fileError);
-  }
-}
-
-app.post('/evi/webhooks', async (req, res) => {
-	try {
-		const event = req.body;
-		switch (event.type) {
-			case 'chat_started':
-				await handleChatStartedEvent(event);
-				break;
-			case 'chat_ended':
-				await handleChatEndedEvent(event);
-				break;
-			default:
-				console.log('Unsupported event type:', event.type);
-		}
-		res.status(200).send('Webhook received and processed\n');
-	} catch (error) {
-		console.error('Error processing webhook:', error);
-		res.status(500).send('Internal Server Error');
-	}
-});
+      res.json({ status: "success", message: `${event.eventName} processed` });
+    } catch (error) {
+      console.error("Error processing event:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
 app.listen(PORT, () => {
-	console.log(`Server is listening on port ${PORT}`);
+  console.log(`Server is listening on port ${PORT}`);
 });

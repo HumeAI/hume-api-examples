@@ -8,103 +8,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const hume_1 = require("hume");
-const promises_1 = __importDefault(require("fs/promises"));
+const util_1 = require("./util");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const PORT = 3000;
-// Initialize Hume Client
-const humeClient = new hume_1.HumeClient({ apiKey: process.env.HUME_API_KEY });
-app.use(express_1.default.json());
-const handleChatStartedEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
-    let label = "New";
-    if (event.chat_start_type === 'resumed') {
-        label = "Resumed";
+const PORT = 5000;
+app.use((req, res, next) => {
+    if (req.originalUrl === "/hume-webhook") {
+        next();
     }
-    console.log(`${label} chat ${event.chat_id} started at ${event.start_time}`);
-});
-function fetchAllChatEvents(chatId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a, e_1, _b, _c;
-        const allChatEvents = [];
-        const chatEventsIterator = yield humeClient.empathicVoice.chats.listChatEvents(chatId, {
-            pageNumber: 0,
-        });
-        try {
-            for (var _d = true, chatEventsIterator_1 = __asyncValues(chatEventsIterator), chatEventsIterator_1_1; chatEventsIterator_1_1 = yield chatEventsIterator_1.next(), _a = chatEventsIterator_1_1.done, !_a; _d = true) {
-                _c = chatEventsIterator_1_1.value;
-                _d = false;
-                const chatEvent = _c;
-                allChatEvents.push(chatEvent);
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (!_d && !_a && (_b = chatEventsIterator_1.return)) yield _b.call(chatEventsIterator_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return allChatEvents;
-    });
-}
-function generateTranscript(chatEvents) {
-    const relevantChatEvents = chatEvents.filter((chatEvent) => chatEvent.type === "USER_MESSAGE" || chatEvent.type === "AGENT_MESSAGE");
-    const transcriptLines = relevantChatEvents.map((chatEvent) => {
-        const role = chatEvent.role === "USER" ? "User" : "Assistant";
-        const timestamp = new Date(chatEvent.timestamp).toLocaleString(); // Human-readable date/time
-        return `[${timestamp}] ${role}: ${chatEvent.messageText}`;
-    });
-    return transcriptLines.join("\n");
-}
-const handleChatEndedEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
-    const chatId = event.chat_id;
-    const chatEvents = yield fetchAllChatEvents(chatId);
-    console.log(`Chat ${event.chat_id} ended at ${event.end_time}`);
-    // Generate a transcript string from the fetched chat events
-    const transcript = generateTranscript(chatEvents);
-    // Define the transcript file name
-    const transcriptFileName = `transcript_${chatId}.txt`;
-    // Write the transcript to a text file
-    try {
-        yield promises_1.default.writeFile(transcriptFileName, transcript, "utf8");
-        console.log(`Transcript saved to ${transcriptFileName}`);
-    }
-    catch (fileError) {
-        console.error(`Error writing to file ${transcriptFileName}:`, fileError);
+    else {
+        express_1.default.json()(req, res, next);
     }
 });
-app.post('/evi/webhooks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/hume-webhook", 
+// Stripe requires the raw body to construct the event
+express_1.default.raw({ type: "application/json" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, util_1.validateHmacSignature)(req.body, req.headers);
+    (0, util_1.validateTimestamp)(req.headers);
+    const event = JSON.parse(req.body);
     try {
-        const event = req.body;
-        switch (event.type) {
-            case 'chat_started':
-                yield handleChatStartedEvent(event);
-                break;
-            case 'chat_ended':
-                yield handleChatEndedEvent(event);
-                break;
-            default:
-                console.log('Unsupported event type:', event.type);
+        if (event.eventName === "chat_started") {
+            console.log("Processing chat_started event:", event);
+            // Add your logic for handling chat_started events here
         }
-        res.status(200).send('Webhook received and processed');
+        else if (event.eventName === "chat_ended") {
+            console.log("Processing chat_ended event:", event);
+            yield (0, util_1.getChatTranscript)(event.chatId);
+            // Add your your logic for handling chat_ended events here
+        }
+        else {
+            res.status(400).json({ error: "Unsupported event type" });
+            return;
+        }
+        res.json({ status: "success", message: `${event.eventName} processed` });
     }
     catch (error) {
-        console.error('Error processing webhook:', error);
-        res.status(500).send('Internal Server Error');
+        console.error("Error processing event:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 }));
 app.listen(PORT, () => {
