@@ -1,62 +1,60 @@
-import express from "express";
-import dotenv from "dotenv";
-import { HumeClient } from "hume";
-import fs from "fs/promises";
-import {
-  WebhookEvent,
-} from "hume/api/resources/empathicVoice";
-import {
-  getChatTranscript,
-  validateHmacSignature,
-  validateTimestamp,
-} from "./util";
+import dotenv from 'dotenv';
+import express, { Request, Response } from 'express';
+import { getChatTranscript, validateHmacSignature, validateTimestamp } from './util';
+import { WebhookEvent } from "hume/serialization/resources/empathicVoice/types/WebhookEvent";
 
 dotenv.config();
+
 const app = express();
 const PORT = 5000;
 
-app.use(
-  (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ): void => {
-    if (req.originalUrl === "/hume-webhook") {
-      next();
-    } else {
-      express.json()(req, res, next);
-    }
-  },
-);
-
 app.post(
-  "/hume-webhook",
-  // Stripe requires the raw body to construct the event
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    validateHmacSignature(req.body, req.headers);
-    validateTimestamp(req.headers);
+  '/hume-webhook', 
+  express.raw({ type: 'application/json' }), // for raw body parsing in support of HMAC validation
+  async (req: Request, res: Response) => {
+    const payloadStr = req.body.toString('utf8');
 
-    const event = JSON.parse(req.body) as WebhookEvent;
-
+    // Validate the request headers to ensure security
     try {
-      if (event.eventName === "chat_started") {
-        console.log("Processing chat_started event:", event);
+      validateHmacSignature(payloadStr, req.headers);
+      validateTimestamp(req.headers);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error(`[Header Validation] Failed: ${errorMessage}`);
+      res.status(401).json({ error: "Failed to validate headers" });
+      return;
+    }
+    
+    // Parse the raw JSON body, it is safe to assume the payload received from Hume is valid JSON
+    const event: WebhookEvent.Raw = JSON.parse(payloadStr);
+    
+    try {
+      // Handle the specific event type
+      switch (event.event_name) {
+        case 'chat_started':
+          console.info('Processing chat_started event:', event);
+          // Add additional chat_started processing logic here
+          break;
+        
+        case 'chat_ended':
+          console.info("Processing chat_ended event:", event);
+          // Fetch Chat events, construct a Chat transcript, and write transcript to a file
+          await getChatTranscript(event.chat_id);
+          // Add additional chat_ended processing logic here
+          break;
 
-        // Add your logic for handling chat_started events here
-      } else if (event.eventName === "chat_ended") {
-        console.log("Processing chat_ended event:", event);
-        await getChatTranscript(event.chatId);
-
-        // Add your your logic for handling chat_ended events here
-      } else {
-        res.status(400).json({ error: "Unsupported event type" });
-        return;
+        default:
+          console.warn(`[Event Handling] Unsupported event type: '${event.event_name}'`);
+          res.status(400).json({ error: `Unsupported event type: '${event.event_name}'` });
+          return;
       }
 
-      res.json({ status: "success", message: `${event.eventName} processed` });
+      // Respond with success
+      res.json({ status: "success", message: `${event.event_name} processed` });
+
     } catch (error) {
-      console.error("Error processing event:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error(`[Event Processing] Error: ${errorMessage}`);
       res.status(500).json({ error: "Internal server error" });
     }
   },
