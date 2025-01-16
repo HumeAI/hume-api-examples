@@ -12,6 +12,7 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`evi-typescript-example`](/evi-typescript-example/README.md)                           | Typescript |                 |
 | [`evi-typescript-chat-history-example`](/evi-typescript-chat-history-example/README.md) | Typescript |                 |
 | [`evi-typescript-function-calling`](/evi-typescript-function-calling/README.md)         | Typescript |                 |
+| [`evi-typescript-webhooks-example`](/evi-typescript-webhooks-example/README.md)         | Typescript | Express         |
 | [`evi-embed-vue`](/evi-embed-vue/README.md)                                             | Typescript | Vue             |
 | [`evi-python-example`](/evi-python-example/README.md)                                   | Python     |                 |
 | [`evi-python-chat-history-example`](/evi-python-chat-history-example/README.md)         | Python     |                 |
