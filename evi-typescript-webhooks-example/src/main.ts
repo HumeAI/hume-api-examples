@@ -25,12 +25,20 @@ app.post(
       return;
     }
     
-    // Parse the raw JSON body, it is safe to assume the payload received from Hume is valid JSON
-    const event: WebhookEvent.Raw = JSON.parse(payloadStr);
+    let event;
+    try {
+      // Parse the raw JSON body
+      const parsedBody = JSON.parse(req.body); // Parse JSON
+      event = WebhookEvent.parseOrThrow(parsedBody); // Validate and parse using WebhookEvent
+    } catch (error) {
+      console.error("Failed to parse and validate the webhook event:", error);
+      res.status(400).json({ error: "Invalid webhook payload" });
+      return;
+    }
     
     try {
       // Handle the specific event type
-      switch (event.event_name) {
+      switch (event.eventName) {
         case 'chat_started':
           console.info('Processing chat_started event:', event);
           // Add additional chat_started processing logic here
@@ -39,18 +47,18 @@ app.post(
         case 'chat_ended':
           console.info("Processing chat_ended event:", event);
           // Fetch Chat events, construct a Chat transcript, and write transcript to a file
-          await getChatTranscript(event.chat_id);
+          await getChatTranscript(event.chatId);
           // Add additional chat_ended processing logic here
           break;
 
         default:
-          console.warn(`[Event Handling] Unsupported event type: '${event.event_name}'`);
-          res.status(400).json({ error: `Unsupported event type: '${event.event_name}'` });
+          console.warn(`[Event Handling] Unsupported event type: '${event.eventName}'`);
+          res.status(400).json({ error: `Unsupported event type: '${event.eventName}'` });
           return;
       }
 
       // Respond with success
-      res.json({ status: "success", message: `${event.event_name} processed` });
+      res.json({ status: "success", message: `${event.eventName} processed` });
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
