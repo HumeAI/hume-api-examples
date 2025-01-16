@@ -31,7 +31,8 @@ app.post(
       const parsedBody = JSON.parse(req.body); // Parse JSON
       event = WebhookEvent.parseOrThrow(parsedBody); // Validate and parse using WebhookEvent
     } catch (error) {
-      console.error("Failed to parse and validate the webhook event:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Failed to parse and validate the webhook event:", errorMessage);
       res.status(400).json({ error: "Invalid webhook payload" });
       return;
     }
