@@ -26,3 +26,6 @@ dist-ssr
 # Secrets
 .env
 .env*.local
+
+# Generated transcripts
+transcripts/
