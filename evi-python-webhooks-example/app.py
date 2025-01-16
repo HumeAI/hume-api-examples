@@ -38,7 +38,7 @@ async def hume_webhook_handler(request: Request, event: WebhookEvent):
         # Process chat_started event
         print(f"Processing chat_started event: {event.dict()}")
 
-        # Add additional chat_started processing logic here if needed
+        # Add additional chat_started processing logic here as needed
 
     elif isinstance(event, WebhookEventChatEnded):
         # Process chat_ended event
@@ -47,7 +47,7 @@ async def hume_webhook_handler(request: Request, event: WebhookEvent):
         # Fetch Chat events, construct a Chat transcript, and write transcript to a file
         await get_chat_transcript(event.chat_id)
 
-        # Add additional chat_ended processing logic here if needed
+        # Add additional chat_ended processing logic here as needed
 
 # Run the Uvicorn server
 if __name__ == "__main__":

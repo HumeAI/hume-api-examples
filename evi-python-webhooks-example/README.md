@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Empathic Voice Interface | Webhook Example</h1>
+  <h1>Empathic Voice Interface | Python Webhook Example</h1>
   <p>
     <strong>Receive and Handle Webhook Events from Hume's Empathic Voice Interface (EVI)</strong>
   </p>
@@ -10,7 +10,7 @@
 
 **This project demonstrates how to:**
 
-- Set up a FastAPI server to receive webhook events from Hume's Empathic Voice Interface (EVI).
+- Set up a basic FastAPI server to receive webhook events from Hume's Empathic Voice Interface (EVI).
 - Handle `chat_started` and `chat_ended` webhook events.
 - Process events to create workflows, such as generating transcripts or logging session details.
 
