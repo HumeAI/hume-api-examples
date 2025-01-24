@@ -29,6 +29,14 @@ public class Microphone {
             let mainMixerNode: AVAudioMixerNode = audioEngine.mainMixerNode
             audioEngine.connect(mainMixerNode, to: outputNode, format: nil)
             
+            // Voice processing is a feature that can help reduce echo and background noise
+            // It is very important for audio chat applications like EVI, because without
+            // echo cancellation, EVI will hear its own output and attempt to respond to it.
+
+            // `setVoiceProcessingEnabled` should be enabled on *both* the input and output nodes
+            // because it works by observing signals that are sent to the output node (the
+            // speaker) and then "cancels" the echoes of those signals from what comes
+            // back into the input node (the microphone).
             try self.inputNode.setVoiceProcessingEnabled(true)
             try outputNode.setVoiceProcessingEnabled(true)
             
