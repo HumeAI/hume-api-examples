@@ -10,9 +10,6 @@
 .svn/
 migrate_working_dir/
 
-# Environment variables related
-.env
-
 # IntelliJ related
 *.iml
 *.ipr
@@ -25,27 +22,8 @@ migrate_working_dir/
 #.vscode/
 
 # Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-
+# Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
 /pubspec.lock
-
-
-ios/Podfile.lock
+**/doc/api/
+.dart_tool/
+build/
