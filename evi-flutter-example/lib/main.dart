@@ -228,6 +228,10 @@ class _MyHomePageState extends State<MyHomePage> {
       throw Exception('Please set your Hume API credentials in main.dart');
     }
 
+    if (ConfigManager.instance.humeConfigId.isNotEmpty) {
+      uri += "&config_id=${ConfigManager.instance.humeConfigId}";
+    }
+
     _chatChannel = WebSocketChannel.connect(Uri.parse(uri));
 
     _chatChannel!.stream.listen(
