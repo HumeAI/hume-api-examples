@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@ffmpeg/util": "^0.12.1",
     "@fontsource/poppins": "^4.5.10",
     "@phosphor-icons/react": "2.0.5",
     "@types/node": "18.11.9",
