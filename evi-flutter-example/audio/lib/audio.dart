@@ -25,7 +25,7 @@ class Audio {
               final audioData = event['data'] as String;
               _audioController.add(audioData);
             } else if (event['type'] == 'error') {
-              final error = event['data'] as String;
+              final error = event['message'] as String;
               _audioController.addError(error);
             }
           }
