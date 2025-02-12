@@ -39,7 +39,11 @@ public class SoundPlayer: NSObject, AVAudioPlayerDelegate {
             do {
                 try playNextInQueue()
             } catch {
-                self.onError?(error as! SoundPlayerError)
+                if let soundError = error as? SoundPlayerError {
+                    self.onError?(soundError)
+                } else {
+                    self.onError?(SoundPlayerError.decodeError(details: error.localizedDescription))
+                }
             }
         }
     }
@@ -59,8 +63,9 @@ public class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         self.audioPlayer!.prepareToPlay()
         self.audioPlayer!.delegate = self
         let result = audioPlayer!.play()
-        
-        let isSpeaker = session.currentRoute.outputs.first?.portType == AVAudioSession.Port.builtInSpeaker
+
+        let isSpeaker =
+            session.currentRoute.outputs.first?.portType == AVAudioSession.Port.builtInSpeaker
         if isSpeaker {
             // This is to work around an issue with AVFoundation and voiceProcessing: https://forums.developer.apple.com/forums/thread/721535
             self.audioPlayer!.volume = 1.0
