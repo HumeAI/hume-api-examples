@@ -52,7 +52,7 @@ async def main() -> None:
         utterances=[
             PostedUtterance(
                 description="A refined, British aristocrat",
-                text="Take an arrow from the quiver",
+                text="Take an arrow from the quiver.",
             )
         ]
     )
@@ -72,7 +72,7 @@ async def main() -> None:
             PostedUtterance(
                 # Using a voice from your voice library
                 voice=PostedUtteranceVoiceWithName(name=name),
-                text="Now take a bow",
+                text="Now take a bow.",
             )
         ],
         # Providing previous context to maintain consistency.
@@ -89,7 +89,7 @@ async def main() -> None:
         utterances=[
             PostedUtterance(
                 voice=PostedUtteranceVoiceWithName(name=name),
-                description="Whispered softly, with a sense of urgency",
+                description="Murmured softly, with a heavy dose of sarcasm and contempt",
                 text="Does he even know how to use that thing?",
             )
         ],

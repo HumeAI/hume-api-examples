@@ -52,7 +52,7 @@ const main = async () => {
   const speech3 = await hume.tts.synthesizeJson({
     utterances: [{
       voice: { name },
-      description: "Whispered softly, with a sense of urgency",
+      description: "Murmured softly, with a heavy dose of sarcasm and contempt",
       text: "Does he even know how to use that thing?"
     }],
     context: {
