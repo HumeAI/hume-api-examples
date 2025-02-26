@@ -3,8 +3,10 @@ import Flutter
 import UIKit
 
 public class AudioPlugin: NSObject, FlutterPlugin {
+    private lazy var microphone: Microphone = {
+        return Microphone()
+    }()
     private var soundPlayer: SoundPlayer
-    private var microphone: Microphone
 
     private var eventChannel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
@@ -47,9 +49,7 @@ public class AudioPlugin: NSObject, FlutterPlugin {
     }
 
     override init() {
-        self.microphone = Microphone()
         self.soundPlayer = SoundPlayer()
-
         super.init()
 
         self.soundPlayer.onError { [weak self] error in
