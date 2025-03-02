@@ -56,7 +56,8 @@ public class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         self.audioPlayer = try AVAudioPlayer(data: data, fileTypeHint: AVFileType.wav.rawValue)
 
         self.audioPlayer!.delegate = self
-        self.audioPlayer!.volume = 1.0
+        // Produce audible output when playing over the device speaker.
+        self.audioPlayer!.volume = 50
         let result = audioPlayer!.play()
         if !result {
             throw SoundPlayerError.couldNotPlayAudio
