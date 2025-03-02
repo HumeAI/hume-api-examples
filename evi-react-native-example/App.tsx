@@ -30,6 +30,7 @@ interface ChatEntry {
   content: string;
 }
 
+type ConnectionState = "disconnected" | "connecting" | "connected";
 
 // WARNING! For development only. In production, the app should hit your own backend server to get an access token, using "token authentication" (see https://dev.hume.ai/docs/introduction/api-key#token-authentication)
 const humeClientWithApiKey = () => {
@@ -52,7 +53,8 @@ const humeClientWithAccessToken = async () => {
 }
 
 const App = () => {
-  const [isConnected, setIsConnected] = useState(false);
+  const [connectionState, setConnectionState] =
+    useState<ConnectionState>("disconnected");
   const [isMuted, setIsMuted] = useState(false);
   const [chatEntries, setChatEntries] = useState<ChatEntry[]>([]);
   const humeRef = useRef<HumeClient | null>(null);
@@ -118,7 +120,7 @@ const App = () => {
     });
 
     chatSocket.on("close", () => {
-      setIsConnected(false);
+      setConnectionState("disconnected");
     });
 
     chatSocketRef.current = chatSocket;
@@ -147,21 +149,13 @@ const App = () => {
       chatSocketRef.current.close();
     }
   };
-
+  
   useEffect(() => {
-    if (isConnected) {
-      handleConnect().catch((error) => {
-        console.error("Error while connecting:", error);
-      });
-    } else {
-      handleDisconnect().catch((error) => {
-        console.error("Error while disconnecting:", error);
-      });
-    }
-    const onUnmount = () => {
+    return () => {
       NativeAudio.stopRecording().catch((error: any) => {
         console.error("Error while stopping recording", error);
       });
+
       if (
         chatSocketRef.current &&
         chatSocketRef.current.readyState === WebSocket.OPEN
@@ -169,20 +163,41 @@ const App = () => {
         chatSocketRef.current?.close();
       }
     };
-    return onUnmount;
-  }, [isConnected]);
+  }, []);
 
-  useEffect(() => {
-    if (isMuted) {
-      NativeAudio.mute().catch((error) => {
-        console.error("Error while muting", error);
-      });
-    } else {
-      NativeAudio.unmute().catch((error) => {
-        console.error("Error while unmuting", error);
-      });
+  const connect = async () => {
+    setConnectionState("connecting");
+    try {
+      await handleConnect();
+      setConnectionState("connected");
+    } catch (error) {
+      console.error("Error while connecting:", error);
+      setConnectionState("disconnected");
     }
-  }, [isMuted]);
+  };
+
+  const disconnect = async () => {
+    try {
+      await handleDisconnect();
+      setConnectionState("disconnected");
+    } catch (error) {
+      console.error("Error while disconnecting:", error);
+    }
+  };
+
+  const mute = () => {
+    setIsMuted(true);
+    NativeAudio.mute().catch((error) => {
+      console.error("Error while muting", error);
+    });
+  };
+
+  const unmute = () => {
+    setIsMuted(false);
+    NativeAudio.unmute().catch((error) => {
+      console.error("Error while unmuting", error);
+    });
+  };
 
   const handleInterruption = () => {
     NativeAudio.stopPlayback();
@@ -250,6 +265,9 @@ const App = () => {
     }
   };
 
+  const isConnecting = connectionState === "connecting";
+  const isConnected = connectionState === "connected";
+
   return (
     <View style={styles.appBackground}>
       <SafeAreaView style={styles.container}>
@@ -275,12 +293,19 @@ const App = () => {
         </ScrollView>
         <View style={styles.buttonContainer}>
           <Button
-            title={isConnected ? "Disconnect" : "Connect"}
-            onPress={() => setIsConnected(!isConnected)}
+            disabled={isConnecting}
+            title={
+              isConnecting
+                ? "Connecting..."
+                : isConnected
+                ? "Disconnect"
+                : "Connect"
+            }
+            onPress={() => (isConnected ? disconnect() : connect())}
           />
           <Button
             title={isMuted ? "Unmute" : "Mute"}
-            onPress={() => setIsMuted(!isMuted)}
+            onPress={() => (isMuted ? unmute() : mute())}
           />
         </View>
       </SafeAreaView>
