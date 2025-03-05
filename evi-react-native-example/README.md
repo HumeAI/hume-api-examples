@@ -5,7 +5,7 @@
 
 This project features a sample implementation of Hume's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) using React Native. 
 
-**Targets:** The example supports iOS (web and android coming soon!)
+**Targets:** The example supports iOS and web (Android support coming soon!)
 
 ## Instructions
 
