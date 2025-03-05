@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Empathic Voice Interface | Sample Flutter App</h1>
+  <h1>Empathic Voice Interface | Sample React Native App</h1>
 </div>
 
 This project features a sample implementation of Hume's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) using React Native. 
