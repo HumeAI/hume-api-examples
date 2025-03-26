@@ -22,6 +22,9 @@ class Audio {
         (event) {
           if (event is Map) {
             if (event['type'] == 'audio') {
+              if (_audioController.isClosed) {
+                return;
+              }
               final audioData = event['data'] as String;
               _audioController.add(audioData);
             } else if (event['type'] == 'error') {
