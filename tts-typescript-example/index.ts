@@ -61,6 +61,16 @@ const main = async () => {
     numGenerations: 1
   })
   await writeResultToFile(speech3.generations[0].audio, "speech3_0")
+
+  let i = 0
+  for await (const snippet of await hume.tts.synthesizeJsonStreaming({
+    context: {
+      generationId: speech3.generations[0].generationId,
+    },
+    utterances: [{text: "He's drawn the bow..."}, {text: "he's fired the arrow..."}, {text: "I can't believe it! A perfect bullseye!"}],
+  })) {
+    await writeResultToFile(snippet.audio, `speech4_${i++}`)
+  }
 }
 
 main().then(() => console.log('Done')).catch(console.error)

@@ -100,6 +100,21 @@ async def main() -> None:
     )
     await write_result_to_file(speech3.generations[0].audio, "speech3_0")
 
+    # Streaming example
+    i = 0
+    async for snippet in hume.tts.synthesize_json_streaming(
+        context=PostedContextWithGenerationId(
+            generation_id=speech3.generations[0].generation_id,
+        ),
+        utterances=[
+            PostedUtterance(text="He's drawn the bow..."),
+            PostedUtterance(text="he's fired the arrow..."),
+            PostedUtterance(text="I can't believe it! A perfect bullseye!")
+        ],
+    ):
+        await write_result_to_file(snippet.audio, f"speech4_{i}")
+        i += 1
+
 
 if __name__ == "__main__":
     asyncio.run(main())
