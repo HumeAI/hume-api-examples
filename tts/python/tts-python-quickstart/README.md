@@ -1,3 +1,11 @@
+<div align="center">
+  <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
+  <h1>Text-to-Speech | Python Quickstart</h1>
+  <p>
+    <strong>Jumpstart your development with Hume's OCTAVE TTS API!</strong>
+  </p>
+</div>
+
 ## Overview
 
 This project demonstrates how to use [Hume AI](https://hume.ai)'s [OCTAVE TTS API](https://dev.hume.ai/docs/text-to-speech-tts/overview) with Python.
@@ -12,15 +20,15 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
-    cd hume-api-examples/tts-python-example
+    cd hume-api-examples/tts/python/tts-python-quickstart
     ```
 
 2. Install dependencies:
 
     We recommend `uv` but you can adapt these commands to your preferred package manager.
     ```shell
-    uv sync
-    uv pip install -e $HOME/dev/fern-config/fern/apis/unioned/.preview/fern-python-sdk
+    uv init
+    uv add hume python-dotenv aiofiles
     ```
 
 3. Set up your API keys:
@@ -32,7 +40,7 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
     cp .env.example .env
     ```
 
-4. Run project
+4. Run the project:
 
     ```shell
     uv run app.py
