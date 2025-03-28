@@ -23,7 +23,7 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
     cd hume-api-examples/tts/python/tts-python-quickstart
     ```
 
-2. Install dependencies:
+2. Set up the environment:
 
     We recommend `uv` but you can adapt these commands to your preferred package manager.
     ```shell
