@@ -36,7 +36,10 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
     **Note:** the `HUME_API_KEY` environment variable is for development only. In a production flutter app you should avoid building your api key into the app -- the client should fetch an access token from an endpoint on your server. You should supply the `MY_SERVER_AUTH_URL` environment variable and uncomment the call to `fetchAccessToken` in `lib/main.dart`.
 
-5. Use `flutter run` to start the app!
+5. Run the app:
+    ```shell
+    flutter run
+    ```
 
 6. If you are using the Android emulator, make sure to send audio to the emulator from the host.
 
