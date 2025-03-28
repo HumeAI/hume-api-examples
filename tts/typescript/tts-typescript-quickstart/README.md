@@ -33,12 +33,13 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
 
 3. Set up your API keys:
 
-  * Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key.
-  * Place it in a `.env` file at the project root. You can use the `.env.example` file as a template:
+  * Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+  * Place your `HUME_API_KEY` in a `.env` file at the project root. You can copy the `.env.example` file to use as a template:
 
     ```shell
     cp .env.example .env
     ```
+
 4. Run the project:
 
     ```shell

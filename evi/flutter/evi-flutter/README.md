@@ -3,7 +3,7 @@
   <h1>Empathic Voice Interface | Sample Flutter App</h1>
 </div>
 
-This project features a sample implementation of Hume's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) using Flutter. This is lightly adapted from the stater project provided by `flutter create`.
+This project features a sample implementation of Hume's [Empathic Voice Interface](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Flutter. This is lightly adapted from the stater project provided by `flutter create`.
 
 **Targets:** The example supports iOS, Android, and Web. 
 
@@ -11,15 +11,34 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
 ## Instructions
 
-1. `flutter pub get` to install dependencies.
+1. Clone this examples repository:
 
-2. Copy the `.env.example` included in the repository to `.env` and fill in `HUME_API_KEY` and `HUME_CONFIG_ID` appropriately, see our documentation on [getting your api keys](https://hume.docs.buildwithfern.com/docs/introduction/getting-your-api-key).
+    ```shell
+    git clone https://github.com/humeai/hume-api-examples
+    cd hume-api-examples/evi/flutter/evi-flutter
+    ```
+
+2. Install Flutter (if needed) following the [official guide](https://docs.flutter.dev/get-started/install).
+
+3. Install dependencies:
+    ```shell
+    flutter pub get
+    ```
+
+4. Set up your API keys:
+
+  * Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+  * Place your `HUME_API_KEY` and `HUME_CONFIG_ID` in a `.env` file at the project root. You can copy the `.env.example` file to use as a template:
+
+    ```shell
+    cp .env.example .env
+    ```
 
     **Note:** the `HUME_API_KEY` environment variable is for development only. In a production flutter app you should avoid building your api key into the app -- the client should fetch an access token from an endpoint on your server. You should supply the `MY_SERVER_AUTH_URL` environment variable and uncomment the call to `fetchAccessToken` in `lib/main.dart`.
 
-3. Use `flutter run` to start the app!
+5. Use `flutter run` to start the app!
 
-4. If you are using the Android emulator, make sure to send audio to the emulator from the host.
+6. If you are using the Android emulator, make sure to send audio to the emulator from the host.
 
 ![](host-audio-screenshot.png)
 
