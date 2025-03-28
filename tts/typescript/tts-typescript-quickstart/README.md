@@ -23,10 +23,12 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
     cd hume-api-examples/tts/typescript/tts-typescript-quickstart
     ```
 
-2. Install dependencies
+2. Set up the environment:
 
     ```shell
-    npm install
+    npm init -y
+    npm install hume dotenv
+    npm install --save-dev typescript @types/node
     ```
 
 3. Set up your API keys:
