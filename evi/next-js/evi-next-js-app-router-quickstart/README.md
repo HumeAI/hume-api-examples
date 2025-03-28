@@ -3,8 +3,6 @@
   <h1>Empathic Voice Interface | Next.js App Router Quickstart</h1>
 </div>
 
-![preview.png](preview.png)
-
 ## Overview
 
 This project features a sample implementation of Hume's [Empathic Voice Interface](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [React SDK](https://github.com/HumeAI/empathic-voice-api-js/tree/main/packages/react). Here, we have a simple EVI that uses the Next.js App Router.
