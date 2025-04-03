@@ -3,6 +3,8 @@
   <h1>Empathic Voice Interface | Next.js App Router Quickstart</h1>
 </div>
 
+![preview.png](preview.png)
+
 ## Overview
 
 This project features a sample implementation of Hume's [Empathic Voice Interface](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [React SDK](https://github.com/HumeAI/empathic-voice-api-js/tree/main/packages/react). Here, we have a simple EVI that uses the Next.js App Router.
@@ -18,7 +20,7 @@ Click the button below to deploy this example project with Vercel:
 Below are the steps to completing deployment:
 
 1. Create a Git Repository for your project.
-2. Provide the required environment variables. To get your API key and Secret key, log into the portal and visit the [API keys page](https://beta.hume.ai/settings/keys).
+2. Provide the required environment variables. To get your API key and Secret key, log into the portal and visit the [API keys page](https://platform.hume.ai/settings/keys).
 
 ## Modify the project 
 
