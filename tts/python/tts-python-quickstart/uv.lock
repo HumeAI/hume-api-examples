@@ -213,7 +213,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
-    { name = "hume", specifier = ">=0.7.8" },
+    { name = "hume", specifier = ">=0.7.11" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
 ]
 

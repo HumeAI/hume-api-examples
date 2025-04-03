@@ -1,22 +1,21 @@
 {
   "name": "tts-typescript-quickstart",
   "version": "1.0.0",
-  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --loader ts-node/esm index.ts"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "npm run build && npm run start"
   },
   "author": "",
   "license": "ISC",
-  "description": "<div align=\"center\">   <img src=\"https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png\">   <h1>Text-to-Speech | TypeScript Quickstart</h1>   <p>     <strong>Jumpstart your development with Hume's OCTAVE TTS API!</strong>   </p> </div>",
+  "description": "",
   "dependencies": {
     "dotenv": "^16.4.7",
-    "hume": "^0.9.15"
+    "hume": "^0.9.17"
   },
   "devDependencies": {
-    "@types/node": "^22.13.14",
-    "ts-node": "^10.9.2",
+    "@types/node": "^22.14.0",
     "typescript": "^5.8.2"
   },
   "keywords": []
