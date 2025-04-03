@@ -62,15 +62,14 @@ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/f
     cp .env.example .env
     ```
 
-4. Add the Configuration ID to your environment variables.
+4. Add your Configuration ID to the `.env` file. This corresponds to the EVI configuration you created earlier that includes your weather tool.
 
-5. Add the Geocoding API key to your environment variables (free to use from [geocode.maps.co](https://geocode.maps.co/)).
+5. Add the Geocoding API key to the `.env` file. You can obtain it for free from [geocode.maps.co](https://geocode.maps.co/).
 
 6. Run the project:
     ```shell
     pnpm run dev
     ```
-
 
 This will start the Next.js development server, and you can access the application at `http://localhost:3000`.
 
