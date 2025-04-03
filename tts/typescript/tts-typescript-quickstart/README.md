@@ -31,7 +31,7 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
     npm install --save-dev typescript @types/node
     ```
 
-3. Set up your API keys:
+3. Set up your API key
 
   * Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
   * Place your `HUME_API_KEY` in a `.env` file at the project root. You can copy the `.env.example` file to use as a template:
@@ -43,5 +43,5 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
 4. Run the project:
 
     ```shell
-    npm run start
+    npm run dev
     ```
