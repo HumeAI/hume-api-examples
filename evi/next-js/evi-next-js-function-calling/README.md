@@ -7,7 +7,7 @@
 
 This project features a sample implementation of Hume's [Empathic Voice Interface](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [React SDK](https://github.com/HumeAI/empathic-voice-api-js/tree/main/packages/react). Here, we have a simple EVI that calls a function to get the weather for a given location.
 
-See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/features/tool-use) for a detailed explanation of the code in this project.
+➡️ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/features/tool-use) for a detailed explanation of the code in this project.
 
 ## EVI setup
 

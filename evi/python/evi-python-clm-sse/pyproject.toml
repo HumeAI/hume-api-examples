@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "evi-custom-language-model-sse"
+name = "evi-python-clm-sse"
 version = "0.1.0"
 description = ""
 authors = ["brian@hume.ai"]

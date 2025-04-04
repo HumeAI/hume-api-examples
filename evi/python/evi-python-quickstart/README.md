@@ -7,7 +7,7 @@
 </div>
 
 ## 🚀 Overview
-This project features a minimal implementation of Hume's [Empathic Voice Interface](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [Python SDK](https://github.com/HumeAI/hume-python-sdk). It demonstrates how to authenticate, connect to, and display output from EVI in a terminal application.
+This project features a minimal implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [Python SDK](https://github.com/HumeAI/hume-python-sdk). It demonstrates how to authenticate, connect to, and display output from EVI in a terminal application.
 
 ➡️ See the [Quickstart guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/quickstart/python) for a detailed explanation of the code in this project.
 

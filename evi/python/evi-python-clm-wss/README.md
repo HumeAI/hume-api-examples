@@ -1,4 +1,12 @@
-# EVI Custom Language Model Example Socket
+<div align="center">
+  <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
+  <h1>Empathic Voice Interface | Custom Language Model Example Socket</h1>
+  <p>
+    <strong>Custom responses powered by your own language model</strong>
+  </p>
+</div>
+
+## 🚀 Overview
 
 This guide provides a step-by-step example to configure an EVI custom language model.
 
