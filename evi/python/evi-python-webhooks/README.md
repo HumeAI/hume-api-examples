@@ -10,7 +10,7 @@
 
 **This project demonstrates how to:**
 
-- Set up a basic FastAPI server to receive webhook events from Hume's Empathic Voice Interface (EVI).
+- Set up a basic FastAPI server to receive webhook events from Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview).
 - Handle `chat_started` and `chat_ended` webhook events.
 - Process events to create workflows, such as generating transcripts or logging session details.
 
