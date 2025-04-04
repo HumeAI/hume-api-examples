@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Empathic Voice Interface | Sample Implementation</h1>
+  <h1>Empathic Voice Interface | Python Raw API Example</h1>
   <p>
     <strong>Jumpstart your development with Hume's Empathic Voice Interface!</strong>
   </p>
