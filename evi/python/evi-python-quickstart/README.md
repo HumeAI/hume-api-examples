@@ -26,7 +26,7 @@ It does not currently support Windows. Windows developers can use our [Python Ra
     cd hume-api-examples/evi/python/evi-python-quickstart
     ```
 
-1. **Set up a virtual environment (optional)**
+2. **Set up a virtual environment (Optional)**
    
     It's recommended to isolate dependencies in a virtual environment. Choose one of the following methods:
    
@@ -46,7 +46,7 @@ It does not currently support Windows. Windows developers can use our [Python Ra
 
    After activating the environment, proceed with installing dependencies.
 
-2. **Set up environment variables**
+3. **Set up environment variables**
 
     This project uses `python-dotenv` to load your API credentials securely from a `.env` file.
 
@@ -74,7 +74,7 @@ It does not currently support Windows. Windows developers can use our [Python Ra
 
     (Note: `.env` is a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make it viewable in the finder).
 
-3. **Install the required packages and system dependencies**
+4. **Install the required packages and system dependencies**
 
     The `hume` package contains Hume's Python SDK, including the asynchronous WebSocket infrastructure for using EVI. To install it, run:
 

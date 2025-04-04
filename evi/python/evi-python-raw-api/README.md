@@ -6,60 +6,69 @@
   </p>
 </div>
 
-## Overview
+## 🚀 Overview
 
-This project features a sample implementation of Hume's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) using Hume's API with Python in a terminal window.
+This project features a minimal implementation of Hume's [Empathic Voice Interface](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's API with Python. It demonstrates how to authenticate, connect to, and display output from EVI in a terminal application.
 
-## Setting up a virtual environment (optional)
+## 🔧 Setup Instructions
 
-Before you install the dependencies, you might want to create a virtual environment to isolate your package installations. To create a virtual environment, run the following commands in your terminal:
+1. **Clone this examples repository**
 
-```bash
-# Create a virtual environment in the directory 'evi-env'
-python -m venv evi-env
+    ```shell
+    git clone https://github.com/humeai/hume-api-examples
+    cd hume-api-examples/evi/python/evi-python-raw-api
+    ```
 
-# Activate the virtual environment
-# On Mac/Linux:
-source evi-env/bin/activate
-```
+2. **Set up a virtual environment (Optional)**
+   
+    It's recommended to isolate dependencies in a virtual environment. Choose one of the following methods:
+   
+    - **Using `conda`** (requires [Miniconda](https://docs.anaconda.com/miniconda/) or [Anaconda](https://www.anaconda.com/)):
 
-After activating the virtual environment, you can proceed with the installation of dependencies as described below.
+        ```bash
+        conda create --name evi-env python=3.11
+        conda activate evi-env
+        ```
 
-## Dependencies
+    - **Using built-in `venv`** (available with Python 3.3+):
 
-In order to run it, you need to install the `requirements.txt` using `pip`:
+        ```bash
+        python -m venv evi-env
+        source evi-env/bin/activate
+        ```
 
-### Mac
+   After activating the environment, proceed with installing dependencies.
+  
+3. **Install the required dependencies**
 
-```bash
-pip install -r requirements_mac.txt
-```
+    #### Mac
 
-### Linux
+    ```bash
+    pip install -r requirements_mac.txt
+    ```
 
-```bash
-pip install -r requirements_linux.txt
-```
+    #### Linux
 
-## Environment variables
+    ```bash
+    pip install -r requirements_linux.txt
+    ```
 
-Either create a `.env` file or set environment variables for HUME_API_KEY and HUME_SECRET_KEY.
+4. **Set up environment variables**
 
-Example `.env` file:
+    1. Copy the `.env.example` file to use as a template:
 
-```bash
-HUME_API_KEY="<YOUR API KEY>"
-HUME_SECRET_KEY="<YOUR SECRET KEY>"
-```
+        ```shell
+        cp .env.example .env
+        ```
 
-Example terminal commands to set environment variables manually:
+    2. Place your API keys inside:
 
-```bash
-export HUME_API_KEY="<YOUR API KEY>"
-export HUME_SECRET_KEY="<YOUR SECRET KEY>"
-```
+        -  Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API keys. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+        - Upon doing so, the `.env` file becomes a persistent local store of your API key, Secret key, and EVI config ID. The `.gitignore` file contains local env file paths so that they are not committed to GitHub.
 
-## Usage
+    (Note: `.env` is a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make it viewable in the finder).
+
+## 💬 Run the project
 
 ```bash
 cd src
