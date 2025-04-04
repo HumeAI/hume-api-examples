@@ -1,17 +1,17 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>EVI TouchDesigner Example</h1>
+  <h1>Empathic Voice Interface | TouchDesigner Example</h1>
 </div>
 
 ## Overview
 
-This project demonstrates a sample implementation of Hume AI's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) within a TouchDesigner environment. For now, this project uses text input only.
+This project demonstrates a sample implementation of Hume AI's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) within a TouchDesigner environment. For now, this project uses text input only.
 
 - `HumeTD.tox` is a portable component you can drop in your own project
 - `HumeTDDemo.toe` is a sample project using `HumeTD.tox`
 
-## Setup
-Acquire your API key from [platform.hume.ai](https://platform.hume.ai/settings/keys)
+## Setup Instructions
+Acquire your API key from [platform.hume.ai](https://platform.hume.ai/settings/keys). Follow the instructions in the [Hume documentation](https://dev.hume.ai/docs/introduction/api-key).
 
 ## Running the HumeTD demo
 1. Open `HumeTDDemo.toe`
