@@ -138,6 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isConnected = false;
   bool _isMuted = false;
   var chatEntries = <ChatEntry>[];
+  StreamSubscription<String>? _audioSubscription;
 
   // EVI sends back transcripts of both the user's speech and the assistants speech, along
   // with an analysis of the emotional content of the speech. This method takes
@@ -331,7 +332,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _startRecording() async {
     await _audio.startRecording();
 
-    _audio.audioStream.listen((data) async {
+    _audioSubscription = _audio.audioStream.listen((data) async {
       _sendAudio(data);
     });
     _audio.audioStream.handleError((error) {
@@ -341,6 +342,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _stopRecording() {
     _audio.stopRecording();
+    _audioSubscription?.cancel();
   }
 
   void _unmuteInput() {
