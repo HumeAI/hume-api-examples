@@ -1,16 +1,16 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Empathic Voice Interface | Chat History</h1>
+  <h1>Empathic Voice Interface | Python Chat History</h1>
   <p>
     <strong>Fetch Chat Events, Generate a Transcript, and Identify Top Emotions</strong>
   </p>
 </div>
 
-## Overview
+## 🚀 Overview
 
 **This project demonstrates how to:**
 
-- Retrieve all chat events for a specified Chat ID from Hume's Empathic Voice Interface (EVI) using the TypeScript SDK.
+- Retrieve all chat events for a specified Chat ID from Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using the [Python SDK](https://github.com/HumeAI/hume-python-sdk).
 - Parse user and assistant messages to produce a formatted chat transcript.
 - Compute the top three average emotion scores from user messages.
 
@@ -19,53 +19,59 @@
 - **Transcript generation:** Outputs a human-readable `.txt` file capturing the conversation between user and assistant.
 - **Top 3 emotions:** Identifies the three emotions with the highest average scores across all user messages.
 
-## Prerequisites
+## 🔧 Instructions
 
-Ensure your environment meets the following requirements:
+1. **Clone this examples repository**
 
-- **Poetry**: Version `1.7.1` or higher
+    ```shell
+    git clone https://github.com/humeai/hume-api-examples
+    cd hume-api-examples/evi/python/evi-python-chat-history
+    ```
 
-Check versions on macOS:
-```sh
-poetry --version
-```
+2. **Verify Poetry is installed (version 1.7.1 or higher)**:
 
-If you need to update or install Poetry, visit the [official Poetry website](https://python-poetry.org/).
+    Check your version:
+    ```sh
+    poetry --version
+    ```
 
-### Setting up credentials
+    If you need to update or install Poetry, follow the instructions on the [official Poetry website](https://python-poetry.org/).
 
-- **Obtain Your API Key**: Follow the instructions in the Hume documentation to acquire your API key.
-- **Create a `.env` File**: In the project's root directory, create a `.env` file if it doesn't exist. Add your API key:
+3. **Set up environment variable**:
 
-```sh
-HUME_API_KEY="<YOUR_API_KEY>"
-```
+    - Copy the `.env.example` file to use as a template:
 
-Refer to `.env.example` as a template.
+        ```shell
+        cp .env.example .env
+        ```
 
-### Specifying the Chat ID
+    - Place your API key inside:
 
-In the main function within `main.py`, set the `CHAT_ID` variable to the target conversation ID:
+        -  Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+        - Upon doing so, the `.env` file becomes a persistent local store of your API key. The `.gitignore` file contains local `env` file paths so that they are not committed to GitHub.
 
-```python
-async def main():
-    # Replace with your actual Chat ID
-    CHAT_ID = "<YOUR_CHAT_ID>"
-    # ...
-```
+4. **Specify the Chat ID**:
 
-This determines which Chat's events to fetch and process.
+    In the main function within `main.py`, set the `CHAT_ID` variable to the target conversation ID:
 
-### Installation and usage
+    ```python
+    async def main():
+        # Replace with your actual Chat ID
+        CHAT_ID = "<YOUR_CHAT_ID>"
+        # ...
+    ```
 
-1. **Install dependencies**:
-```sh
-poetry install
-```
-2. **Run the project**:
-```sh
-poetry run python main.py
-```
+    This determines which Chat's events to fetch and process.
+
+5. **Install dependencies**:
+    ```sh
+    poetry install
+    ```
+
+6. **Run the project**:
+    ```sh
+    poetry run python main.py
+    ```
 
 #### What happens when run:
 
