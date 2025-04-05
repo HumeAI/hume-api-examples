@@ -9,6 +9,8 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
 ## Instructions
 
+**Note:** This requires a Node version of 18.14 or greater.
+
 1. Install and build
     ```shell
     # Install dependencies
@@ -26,6 +28,22 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
     ```shell
     npm run ios
+    ```
+
+### Running on your device
+
+**Note:** This assumes you've already set up your [iOS device in Developer Mode](https://docs.expo.dev/get-started/set-up-your-environment/?platform=ios&device=physical&mode=development-build&buildEnv=local) and installed the corresponding simulator in XCode.
+
+To run on your device:
+
+1. Open `app.json` and edit the `ios.bundleIdentifier` value to be unique.
+
+2. After running the "Install and build" step above, open `ios/EVIExample.xcworkspace` in XCode, select a development team in the Signing & Capabilities editor, and ensure the Signing Certificate is automatically set.
+
+3. Run the dev server
+
+    ```shell
+    npm run ios:device
     ```
 
 ## Notes
