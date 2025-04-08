@@ -37,10 +37,9 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 
 | Name                                                                                                                      | Models                                | Language   | Framework   |
 | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------- |
+| [`visualization-example`](/expression-measurement//jupyter-notebook/visualization-example/example-notebook.ipynb)         | `face`                                | Python     |             |
 | [`batch-python-top-emotions`](/expression-measurement/python/batch-python-top-emotions/README.md)                         | `face`                                | Python     |             |
 | [`batch-typescript-raw-text-processor`](/expression-measurement/typescript/batch-typescript-raw-text-processor/README.md) | `language`                            | TypeScript |             |
 | [`batch-next-js-emotional-language`](/expression-measurement/next-js/batch-next-js-emotional-language/README.md)          | `language`                            | TypeScript | Next.js     |
 | [`streaming-next-js-example`](/expression-measurement/next-js/streaming-next-js-example/README.md)                        | `language`, `face`, `burst`, `speech` | TypeScript | Next.js     |
-| [`visualization-example`](/expression-measurement//jupyter-notebook/visualization-example/example-notebook.ipynb)         | `face`                                | Python     |             |
-
 
