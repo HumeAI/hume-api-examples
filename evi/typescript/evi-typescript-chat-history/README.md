@@ -10,7 +10,7 @@
 
 **This project demonstrates how to:**
 
-- Retrieve all chat events for a specified Chat ID from Hume's Empathic Voice Interface (EVI) using the TypeScript SDK.
+- Retrieve all chat events for a specified Chat ID from Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using the [Typescript SDK](https://github.com/HumeAI/hume-typescript-sdk).
 - Parse user and assistant messages to produce a formatted chat transcript.
 - Compute the top three average emotion scores from user messages, leveraging the built-in `EmotionScores` interface.
 

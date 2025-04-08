@@ -8,7 +8,9 @@
 
 ## Overview
 
-This project features a sample implementation of Hume's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) using Hume's Typescript SDK.
+This project features a sample implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [Typescript SDK](https://github.com/HumeAI/hume-typescript-sdk). It demonstrates how to authenticate, connect to, and display output from EVI in a frontend web application.
+
+See the [Quickstart guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/quickstart/typescript) for a detailed explanation of the code in this project.
 
 ## Prerequisites
 
