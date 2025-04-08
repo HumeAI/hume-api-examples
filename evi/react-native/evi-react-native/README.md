@@ -3,22 +3,22 @@
   <h1>Empathic Voice Interface | React Native Example</h1>
 </div>
 
-## 🚀 Overview
+## Overview
 
 This project features a sample implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using React Native. 
 
 **Targets:** The example supports iOS and web (Android support coming soon!)
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
-1. **Clone this examples repository**
+1. Clone this examples repository:
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
     cd hume-api-examples/evi/react-native/evi-react-native
     ```
 
-2. **Set up API credentials**
+2. Set up API credentials:
 
     - **Obtain Your API Key**: Follow the instructions in the [Hume documentation](https://dev.hume.ai/docs/introduction/api-key) to acquire your API key.
     - **Create a `.env` File**: Copy the `.env.example` included in the repository to `.env` and fill in `EXPO_PUBLIC_HUME_API_KEY` and `EXPO_PUBLIC_HUME_CONFIG_ID` appropriately:
@@ -30,17 +30,17 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
     **Note:** the `EXPO_PUBLIC_HUME_API_KEY` environment variable is for development only. In a production React Native app you should avoid building your api key into the app -- the client should fetch an access token from an endpoint on your server. You should supply the `MY_SERVER_AUTH_URL` environment variable and uncomment the call to `fetchAccessToken` in `App.tsx`.
 
-3. **Install dependencies**
+3. Install dependencies:
     ```shell
     npm install
     ```
 
-4. **Prebuild, to include the `modules/audio` native module**
+4. Prebuild, to include the `modules/audio` native module:
     ```shell
     npx expo prebuild --platform ios
     ```
 
-## ⚙️ Usage
+## Usage
 
 Run the dev server:
 

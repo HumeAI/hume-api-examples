@@ -6,28 +6,28 @@
   </p>
 </div>
 
-## 🚀 Overview
+## Overview
 
 This project showcases how to call functions in a sample implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [Python SDK](https://github.com/HumeAI/hume-python-sdk). Here, we have a simple EVI that calls a function to get the current weather for a given location.
 
-➡️ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/features/tool-use) for a detailed explanation of the code in this project.
+See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/features/tool-use) for a detailed explanation of the code in this project.
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 The Hume Python SDK supports Python versions `3.9`, `3.10`, and `3.11` on macOS and Linux systems.
 
 It does not currently support Windows.
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
-1. **Clone this examples repository**
+1. Clone this examples repository:
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
     cd hume-api-examples/evi/python/evi-python-function-calling
     ```
 
-2. **Set up a virtual environment (Optional)**
+2. Set up a virtual environment (Optional):
    
     It's recommended to isolate dependencies in a virtual environment. Choose one of the following methods:
    
@@ -47,7 +47,7 @@ It does not currently support Windows.
 
    After activating the environment, proceed with installing dependencies.
 
-3. **Set up environment variables**
+3. Set up environment variables:
 
     This project uses `python-dotenv` to load your API credentials securely from a `.env` file.
 
@@ -68,7 +68,7 @@ It does not currently support Windows.
         -  Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API keys. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
         - Upon doing so, the `.env` file becomes a persistent local store of your API key, Secret key, and EVI config ID. The `.gitignore` file contains local env file paths so that they are not committed to GitHub.
 
-4. **Install dependencies**
+4. Install dependencies:
 
     Install the Hume Python SDK with microphone support:
 

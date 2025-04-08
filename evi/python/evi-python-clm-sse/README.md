@@ -6,27 +6,27 @@
   </p>
 </div>
 
-## 🚀 Overview
+## Overview
 
 A Python client library for handling Server-Sent Events (SSE) with Hume Custom Language Models, specifically designed to work with OpenAI-compatible APIs.
 
-## ⭐ Features
+## Features
 
 - Server-Sent Events (SSE) client implementation
 - Compatible with OpenAI-style streaming responses
 - Support for custom language model endpoints
 - Easy-to-use async interface
 
-## 🔧 Instructions
+## Instructions
 
-1. **Clone this examples repository**
+1. Clone this examples repository:
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
     cd hume-api-examples/evi/python/evi-python-clm-sse
     ```
 
-2. **Verify Poetry is installed (version 1.7.1 or higher)**:
+2. Verify Poetry is installed (version 1.7.1 or higher):
 
     Check your version:
     ```sh
@@ -35,12 +35,12 @@ A Python client library for handling Server-Sent Events (SSE) with Hume Custom L
 
     If you need to update or install Poetry, follow the instructions on the [official Poetry website](https://python-poetry.org/).
 
-3. **Install dependencies**:
+3. Install dependencies:
     ```sh
     poetry install
     ```
 
-4. **Run the server**:
+4. Run the server:
     ```sh
     poetry run python openai_sse.py
     ```

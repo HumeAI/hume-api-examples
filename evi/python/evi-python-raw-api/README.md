@@ -6,20 +6,20 @@
   </p>
 </div>
 
-## 🚀 Overview
+## Overview
 
 This project features a minimal implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's API with Python. It demonstrates how to authenticate, connect to, and display output from EVI in a terminal application.
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
-1. **Clone this examples repository**
+1. Clone this examples repository:
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
     cd hume-api-examples/evi/python/evi-python-raw-api
     ```
 
-2. **Set up a virtual environment (Optional)**
+2. Set up a virtual environment (Optional):
    
     It's recommended to isolate dependencies in a virtual environment. Choose one of the following methods:
    
@@ -39,7 +39,7 @@ This project features a minimal implementation of Hume's [Empathic Voice Interfa
 
    After activating the environment, proceed with installing dependencies.
   
-3. **Install the required dependencies**
+3. Install the required dependencies:
 
     #### Mac
 
@@ -53,7 +53,7 @@ This project features a minimal implementation of Hume's [Empathic Voice Interfa
     pip install -r requirements_linux.txt
     ```
 
-4. **Set up environment variables**
+4. Set up environment variables:
 
     1. Copy the `.env.example` file to use as a template:
 
@@ -68,7 +68,7 @@ This project features a minimal implementation of Hume's [Empathic Voice Interfa
 
     (Note: `.env` is a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make it viewable in the finder).
 
-## 💬 Run the project
+## Run the project
 
 ```bash
 cd src

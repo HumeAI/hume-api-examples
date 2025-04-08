@@ -6,7 +6,7 @@
   </p>
 </div>
 
-## 🚀 Overview
+## Overview
 
 This guide provides a step-by-step example to configure an EVI custom language model.
 

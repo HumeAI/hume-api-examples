@@ -6,7 +6,7 @@
   </p>
 </div>
 
-## 🚀 Overview
+## Overview
 
 **This project demonstrates how to:**
 
@@ -19,16 +19,16 @@
 - **Transcript generation:** Outputs a human-readable `.txt` file capturing the conversation between user and assistant.
 - **Top 3 emotions:** Identifies the three emotions with the highest average scores across all user messages.
 
-## 🔧 Instructions
+## Instructions
 
-1. **Clone this examples repository**
+1. Clone this examples repository:
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
     cd hume-api-examples/evi/python/evi-python-chat-history
     ```
 
-2. **Verify Poetry is installed (version 1.7.1 or higher)**:
+2. Verify Poetry is installed (version 1.7.1 or higher):
 
     Check your version:
     ```sh
@@ -37,20 +37,19 @@
 
     If you need to update or install Poetry, follow the instructions on the [official Poetry website](https://python-poetry.org/).
 
-3. **Set up environment variable**:
+3. Set up your API key:
 
-    - Copy the `.env.example` file to use as a template:
+    You must authenticate to use the EVI API. Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+  
+    Place your API key in a `.env` file at the root of your project.
 
-        ```shell
-        cp .env.example .env
-        ```
+    ```shell
+    echo "HUME_API_KEY=your_api_key_here" > .env
+    ```
 
-    - Place your API key inside:
+    You can copy the `.env.example` file to use as a template.
 
-        -  Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
-        - Upon doing so, the `.env` file becomes a persistent local store of your API key. The `.gitignore` file contains local `env` file paths so that they are not committed to GitHub.
-
-4. **Specify the Chat ID**:
+4. Specify the Chat ID:
 
     In the main function within `main.py`, set the `CHAT_ID` variable to the target conversation ID:
 
@@ -63,24 +62,24 @@
 
     This determines which Chat's events to fetch and process.
 
-5. **Install dependencies**:
+5. Install dependencies:
     ```sh
     poetry install
     ```
 
-6. **Run the project**:
+6. Run the project:
     ```sh
     poetry run python main.py
     ```
 
-#### What happens when run:
+    #### What happens when run:
 
-- The script fetches all events for the specified `CHAT_ID`.
-- It generates a `transcript_<CHAT_ID>.txt` file containing the user and assistant messages with timestamps.
-- It logs the top 3 average emotions to the console:
+    - The script fetches all events for the specified `CHAT_ID`.
+    - It generates a `transcript_<CHAT_ID>.txt` file containing the user and assistant messages with timestamps.
+    - It logs the top 3 average emotions to the console:
 
-```sh
-Top 3 Emotions: {'Joy': 0.7419108072916666, 'Interest': 0.63111979166666666, 'Amusement': 0.63061116536458334}
-```
+    ```sh
+    Top 3 Emotions: {'Joy': 0.7419108072916666, 'Interest': 0.63111979166666666, 'Amusement': 0.63061116536458334}
+    ```
 
-(These keys and scores are just examples; the actual output depends on the Chat's content.)
+    (These keys and scores are just examples; the actual output depends on the Chat's content.)

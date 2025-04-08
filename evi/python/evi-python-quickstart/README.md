@@ -6,27 +6,27 @@
   </p>
 </div>
 
-## 🚀 Overview
+## Overview
 This project features a minimal implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [Python SDK](https://github.com/HumeAI/hume-python-sdk). It demonstrates how to authenticate, connect to, and display output from EVI in a terminal application.
 
-➡️ See the [Quickstart guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/quickstart/python) for a detailed explanation of the code in this project.
+See the [Quickstart guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/quickstart/python) for a detailed explanation of the code in this project.
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 The Hume Python SDK supports Python versions `3.9`, `3.10`, and `3.11` on macOS and Linux systems.
 
 It does not currently support Windows. Windows developers can use our [Python Raw API Example](/evi/python/evi-python-raw-api/README.md) to work directly with the [EVI WebSocket API](https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat).
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
-1. **Clone this examples repository**
+1. Clone this examples repository:
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
     cd hume-api-examples/evi/python/evi-python-quickstart
     ```
 
-2. **Set up a virtual environment (Optional)**
+2. Set up a virtual environment (Optional):
    
     It's recommended to isolate dependencies in a virtual environment. Choose one of the following methods:
    
@@ -46,7 +46,7 @@ It does not currently support Windows. Windows developers can use our [Python Ra
 
    After activating the environment, proceed with installing dependencies.
 
-3. **Set up environment variables**
+3. Set up environment variables:
 
     This project uses `python-dotenv` to load your API credentials securely from a `.env` file.
 
@@ -74,7 +74,7 @@ It does not currently support Windows. Windows developers can use our [Python Ra
 
     (Note: `.env` is a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make it viewable in the finder).
 
-4. **Install the required packages and system dependencies**
+4. Install the required packages and system dependencies:
 
     The `hume` package contains Hume's Python SDK, including the asynchronous WebSocket infrastructure for using EVI. To install it, run:
 
@@ -120,7 +120,7 @@ It does not currently support Windows. Windows developers can use our [Python Ra
 
     Not yet supported.
 
-## 💬 Run the project
+## Run the project
 
 Below are the steps to run the project:
 1. Create a virtual environment using venv, conda or other method.
