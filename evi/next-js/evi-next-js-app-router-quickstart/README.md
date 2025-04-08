@@ -20,7 +20,7 @@ Click the button below to deploy this example project with Vercel:
 Below are the steps to completing deployment:
 
 1. Create a Git Repository for your project.
-2. Provide the required environment variables. To get your API key and Secret key, log into the portal and visit the [API keys page](https://platform.hume.ai/settings/keys).
+2. Provide the required environment variables. To get your API key and Secret key, log into the Hume AI Platform and visit the [API keys page](https://platform.hume.ai/settings/keys).
 
 ## Modify the project 
 
@@ -53,7 +53,7 @@ Below are the steps to completing deployment:
 
    EVI is pre-configured with a set of default values, which are automatically applied if you do not specify a configuration. The default configuration includes a preset voice and language model, but does not include a system prompt or tools. To customize these options, you will need to create and specify your own EVI configuration. To learn more, see our [configuration guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration/build-a-configuration).
   
-    You may pass in a configuration ID to the `VoiceProvider` object inside the [components/Chat.tsx file](https://github.com/HumeAI/hume-api-examples/blob/main/evi-next-js-app-router/components/Chat.tsx).
+    You may pass in a configuration ID to the `VoiceProvider` object inside the [components/Chat.tsx file](https://github.com/HumeAI/hume-api-examples/blob/main/evi/next-js/evi-next-js-app-router-quickstart/components/Chat.tsx).
 
       Here's an example:
       ```tsx

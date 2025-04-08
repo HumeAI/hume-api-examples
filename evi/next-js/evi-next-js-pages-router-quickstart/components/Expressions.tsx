@@ -27,7 +27,6 @@ export default function Expressions({
       }
     >
       {top3.map(([key, value]) => {
-        console.log(key, value);
         return (
           <div key={key} className={"w-full overflow-hidden"}>
             <div
