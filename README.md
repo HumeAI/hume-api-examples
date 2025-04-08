@@ -6,8 +6,8 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 
 | Name                                                                                    | Language   | Framework       |
 | --------------------------------------------------------------------------------------- | ---------- | --------------- |
-| [`tts-python-quickstart`](/tts/python/tts-python-quickstart/README.md)                  | Python     |                 |
-| [`tts-typescript-quickstart`](/tts/typescript/tts-typescript-quickstart/README.md)      | TypeScript |                 |
+| [`tts-python-quickstart`](/tts/tts-python-quickstart/README.md)                  | Python     |                 |
+| [`tts-typescript-quickstart`](/tts/tts-typescript-quickstart/README.md)      | TypeScript |                 |
 
 ## [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview)
 
