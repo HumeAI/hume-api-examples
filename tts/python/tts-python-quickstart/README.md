@@ -31,7 +31,7 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
     uv add hume python-dotenv aiofiles
     ```
 
-3. Set up your API keys:
+3. Set up your API key:
 
     You must authenticate to use the Hume TTS API. Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
   
