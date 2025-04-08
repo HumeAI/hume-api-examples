@@ -16,7 +16,7 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
 
 ## Instructions
 
-1. Clone this examples repository
+1. Clone this examples repository:
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
@@ -29,17 +29,20 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
     npm install
     ```
 
-3. Set up your API key
+3. Set up your API key:
 
-  * Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
-  * Place your `HUME_API_KEY` in a `.env` file at the project root. You can copy the `.env.example` file to use as a template:
+    You must authenticate to use the Hume TTS API. Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+
+    This example uses [dotenv](https://www.npmjs.com/package/dotenv). Place your API key in a `.env` file at the root of your project.
 
     ```shell
-    cp .env.example .env
+    echo "HUME_API_KEY=your_api_key_here" > .env
     ```
+
+    You can copy the `.env.example` file to use as a template.
 
 4. Run the project:
 
     ```shell
-    npm run dev
+    npx ts-node index.ts
     ```
