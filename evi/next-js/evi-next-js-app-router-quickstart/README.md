@@ -36,19 +36,24 @@ Below are the steps to completing deployment:
     npm install
     ```
 
-3. Set up your API keys:
+3. Set up your API key and Secret key:
 
-  * Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
-  * Place your `HUME_API_KEY` and `HUME_SECRET_KEY` in a `.env` file at the project root. You can copy the `.env.example` file to use as a template:
+    In order to make an authenticated connection we will first need to generate an access token. Doing so will require your API key and Secret key. These keys can be obtained by logging into the portal and visiting the [API keys page](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+  
+    Place your `HUME_API_KEY` and `HUME_SECRET_KEY` in a `.env` file at the root of your project.
 
     ```shell
-    cp .env.example .env
+    echo "HUME_API_KEY=your_api_key_here" > .env
+    echo "HUME_SECRET_KEY=your_secret_key_here" >> .env
     ```
 
-4. Specify an EVI configuration (Optional)
+    You can copy the `.env.example` file to use as a template.
 
-  * EVI is pre-configured with a set of default values, which are automatically applied if you do not specify a configuration. The default configuration includes a preset voice and language model, but does not include a system prompt or tools. To customize these options, you will need to create and specify your own EVI configuration. To learn more, see our [configuration guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration/build-a-configuration).
-  * You may pass in a configuration ID to the `VoiceProvider` object inside the [Chat.tsx file](https://github.com/HumeAI/hume-api-examples/blob/main/evi-next-js-app-router/components/Chat.tsx).
+4. Specify an EVI configuration (Optional):
+
+   EVI is pre-configured with a set of default values, which are automatically applied if you do not specify a configuration. The default configuration includes a preset voice and language model, but does not include a system prompt or tools. To customize these options, you will need to create and specify your own EVI configuration. To learn more, see our [configuration guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration/build-a-configuration).
+  
+    You may pass in a configuration ID to the `VoiceProvider` object inside the [components/Chat.tsx file](https://github.com/HumeAI/hume-api-examples/blob/main/evi-next-js-app-router/components/Chat.tsx).
 
       Here's an example:
       ```tsx
