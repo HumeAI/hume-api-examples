@@ -6,40 +6,40 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 
 | Name                                                                                    | Language   | Framework       |
 | --------------------------------------------------------------------------------------- | ---------- | --------------- |
-| [`tts-python-quickstart`](/tts/tts-python-quickstart/README.md)                  | Python     |                 |
-| [`tts-typescript-quickstart`](/tts/tts-typescript-quickstart/README.md)      | TypeScript |                 |
+| [`tts-python-quickstart`](/tts/tts-python-quickstart/README.md)                         | Python     |                 |
+| [`tts-typescript-quickstart`](/tts/tts-typescript-quickstart/README.md)                 | TypeScript |                 |
 
 ## [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview)
 
-| Name                                                                                               | Language   | Framework       |
-| -------------------------------------------------------------------------------------------------- | ---------- | --------------- |
-| [`evi-flutter`](/evi/flutter/evi-flutter/README.md)                                                | Dart       | Flutter         |
-| [`evi-next-js-app-router-quickstart`](/evi/next-js/evi-next-js-app-router-quickstart/README.md)    | TypeScript | Next.js         |
-| [`evi-next-js-pages-router-quickstart`](/evi/next-js/evi-next-js-pages-router-quickstart/README.md)| TypeScript | Next.js         |
-| [`evi-next-js-function-calling`](/evi/next-js/evi-next-js-function-calling/README.md)              | TypeScript | Next.js         |
-| [`evi-react-native`](/evi/react-native/evi-react-native/README.md)                                 | TypeScript | React Native    |
-| [`evi-typescript-quickstart`](/evi/typescript/evi-typescript-quickstart/README.md)                 | TypeScript |                 |
-| [`evi-typescript-chat-history`](/evi/typescript/evi-typescript-chat-history/README.md)             | TypeScript |                 |
-| [`evi-typescript-webhooks`](/evi/typescript/evi-typescript-webhooks/README.md)                     | TypeScript | Express         |
-| [`evi-vue-widget`](/evi/vue/evi-vue-widget/README.md)                                              | TypeScript | Vue             |
-| [`evi-python-quickstart`](/evi/python/evi-python-quickstart/README.md)                             | Python     |                 |
-| [`evi-python-chat-history`](/evi/python/evi-python-chat-history/README.md)                         | Python     |                 |
-| [`evi-python-function-calling`](/evi/python/evi-python-function-calling/README.md)                 | Python     |                 |
-| [`evi-python-raw-api`](/evi/python/evi-python-raw-api/README.md)                                   | Python     |                 |
-| [`evi-python-webhooks`](/evi/python/evi-python-webhooks/README.md)                                 | Python     | FastAPI         |
-| [`evi-touchdesigner`](/evi/touchdesigner/evi-touchdesigner/README.md)                              | Python     | TouchDesigner   |
-| [`evi-python-clm-sse`](/evi/python/evi-python-clm-sse/README.md)                                   | Python     |                 |
-| [`evi-python-clm-wss`](/evi/python/evi-python-clm-wss/README.md)                                   | Python     |                 |
-| [`evi-python-wss-clm-endpoint`](/evi/python/evi-python-wss-clm-endpoint/)                          | Python     | Modal           |
-| [`evi-prompting-examples`](/evi/prompt-examples/evi-prompting-examples/README.md)                  |            |                 |
+| Name                                                                                       | Language   | Framework       |
+| ------------------------------------------------------------------------------------------ | ---------- | --------------- |
+| [`evi-flutter`](/evi/evi-flutter/README.md)                                                | Dart       | Flutter         |
+| [`evi-next-js-app-router-quickstart`](/evi/evi-next-js-app-router-quickstart/README.md)    | TypeScript | Next.js         |
+| [`evi-next-js-pages-router-quickstart`](/evi/evi-next-js-pages-router-quickstart/README.md)| TypeScript | Next.js         |
+| [`evi-next-js-function-calling`](/evi/evi-next-js-function-calling/README.md)              | TypeScript | Next.js         |
+| [`evi-prompting-examples`](/evi/evi-prompting-examples/README.md)                          |            |                 |
+| [`evi-python-chat-history`](/evi/evi-python-chat-history/README.md)                        | Python     |                 |
+| [`evi-python-clm-sse`](/evi/evi-python-clm-sse/README.md)                                  | Python     |                 |
+| [`evi-python-clm-wss`](/evi/evi-python-clm-wss/README.md)                                  | Python     |                 |
+| [`evi-python-function-calling`](/evi/evi-python-function-calling/README.md)                | Python     |                 |
+| [`evi-python-quickstart`](/evi/evi-python-quickstart/README.md)                            | Python     |                 |
+| [`evi-python-raw-api`](/evi/evi-python-raw-api/README.md)                                  | Python     |                 |
+| [`evi-python-webhooks`](/evi/evi-python-webhooks/README.md)                                | Python     | FastAPI         |
+| [`evi-python-wss-clm-endpoint`](/evi/evi-python-wss-clm-endpoint/)                         | Python     | Modal           |
+| [`evi-react-native`](/evi/evi-react-native/README.md)                                      | TypeScript | React Native    |
+| [`evi-touchdesigner`](/evi/evi-touchdesigner/README.md)                                    | Python     | TouchDesigner   |
+| [`evi-typescript-chat-history`](/evi/evi-typescript-chat-history/README.md)                | TypeScript |                 |
+| [`evi-typescript-quickstart`](/evi/evi-typescript-quickstart/README.md)                    | TypeScript |                 |
+| [`evi-typescript-webhooks`](/evi/evi-typescript-webhooks/README.md)                        | TypeScript | Express         |
+| [`evi-vue-widget`](/evi/evi-vue-widget/README.md)                                          | TypeScript | Vue             |
 
 ## [Expression Measurement API](https://dev.hume.ai/docs/expression-measurement-api/overview)
 
-| Name                                                                                                                      | Models                                | Language   | Framework   |
-| ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------- |
-| [`visualization-example`](/expression-measurement/visualization-example/example-notebook.ipynb)         | `face`                                | Python     |             |
-| [`python-top-emotions`](/expression-measurement/batch/python-top-emotions/README.md)                         | `face`                                | Python     |             |
+| Name                                                                                                     | Models                                | Language   | Framework   |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------- |
+| [`visualization-example`](/expression-measurement/visualization-example/example-notebook.ipynb)          | `face`                                | Python     |             |
+| [`python-top-emotions`](/expression-measurement/batch/python-top-emotions/README.md)                     | `face`                                | Python     |             |
 | [`typescript-raw-text-processor`](/expression-measurement/batch/typescript-raw-text-processor/README.md) | `language`                            | TypeScript |             |
-| [`next-js-emotional-language`](/expression-measurement/batch/next-js-emotional-language/README.md)          | `language`                            | TypeScript | Next.js     |
-| [`next-js-streaming-example`](/expression-measurement/streaming/next-js-streaming-example/README.md)                        | `language`, `face`, `burst`, `speech` | TypeScript | Next.js     |
+| [`next-js-emotional-language`](/expression-measurement/batch/next-js-emotional-language/README.md)       | `language`                            | TypeScript | Next.js     |
+| [`next-js-streaming-example`](/expression-measurement/streaming/next-js-streaming-example/README.md)     | `language`, `face`, `burst`, `speech` | TypeScript | Next.js     |
 
