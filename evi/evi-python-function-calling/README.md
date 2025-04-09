@@ -22,163 +22,163 @@ It does not currently support Windows.
 
 1. Clone this examples repository:
 
-    ```shell
-    git clone https://github.com/humeai/hume-api-examples
-    cd hume-api-examples/evi/python/evi-python-function-calling
-    ```
+   ```shell
+   git clone https://github.com/humeai/hume-api-examples
+   cd hume-api-examples/evi/evi-python-function-calling
+   ```
 
 2. Set up a virtual environment (Optional):
-   
-    It's recommended to isolate dependencies in a virtual environment. Choose one of the following methods:
-   
-    - **Using `conda`** (requires [Miniconda](https://docs.anaconda.com/miniconda/) or [Anaconda](https://www.anaconda.com/)):
 
-        ```bash
-        conda create --name evi-env python=3.11
-        conda activate evi-env
-        ```
+   It's recommended to isolate dependencies in a virtual environment. Choose one of the following methods:
 
-    - **Using built-in `venv`** (available with Python 3.3+):
+   - **Using `conda`** (requires [Miniconda](https://docs.anaconda.com/miniconda/) or [Anaconda](https://www.anaconda.com/)):
 
-        ```bash
-        python -m venv evi-env
-        source evi-env/bin/activate
-        ```
+     ```bash
+     conda create --name evi-env python=3.11
+     conda activate evi-env
+     ```
+
+   - **Using built-in `venv`** (available with Python 3.3+):
+
+     ```bash
+     python -m venv evi-env
+     source evi-env/bin/activate
+     ```
 
    After activating the environment, proceed with installing dependencies.
 
 3. Set up environment variables:
 
-    This project uses `python-dotenv` to load your API credentials securely from a `.env` file.
+   This project uses `python-dotenv` to load your API credentials securely from a `.env` file.
 
-    1. Install the package:
+   1. Install the package:
 
-        ```bash
-        pip install python-dotenv
-        ```
+      ```bash
+      pip install python-dotenv
+      ```
 
-    2. Copy the `.env.example` file to use as a template:
+   2. Copy the `.env.example` file to use as a template:
 
-        ```shell
-        cp .env.example .env
-        ```
+      ```shell
+      cp .env.example .env
+      ```
 
-    2. Place your API keys inside:
+   3. Place your API keys inside:
 
-        -  Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API keys. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
-        - Upon doing so, the `.env` file becomes a persistent local store of your API key, Secret key, and EVI config ID. The `.gitignore` file contains local env file paths so that they are not committed to GitHub.
+      - Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API keys. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+      - Upon doing so, the `.env` file becomes a persistent local store of your API key, Secret key, and EVI config ID. The `.gitignore` file contains local env file paths so that they are not committed to GitHub.
 
 4. Install dependencies:
 
-    Install the Hume Python SDK with microphone support:
+   Install the Hume Python SDK with microphone support:
 
-    ```bash
-    pip install "hume[microphone]"
-    ```
+   ```bash
+   pip install "hume[microphone]"
+   ```
 
-    For audio playback and processing, additional system-level dependencies are required. Below are download instructions for each supported operating system:
+   For audio playback and processing, additional system-level dependencies are required. Below are download instructions for each supported operating system:
 
-    #### macOS
+   #### macOS
 
-    To ensure audio playback functionality, you will need to install `ffmpeg`, a powerful multimedia framework that handles audio and video processing.
+   To ensure audio playback functionality, you will need to install `ffmpeg`, a powerful multimedia framework that handles audio and video processing.
 
-    One of the most common ways to install `ffmpeg` on macOS is by using [Homebrew](https://brew.sh/). Homebrew is a popular package manager for macOS that simplifies the installation of software by automating the process of downloading, compiling, and setting up packages.
+   One of the most common ways to install `ffmpeg` on macOS is by using [Homebrew](https://brew.sh/). Homebrew is a popular package manager for macOS that simplifies the installation of software by automating the process of downloading, compiling, and setting up packages.
 
-    To install `ffmpeg` using Homebrew, follow these steps:
+   To install `ffmpeg` using Homebrew, follow these steps:
 
-    1. Install Homebrew onto your system according to the instructions on the [Homebrew website](https://brew.sh/).
+   1. Install Homebrew onto your system according to the instructions on the [Homebrew website](https://brew.sh/).
 
-    2. Once Homebrew is installed, you can install `ffmpeg` with:
-        ```bash
-        brew install ffmpeg
-        ```
+   2. Once Homebrew is installed, you can install `ffmpeg` with:
+      ```bash
+      brew install ffmpeg
+      ```
 
-    If you prefer not to use Homebrew, you can download a pre-built `ffmpeg` binary directly from the [FFmpeg website](https://ffmpeg.org/download.html) or use other package managers like [MacPorts](https://www.macports.org/).
+   If you prefer not to use Homebrew, you can download a pre-built `ffmpeg` binary directly from the [FFmpeg website](https://ffmpeg.org/download.html) or use other package managers like [MacPorts](https://www.macports.org/).
 
-    #### Linux
+   #### Linux
 
-    On Linux systems, you will need to install a few additional packages to support audio input/output and playback:
+   On Linux systems, you will need to install a few additional packages to support audio input/output and playback:
 
-    - `libasound2-dev`: This package contains development files for the ALSA (Advanced Linux Sound Architecture) sound system.
-    - `libportaudio2`: PortAudio is a cross-platform audio I/O library that is essential for handling audio streams.
-    - `ffmpeg`: Required for processing audio and video files.
+   - `libasound2-dev`: This package contains development files for the ALSA (Advanced Linux Sound Architecture) sound system.
+   - `libportaudio2`: PortAudio is a cross-platform audio I/O library that is essential for handling audio streams.
+   - `ffmpeg`: Required for processing audio and video files.
 
-    To install these dependencies, use the following commands:
+   To install these dependencies, use the following commands:
 
-    ```bash
-    sudo apt-get --yes update
-    sudo apt-get --yes install libasound2-dev libportaudio2 ffmpeg
-    ```
+   ```bash
+   sudo apt-get --yes update
+   sudo apt-get --yes install libasound2-dev libportaudio2 ffmpeg
+   ```
 
-    #### Windows
+   #### Windows
 
-    Not yet supported.
+   Not yet supported.
 
 5. **Set up EVI configuration**
 
-    Before running this project, you'll need to set up EVI with the ability to leverage tools or call functions. Follow these steps for authentication, creating a Tool, and adding it to a configuration.
+   Before running this project, you'll need to set up EVI with the ability to leverage tools or call functions. Follow these steps for authentication, creating a Tool, and adding it to a configuration.
 
-    > See our documentation on [Setup for Tool Use](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#setup) for no-code and full-code guides on creating a tool and adding it to a configuration.
+   > See our documentation on [Setup for Tool Use](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#setup) for no-code and full-code guides on creating a tool and adding it to a configuration.
 
-    - [Create a tool](https://dev.hume.ai/reference/empathic-voice-interface-evi/tools/create-tool) with the following payload:
+   - [Create a tool](https://dev.hume.ai/reference/empathic-voice-interface-evi/tools/create-tool) with the following payload:
 
-      ```bash
-      curl -X POST https://api.hume.ai/v0/evi/tools \
-          -H "X-Hume-Api-Key: <YOUR_HUME_API_KEY>" \
-          -H "Content-Type: application/json" \
-          -d '{
-        "name": "get_current_weather",
-        "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The     city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }",
-        "version_description": "Fetches current weather and uses celsius or fahrenheit based on location of user.",
-        "description": "This tool is for getting the current weather.",
-        "fallback_content": "Unable to fetch current weather."
-      }'
-      ```
+     ```bash
+     curl -X POST https://api.hume.ai/v0/evi/tools \
+         -H "X-Hume-Api-Key: <YOUR_HUME_API_KEY>" \
+         -H "Content-Type: application/json" \
+         -d '{
+       "name": "get_current_weather",
+       "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The     city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }",
+       "version_description": "Fetches current weather and uses celsius or fahrenheit based on location of user.",
+       "description": "This tool is for getting the current weather.",
+       "fallback_content": "Unable to fetch current weather."
+     }'
+     ```
 
-      This will yield a Tool ID, which you can assign to a new EVI configuration.
+     This will yield a Tool ID, which you can assign to a new EVI configuration.
 
-    - [Create a configuration](https://dev.hume.ai/reference/empathic-voice-interface-evi/configs/create-config) equipped with that tool: 
+   - [Create a configuration](https://dev.hume.ai/reference/empathic-voice-interface-evi/configs/create-config) equipped with that tool:
 
-      ```bash
-      curl -X POST https://api.hume.ai/v0/evi/configs \
-          -H "X-Hume-Api-Key: <YOUR_HUME_API_KEY>" \
-          -H "Content-Type: application/json" \
-          -d '{
-        "evi_version": "2",
-        "name": "Weather Assistant Config",
-        "voice": {
-          "provider": "HUME_AI",
-          "name": "ITO"
-        },
-        "language_model": {
-          "model_provider": "ANTHROPIC",
-          "model_resource": "claude-3-5-sonnet-20240620",
-          "temperature": 1
-        },
-        "tools": [
-          {
-            "id": "<YOUR_TOOL_ID>"
-          }
-        ]
-      }'
-      ```
+     ```bash
+     curl -X POST https://api.hume.ai/v0/evi/configs \
+         -H "X-Hume-Api-Key: <YOUR_HUME_API_KEY>" \
+         -H "Content-Type: application/json" \
+         -d '{
+       "evi_version": "2",
+       "name": "Weather Assistant Config",
+       "voice": {
+         "provider": "HUME_AI",
+         "name": "ITO"
+       },
+       "language_model": {
+         "model_provider": "ANTHROPIC",
+         "model_resource": "claude-3-5-sonnet-20240620",
+         "temperature": 1
+       },
+       "tools": [
+         {
+           "id": "<YOUR_TOOL_ID>"
+         }
+       ]
+     }'
+     ```
 
-    - Add the Config ID to your environmental variables in your `.env` file:
+   - Add the Config ID to your environmental variables in your `.env` file:
 
-      ```bash
-      HUME_CONFIG_ID=<YOUR CONFIG ID>
-      ```
+     ```bash
+     HUME_CONFIG_ID=<YOUR CONFIG ID>
+     ```
 
 6. Add the Geocoding API key to the `.env` file. You can obtain it for free from [geocode.maps.co](https://geocode.maps.co/).
 
-    ```bash
-    GEOCODING_API_KEY=<YOUR GEOCODING API KEY>
-    ```
+   ```bash
+   GEOCODING_API_KEY=<YOUR GEOCODING API KEY>
+   ```
 
 7. Run the project:
-    ```shell
-    python main.py
-    ```
+   ```shell
+   python main.py
+   ```
 
 #### What happens when run:
 
@@ -190,6 +190,6 @@ It does not currently support Windows.
 
 Here's an example of how you might interact with the EVI to get weather information:
 
-*User: "What's the weather like in New York City?"*
+_User: "What's the weather like in New York City?"_
 
-*EVI: (Uses the get_current_weather tool to fetch data) "Currently in New York City, it's 72°F (22°C) and partly cloudy. The forecast calls for a high of 78°F (26°C) and a low of 65°F (18°C) today."*
+_EVI: (Uses the get_current_weather tool to fetch data) "Currently in New York City, it's 72°F (22°C) and partly cloudy. The forecast calls for a high of 78°F (26°C) and a low of 65°F (18°C) today."_

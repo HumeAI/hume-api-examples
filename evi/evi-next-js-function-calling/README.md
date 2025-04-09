@@ -13,85 +13,87 @@ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/f
 
 1. [Create a tool](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#create-a-tool) with the following payload:
 
-    ```json
-    {
-      "name": "get_current_weather",
-      "description": "This tool is for getting the current weather.",
-      "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }"
-    }
-    ```
+   ```json
+   {
+     "name": "get_current_weather",
+     "description": "This tool is for getting the current weather.",
+     "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }"
+   }
+   ```
 
 2. [Create a configuration](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#create-a-configuration) equipped with that tool:
 
-    ```json
-    {
-      "name": "Weather Assistant Config",
-      "language_model": {
-        "model_provider": "ANTHROPIC",
-        "model_resource": "claude-3-5-sonnet-20240620",
-      },
-      "tools": [
-        {
-          "id": "<YOUR_TOOL_ID>",
-          "version": 0
-        }
-      ]
-    }
-    ```
+   ```json
+   {
+     "name": "Weather Assistant Config",
+     "language_model": {
+       "model_provider": "ANTHROPIC",
+       "model_resource": "claude-3-5-sonnet-20240620"
+     },
+     "tools": [
+       {
+         "id": "<YOUR_TOOL_ID>",
+         "version": 0
+       }
+     ]
+   }
+   ```
 
 ## Instructions
 
 1. Clone this examples repository:
 
-    ```shell
-    git clone https://github.com/humeai/hume-api-examples
-    cd hume-api-examples/evi/next-js/evi-next-js-function-calling
-    ```
+   ```shell
+   git clone https://github.com/humeai/hume-api-examples
+   cd hume-api-examples/evi/evi-next-js-function-calling
+   ```
 
 2. Install dependencies:
-    ```shell
-    pnpm install
-    ```
+
+   ```shell
+   pnpm install
+   ```
 
 3. Set up your API key and Secret key:
 
-    In order to make an authenticated connection we will first need to generate an access token. Doing so will require your API key and Secret key. These keys can be obtained by logging into the Hume AI Platform and visiting the [API keys page](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
-  
-    Place your `HUME_API_KEY` and `HUME_SECRET_KEY` in a `.env` file at the root of your project.
+   In order to make an authenticated connection we will first need to generate an access token. Doing so will require your API key and Secret key. These keys can be obtained by logging into the Hume AI Platform and visiting the [API keys page](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
 
-    ```shell
-    echo "HUME_API_KEY=your_api_key_here" > .env
-    echo "HUME_SECRET_KEY=your_secret_key_here" >> .env
-    ```
+   Place your `HUME_API_KEY` and `HUME_SECRET_KEY` in a `.env` file at the root of your project.
 
-    You can copy the `.env.example` file to use as a template.
+   ```shell
+   echo "HUME_API_KEY=your_api_key_here" > .env
+   echo "HUME_SECRET_KEY=your_secret_key_here" >> .env
+   ```
+
+   You can copy the `.env.example` file to use as a template.
 
 4. Add your Config ID to the `.env` file. This ID is from the EVI configuration you created earlier that includes your weather tool.
 
-     ```shell
-    echo "NEXT_PUBLIC_HUME_CONFIG_ID=your_config_id_here" >> .env
-    ```
+   ```shell
+   echo "NEXT_PUBLIC_HUME_CONFIG_ID=your_config_id_here" >> .env
+   ```
 
 5. Add the Geocoding API key to the `.env` file. You can obtain it for free from [geocode.maps.co](https://geocode.maps.co/).
 
-     ```shell
-    echo "GEOCODING_API_KEY=your_geocoding_api_key_here" >> .env
-    ```
+   ```shell
+   echo "GEOCODING_API_KEY=your_geocoding_api_key_here" >> .env
+   ```
 
 6. Run the project:
-    ```shell
-    pnpm run dev
-    ```
 
-    This will start the Next.js development server, and you can access the application at `http://localhost:3000`.
+   ```shell
+   pnpm run dev
+   ```
+
+   This will start the Next.js development server, and you can access the application at `http://localhost:3000`.
 
 ## Example Conversation
 
 Here's an example of how you might interact with the EVI to get weather information:
 
-*User: "What's the weather like in New York City?"*
+_User: "What's the weather like in New York City?"_
 
-*EVI: (Uses the get_current_weather tool to fetch data) "Currently in New York City, it's 72°F (22°C) and partly cloudy. The forecast calls for a high of 78°F (26°C) and a low of 65°F (18°C) today."*
+_EVI: (Uses the get_current_weather tool to fetch data) "Currently in New York City, it's 72°F (22°C) and partly cloudy. The forecast calls for a high of 78°F (26°C) and a low of 65°F (18°C) today."_
 
 ## License
 

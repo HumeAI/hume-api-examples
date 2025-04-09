@@ -20,7 +20,7 @@ See the [Quickstart guide](https://dev.hume.ai/docs/text-to-speech-tts/quickstar
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
-    cd hume-api-examples/tts/typescript/tts-typescript-quickstart
+    cd hume-api-examples/tts/tts-typescript-quickstart
     ```
 
 2. Install dependencies:

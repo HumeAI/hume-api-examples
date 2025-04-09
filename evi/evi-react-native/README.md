@@ -15,7 +15,7 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
-    cd hume-api-examples/evi/react-native/evi-react-native
+    cd hume-api-examples/evi/evi-react-native
     ```
 
 2. Set up API credentials:

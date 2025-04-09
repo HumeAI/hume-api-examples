@@ -13,7 +13,7 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
     ```shell
     git clone https://github.com/humeai/hume-api-examples
-    cd hume-api-examples/evi/vue/evi-vue-widget
+    cd hume-api-examples/evi/evi-vue-widget
     ```
 
 2. **Set up API credentials**
