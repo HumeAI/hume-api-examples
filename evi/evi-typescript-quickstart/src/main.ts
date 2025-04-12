@@ -8,7 +8,12 @@ import {
   getBrowserSupportedMimeType,
   MimeType,
 } from 'hume';
+import { CloseEvent as HumeCloseEvent } from 'hume/core/websocket/events';
 import './styles.css';
+
+const RECONNECT_DELAY_MS = 3000; // Delay before attempting reconnection after unexpected closure
+const TIME_SLICE_MS = 50; // Audio buffer duration for streamed audio
+const ABNORMAL_CLOSE_CODES = new Set([1006, 1011, 1012, 1013, 1014]); // WebSocket close codes for abnormal closures
 
 (async () => {
   const startBtn = document.querySelector<HTMLButtonElement>('button#start-btn');
@@ -18,351 +23,315 @@ import './styles.css';
   startBtn?.addEventListener('click', connect);
   stopBtn?.addEventListener('click', disconnect);
 
-  /**
-   * the Hume Client, includes methods for connecting to EVI and managing the Web Socket connection
-   */
+  toggleBtnStates(false);
+
+  /**--- Hume SDK and State ---*/
   let client: HumeClient | null = null;
-
-  /**
-   * the WebSocket instance
-   */
   let socket: Hume.empathicVoice.chat.ChatSocket | null = null;
+  /** ID for resuming chats across connections (if shouldResumeChats is true). */
+  let chatGroupId: string | undefined;
+  /** Set to true to reuse the same chat context after reconnecting. */
+  const shouldResumeChats = true;
+  /** Flag indicating if the connection *should* be active (user initiated). Used for reconnection logic. */
+  let shouldBeConnected = false;
 
-  /**
-   * flag which denotes the intended state of the WebSocket
-   */
-  let connected = false;
-
-  /**
-   * the recorder responsible for recording the audio stream to be prepared as the audio input
-   */
+  /**--- Audio Recording State ---*/
   let recorder: MediaRecorder | null = null;
-
-  /**
-   * the stream of audio captured from the user's microphone
-   */
   let audioStream: MediaStream | null = null;
+  const mimeTypeResult = getBrowserSupportedMimeType();
+  const mimeType: MimeType = mimeTypeResult.success ? mimeTypeResult.mimeType : MimeType.WEBM;
 
-  /**
-   * the current audio element to be played
-   */
+  /**--- Audio Playback State ---*/
+  const audioQueue: Blob[] = [];
   let currentAudio: HTMLAudioElement | null = null;
-
-  /**
-   * flag which denotes whether audio is currently playing or not
-   */
   let isPlaying = false;
 
-  /**
-   * flag which denotes whether to utilize chat resumability (preserve context from one chat to the next)
-   */
-  let resumeChats = true;
+  /**--- Reconnection State ---*/
+  let reconnectTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  /**
-   * The ChatGroup ID used to resume the chat if disconnected unexpectedly
-   */
-  let chatGroupId: string | undefined;
-
-  /**
-   * audio playback queue
-   */
-  const audioQueue: Blob[] = [];
-
-  /**
-   * mime type supported by the browser the application is running in
-   */
-  const mimeType: MimeType = (() => {
-    const result = getBrowserSupportedMimeType();
-    return result.success ? result.mimeType : MimeType.WEBM;
-  })();
-
-  /**
-   * instantiates interface config and client, sets up Web Socket handlers, and establishes secure Web Socket connection
-   */
+  /** Establishes a connection to the Hume EVI WebSocket API. */
   async function connect(): Promise<void> {
-    // instantiate the HumeClient with credentials to make authenticated requests
-    if (!client) {
-      client = new HumeClient({
-        apiKey: import.meta.env.VITE_HUME_API_KEY || '',
-        secretKey: import.meta.env.VITE_HUME_SECRET_KEY || '',
-      });
+    if (isConnectingOrConnected()) {
+      console.log("Already connecting or connected.");
+      return;
     }
 
-    // instantiates WebSocket and establishes an authenticated connection
-    socket = client.empathicVoice.chat.connect({
-      configId: import.meta.env.VITE_HUME_CONFIG_ID || null,
-      resumedChatGroupId: chatGroupId,
-    });
+    clearReconnectTimer(); // Clear any pending reconnection attempts
+    shouldBeConnected = true;
+    toggleBtnStates(true); // Update UI immediately to reflect connection attempt
 
-    socket.on('open', handleWebSocketOpenEvent);
-    socket.on('message', handleWebSocketMessageEvent);
-    socket.on('error', handleWebSocketErrorEvent);
-    socket.on('close', handleWebSocketCloseEvent);
+    try {
+      // Initialize HumeClient if not yet initialized
+      if (!client) {
+        /**
+         * SECURITY NOTICE: This example uses direct API key authentication for simplicity.
+         * For production browser environments, implement the "Token Auth" strategy instead
+         * to prevent exposing your API key in client-side code.
+         * See: https://dev.hume.ai/docs/introduction/api-key#authentication-strategies
+         */
+        const apiKey = import.meta.env.VITE_HUME_API_KEY;
+        if (!apiKey) throw new Error("VITE_HUME_API_KEY is not set in environment variables.");
+        client = new HumeClient({ apiKey });
+      }
+      const configId = import.meta.env.VITE_HUME_CONFIG_ID;
+      if (!configId) console.warn("No Config ID specified, using default EVI configuration settings.");
 
-    // update ui state
-    toggleBtnStates();
+      // Connect to EVI
+      socket = client.empathicVoice.chat.connect({ configId, resumedChatGroupId: chatGroupId });
+
+      // Attach WebSocket event listeners
+      socket.on('open', handleWebSocketOpen);
+      socket.on('message', handleWebSocketMessage);
+      socket.on('error', handleWebSocketError);
+      socket.on('close', handleWebSocketClose);
+
+    } catch (error) {
+      console.error("Connection failed:", error);
+      // Reset state fully on initial connection failure
+      shouldBeConnected = false;
+      socket = null;
+      toggleBtnStates(false);
+    }
   }
 
-  /**
-   * stops audio capture and playback, and closes the Web Socket connection
-   */
+  /** Gracefully disconnects from the Hume EVI WebSocket API and cleans up resources. */
   function disconnect(): void {
-    // update ui state
-    toggleBtnStates();
-
-    // stop audio playback
-    stopAudio();
-
-    // stop audio capture
-    recorder?.stop();
-    recorder = null;
-    audioStream = null;
-
-    // set connected state to false to prevent automatic reconnect
-    connected = false;
-
-    // IF resumeChats flag is false, reset chatGroupId so a new conversation is started when reconnecting
-    if (!resumeChats) {
+    shouldBeConnected = false; // Mark that the user intended to disconnect
+    clearReconnectTimer();
+    // Stop audio playback and clear queue
+    stopAudioPlayback();
+    // Stop recording and release microphone
+    stopRecording();
+    releaseMicrophoneStream();
+    // Reset chat group ID if chats shouldn't be resumed
+    if (!shouldResumeChats) {
       chatGroupId = undefined;
+      console.log("Chat resume disabled. Resetting chat group ID.");
     }
-
-    // closed the Web Socket connection
-    socket?.close();
+    // Close the WebSocket connection if it's open or connecting
+    if (socket && socket.readyState !== WebSocket.CLOSING && socket.readyState !== WebSocket.CLOSED) {
+      socket.close();
+    }
+    socket = null;
+    toggleBtnStates(false);
   }
 
-  /**
-   * captures and records audio stream, and sends audio stream through the socket
-   *
-   * API Reference:
-   * - `audio_input`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#send.Audio%20Input.type
-   */
-  async function captureAudio(): Promise<void> {
-    audioStream = await getAudioStream();
-    // ensure there is only one audio track in the stream
-    ensureSingleValidAudioTrack(audioStream);
-
-    // instantiate the media recorder
-    recorder = new MediaRecorder(audioStream, { mimeType });
-    console.log(recorder)
-
-    // callback for when recorded chunk is available to be processed
-    recorder.ondataavailable = async ({ data }) => {
-      // IF size of data is smaller than 1 byte then do nothing
-      if (data.size < 1) return;
-
-      // base64 encode audio data
-      const encodedAudioData = await convertBlobToBase64(data);
-      console.log(encodedAudioData.slice(0, 20))
-
-      // define the audio_input message JSON
-      const audioInput: Omit<Hume.empathicVoice.AudioInput, 'type'> = {
-        data: encodedAudioData,
-      };
-
-      // send audio_input message
-      socket?.sendAudioInput(audioInput);
-    };
-
-    // capture audio input at a rate of 100ms (recommended)
-    const timeSlice = 100;
-    recorder.start(timeSlice);
+  /**--- WebSocket Event Handlers ---*/
+  /** Handles the WebSocket 'open' event. Starts audio capture. */
+  async function handleWebSocketOpen(): Promise<void> {
+    console.log('WebSocket connection opened.');
+    try {
+      await startAudioCapture();
+    } catch (error) {
+      console.error("Failed to start audio capture after WebSocket open:", error);
+      alert("Failed to access microphone. Disconnecting.");
+      disconnect(); // Disconnect if we can't capture audio
+    }
   }
 
-  /**
-   * play the audio within the playback queue, converting each Blob into playable HTMLAudioElements
-   */
-  function playAudio(): void {
-    // IF there is nothing in the audioQueue OR audio is currently playing then do nothing
-    if (!audioQueue.length || isPlaying) return;
-
-    // update isPlaying state
-    isPlaying = true;
-
-    // pull next audio output from the queue
-    const audioBlob = audioQueue.shift();
-
-    // IF audioBlob is unexpectedly undefined then do nothing
-    if (!audioBlob) return;
-
-    // converts Blob to AudioElement for playback
-    const audioUrl = URL.createObjectURL(audioBlob);
-    currentAudio = new Audio(audioUrl);
-
-    // play audio
-    currentAudio.play();
-
-    // callback for when audio finishes playing
-    currentAudio.onended = () => {
-      // update isPlaying state
-      isPlaying = false;
-
-      // attempt to pull next audio output from queue
-      if (audioQueue.length) playAudio();
-    };
-  }
-
-  /**
-   * stops audio playback, clears audio playback queue, and updates audio playback state
-   */
-  function stopAudio(): void {
-    // stop the audio playback
-    currentAudio?.pause();
-    currentAudio = null;
-
-    // update audio playback state
-    isPlaying = false;
-
-    // clear the audioQueue
-    audioQueue.length = 0;
-  }
-
-  /**
-   * callback function to handle a WebSocket opened event
-   */
-  async function handleWebSocketOpenEvent(): Promise<void> {
-    /* place logic here which you would like invoked when the socket opens */
-    console.log('Web socket connection opened');
-
-    // ensures socket will reconnect if disconnected unintentionally
-    connected = true;
-
-    await captureAudio();
-  }
-
-  /**
-   * callback function to handle a WebSocket message event
-   *
-   * API Reference:
-   * - `user_message`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.User%20Message.type
-   * - `assistant_message`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.Assistant%20Message.type
-   * - `audio_output`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.Audio%20Output.type
-   * - `user_interruption`: https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#receive.User%20Interruption.type
-   */
-  async function handleWebSocketMessageEvent(
-    message: Hume.empathicVoice.SubscribeEvent
-  ): Promise<void> {
-    /* place logic here which you would like to invoke when receiving a message through the socket */
-
-    // handle messages received through the WebSocket (messages are distinguished by their "type" field.)
+  /** Handles incoming WebSocket messages. */
+  async function handleWebSocketMessage(message: Hume.empathicVoice.SubscribeEvent): Promise<void> {
     switch (message.type) {
-      // save chat_group_id to resume chat if disconnected
       case 'chat_metadata':
+        // Store chat group ID for potential resumption
         chatGroupId = message.chatGroupId;
         break;
-
-      // append user and assistant messages to UI for chat visibility
       case 'user_message':
       case 'assistant_message':
-        if (message.type === 'user_message') stopAudio();
+        // Stop playback if user starts speaking
+        if (message.type === 'user_message') stopAudioPlayback();
+        // Display the message in the chat UI
         const { role, content } = message.message;
-        const topThreeEmotions = extractTopThreeEmotions(message);
-        appendMessage(role, content ?? '', topThreeEmotions);
+        const topEmotions = extractTopThreeEmotions(message);
+        appendMessageToChat(role, content ?? '', topEmotions);
         break;
-
-      // add received audio to the playback queue, and play next audio output
       case 'audio_output':
-        // convert base64 encoded audio to a Blob
-        const audioOutput = message.data;
-        const blob = convertBase64ToBlob(audioOutput, mimeType);
-
-        // add audio Blob to audioQueue
-        audioQueue.push(blob);
-
-        // play the next audio output
-        if (audioQueue.length >= 1) playAudio();
+        // Decode and queue audio for playback
+        const audioBlob = convertBase64ToBlob(message.data, mimeType);
+        audioQueue.push(audioBlob);
+        playNextAudioChunk(); // Attempt to play immediately if not already playing
         break;
-
-      // stop audio playback, clear audio playback queue, and update audio playback state on interrupt
       case 'user_interruption':
-        stopAudio();
+        // Stop playback immediately when the user interrupts
+        console.log("User interruption detected.");
+        stopAudioPlayback();
+        break;
+      case 'error':
+        // Log errors received from the EVI service
+        console.error(`EVI Error: Code=${message.code}, Slug=${message.slug}, Message=${message.message}`);
         break;
     }
   }
 
-  /**
-   * callback function to handle a WebSocket error event
-   */
-  function handleWebSocketErrorEvent(error: Error): void {
-    /* place logic here which you would like invoked when receiving an error through the socket */
-    console.error(error);
+  /** Handles WebSocket transport errors. */
+  function handleWebSocketError(error: Event | Error): void {
+    console.error("WebSocket transport error:", error);
   }
 
-  /**
-   * callback function to handle a WebSocket closed event
-   */
-  async function handleWebSocketCloseEvent(): Promise<void> {
-    /* place logic here which you would like invoked when the socket closes */
-
-    // reconnect to the socket if disconnect was unintentional
-    if (connected) await connect();
-
-    console.log('Web socket connection closed');
+  /** Handles the WebSocket 'close' event. Cleans up and attempts reconnection if needed. */
+  function handleWebSocketClose(event: HumeCloseEvent): void {
+    console.log('WebSocket connection closed.');
+    // Clean up resources regardless of why it closed
+    stopRecording();
+    releaseMicrophoneStream();
+    stopAudioPlayback();
+    socket = null;
+    // Decide whether to reconnect based on shouldBeConnected flag and close code
+    const isAbnormalClosure = ABNORMAL_CLOSE_CODES.has(event.code);
+    if (shouldBeConnected && isAbnormalClosure) {
+      console.warn(`Unexpected closure (Code: ${event.code}). Attempting to reconnect in ${RECONNECT_DELAY_MS / 1000}s...`);
+      scheduleReconnect();
+    } else {
+      // If it was a normal closure or user intended to disconnect, reset UI to disconnected state
+      shouldBeConnected = false;
+      if (!shouldResumeChats) chatGroupId = undefined;
+      toggleBtnStates(false);
+    }
   }
 
-  /**
-   * adds message to Chat in the webpage's UI
-   *
-   * @param role the speaker associated with the audio transcription
-   * @param content transcript of the audio
-   * @param topThreeEmotions the top three emotion prediction scores for the message
-   */
-  function appendMessage(
+  /**--- Audio Capture Functions ---*/
+  /** Initializes microphone access and starts recording. */
+  async function startAudioCapture(): Promise<void> {
+    try {
+      audioStream = await getAudioStream();
+      ensureSingleValidAudioTrack(audioStream); // Validate the stream
+
+      recorder = new MediaRecorder(audioStream, { mimeType });
+      recorder.ondataavailable = handleAudioDataAvailable;
+      recorder.onerror = (event) => console.error("MediaRecorder error:", event);
+      recorder.start(TIME_SLICE_MS);
+    } catch (error) {
+      console.error("Failed to initialize or start audio capture:", error);
+      throw error;
+    }
+  }
+
+  /** Handles available audio data chunks from the MediaRecorder. */
+  async function handleAudioDataAvailable(event: BlobEvent): Promise<void> {
+    if (event.data.size > 0 && socket && socket.readyState === WebSocket.OPEN) {
+      const encodedAudio = await convertBlobToBase64(event.data);
+      socket.sendAudioInput({ data: encodedAudio });
+    }
+  }
+
+  /** Stops the MediaRecorder if it's active. */
+  function stopRecording(): void {
+    if (recorder && recorder.state !== 'inactive') recorder.stop();
+    recorder = null;
+  }
+
+  /** Stops the tracks of the microphone audio stream to release the device. */
+  function releaseMicrophoneStream(): void {
+    if (audioStream) audioStream.getTracks().forEach(track => track.stop());
+    audioStream = null;
+  }
+
+  /**--- Audio Playback Functions ---*/
+  /** Plays the next audio chunk from the queue if available and not already playing. */
+  function playNextAudioChunk(): void {
+    // Don't play if already playing or queue is empty
+    if (isPlaying || audioQueue.length === 0) return;
+
+    isPlaying = true;
+    const audioBlob = audioQueue.shift();
+
+    if (!audioBlob) {
+      isPlaying = false;
+      return;
+    }
+    const audioUrl = URL.createObjectURL(audioBlob);
+    currentAudio = new Audio(audioUrl);
+    currentAudio.play();
+    currentAudio.onended = () => {
+      URL.revokeObjectURL(audioUrl);
+      currentAudio = null;
+      isPlaying = false;
+      playNextAudioChunk(); // Recursively play the next chunk if queue is not empty
+    };
+  }
+
+  /** Stops the currently playing audio and clears the playback queue. */
+  function stopAudioPlayback(): void {
+    if (currentAudio) {
+      currentAudio.pause();
+      console.log("Audio playback paused.");
+      if (currentAudio.src && currentAudio.src.startsWith('blob:')) {
+        URL.revokeObjectURL(currentAudio.src); // Revoke URL if paused mid-play
+      }
+      currentAudio = null;
+    }
+    audioQueue.length = 0; // Clear the queue
+    isPlaying = false; // Reset playback state
+  }
+
+  /**--- UI and Helper Functions ---*/
+  /** Appends a message (user or assistant) to the chat UI. */
+  function appendMessageToChat(
     role: Hume.empathicVoice.Role,
     content: string,
-    topThreeEmotions: { emotion: string; score: any }[]
+    topEmotions: { emotion: string; score: string }[]
   ): void {
-    // generate chat card component with message content and emotion scores
+    if (!chat) return;
     const chatCard = new ChatCard({
       role,
       timestamp: new Date().toLocaleTimeString(),
       content,
-      scores: topThreeEmotions,
+      scores: topEmotions,
     });
-
-    // append chat card to the UI
-    chat?.appendChild(chatCard.render());
-
-    // scroll to the bottom to view most recently added message
-    if (chat) chat.scrollTop = chat.scrollHeight;
+    chat.appendChild(chatCard.render());
+    chat.scrollTop = chat.scrollHeight; // Auto-scroll to the bottom
   }
 
-  /**
-   * toggles `start` and `stop` buttons' disabled states
-   */
-  function toggleBtnStates(): void {
-    if (startBtn) startBtn.disabled = !startBtn.disabled;
-    if (stopBtn) stopBtn.disabled = !stopBtn.disabled;
-  }
-
-  /**
-   * takes a received `user_message` or `assistant_message` and extracts the top 3 emotions from the
-   * predicted expression measurement scores.
-   */
+  /** Extracts and formats the top 3 emotion scores from a message. */
   function extractTopThreeEmotions(
     message: Hume.empathicVoice.UserMessage | Hume.empathicVoice.AssistantMessage
   ): { emotion: string; score: string }[] {
-    // extract emotion scores from the message
+    // Extract emotion scores from the message
     const scores = message.models.prosody?.scores;
-
-    // convert the emotions object into an array of key-value pairs
+    // Convert the emotions object into an array of key-value pairs
     const scoresArray = Object.entries(scores || {});
-
-    // sort the array by the values in descending order
+    // Sort the array by the values in descending order
     scoresArray.sort((a, b) => b[1] - a[1]);
-
-    // extract the top three emotions and convert them back to an object
+    // Extract the top three emotions and convert them back to an object
     const topThreeEmotions = scoresArray.slice(0, 3).map(([emotion, score]) => ({
       emotion,
-      score: (Math.round(Number(score) * 100) / 100).toFixed(2),
+      score: Number(score).toFixed(2),
     }));
-
     return topThreeEmotions;
+  }
+
+  /** Updates the enabled/disabled state of the start/stop buttons. */
+  function toggleBtnStates(isConnectedOrConnecting: boolean): void {
+    if (startBtn) startBtn.disabled = isConnectedOrConnecting;
+    if (stopBtn) stopBtn.disabled = !isConnectedOrConnecting;
+  }
+
+  /** Checks if the socket is currently connecting or already open. */
+  function isConnectingOrConnected(): boolean {
+    return socket?.readyState === WebSocket.CONNECTING || socket?.readyState === WebSocket.OPEN;
+  }
+
+  /**--- Reconnection Logic ---*/
+  /** Schedules a reconnection attempt after a delay. */
+  function scheduleReconnect(): void {
+    clearReconnectTimer(); // Ensure no duplicate timers
+    reconnectTimeoutId = setTimeout(() => {
+      if (shouldBeConnected) { // Double-check if still intended before reconnecting
+        console.log("Attempting reconnect now...");
+        connect(); // No 'await' needed, runs async
+      }
+    }, RECONNECT_DELAY_MS);
+  }
+
+  /** Clears any pending reconnection timer. */
+  function clearReconnectTimer(): void {
+    if (!reconnectTimeoutId) return;
+    clearTimeout(reconnectTimeoutId);
+    reconnectTimeoutId = null;
   }
 })();
 
-/**
- * The code below does not pertain to the EVI implementation, and only serves to style the UI.
- */
+/** The code below does not pertain to the EVI implementation, and only serves to style the UI. */
 
 interface Score {
   emotion: string;
@@ -396,8 +365,7 @@ class ChatCard {
 
     const role = document.createElement('div');
     role.className = 'role';
-    role.textContent =
-      this.message.role.charAt(0).toUpperCase() + this.message.role.slice(1);
+    role.textContent = this.message.role.charAt(0).toUpperCase() + this.message.role.slice(1);
 
     const timestamp = document.createElement('div');
     timestamp.className = 'timestamp';
@@ -409,9 +377,7 @@ class ChatCard {
 
     const scores = document.createElement('div');
     scores.className = 'scores';
-    this.message.scores.forEach((score) => {
-      scores.appendChild(this.createScoreItem(score));
-    });
+    this.message.scores.forEach((score) => scores.appendChild(this.createScoreItem(score)));
 
     card.appendChild(role);
     card.appendChild(timestamp);
