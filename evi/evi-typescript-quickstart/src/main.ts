@@ -50,7 +50,7 @@ const ABNORMAL_CLOSE_CODES = new Set([1006, 1011, 1012, 1013, 1014]); // WebSock
   let reconnectTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   /** Establishes a connection to the Hume EVI WebSocket API. */
-  async function connect(): Promise<void> {
+  function connect() {
     if (isConnectingOrConnected()) {
       console.log("Already connecting or connected.");
       return;
@@ -130,7 +130,7 @@ const ABNORMAL_CLOSE_CODES = new Set([1006, 1011, 1012, 1013, 1014]); // WebSock
   }
 
   /** Handles incoming WebSocket messages. */
-  async function handleWebSocketMessage(message: Hume.empathicVoice.SubscribeEvent): Promise<void> {
+  function handleWebSocketMessage(message: Hume.empathicVoice.SubscribeEvent) {
     switch (message.type) {
       case 'chat_metadata':
         // Store chat group ID for potential resumption
