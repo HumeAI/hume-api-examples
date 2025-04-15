@@ -47,7 +47,6 @@ Note the `VITE` prefix to the environment variables. This prefix is required for
 
 ```sh
 VITE_HUME_API_KEY="<YOUR_API_KEY>"
-VITE_HUME_SECRET_KEY="<YOUR_SECRET_KEY>"
 VITE_HUME_CONFIG_ID="<YOUR_CONFIG_ID>" // optional
 ```
 
