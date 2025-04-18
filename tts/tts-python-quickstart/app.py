@@ -1,15 +1,17 @@
+from contextlib import contextmanager
 import os
 import time
 import asyncio
 import base64
 import tempfile
 from pathlib import Path
+from typing import Generator, Protocol
 from hume import AsyncHumeClient
 from hume.tts import (
+    FormatPcm,
     PostedContextWithGenerationId,
     PostedUtterance,
     PostedUtteranceVoiceWithName,
-    ReturnGeneration,
 )
 
 import aiofiles
@@ -41,6 +43,46 @@ async def write_result_to_file(base64_encoded_audio: str, filename: str) -> None
         await f.write(audio_data)
     print("Wrote", file_path)
 
+
+class AudioPlayer(Protocol):
+    def send_audio(self, audio_bytes: bytes) -> None:
+        pass
+    def close(self) -> None:
+        pass
+
+class PyaudioPlayer(AudioPlayer):
+    def __init__(self, stream):
+        self.stream = stream
+
+    def send_audio(self, audio_bytes: bytes) -> None:
+        self.stream.write(audio_bytes)
+
+    def close(self):
+        self.stream.stop_stream()
+        self.stream.close()
+
+class DummyAudioPlayer(AudioPlayer):
+    def send_audio(self, audio_bytes: bytes) -> None:
+        print("Skipping playing back audio chunk...")
+
+    def close(self) -> None:
+        pass
+
+@contextmanager
+def get_audio_player() -> Generator[AudioPlayer]:
+    try:
+        import pyaudio
+        audio = pyaudio.PyAudio()
+        stream = audio.open(
+            format=audio.get_format_from_width(2),
+            channels=1,
+            rate=48000,
+            output=True,
+        )
+        yield PyaudioPlayer(stream)
+    except ImportError:
+        print("Skipping audio playback. Install pyaudio to enable playback.")
+        yield DummyAudioPlayer()
 
 async def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -100,22 +142,24 @@ async def main() -> None:
     )
     await write_result_to_file(speech3.generations[0].audio, "speech3_0")
 
-    # Streaming example
-    i = 0
-    async for snippet in hume.tts.synthesize_json_streaming(
-        context=PostedContextWithGenerationId(
-            generation_id=speech3.generations[0].generation_id,
-        ),
-        utterances=[
-            PostedUtterance(text="He's drawn the bow..."),
-            PostedUtterance(text="he's fired the arrow..."),
-            PostedUtterance(text="I can't believe it! A perfect bullseye!")
-        ],
-    ):
-        await write_result_to_file(snippet.audio, f"speech4_{i}")
-        i += 1
+    with get_audio_player() as player:
+        async for snippet in hume.tts.synthesize_json_streaming(
+            context=PostedContextWithGenerationId(
+                generation_id=speech3.generations[0].generation_id,
+            ),
+            utterances=[
+                PostedUtterance(text="He's drawn the bow..."),
+                PostedUtterance(text="he's fired the arrow..."),
+                PostedUtterance(text="I can't believe it! A perfect bullseye!")
+            ],
+            # Uncomment to reduce latency to < 500ms, at a 10% higher cost
+            # instant_mode=True,
+            format=FormatPcm(type="pcm"),
+        ):
+            player.send_audio(base64.b64decode(snippet.audio))
 
 
 if __name__ == "__main__":
+    print("Starting...")
     asyncio.run(main())
     print("Done")

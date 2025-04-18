@@ -6,6 +6,6 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "aiofiles>=24.1.0",
-  "hume>=0.7.11",
+  "hume>=0.8.1",
   "python-dotenv>=1.0.1",
 ]
