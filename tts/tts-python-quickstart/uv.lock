@@ -90,7 +90,7 @@ wheels = [
 
 [[package]]
 name = "hume"
-version = "0.7.11"
+version = "0.8.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -101,9 +101,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0a/43/b2d9d8319ddd826bd781fe92c447d33d0b012139a914ab278e12d1690f5e/hume-0.7.11.tar.gz", hash = "sha256:340986049ec1465f563bc07bd30f0fcd991ffc4856150667c2effcb814245016", size = 133367 }
+sdist = { url = "https://files.pythonhosted.org/packages/5b/cd/2f64842b76c80976c9e2444138605eadb93bb03dddb90c40495a8be6a6a2/hume-0.8.1.tar.gz", hash = "sha256:6d7322a76a4105cd052f4f4fb8a443cb9200b0a57d91571ea6ebbe77930b3526", size = 136599 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/41/82/5fb9c5b5f6fd23c2ba230ecfef4630fc541c57b30a187481d7316e532898/hume-0.7.11-py3-none-any.whl", hash = "sha256:6074fb7fd00fa092d9c23ad5d6319a8576a24abd056583a13970bfb74c57048a", size = 322472 },
+    { url = "https://files.pythonhosted.org/packages/72/f9/e1b45f1aa8cd79e79c42f4cc60af0f8f139194b9582b3ef795d6530e6092/hume-0.8.1-py3-none-any.whl", hash = "sha256:6deed40c5d46205281dd2f70fc5ee350d201847949b8667f7d541d9d34c46c5e", size = 327656 },
 ]
 
 [[package]]
@@ -213,7 +213,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
-    { name = "hume", specifier = ">=0.7.11" },
+    { name = "hume", specifier = ">=0.8.1" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
 ]
 
