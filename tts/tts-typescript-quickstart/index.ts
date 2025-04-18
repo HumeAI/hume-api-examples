@@ -2,11 +2,12 @@ import { HumeClient } from "hume"
 import fs from "fs/promises"
 import path from "path"
 import * as os from "os"
+import * as child_process from "child_process"
 import dotenv from "dotenv"
 
 dotenv.config()
 
-const hume = new HumeClient({ 
+const hume = new HumeClient({
   apiKey: process.env.HUME_API_KEY!,
 })
 
@@ -18,10 +19,35 @@ const writeResultToFile = async (base64EncodedAudio: string, filename: string) =
   console.log('Wrote', filePath)
 }
 
+const startAudioPlayer = () => {
+  const proc = child_process.spawn('ffplay', ['-nodisp', '-autoexit', '-infbuf', '-i', '-'], {
+    detached: true,
+    stdio: ['pipe', 'ignore', 'ignore'],
+  })
+
+  proc.on('error', (err) => {
+    if ((err as any).code === 'ENOENT') {
+      console.error('ffplay not found. Please install ffmpeg to play audio.')
+    }
+  })
+
+  return {
+    sendAudio: (audio: string) => {
+      const buffer = Buffer.from(audio, "base64")
+      proc.stdin.write(buffer)
+    },
+    stop: () => {
+      proc.stdin.end()
+      proc.unref()
+    }
+  }
+
+}
+
 const main = async () => {
   await fs.mkdir(outputDir)
   console.log('Writing to', outputDir)
-  
+
   const speech1 = await hume.tts.synthesizeJson({
     utterances: [{
       description: "A refined, British aristocrat",
@@ -35,7 +61,7 @@ const main = async () => {
     name,
     generationId: speech1.generations[0].generationId,
   })
-  
+
   const speech2 = await hume.tts.synthesizeJson({
     utterances: [{
       voice: { name },
@@ -48,7 +74,7 @@ const main = async () => {
   })
   await writeResultToFile(speech2.generations[0].audio, "speech2_0")
   await writeResultToFile(speech2.generations[1].audio, "speech2_1")
-  
+
   const speech3 = await hume.tts.synthesizeJson({
     utterances: [{
       voice: { name },
@@ -62,15 +88,23 @@ const main = async () => {
   })
   await writeResultToFile(speech3.generations[0].audio, "speech3_0")
 
-  let i = 0
+  const audioPlayer = startAudioPlayer()
   for await (const snippet of await hume.tts.synthesizeJsonStreaming({
     context: {
       generationId: speech3.generations[0].generationId,
     },
-    utterances: [{text: "He's drawn the bow..."}, {text: "he's fired the arrow..."}, {text: "I can't believe it! A perfect bullseye!"}],
+    utterances: [{ text: "He's drawn the bow..." }, { text: "he's fired the arrow..." }, { text: "I can't believe it! A perfect bullseye!" }],
+    // Uncomment to reduce latency to < 500ms, at a 10% higher cost
+    // instantMode: true,
+    //
+    // By default, the audio data of every chunk returned by `synthesizeJsonStreaming` is a standalone 'mp3' file.
+    // The `playAudio` function expects to receive a single audio file. You can pass the `stripHeaders` option to
+    // remove the "headers" from each chunk so that the streamed audio can be played as a single file.
+    // TODO: stripHeaders: true
   })) {
-    await writeResultToFile(snippet.audio, `speech4_${i++}`)
+    audioPlayer.sendAudio(snippet.audio)
   }
+  audioPlayer.stop()
 }
 
 main().then(() => console.log('Done')).catch(console.error)
