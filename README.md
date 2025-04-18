@@ -1,6 +1,28 @@
-# Hume API Examples
+<div align="center">
+  <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
+  <h1>Hume API Examples</h1>
+  <p>
+    <strong>Browse sample code and projects designed to help you integrate Hume APIs</strong>
+  </p>
+  <p>
+    <a href="https://docs.hume.ai">📘 Documentation</a> •
+    <a href="https://discord.com/invite/humeai">💬 Join us on Discord</a> •
+    <a href="https://dev.hume.ai/docs/introduction/api-key">🔐 Getting your API Keys</a>
+  </p>
+</div>
 
-This repository contains examples of how to use the [Hume API](https://docs.hume.ai) with different frameworks and languages.
+## Overview
+
+Welcome to the official Hume API Examples repository!
+Here you'll find open-source example projects and quickstart guides to help you integrate the [Hume API](https://docs.hume.ai) across a variety of languages and frameworks.
+
+Use these examples to:
+
+- Add empathic Text-to-Speech (TTS) to your application
+- Build rich conversational agents with the Empathic Voice Interface (EVI)
+- Measure expressions with facial, vocal, and language-based analysis
+
+Whether you're using Python, TypeScript, Flutter, or Next.js, there's something here to help you get started quickly.
 
 ## [Text-to-Speech (TTS)](https://dev.hume.ai/docs/text-to-speech-tts/overview)
 
@@ -43,3 +65,15 @@ This repository contains examples of how to use the [Hume API](https://docs.hume
 | [`next-js-emotional-language`](/expression-measurement/batch/next-js-emotional-language/README.md)       | `language`                            | TypeScript | Next.js     |
 | [`next-js-streaming-example`](/expression-measurement/streaming/next-js-streaming-example/README.md)     | `language`, `face`, `burst`, `speech` | TypeScript | Next.js     |
 
+## Authentication & Setup
+
+ You must authenticate to use the Hume API. Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+
+ Each example project includes a `README.md` file with step-by-step instructions on:
+ - Setting your API key (usually via environment variables)
+ - Installing dependencies
+ - Running the example
+
+## License
+
+All projects are licensed under the MIT License - see the [LICENSE.txt](/LICENSE) file for details.
