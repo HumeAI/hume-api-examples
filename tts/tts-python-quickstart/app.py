@@ -44,46 +44,6 @@ async def write_result_to_file(base64_encoded_audio: str, filename: str) -> None
     print("Wrote", file_path)
 
 
-class AudioPlayer(Protocol):
-    def send_audio(self, audio_bytes: bytes) -> None:
-        pass
-    def close(self) -> None:
-        pass
-
-class PyaudioPlayer(AudioPlayer):
-    def __init__(self, stream):
-        self.stream = stream
-
-    def send_audio(self, audio_bytes: bytes) -> None:
-        self.stream.write(audio_bytes)
-
-    def close(self):
-        self.stream.stop_stream()
-        self.stream.close()
-
-class DummyAudioPlayer(AudioPlayer):
-    def send_audio(self, audio_bytes: bytes) -> None:
-        print("Skipping playing back audio chunk...")
-
-    def close(self) -> None:
-        pass
-
-@contextmanager
-def get_audio_player() -> Generator[AudioPlayer]:
-    try:
-        import pyaudio
-        audio = pyaudio.PyAudio()
-        stream = audio.open(
-            format=audio.get_format_from_width(2),
-            channels=1,
-            rate=48000,
-            output=True,
-        )
-        yield PyaudioPlayer(stream)
-    except ImportError:
-        print("Skipping audio playback. Install pyaudio to enable playback.")
-        yield DummyAudioPlayer()
-
 async def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -142,6 +102,50 @@ async def main() -> None:
     )
     await write_result_to_file(speech3.generations[0].audio, "speech3_0")
 
+    # Audio player setup for streaming playback
+    # This is only needed for the streaming example below
+    class AudioPlayer(Protocol):
+        def send_audio(self, audio_bytes: bytes) -> None:
+            pass
+        def close(self) -> None:
+            pass
+
+    class PyaudioPlayer(AudioPlayer):
+        def __init__(self, stream):
+            self.stream = stream
+
+        def send_audio(self, audio_bytes: bytes) -> None:
+            self.stream.write(audio_bytes)
+
+        def close(self):
+            self.stream.stop_stream()
+            self.stream.close()
+
+    class DummyAudioPlayer(AudioPlayer):
+        def send_audio(self, audio_bytes: bytes) -> None:
+            print("Skipping playing back audio chunk...")
+
+        def close(self) -> None:
+            pass
+
+    @contextmanager
+    def get_audio_player() -> Generator[AudioPlayer]:
+        try:
+            import pyaudio
+            audio = pyaudio.PyAudio()
+            stream = audio.open(
+                format=audio.get_format_from_width(2),
+                channels=1,
+                rate=48000,
+                output=True,
+            )
+            yield PyaudioPlayer(stream)
+        except ImportError:
+            print("Skipping audio playback. Install pyaudio to enable playback.")
+            yield DummyAudioPlayer()
+
+    # Streaming example with audio playback
+    print("Streaming audio...")
     with get_audio_player() as player:
         async for snippet in hume.tts.synthesize_json_streaming(
             context=PostedContextWithGenerationId(
