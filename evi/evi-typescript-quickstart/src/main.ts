@@ -147,7 +147,7 @@ const ABNORMAL_CLOSE_CODES = new Set([1006, 1011, 1012, 1013, 1014]); // WebSock
         break;
       case 'audio_output':
         // Decode and queue audio for playback
-        const audioBlob = convertBase64ToBlob(message.data, mimeType);
+        const audioBlob = convertBase64ToBlob(message.data);
         audioQueue.push(audioBlob);
         playNextAudioChunk(); // Attempt to play immediately if not already playing
         break;
@@ -196,7 +196,7 @@ const ABNORMAL_CLOSE_CODES = new Set([1006, 1011, 1012, 1013, 1014]); // WebSock
       audioStream = await getAudioStream();
       ensureSingleValidAudioTrack(audioStream); // Validate the stream
 
-      recorder = new MediaRecorder(audioStream, { mimeType });
+      recorder = new MediaRecorder(audioStream!, { mimeType });
       recorder.ondataavailable = handleAudioDataAvailable;
       recorder.onerror = (event) => console.error("MediaRecorder error:", event);
       recorder.start(TIME_SLICE_MS);
