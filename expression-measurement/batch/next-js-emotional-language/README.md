@@ -1,8 +1,10 @@
-# Next.js Emotional Language Example
-
-| API     | Models     | Framework            |
-| ------- | ---------- | -------------------- |
-| `batch` | `language` | Next.js (TypeScript) |
+<div align="center">
+  <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
+  <h1>Expression Measurement | Next.js Emotional Language Example</h1>
+  <p>
+    <strong>Batch-analyze Language to Uncover Nuanced Human Expression.</strong>
+  </p>
+</div>
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/HumeAI/hume-api-examples/tree/main/typescript-next-api-language)
 

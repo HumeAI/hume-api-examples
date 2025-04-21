@@ -1,6 +1,12 @@
-# Sandbox
+<div align="center">
+  <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
+  <h1>Expression Measurement | Next.js Streaming Example</h1>
+  <p>
+    <strong>Real-time Streaming of Facial, Vocal, and Language Expressions.</strong>
+  </p>
+</div>
 
-## About
+## Overview
 
 This repo contains a NextJS app for demoing and testing Hume APIs. It implements several streaming interfaces that provide an intuitive validation of model quality.
 

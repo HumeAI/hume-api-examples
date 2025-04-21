@@ -1,8 +1,8 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Batch Expression Measurement | Sample Python Implementation</h1>
+  <h1>Expression Measurement | Sample Python Implementation</h1>
   <p>
-    <strong>Jumpstart your development with Hume's Expression Measurement!</strong>
+    <strong>Batch-analyze Facial Expressions using Hume's Python SDK.</strong>
   </p>
 </div>
 
