@@ -3,6 +3,7 @@ import { fetchWeather } from "@/utils/fetchWeather";
 
 export async function POST(request: Request) {
   const { parameters } = await request.json();
+  console.log(parameters);
 
   try {
     const currentWeather = await fetchWeather(parameters);
