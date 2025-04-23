@@ -15,30 +15,71 @@ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/f
 
 1. [Create a tool](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#create-a-tool) with the following payload:
 
+   Sample JSON Request Body
+
    ```json
    {
      "name": "get_current_weather",
-     "description": "This tool is for getting the current weather.",
-     "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }"
+     "description": "This tool is for getting the current weather in a given locale.",
+     "version_description": "Fetches current weather and uses celsius or fahrenheit based on location of user.",
+     "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }",
+     "fallback_content": "The weather API is unavailable. Unable to fetch the current weather."
    }
+   ```
+
+   Sample cURL Request
+
+   ```cURL
+   curl https://api.hume.ai/v0/evi/tools \
+      -H "X-Hume-Api-Key: <YOUR_API_KEY>" \
+      --json '{
+         "name": "get_current_weather",
+         "description": "This tool is for getting the current weather in a given locale.",
+         "version_description": "Fetches current weather and uses celsius or fahrenheit based on location of user.",
+         "parameters": "{ \"type\": \"object\", \"properties\": { \"location\": { \"type\": \"string\", \"description\": \"The city and state, e.g. San Francisco, CA\" }, \"format\": { \"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"description\": \"The temperature unit to use. Infer this from the users location.\" } }, \"required\": [\"location\", \"format\"] }",
+         "fallback_content": "The weather API is unavailable. Unable to fetch the current weather."
+      }'
    ```
 
 2. [Create a configuration](https://dev.hume.ai/docs/empathic-voice-interface-evi/tool-use#create-a-configuration) equipped with that tool:
 
+   Sample JSON Request Body
+
    ```json
    {
+     "evi_version": "2",
      "name": "Weather Assistant Config",
      "language_model": {
        "model_provider": "ANTHROPIC",
-       "model_resource": "claude-3-5-sonnet-20240620"
+       "model_resource": "claude-3-7-sonnet-latest"
      },
      "tools": [
        {
-         "id": "<YOUR_TOOL_ID>",
-         "version": 0
+         "id": "<YOUR_TOOL_ID>"
        }
      ]
    }
+   ```
+
+   Sample cURL Request
+
+   ```cURL
+   curl -X POST https://api.hume.ai/v0/evi/configs \
+      -H "X-Hume-Api-Key: <YOUR_API_KEY>" \
+      -H "Content-Type: application/json" \
+      -d '{
+         "evi_version": "2",
+         "name": "Weather Assistant Config",
+         "language_model": {
+            "model_provider": "ANTHROPIC",
+            "model_resource": "claude-3-7-sonnet-latest"
+         },
+         "tools": [
+            {
+               "id": "<YOUR_TOOL_ID>"
+            }
+         ]
+      }'
    ```
 
 ## Instructions
