@@ -1,30 +1,12 @@
-'use client' // Error boundaries must be Client Components
- 
-import { useEffect } from 'react'
- 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string }
-  reset: () => void
-}) {
-  useEffect(() => {
-    // Log the error to an error reporting service
-    console.error(error)
-  }, [error])
- 
+"use client";
+
+export default function Error() {
   return (
-    <div>
-      <h2>Something went wrong!</h2>
-      <button
-        onClick={
-          // Attempt to recover by trying to re-render the segment
-          () => reset()
-        }
-      >
-        Try again
-      </button>
+    <div className={"absolute inset-0 grid place-content-center"}>
+      <div className={"text-center"}>
+        <h1 className={"text-white"}>An unexpected error occurred</h1>
+        <p className={"text-gray-500"}>Please try again later</p>
+      </div>
     </div>
-  )
+  );
 }
