@@ -1,24 +1,37 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import type { ReturnVoice, VoiceProvider } from "hume/api/resources/tts";
+import type { ReturnVoice } from "hume/api/resources/tts";
 import VoiceSelector from "@/components/VoiceSelector";
 import { useVoiceSettings } from "@/context/VoiceSettingsContext";
 
 export default function ControlsPanel() {
-  const { instant, setInstant, voice, setVoice } = useVoiceSettings();
+  const {
+    instant,
+    setInstant,
+    voice,
+    setVoice,
+    voiceProvider,
+    setVoiceProvider,
+  } = useVoiceSettings();
 
-  const [source, setSource] = useState<VoiceProvider>("HUME_AI");
   const [voices, setVoices] = useState<ReturnVoice[]>([]);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const initialPickDone = useRef(false);
 
   async function fetchVoices() {
     try {
-      const res = await fetch(`/api/voices?provider=${source}`);
-      const data = (await res.json()) as { voices: ReturnVoice[] };
-      setVoices(data.voices);
+      const res = await fetch(`/api/voices?provider=${voiceProvider}`);
+      const { voices } = (await res.json()) as { voices: ReturnVoice[] };
+      setVoices(voices);
+
+      if (!initialPickDone.current && voices.length && !voice) {
+        const random = voices[Math.floor(Math.random() * voices.length)];
+        setVoice(random);
+        initialPickDone.current = true;
+      }
     } catch (e) {
       console.error("voice fetch failed", e);
       setVoices([]);
@@ -27,7 +40,7 @@ export default function ControlsPanel() {
 
   useEffect(() => {
     fetchVoices();
-  }, [source]);
+  }, [voiceProvider]);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -49,7 +62,10 @@ export default function ControlsPanel() {
 
       {voice ? (
         <div className="flex items-center justify-between text-md font-semibold text-gray-900">
-          {voice.name}
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
+            {voice.name}
+          </div>
           <button
             onClick={() => setVoice(null)}
             className="text-gray-400 hover:cursor-pointer hover:text-gray-600"
@@ -67,10 +83,10 @@ export default function ControlsPanel() {
           <button
             key={opt}
             onClick={() => {
-              setSource(opt);
+              setVoiceProvider(opt);
               setQuery("");
             }}
-            className={`px-3 py-1 rounded-md text-sm hover:cursor-pointer ${source === opt ? "bg-black text-white" : "bg-gray-200"}`}
+            className={`px-3 py-1 rounded-md text-sm hover:cursor-pointer ${voiceProvider === opt ? "bg-black text-white" : "bg-gray-200"}`}
           >
             {opt === "HUME_AI" ? "Voice Library" : "My Voices"}
           </button>

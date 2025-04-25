@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useChat } from "@ai-sdk/react";
 import { PaperAirplaneIcon, StopIcon } from "@heroicons/react/24/solid";
 
@@ -18,20 +18,21 @@ export default function Chat() {
     <section className="flex flex-col flex-1 basis-0 rounded-l-2xl h-full">
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-          >
+          <React.Fragment key={m.id}>
             <div
-              className={`rounded-lg px-4 py-3 shadow-md whitespace-pre-wrap max-w-prose ${
-                m.role === "user"
-                  ? "bg-black text-white"
-                  : "bg-white text-gray-900"
-              }`}
+              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
             >
-              {m.content}
+              <div
+                className={`rounded-lg px-4 py-3 shadow-md whitespace-pre-wrap max-w-prose ${
+                  m.role === "user"
+                    ? "bg-black text-white"
+                    : "bg-white text-gray-900"
+                }`}
+              >
+                {m.content}
+              </div>
             </div>
-          </div>
+          </React.Fragment>
         ))}
         <div ref={bottomRef} />
       </div>
@@ -46,7 +47,7 @@ export default function Chat() {
       >
         <div className="relative flex">
           <input
-            className="flex-1 rounded-md border border-gray-200 px-4 py-2 pr-12"
+            className="flex-grow rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
             placeholder="Type your message…"
             value={input}
             onChange={handleInputChange}
@@ -60,9 +61,9 @@ export default function Chat() {
             disabled={!input.trim() && !isLoading}
           >
             {isLoading ? (
-              <StopIcon className="h-5 w-5" />
+              <StopIcon className="h-5 w-5 hover:cursor-pointer" />
             ) : (
-              <PaperAirplaneIcon className="h-5 w-5" />
+              <PaperAirplaneIcon className="h-5 w-5 hover:cursor-pointer" />
             )}
           </button>
         </div>
