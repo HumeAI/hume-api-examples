@@ -1,14 +1,16 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import VoiceSelector from "@/components/VoiceSelector";
 import type { ReturnVoice, VoiceProvider } from "hume/api/resources/tts";
+import VoiceSelector from "@/components/VoiceSelector";
+import { useVoiceSettings } from "@/context/VoiceSettingsContext";
 
 export default function ControlsPanel() {
+  const { instant, setInstant, voice, setVoice } = useVoiceSettings();
+
   const [source, setSource] = useState<VoiceProvider>("HUME_AI");
   const [voices, setVoices] = useState<ReturnVoice[]>([]);
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<ReturnVoice | null>(null);
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,10 +47,16 @@ export default function ControlsPanel() {
         Voice
       </h3>
 
-      {selected ? (
-        <div className="flex items-center gap-2 text-md font-semibold text-gray-900">
-          <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
-          {selected.name}
+      {voice ? (
+        <div className="flex items-center justify-between text-md font-semibold text-gray-900">
+          {voice.name}
+          <button
+            onClick={() => setVoice(null)}
+            className="text-gray-400 hover:cursor-pointer hover:text-gray-600"
+            aria-label="Clear voice"
+          >
+            ✕
+          </button>
         </div>
       ) : (
         <div className="text-md text-gray-500 italic">No voice selected</div>
@@ -62,7 +70,7 @@ export default function ControlsPanel() {
               setSource(opt);
               setQuery("");
             }}
-            className={`px-3 py-1 rounded-md text-sm ${source === opt ? "bg-black text-white" : "bg-gray-200"}`}
+            className={`px-3 py-1 rounded-md text-sm hover:cursor-pointer ${source === opt ? "bg-black text-white" : "bg-gray-200"}`}
           >
             {opt === "HUME_AI" ? "Voice Library" : "My Voices"}
           </button>
@@ -86,9 +94,9 @@ export default function ControlsPanel() {
           <div className="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg">
             <VoiceSelector
               voices={filtered}
-              selected={selected}
+              selected={voice}
               onSelect={(v) => {
-                setSelected(v);
+                setVoice(v);
                 setOpen(false);
               }}
             />
@@ -101,6 +109,33 @@ export default function ControlsPanel() {
       <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
         Request
       </h3>
+
+      <div>
+        <label className="flex items-center gap-3 text-sm">
+          <span className="flex-1 font-semibold">Instant Mode</span>
+          <button
+            type="button"
+            onClick={() => setInstant(!instant)}
+            className={`h-5 w-10 rounded-full transition-colors duration-200 hover:cursor-pointer ${
+              instant ? "bg-black" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`block h-5 w-5 rounded-full bg-white transform transition-transform duration-200 ${
+                instant ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
+        </label>
+        <a
+          href="https://dev.hume.ai/docs/text-to-speech-tts/overview#ultra-low-latency-streaming-instant-mode"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-blue-600 hover:underline"
+        >
+          What is instant mode?
+        </a>
+      </div>
     </aside>
   );
 }
