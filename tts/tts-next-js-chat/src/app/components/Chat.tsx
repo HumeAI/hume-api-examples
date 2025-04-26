@@ -112,7 +112,7 @@ export default function Chat() {
       >
         <div className="relative flex">
           <input
-            className="flex-grow rounded-md border border-gray-200 px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
+            className="flex-grow rounded-xl border border-gray-200 px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
             placeholder="Type your message…"
             value={input}
             onChange={handleInputChange}

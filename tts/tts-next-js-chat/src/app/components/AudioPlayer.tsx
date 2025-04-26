@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 
 export default function AudioPlayer({ chunks }: { chunks: Uint8Array[] }) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const sbRef = useRef<SourceBuffer | null>(null);
+  const sourceBufferRef = useRef<SourceBuffer | null>(null);
   const playInitiatedRef = useRef<boolean>(false);
   const mediaSourceRef = useRef<MediaSource | null>(null);
   const isLastChunkAppendedRef = useRef<boolean>(false);
@@ -11,7 +11,7 @@ export default function AudioPlayer({ chunks }: { chunks: Uint8Array[] }) {
   useEffect(() => {
     if (!audioRef.current || chunks.length === 0) return;
 
-    if (!sbRef.current) {
+    if (!sourceBufferRef.current) {
       const ms = new MediaSource();
       mediaSourceRef.current = ms;
       audioRef.current.src = URL.createObjectURL(ms);
@@ -21,8 +21,11 @@ export default function AudioPlayer({ chunks }: { chunks: Uint8Array[] }) {
       ms.addEventListener(
         "sourceopen",
         () => {
-          sbRef.current = ms.addSourceBuffer("audio/mpeg");
-          sbRef.current.addEventListener("updateend", handleUpdateEnd);
+          sourceBufferRef.current = ms.addSourceBuffer("audio/mpeg");
+          sourceBufferRef.current.addEventListener(
+            "updateend",
+            handleUpdateEnd
+          );
           append();
         },
         { once: true }
@@ -32,14 +35,22 @@ export default function AudioPlayer({ chunks }: { chunks: Uint8Array[] }) {
     }
 
     function append() {
-      const sb = sbRef.current;
+      const sourceBuffer = sourceBufferRef.current;
       const currentAudio = audioRef.current;
-      if (!sb || !currentAudio || sb.updating || chunks.length === 0) return;
+
+      if (
+        !sourceBuffer ||
+        !currentAudio ||
+        sourceBuffer.updating ||
+        chunks.length === 0
+      ) {
+        return;
+      }
 
       const chunkData = chunks.shift()!;
       const isLast = chunks.length === 0;
 
-      sb.appendBuffer(chunkData);
+      sourceBuffer.appendBuffer(chunkData);
 
       if (isLast) {
         isLastChunkAppendedRef.current = true;
@@ -52,20 +63,16 @@ export default function AudioPlayer({ chunks }: { chunks: Uint8Array[] }) {
     }
 
     function handleUpdateEnd() {
-      const sb = sbRef.current;
-      const ms = mediaSourceRef.current;
+      const sourceBuffer = sourceBufferRef.current;
+      const mediaSrc = mediaSourceRef.current;
 
-      if (
-        isLastChunkAppendedRef.current &&
-        sb &&
-        !sb.updating &&
-        ms &&
-        ms.readyState === "open"
-      ) {
-        ms.endOfStream();
-      } else {
-        append();
-      }
+      const bufferNotUpdating = !!sourceBuffer && !sourceBuffer.updating;
+      const mediaSourceOpen = !!mediaSrc && mediaSrc.readyState === "open";
+      const noMoreAudio = isLastChunkAppendedRef.current === true;
+
+      const endOfStream = noMoreAudio && bufferNotUpdating && mediaSourceOpen;
+
+      endOfStream ? mediaSrc.endOfStream() : append();
     }
   }, [chunks]);
 

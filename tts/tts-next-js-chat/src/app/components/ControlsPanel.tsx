@@ -55,7 +55,7 @@ export default function ControlsPanel() {
   );
 
   return (
-    <aside className="flex-shrink-0 basis-64 sm:basis-72 md:basis-80 lg:basis-96 bg-white p-6 md:p-8 border-l border-gray-200 shadow-sm rounded-r-2xl flex flex-col gap-6">
+    <aside className="flex-shrink-0 basis-64 sm:basis-72 md:basis-80 lg:basis-96 bg-white p-6 md:p-8 border-l border-gray-200 shadow-sm rounded-r-2xl flex flex-col gap-6 text-gray-900">
       <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
         Voice
       </h3>
@@ -104,13 +104,13 @@ export default function ControlsPanel() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search voices…"
-          className="w-full rounded-md border border-gray-300 bg-gray-50 pl-9 pr-3 py-2 text-sm"
+          className="w-full rounded-xl border border-gray-300 bg-gray-50 pl-9 pr-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
         />
         {open && (
           <div className="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg">
             <VoiceSelector
               voices={filtered}
-              selected={voice}
+              selectedVoice={voice}
               onSelect={(v) => {
                 setVoice(v);
                 setOpen(false);
