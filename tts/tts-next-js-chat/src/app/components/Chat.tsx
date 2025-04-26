@@ -1,10 +1,16 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import { PaperAirplaneIcon, StopIcon } from "@heroicons/react/24/solid";
+import {
+  MicrophoneIcon,
+  PaperAirplaneIcon,
+  StopIcon,
+} from "@heroicons/react/24/solid";
 import type { SnippetAudioChunk } from "hume/api/resources/tts";
 import AudioPlayer from "@/components/AudioPlayer";
 import { useVoiceSettings } from "@/context/VoiceSettingsContext";
+
+type AudioChunks = Record<string, Uint8Array[]>;
 
 export default function Chat() {
   const { instant, voice, voiceProvider } = useVoiceSettings();
@@ -65,9 +71,8 @@ export default function Chat() {
       },
     });
 
-  const [audioChunks, setAudioChunks] = useState<Record<string, Uint8Array[]>>(
-    {}
-  );
+  const [audioChunks, setAudioChunks] = useState<AudioChunks>({});
+  const [listening, setListening] = useState<boolean>(false);
 
   const isLoading = status === "submitted" || status === "streaming";
 
@@ -110,26 +115,35 @@ export default function Chat() {
         }}
         className="border-t border-gray-200 bg-white p-4"
       >
-        <div className="relative flex">
-          <input
-            className="flex-grow rounded-xl border border-gray-200 px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
-            placeholder="Type your message…"
-            value={input}
-            onChange={handleInputChange}
-            disabled={isLoading}
-          />
+        <div className="flex items-center gap-3">
+          <div className="relative flex flex-grow">
+            <input
+              className="flex-grow rounded-xl border border-gray-200 px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
+              placeholder="Type your message…"
+              value={input}
+              onChange={handleInputChange}
+              disabled={isLoading}
+            />
 
+            <button
+              type={isLoading ? "button" : "submit"}
+              onClick={() => isLoading && stop()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-white bg-gray-900 disabled:opacity-30 hover:cursor-pointer disabled:cursor-default"
+              disabled={!input.trim() && !isLoading}
+            >
+              {isLoading ? (
+                <StopIcon className="h-5 w-5" />
+              ) : (
+                <PaperAirplaneIcon className="h-5 w-5" />
+              )}
+            </button>
+          </div>
           <button
-            type={isLoading ? "button" : "submit"}
-            onClick={() => isLoading && stop()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-white bg-black disabled:opacity-50"
-            disabled={!input.trim() && !isLoading}
+            type="button"
+            onClick={() => setListening(!listening)}
+            className={`flex items-center justify-center p-2 rounded-lg p-1 text-white ${listening ? "bg-red-600 hover:bg-red-700" : "bg-gray-900 hover:bg-gray-800"}`}
           >
-            {isLoading ? (
-              <StopIcon className="h-5 w-5 hover:cursor-pointer" />
-            ) : (
-              <PaperAirplaneIcon className="h-5 w-5 hover:cursor-pointer" />
-            )}
+            <MicrophoneIcon className="h-5 w-6 hover:cursor-pointer" />
           </button>
         </div>
       </form>
