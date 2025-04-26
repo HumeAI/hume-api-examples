@@ -69,5 +69,5 @@ export default function AudioPlayer({ chunks }: { chunks: Uint8Array[] }) {
     }
   }, [chunks]);
 
-  return <audio ref={audioRef} controls className="w-full max-w-xs" />;
+  return <audio ref={audioRef} controls className="w-full max-w-md" />;
 }

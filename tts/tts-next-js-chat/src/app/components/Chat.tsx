@@ -1,11 +1,73 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { PaperAirplaneIcon, StopIcon } from "@heroicons/react/24/solid";
+import type { SnippetAudioChunk } from "hume/api/resources/tts";
+import AudioPlayer from "@/components/AudioPlayer";
+import { useVoiceSettings } from "@/context/VoiceSettingsContext";
 
 export default function Chat() {
+  const { instant, voice, voiceProvider } = useVoiceSettings();
   const { messages, input, handleInputChange, handleSubmit, status, stop } =
-    useChat({ api: "/api/chat", streamProtocol: "text" });
+    useChat({
+      api: "/api/chat",
+      streamProtocol: "text",
+      onFinish: async (msg) => {
+        if (msg.role !== "assistant" || !msg.content) return;
+
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: msg.content,
+            voiceName: voice?.name || null,
+            voiceProvider,
+            instant,
+          }),
+        });
+
+        if (!res.ok || !res.body) {
+          console.error("TTS fetch failed:", res.status, await res.text());
+          return;
+        }
+
+        let buffer = "";
+        const reader = res.body!.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop()!;
+
+          for (const line of lines) {
+            if (!line.trim()) continue;
+            const chunk: SnippetAudioChunk = JSON.parse(line);
+
+            if (chunk && chunk.audio.length > 0) {
+              const b64 = chunk.audio;
+
+              const bin = atob(b64);
+              const bytes = new Uint8Array(bin.length);
+              for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+
+              setAudioChunks((prev) => {
+                const existing = prev[msg.id] ?? [];
+                if (bytes.length === 0) return prev;
+                return { ...prev, [msg.id]: [...existing, bytes] };
+              });
+            }
+          }
+        }
+      },
+    });
+
+  const [audioChunks, setAudioChunks] = useState<Record<string, Uint8Array[]>>(
+    {}
+  );
 
   const isLoading = status === "submitted" || status === "streaming";
 
@@ -32,6 +94,9 @@ export default function Chat() {
                 {m.content}
               </div>
             </div>
+            {m.role === "assistant" && audioChunks[m.id] && (
+              <AudioPlayer chunks={audioChunks[m.id]!} />
+            )}
           </React.Fragment>
         ))}
         <div ref={bottomRef} />

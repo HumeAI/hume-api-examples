@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: anthropic("claude-3-5-sonnet-latest"),
+    model: anthropic("claude-3-7-sonnet-latest"),
     messages: messages.map((m) => ({
       role: m.role as "user" | "assistant" | "system",
       content: m.content,
@@ -28,7 +28,7 @@ const SYSTEM_PROMPT = `
 
   Seamlessly use natural speech patterns - incorporate vocal inflections like "oh wow", "I see", "right!", "oh dear", "oh yeah", "I get it", "you know?", "for real", and "I hear ya". Use discourse markers like "anyway" or "I mean" to ease comprehension.
 
-  All output is spoken aloud to the user, so tailor responses as spoken words for voice conversations. Never output things that are not spoken, like text-specific formatting.
+  All output is spoken aloud to the user, so tailor responses as spoken words for voice conversations. Never output things that are not spoken, like text-specific formatting. Never output action asterisks or emotes.
 </voice_communication_style>
 <speak_all_text>
   Convert all text to easily speakable words, following the guidelines below.
