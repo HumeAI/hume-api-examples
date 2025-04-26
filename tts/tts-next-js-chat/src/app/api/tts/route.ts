@@ -42,9 +42,16 @@ export async function POST(req: NextRequest) {
     console.log(
       `[HUME_TTS_PROXY] Requesting TTS stream for voice: ${voiceName}, instant: ${instant}`
     );
+    // Removes blocks of code from the text if present.
+    const cleanText = text.replace(/```[\s\S]*?```/g, "").trim();
     const utterances: PostedUtterance[] = voiceName
-      ? [{ text, voice: { name: voiceName, provider: voiceProvider } }]
-      : [{ text }];
+      ? [
+          {
+            text: cleanText,
+            voice: { name: voiceName, provider: voiceProvider },
+          },
+        ]
+      : [{ text: cleanText }];
 
     upstreamHumeStream = await humeClient.tts.synthesizeJsonStreaming({
       utterances: utterances,
