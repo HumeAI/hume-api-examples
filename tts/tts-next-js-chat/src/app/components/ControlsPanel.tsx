@@ -104,7 +104,7 @@ export default function ControlsPanel() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search voices…"
-          className="w-full rounded-xl border border-gray-300 bg-gray-50 pl-9 pr-3 py-3 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
+          className="w-full rounded-xl border border-gray-300 bg-gray-50 pl-9 pr-3 py-3 text-sm"
         />
         {open && (
           <div className="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg">
