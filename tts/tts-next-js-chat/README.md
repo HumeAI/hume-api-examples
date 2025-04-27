@@ -3,6 +3,8 @@
   <h1>Text-to-Speech | Next.js Chat Example</h1>
 </div>
 
+![preview.png](preview.png)
+
 ## Overview
 
 This project demonstrates how to build a basic streaming conversational interface with [Hume’s TTS (streaming) API](https://dev.hume.ai/reference/text-to-speech-tts/synthesize-json-streaming) that:
