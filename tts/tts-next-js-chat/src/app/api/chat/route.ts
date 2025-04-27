@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: anthropic("claude-3-7-sonnet-latest"),
+    model: anthropic("claude-3-5-haiku-latest"),
     messages: messages.map((m) => ({
       role: m.role as "user" | "assistant" | "system",
       content: m.content,
