@@ -177,7 +177,7 @@ export default function Chat() {
         className={`
           absolute inset-x-0 top-0 h-12 pointer-events-none z-20
           bg-gradient-to-b from-black/20 to-transparent
-          transition-opacity duration-300 ease-in-out
+          transition-opacity duration-900 ease-in-out
           ${hasOverflow && hasScrolled ? "opacity-100" : "opacity-30"}
         `}
       />
@@ -238,10 +238,28 @@ export default function Chat() {
           </div>
           <button
             type="button"
-            onClick={() =>
-              recording ? stopRecordingAndTranscribe() : startRecording()
-            }
             disabled={isLoading || transcribing}
+            onMouseDown={() => {
+              if (!recording) startRecording();
+            }}
+            onMouseUp={() => {
+              if (recording) stopRecordingAndTranscribe();
+            }}
+            onMouseLeave={() => {
+              if (recording) stopRecordingAndTranscribe();
+            }}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              if (!recording) startRecording();
+            }}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              if (recording) stopRecordingAndTranscribe();
+            }}
+            onTouchCancel={(e) => {
+              e.preventDefault();
+              if (recording) stopRecordingAndTranscribe();
+            }}
             className={`flex items-center justify-center p-2 rounded-lg p-1 text-white ${
               recording
                 ? "bg-red-600 hover:bg-red-700"
