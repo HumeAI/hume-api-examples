@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import type { ReturnVoice } from "hume/api/resources/tts";
 import VoiceSelector from "@/components/VoiceSelector";
 import { useVoiceSettings } from "@/context/VoiceSettingsContext";
+import { useVoices } from "@/hooks/useVoices";
 
 export default function ControlsPanel() {
   const {
@@ -15,33 +15,18 @@ export default function ControlsPanel() {
     setVoiceProvider,
   } = useVoiceSettings();
 
-  const [voices, setVoices] = useState<ReturnVoice[]>([]);
+  const { voices, pickInitial } = useVoices(voiceProvider);
+
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const initialPickDone = useRef(false);
 
-  async function fetchVoices() {
-    try {
-      const res = await fetch(`/api/voices?provider=${voiceProvider}`);
-      const { voices } = (await res.json()) as { voices: ReturnVoice[] };
-      setVoices(voices);
-
-      if (!initialPickDone.current && voices.length && !voice) {
-        const random = voices[Math.floor(Math.random() * voices.length)];
-        setVoice(random);
-        initialPickDone.current = true;
-      }
-    } catch (e) {
-      console.error("voice fetch failed", e);
-      setVoices([]);
-    }
-  }
-
+  // Once voices load the first time, select an initial, random voice
   useEffect(() => {
-    fetchVoices();
-  }, [voiceProvider]);
+    pickInitial(voice, setVoice);
+  }, [voices, voice, pickInitial, setVoice]);
 
+  // Close dropdown on outside click
   useEffect(() => {
     const close = (e: MouseEvent) => {
       if (!inputRef.current?.contains(e.target as Node)) setOpen(false);
@@ -50,7 +35,7 @@ export default function ControlsPanel() {
     return () => document.removeEventListener("click", close);
   }, []);
 
-  const filtered = voices.filter((v) =>
+  const filteredVoices = voices.filter((v) =>
     v.name?.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -86,7 +71,11 @@ export default function ControlsPanel() {
               setVoiceProvider(opt);
               setQuery("");
             }}
-            className={`font-semibold px-3 py-2 rounded-md text-sm hover:cursor-pointer ${voiceProvider === opt ? "bg-gray-900 hover:bg-gray-700 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+            className={`font-semibold px-3 py-2 rounded-md text-sm hover:cursor-pointer ${
+              voiceProvider === opt
+                ? "bg-gray-900 hover:bg-gray-700 text-white"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
           >
             {opt === "HUME_AI" ? "Voice Library" : "My Voices"}
           </button>
@@ -99,7 +88,6 @@ export default function ControlsPanel() {
           ref={inputRef}
           onFocus={() => {
             setOpen(true);
-            if (!voices.length) fetchVoices();
           }}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -109,11 +97,12 @@ export default function ControlsPanel() {
         {open && (
           <div className="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg">
             <VoiceSelector
-              voices={filtered}
+              voices={filteredVoices}
               selectedVoice={voice}
               onSelect={(v) => {
                 setVoice(v);
                 setOpen(false);
+                setQuery("");
               }}
             />
           </div>
