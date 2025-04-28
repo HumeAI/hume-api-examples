@@ -6,14 +6,20 @@ import {
   PaperAirplaneIcon,
   StopIcon,
 } from "@heroicons/react/24/solid";
-import type { SnippetAudioChunk } from "hume/api/resources/tts";
 import AudioPlayer from "@/components/AudioPlayer";
 import { useVoiceSettings } from "@/context/VoiceSettingsContext";
-
-type AudioChunks = Record<string, Uint8Array[]>;
+import { useTts } from "@/hooks/useTts";
+import { useRecording } from "@/hooks/useRecording";
 
 export default function Chat() {
   const { instant, voice, voiceProvider } = useVoiceSettings();
+
+  const { audioChunks, onTtsFinish } = useTts({
+    voice,
+    voiceProvider,
+    instant,
+  });
+
   const {
     input,
     messages,
@@ -25,156 +31,50 @@ export default function Chat() {
   } = useChat({
     api: "/api/chat",
     streamProtocol: "text",
-    onFinish: async (msg) => {
-      if (msg.role !== "assistant" || !msg.content) return;
-
-      const res = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: msg.content,
-          voiceName: voice?.name || null,
-          voiceProvider,
-          instant,
-        }),
-      });
-
-      if (!res.ok || !res.body) {
-        console.error("TTS fetch failed:", res.status, await res.text());
-        return;
-      }
-
-      let buffer = "";
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop()!;
-
-        for (const line of lines) {
-          if (!line.trim()) continue;
-          const chunk: SnippetAudioChunk = JSON.parse(line);
-
-          if (chunk?.audio.length) {
-            const b64 = chunk.audio;
-
-            const bin = atob(b64);
-            const bytes = new Uint8Array(bin.length);
-            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-
-            setAudioChunks((prev) => {
-              const existing = prev[msg.id] ?? [];
-              if (bytes.length === 0) return prev;
-              return { ...prev, [msg.id]: [...existing, bytes] };
-            });
-          }
-        }
-      }
-    },
+    onFinish: onTtsFinish,
   });
 
-  const [audioChunks, setAudioChunks] = useState<AudioChunks>({});
+  const {
+    recording,
+    transcribing,
+    startRecording,
+    stopRecordingAndTranscribe,
+  } = useRecording((text) => {
+    append({ role: "user", content: text });
+  });
+
   const [hasOverflow, setHasOverflow] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
-  const [recording, setRecording] = useState(false);
-  const [transcribing, setTranscribing] = useState(false);
-
-  const audioPartsRef = useRef<BlobPart[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const micButtonRef = useRef<HTMLButtonElement>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const isLoading = status === "submitted" || status === "streaming";
 
-  useEffect(() => {
-    micButtonRef.current?.focus();
-  }, []);
-
+  // Scroll to bottom whenever messages update
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Check if chat content overflows the container to toggle shadow availability
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    function checkOverflow() {
-      setHasOverflow(el!.scrollHeight > el!.clientHeight);
-    }
+    const checkOverflow = () =>
+      setHasOverflow(el.scrollHeight > el.clientHeight);
     checkOverflow();
     window.addEventListener("resize", checkOverflow);
     return () => window.removeEventListener("resize", checkOverflow);
   }, [messages]);
 
+  // Track scroll position to show/hide the top shadow when not at the top
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    function onScroll() {
-      setHasScrolled(el!.scrollTop > 0);
-    }
+    const onScroll = () => setHasScrolled(el.scrollTop > 0);
     el.addEventListener("scroll", onScroll);
     onScroll();
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
-
-  async function startRecording() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-
-      recorderRef.current = recorder;
-      audioPartsRef.current = [];
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          audioPartsRef.current.push(e.data);
-        }
-      };
-      recorder.start();
-
-      setRecording(true);
-    } catch (err) {
-      console.error("Could not start recording:", err);
-    }
-  }
-
-  async function stopRecordingAndTranscribe() {
-    const recorder = recorderRef.current;
-    if (!recorder) return;
-
-    recorder.stop();
-    setRecording(false);
-    setTranscribing(true);
-
-    recorder.onstop = async () => {
-      try {
-        const blob = new Blob(audioPartsRef.current, {
-          type: recorder.mimeType,
-        });
-        const arrayBuffer = await blob.arrayBuffer();
-
-        const res = await fetch("/api/transcribe", {
-          method: "POST",
-          body: arrayBuffer,
-        });
-        if (!res.ok) {
-          console.error("Transcription failed:", res.statusText);
-          return;
-        }
-        const { text } = await res.json();
-        append({ role: "user", content: text });
-      } catch (err) {
-        console.error("Transcription error:", err);
-      } finally {
-        setTranscribing(false);
-      }
-    };
-  }
 
   return (
     <section className="flex flex-col flex-1 basis-0 rounded-l-2xl h-full relative overflow-hidden">
@@ -203,7 +103,7 @@ export default function Chat() {
               </div>
             </div>
             {m.role === "assistant" && audioChunks[m.id] && (
-              <AudioPlayer chunks={audioChunks[m.id]!} />
+              <AudioPlayer chunks={audioChunks[m.id]} />
             )}
           </React.Fragment>
         ))}
@@ -231,7 +131,7 @@ export default function Chat() {
             <button
               type={isLoading ? "button" : "submit"}
               onClick={() => isLoading && stop()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-white bg-gray-900 disabled:opacity-30 hover:cursor-pointer disabled:cursor-default"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-white bg-gray-900 disabled:opacity-30"
               disabled={!input.trim() && !isLoading}
             >
               {isLoading ? (
@@ -242,7 +142,6 @@ export default function Chat() {
             </button>
           </div>
           <button
-            ref={micButtonRef}
             type="button"
             disabled={isLoading || transcribing}
             className={`flex items-center justify-center p-2 rounded-lg p-1 text-white ${
@@ -250,37 +149,27 @@ export default function Chat() {
                 ? "bg-red-600 hover:bg-red-700"
                 : "bg-gray-900 hover:bg-gray-800"
             }`}
-            onMouseDown={() => {
-              if (!recording) startRecording();
-            }}
-            onMouseUp={() => {
-              if (recording) stopRecordingAndTranscribe();
-            }}
-            onMouseLeave={() => {
-              if (recording) stopRecordingAndTranscribe();
-            }}
+            onMouseDown={() => !recording && startRecording()}
+            onMouseUp={() => recording && stopRecordingAndTranscribe()}
+            onMouseLeave={() => recording && stopRecordingAndTranscribe()}
             onTouchStart={(e) => {
               e.preventDefault();
-              if (!recording) startRecording();
+              startRecording();
             }}
             onTouchEnd={(e) => {
               e.preventDefault();
-              if (recording) stopRecordingAndTranscribe();
-            }}
-            onTouchCancel={(e) => {
-              e.preventDefault();
-              if (recording) stopRecordingAndTranscribe();
+              stopRecordingAndTranscribe();
             }}
             onKeyDown={(e) => {
-              const isTrigger = e.key === "Enter" || e.key === " ";
-              if (isTrigger && !e.repeat && !recording) {
+              const trigger = e.key === "Enter" || e.key === " ";
+              if (trigger && !e.repeat && !recording) {
                 e.preventDefault();
                 startRecording();
               }
             }}
             onKeyUp={(e) => {
-              const isTrigger = e.key === "Enter" || e.key === " ";
-              if (isTrigger && recording) {
+              const trigger = e.key === "Enter" || e.key === " ";
+              if (trigger && recording) {
                 e.preventDefault();
                 stopRecordingAndTranscribe();
               }
