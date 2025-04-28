@@ -86,10 +86,15 @@ export default function Chat() {
 
   const audioPartsRef = useRef<BlobPart[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const micButtonRef = useRef<HTMLButtonElement>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const isLoading = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    micButtonRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -237,8 +242,14 @@ export default function Chat() {
             </button>
           </div>
           <button
+            ref={micButtonRef}
             type="button"
             disabled={isLoading || transcribing}
+            className={`flex items-center justify-center p-2 rounded-lg p-1 text-white ${
+              recording
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-gray-900 hover:bg-gray-800"
+            }`}
             onMouseDown={() => {
               if (!recording) startRecording();
             }}
@@ -260,11 +271,20 @@ export default function Chat() {
               e.preventDefault();
               if (recording) stopRecordingAndTranscribe();
             }}
-            className={`flex items-center justify-center p-2 rounded-lg p-1 text-white ${
-              recording
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-gray-900 hover:bg-gray-800"
-            }`}
+            onKeyDown={(e) => {
+              const isTrigger = e.key === "Enter" || e.key === " ";
+              if (isTrigger && !e.repeat && !recording) {
+                e.preventDefault();
+                startRecording();
+              }
+            }}
+            onKeyUp={(e) => {
+              const isTrigger = e.key === "Enter" || e.key === " ";
+              if (isTrigger && recording) {
+                e.preventDefault();
+                stopRecordingAndTranscribe();
+              }
+            }}
           >
             <MicrophoneIcon className="h-5 w-6 hover:cursor-pointer" />
           </button>
