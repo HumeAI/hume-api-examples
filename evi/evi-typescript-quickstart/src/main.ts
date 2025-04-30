@@ -43,7 +43,8 @@ const ABNORMAL_CLOSE_CODES = new Set([1006, 1011, 1012, 1013, 1014]); // WebSock
 
   /**--- Audio Playback State ---*/
   const audioQueue: Blob[] = [];
-  let currentAudio: HTMLAudioElement | null = null;
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  let currentSource: AudioBufferSourceNode | null = null;
   let isPlaying = false;
 
   /**--- Reconnection State ---*/
@@ -228,40 +229,57 @@ const ABNORMAL_CLOSE_CODES = new Set([1006, 1011, 1012, 1013, 1014]); // WebSock
 
   /**--- Audio Playback Functions ---*/
   /** Plays the next audio chunk from the queue if available and not already playing. */
-  function playNextAudioChunk(): void {
-    // Don't play if already playing or queue is empty
+  async function playNextAudioChunk(): Promise<void> {
     if (isPlaying || audioQueue.length === 0) return;
-
     isPlaying = true;
-    const audioBlob = audioQueue.shift();
 
+    const audioBlob = audioQueue.shift();
     if (!audioBlob) {
       isPlaying = false;
       return;
     }
-    const audioUrl = URL.createObjectURL(audioBlob);
-    currentAudio = new Audio(audioUrl);
-    currentAudio.play();
-    currentAudio.onended = () => {
-      URL.revokeObjectURL(audioUrl);
-      currentAudio = null;
+
+    try {
+      // Safari requires a user gesture–driven resume
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+      // Decode the blob into an AudioBuffer
+      const arrayBuffer = await audioBlob.arrayBuffer();
+      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+      // Create a source node and play it
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContext.destination);
+      source.start();
+
+      // Track it so we can stop mid-stream if needed
+      currentSource = source;
+      source.onended = () => {
+        currentSource = null;
+        isPlaying = false;
+        playNextAudioChunk();
+      };
+    } catch (error) {
+      console.error("Error during audio playback:", error);
       isPlaying = false;
-      playNextAudioChunk(); // Recursively play the next chunk if queue is not empty
-    };
+    }
   }
 
   /** Stops the currently playing audio and clears the playback queue. */
   function stopAudioPlayback(): void {
-    if (currentAudio) {
-      currentAudio.pause();
-      console.log("Audio playback paused.");
-      if (currentAudio.src && currentAudio.src.startsWith('blob:')) {
-        URL.revokeObjectURL(currentAudio.src); // Revoke URL if paused mid-play
-      }
-      currentAudio = null;
+    // Stop any in-flight buffer source
+    if (currentSource) {
+      try {
+        currentSource.stop();
+      } catch {}
+      currentSource.disconnect();
+      currentSource = null;
     }
-    audioQueue.length = 0; // Clear the queue
-    isPlaying = false; // Reset playback state
+    // Clear the queue and reset state
+    audioQueue.length = 0;
+    isPlaying = false;
   }
 
   /**--- UI and Helper Functions ---*/
