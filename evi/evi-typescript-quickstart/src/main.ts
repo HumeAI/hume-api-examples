@@ -1,8 +1,8 @@
-import "@styles";
+import "./styles/globals.css";
 import { EVIWebAudioPlayer } from "hume";
 import type { ChatSocket, SubscribeEvent } from "hume/api/resources/empathicVoice/resources/chat";
 import type { CloseEvent } from "hume/core/websocket/events";
-import { appendChatMessage, connectEVI, startAudioCapture } from "@lib";
+import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
 
 (async () => {
   const apiKey = import.meta.env.VITE_HUME_API_KEY!;
