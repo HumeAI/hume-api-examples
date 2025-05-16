@@ -30,17 +30,16 @@ function extractTopThreeEmotions(
 }
 
 /**
- * Renders a chat bubble for the given message into the specified container and scrolls the
- * container to show the newest entry.
+ * Appends a chat message bubble to the container and scrolls to show it.
  *
- * @param container The chat container that holds chat messages.
- * @param msg A UserMessage or AssistantMessage, including text content and prosody scores.
+ * @param container - The element that holds chat messages.
+ * @param msg       - A UserMessage or AssistantMessage with content and emotion scores.
  */
-export function appendChat(
+export function appendChatMessage(
   container: HTMLElement | null,
   msg: UserMessage | AssistantMessage
 ): void {
-  if (!container) return;
+  if (!container || !msg) return;
 
   const { role, content } = msg.message;
   const timestamp = new Date().toLocaleTimeString();
@@ -67,5 +66,6 @@ export function appendChat(
 
   card.appendChild(scoresEl);
   container.appendChild(card);
+
   container.scrollTop = container.scrollHeight;
 }

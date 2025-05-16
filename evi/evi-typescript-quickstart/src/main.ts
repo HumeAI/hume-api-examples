@@ -1,11 +1,8 @@
 import "@styles";
-import { EVIWebAudioPlayer, getBrowserSupportedMimeType, MimeType } from "hume";
+import { EVIWebAudioPlayer } from "hume";
 import type { ChatSocket, SubscribeEvent } from "hume/api/resources/empathicVoice/resources/chat";
 import type { CloseEvent } from "hume/core/websocket/events";
-
-import { connectEVI } from "@lib/evi";
-import { startAudioCapture } from "@lib/audioCapture";
-import { appendChat } from "@lib/ui";
+import { appendChatMessage, connectEVI, startAudioCapture } from "@lib";
 
 (async () => {
   const apiKey = import.meta.env.VITE_HUME_API_KEY!;
@@ -26,9 +23,7 @@ import { appendChat } from "@lib/ui";
 
   async function handleOpen() {
     console.log("Socket opened");
-    const mimeTypeResult = getBrowserSupportedMimeType();
-    const mimeType = mimeTypeResult.success ? mimeTypeResult.mimeType : MimeType.WEBM;
-    recorder = await startAudioCapture(socket!, mimeType);
+    recorder = await startAudioCapture(socket!);
     player.init();
   }
 
@@ -42,14 +37,14 @@ import { appendChat } from "@lib/ui";
         if (msg.type === "user_message") {
           await player.stop(); // stop playback when user speech detected
         }
-        appendChat(chatContainer, msg);
+        appendChatMessage(chatContainer, msg); // display user and assistant chat messages
         break;
       case "audio_output":
-        await player.enqueue(msg);
+        await player.enqueue(msg); // queue assistant response audio for playback
         break;
       case "user_interruption":
         console.log("User interruption detected.");
-        await player.stop();
+        await player.stop(); // stop playback when interruption detected
         break;
       case "error":
         console.error(`EVI Error: Code=${msg.code}, Slug=${msg.slug}, Message=${msg.message}`);
@@ -67,8 +62,9 @@ import { appendChat } from "@lib/ui";
   }
 
   function connect() {
-    if (socket && socket.readyState < WebSocket.CLOSING) return;
+    if (socket && socket?.readyState < WebSocket.CLOSING) return;
     setConnected(true);
+
     try {
       const handlers = {
         open: handleOpen,
@@ -76,6 +72,7 @@ import { appendChat } from "@lib/ui";
         error: handleError,
         close: handleClose,
       };
+
       socket = connectEVI(apiKey, handlers, configId);
     } catch (err) {
       console.error("Failed to connect EVI:", err);
@@ -87,9 +84,12 @@ import { appendChat } from "@lib/ui";
   function disconnect() {
     if (socket && socket.readyState < WebSocket.CLOSING) socket.close();
     socket = null;
+
     recorder?.stream.getTracks().forEach((t) => t.stop());
     recorder = null;
+
     player?.dispose();
+
     setConnected(false);
   }
 

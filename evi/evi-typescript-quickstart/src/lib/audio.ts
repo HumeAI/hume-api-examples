@@ -1,5 +1,10 @@
-import { convertBlobToBase64, ensureSingleValidAudioTrack, getAudioStream } from "hume";
-import type { MimeType } from "hume";
+import {
+  convertBlobToBase64,
+  ensureSingleValidAudioTrack,
+  getAudioStream,
+  getBrowserSupportedMimeType,
+  MimeType,
+} from "hume";
 import type { ChatSocket } from "hume/api/resources/empathicVoice/resources/chat";
 
 /**
@@ -24,9 +29,11 @@ import type { ChatSocket } from "hume/api/resources/empathicVoice/resources/chat
  */
 export async function startAudioCapture(
   socket: ChatSocket,
-  mimeType: MimeType,
   timeSliceMs = 80
 ): Promise<MediaRecorder> {
+  const mimeTypeResult = getBrowserSupportedMimeType();
+  const mimeType = mimeTypeResult.success ? mimeTypeResult.mimeType : MimeType.WEBM;
+
   const micAudioStream = await getAudioStream();
   ensureSingleValidAudioTrack(micAudioStream);
 

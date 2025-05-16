@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "@styles": ["src/styles/index.css"],
-      "@lib/*": ["src/lib/*"]
+      "@lib": ["src/lib/index.ts"]
     },
     "target": "ES2020",
     "useDefineForClassFields": true,

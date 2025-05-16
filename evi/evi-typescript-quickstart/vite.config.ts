@@ -5,7 +5,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@styles": path.resolve(__dirname, "src/styles/index.css"),
-      "@lib": path.resolve(__dirname, "src/lib"),
+      "@lib": path.resolve(__dirname, "src/lib/index.ts"),
     },
   },
 });
