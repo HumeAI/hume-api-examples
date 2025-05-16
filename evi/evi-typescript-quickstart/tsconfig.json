@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@styles/*": ["src/styles/*"],
+      "@styles": ["src/styles/index.css"],
       "@lib/*": ["src/lib/*"]
     },
     "target": "ES2020",
