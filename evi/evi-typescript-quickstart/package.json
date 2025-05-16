@@ -12,6 +12,7 @@
     "hume": "^0.11.0"
   },
   "devDependencies": {
+    "@types/node": "^22.15.18",
     "typescript": "^5.2.2",
     "vite": "^5.1.4"
   },
