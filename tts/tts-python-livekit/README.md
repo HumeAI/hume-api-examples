@@ -15,14 +15,14 @@ This example demonstrates how to use the **Hume Python LiveKit plugin** to integ
 
 ## Instructions
 
-1. Clone this examples repository
+1. **Clone this examples repository**
 
    ```shell
    git clone https://github.com/humeai/hume-api-examples
    cd hume-api-examples/tts/tts-python-livekit
    ```
 
-2. Set up the environment
+2. **Set up the environment**
 
    We recommend `uv` but you can adapt these commands to your preferred package manager.
 
@@ -30,7 +30,7 @@ This example demonstrates how to use the **Hume Python LiveKit plugin** to integ
    uv sync
    ```
 
-3. Configure your API keys
+3. **Configure your API keys**
 
    Copy the example and fill in your credentials:
 
@@ -49,7 +49,7 @@ This example demonstrates how to use the **Hume Python LiveKit plugin** to integ
    LIVEKIT_API_SECRET=…  # your LiveKit API secret
    ```
 
-4. Run the demo
+4. **Run the demo**
 
    Start the console-based assistant and begin talking:
 
