@@ -49,7 +49,7 @@ async def entrypoint(ctx: JobContext):
         vad=vad,
         stt=stt,
         llm=anthropic.LLM(model=LLM_MODEL, temperature=LLM_TEMPERATURE),
-        tts=hume.TTS(voice=HUME_VOICE, strip_headers=True, instant_mode=True),
+        tts=hume.TTS(voice=HUME_VOICE, instant_mode=True),
     )
 
     await session.start(agent=VoiceAssistant(), room=ctx.room)
