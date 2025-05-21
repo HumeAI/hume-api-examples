@@ -7,9 +7,9 @@
 
 This example demonstrates how to use the **Hume Python LiveKit plugin** to integrate:
 
-1. **VAD-powered streaming STT** (Silero VAD + Groq Whisper)
+1. **Speech-to-Text with Voice Activity Detection (VAD)** (Silero VAD + Groq Whisper)
 2. **A conversational LLM** (Anthropic Claude Haiku)
-3. **Low-latency TTS** (Hume’s streaming API)
+3. **Low-latency Text-to-Speech** (Hume AI's streaming API for Octave)
 
 …inside a LiveKit Agents worker that runs in **console mode** by default. No front-end required—just your terminal and microphone.
 
