@@ -24,7 +24,7 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
   async function handleOpen() {
     console.log("Socket opened");
     recorder = await startAudioCapture(socket!);
-    player.init();
+    await player.init();
   }
 
   async function handleMessage(msg: SubscribeEvent) {
@@ -35,16 +35,16 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
       case "user_message":
       case "assistant_message":
         if (msg.type === "user_message") {
-          await player.stop(); // stop playback when user speech detected
+          player.stop();
         }
-        appendChatMessage(chatContainer, msg); // display user and assistant chat messages
+        appendChatMessage(chatContainer, msg);
         break;
       case "audio_output":
-        await player.enqueue(msg); // queue assistant response audio for playback
+        await player.enqueue(msg);
         break;
       case "user_interruption":
         console.log("User interruption detected.");
-        await player.stop(); // stop playback when interruption detected
+        player.stop();
         break;
       case "error":
         console.error(`EVI Error: Code=${msg.code}, Slug=${msg.slug}, Message=${msg.message}`);
