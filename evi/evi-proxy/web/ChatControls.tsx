@@ -19,7 +19,7 @@ export default function ChatControls() {
 
   return (
     <div>
-      <div>
+      <div className="chat-controls">
         <button onClick={toggle}>{label}</button>
         <button onClick={() => disconnect()}> End Call</button>
       </div>

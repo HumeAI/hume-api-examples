@@ -29,7 +29,7 @@ export default function EVIChat({ accessToken }: { accessToken?: string }) {
 
   return (
     <div>
-      <h1>EVI Chat</h1>
+      <p>Connect to the proxy from your own app by connecting to ws://localhost:3000 instead of wss://api.hume.ai, or use the Start Call button below.</p>
       <VoiceProvider
         auth={{ type: "apiKey", value: accessToken || "dummy" }}
         hostname={window.origin}

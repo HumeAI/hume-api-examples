@@ -91,95 +91,103 @@ export const WebsocketControls: React.FC = () => {
     state.messages.length > 0;
 
   return (
-    <div>
-      <div>
-        <div>
-          <h2>Record Mode</h2>
-          <button
-            onClick={handleStartRecord}
-            hidden={isRecording}
-            disabled={state.mode !== "pending"}
-          >
-            Start Record Mode
-          </button>
-          <button onClick={handleQuit} hidden={!isRecording}>
-            Stop Recording
-          </button>
-          {showSaveControls && (
-            <div>
-              <button onClick={handleSave} disabled={!isSaving}>
-                Save to: {path}
+    <div className="controls-wrapper">
+      <div className="fieldset-container">
+        <fieldset className={isRecording ? "active" : "inactive"}>
+          <legend>Record Mode</legend>
+          <div className="row">
+            <button
+              onClick={handleStartRecord}
+              hidden={isRecording}
+              disabled={state.mode !== "pending"}
+            >
+              Start Record Mode
+            </button>
+            <button onClick={handleQuit} hidden={!isRecording}>
+              Stop Recording
+            </button>
+          </div>
+          {isSaving && (
+            <div className="row">
+              <input
+                value={path}
+                onChange={(e) => setPath(e.target.value)}
+              />
+              <button onClick={handleSave}>
+                Save Recording
               </button>
-              <button onClick={handleDiscard} disabled={!isSaving}>
+              <button onClick={handleDiscard}>
                 Discard
               </button>
             </div>
           )}
-        </div>
+        </fieldset>
 
-        <div>
-          <h2>Playback Mode</h2>
-          <button
-            onClick={handleStartPlayback}
-            disabled={state.mode !== "pending"}
-            hidden={isPlayback || isLoading}
-          >
-            Load recording from {path}
-          </button>
-          <button onClick={handleQuit} hidden={!isPlayback}>
-            Exit Playback
-          </button>
-          <button onClick={handleCancelLoading} hidden={!isLoading}>
-            Cancel Loading
-          </button>
+        <fieldset className={isPlayback ? "active" : "inactive"}>
+          <legend>Playback Mode</legend>
 
-          <div>
+          <div className="row">
+            <input
+              value={path}
+              onChange={(e) => setPath(e.target.value)}
+            />
+            <button
+              onClick={handleStartPlayback}
+              disabled={state.mode !== "pending"}
+              hidden={isPlayback || isLoading}
+            >
+              Load recording
+            </button>
+            <button onClick={handleQuit} hidden={!isPlayback}>
+              Exit Playback
+            </button>
+            <button onClick={handleCancelLoading} hidden={!isLoading}>
+              Cancel Loading
+            </button>
+          </div>
+
+          <div className="row">
             <button
               onClick={handleNext}
               disabled={!isPlayback || state.status !== "connected"}
             >
-              Next Message ({state.messages.length} remaining)
+              {state.status === "connected" 
+                ? `Next Message (${state.messages.length} remaining)`
+                : `${state.messages.length} messages loaded, start call to play`}
             </button>
-            <div>
-              <select
-                value={selectedError}
-                onChange={(e) => setSelectedError(e.target.value)}
-              >
-                <option value="">Select an error</option>
-                <option value="abnormal_disconnect">
-                  Abnormal Disconnect (1006)
-                </option>
-                <option value="intentional_close">
-                  Intentional Close (1000)
-                </option>
-                {ERROR_CODE_KEYS.map((code) => {
-                  const config = ERROR_CODES[code];
-                  return (
-                    <option key={code} value={code}>
-                      {config.slug.replace(/_/g, " ")} ({code})
-                    </option>
-                  );
-                })}
-              </select>
-              <button
-                onClick={handleSimulateSelected}
-                disabled={
-                  !selectedError || !isPlayback || state.status !== "connected"
-                }
-              >
-                Simulate
-              </button>
-            </div>
           </div>
-        </div>
-        <div>
-          <label htmlFor="path">Path to recording:</label>
-          <input
-            id="path"
-            value={path}
-            onChange={(e) => setPath(e.target.value)}
-          />
-        </div>
+
+          <div className="row">
+            <select
+              value={selectedError}
+              onChange={(e) => setSelectedError(e.target.value)}
+            >
+              <option value="">Select an error</option>
+              <option value="abnormal_disconnect">
+                Abnormal Disconnect (1006)
+              </option>
+              <option value="intentional_close">
+                Intentional Close (1000)
+              </option>
+              {ERROR_CODE_KEYS.map((code) => {
+                const config = ERROR_CODES[code];
+                return (
+                  <option key={code} value={code}>
+                    {config.slug.replace(/_/g, " ")} ({code})
+                  </option>
+                );
+              })}
+            </select>
+            <button
+              onClick={handleSimulateSelected}
+              disabled={
+                !selectedError || !isPlayback || state.status !== "connected"
+              }
+            >
+              Simulate
+            </button>
+          </div>
+        </fieldset>
 
       </div>
     </div>

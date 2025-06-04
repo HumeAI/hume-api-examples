@@ -1,0 +1,99 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  margin: 0;
+  padding: 20px;
+  line-height: 1.4;
+}
+
+button {
+  padding: 4px;
+  margin: 4px;
+  margin-left: 0;
+}
+
+h2 {
+  margin: 2px;
+  margin-left: 0;
+}
+
+input {
+  padding: 4px;
+  margin: 4px;
+  margin-left: 0;
+}
+
+select {
+  padding: 4px;
+  margin: 4px;
+  margin-left: 0;
+}
+
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.app-container {
+  display: block;
+}
+
+.controls-wrapper {
+  display: block;
+}
+
+.fieldset-container {
+  display: block;
+  width: 100%;
+}
+
+fieldset {
+  display: block;
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+fieldset.active {
+  border-color: #007bff;
+  background: #f8f9fa;
+}
+
+fieldset.inactive {
+  border-color: #ccc;
+  background: #fafafa;
+  color: #666;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.row > * {
+  flex: 1;
+}
+
+.chat-controls {
+  display: flex;
+  background: white;
+  opacity: 1;
+}
+
+.chat-controls button {
+  background: white;
+  opacity: 1;
+}
+
+div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
