@@ -12,9 +12,8 @@ It is also useful as a debugging tool: it supports
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) runtime
-- Node.js (for web frontend build)
-- Hume AI API credentials
+ - Node.js (for running the proxy and building the web frontend)
+ - Hume AI API credentials
 
 ## Installation
 
@@ -26,8 +25,8 @@ It is also useful as a debugging tool: it supports
 
 2. Install dependencies for both app and web components:
    ```bash
-   cd app && bun install
-   cd ../web && bun install
+   cd app && npm install
+   cd ../web && npm install && npm run build
    cd ..
    ```
 
@@ -50,7 +49,7 @@ To get your API key:
 ### Start the Proxy Server
 
 ```bash
-cd app && bun run start
+cd app && npm start
 ```
 
 This starts the WebSocket proxy server on port 3000 with an interactive CLI interface. The CLI allows you to:
@@ -82,6 +81,9 @@ The proxy also includes a built-in web interface available at:
 ```
 http://localhost:3000
 ```
+The interface is built using [Vite](https://vitejs.dev). If you modify any
+frontend code, run `npm run build` in the `web/` directory again to rebuild the
+static assets.
 
 ### Recording and Playback
 
@@ -93,7 +95,7 @@ http://localhost:3000
 
 ```
 eviproxy/
-├── app/                      # Main proxy server (Bun/Node.js)
+├── app/                      # Main proxy server (Node.js)
 │   ├── main.ts               # Entry point and state machine
 │   ├── cli.ts                # Interactive CLI interface
 │   ├── upstream.ts           # Hume API connections

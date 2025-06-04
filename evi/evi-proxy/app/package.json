@@ -4,15 +4,15 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "bun run main.ts"
+    "start": "node --loader tsx ./main.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@clack/core": "^1.0.0-alpha.0",
-    "@types/bun": "^1.2.12",
     "change-case": "^5.4.4",
+    "dotenv": "^16.3.1",
     "is-unicode-supported": "^2.1.0"
   },
   "devDependencies": {
@@ -20,7 +20,6 @@
     "@types/node": "^22.7.0",
     "@types/ws": "^8.18.1",
     "@types/yargs": "^17.0.33",
-    "bun-types": "^1.2.12",
     "tsx": "^4.19.4",
     "typescript": "^5.6.2",
     "ws": "^8.18.2",

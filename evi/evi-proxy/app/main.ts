@@ -1,6 +1,9 @@
+import 'dotenv/config';
 import * as fs from "fs";
 import * as p from "@clack/prompts";
 import * as http from "http";
+import * as path from "path";
+import { fileURLToPath } from "url";
 import { CLI } from "./cli.js";
 import type { Message, State, AppEvent, Effect } from '../shared/types.ts';
 import { ERROR_CODES } from '../shared/types.ts';
@@ -8,6 +11,9 @@ import { Api } from "./api.js";
 import { BaseUpstream, LiveUpstream, PlaybackUpstream, UninitializedUpstream } from "./upstream.js";
 import { Downstream } from "./downstream.js";
 import { exhaustive, truncateDataReplacer } from "./util.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DIST_DIR = path.join(__dirname, "../out");
 
 const PORT = 3000;
 const DOWNSTREAM_WS_PATH = "/v0/evi/chat";
@@ -38,31 +44,26 @@ const serve = async (req: http.IncomingMessage, res: http.ServerResponse) => {
     }
   }
 
-  // This builds the frontend on each request
-  await Bun.build({
-    entrypoints: ["../web/index.html"],
-    outdir: "../out",
-    target: "browser",
-  });
   if (url.pathname === "/" || url.pathname === "/index.html") {
-    res.writeHead(200, {
-      "Content-Type": "text/html",
-      "Cache-Control": "no-cache",
-    });
-    res.write(await Bun.file("../out/index.html").text());
-    res.end();
-    return;
+    const htmlPath = path.join(DIST_DIR, "index.html");
+    if (fs.existsSync(htmlPath)) {
+      res.writeHead(200, {
+        "Content-Type": "text/html",
+        "Cache-Control": "no-cache",
+      });
+      res.write(fs.readFileSync(htmlPath));
+      res.end();
+      return;
+    }
   }
-  // Serve any file from out/ (e.g. chunk-*.js, chunk-*.css)
-  const filePath = `../out${url.pathname}`;
-  const file = Bun.file(filePath);
-  if (await file.exists()) {
+  const filePath = path.join(DIST_DIR, url.pathname);
+  if (fs.existsSync(filePath)) {
     let contentType = "application/octet-stream";
     if (filePath.endsWith(".js")) contentType = "application/javascript";
     else if (filePath.endsWith(".css")) contentType = "text/css";
     else if (filePath.endsWith(".html")) contentType = "text/html";
     res.writeHead(200, { "Content-Type": contentType });
-    res.write(await file.text());
+    res.write(fs.readFileSync(filePath));
     res.end();
     return;
   }
