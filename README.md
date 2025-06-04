@@ -40,6 +40,7 @@ Whether you're using Python, TypeScript, Flutter, or Next.js, there's something 
 | [`evi-next-js-pages-router-quickstart`](/evi/evi-next-js-pages-router-quickstart/README.md)| TypeScript | Next.js         |
 | [`evi-next-js-function-calling`](/evi/evi-next-js-function-calling/README.md)              | TypeScript | Next.js         |
 | [`evi-prompting-examples`](/evi/evi-prompting-examples/README.md)                          |            |                 |
+| [`evi-proxy`](/evi/evi-proxy/README.md)                          |            |                 |
 | [`evi-python-chat-history`](/evi/evi-python-chat-history/README.md)                        | Python     |                 |
 | [`evi-python-clm-sse`](/evi/evi-python-clm-sse/README.md)                                  | Python     |                 |
 | [`evi-python-clm-wss`](/evi/evi-python-clm-wss/README.md)                                  | Python     |                 |
