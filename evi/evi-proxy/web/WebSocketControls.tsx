@@ -164,8 +164,6 @@ export const WebsocketControls: React.FC = () => {
             </div>
           </div>
         </div>
-
-        <div>Messages remaining: {state.messages.length}</div>
       </div>
     </div>
   );
