@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "node --import tsx ./main.ts"
+    "start": "tsx ./main.ts"
   },
   "keywords": [],
   "author": "",

@@ -5,8 +5,8 @@ import * as http from "http";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { CLI } from "./cli.js";
-import type { Message, State, AppEvent, Effect } from "../shared/types.ts";
-import { ERROR_CODES } from "../shared/types.ts";
+import type { Message, State, AppEvent, Effect } from "../shared/types.mts";
+import { ERROR_CODES } from "../shared/types.mts";
 import { Api } from "./api.js";
 import {
   BaseUpstream,

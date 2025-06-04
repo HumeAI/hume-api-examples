@@ -1,5 +1,5 @@
-import type { State, AppEvent } from "../shared/types.ts";
-import { ERROR_CODES, CLOSE_TYPES, ERROR_CODE_KEYS } from "../shared/types.ts";
+import type { State, AppEvent } from "../shared/types.mts";
+import { ERROR_CODES, CLOSE_TYPES, ERROR_CODE_KEYS } from "../shared/types.mts";
 import * as p from "@clack/prompts";
 import { exhaustive } from "./util.ts";
 
