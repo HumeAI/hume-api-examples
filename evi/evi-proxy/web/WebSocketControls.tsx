@@ -1,13 +1,14 @@
 /// <reference lib="dom" />
 import React, { useCallback, useState } from "react";
 import type { AppEvent } from "../shared/types";
-import { ERROR_CODES, ERROR_CODE_KEYS } from "../shared/types";
+import { ERROR_CODES, ERROR_CODE_KEYS, CLOSE_TYPES } from "../shared/types";
 import { useProxyState } from "./useProxyState";
 
 export const WebsocketControls: React.FC = () => {
   const state = useProxyState();
 
   const [path, setPath] = useState("recording.jsonl");
+  const [selectedError, setSelectedError] = useState("");
 
   const sendEvent = useCallback(async (event: AppEvent) => {
     try {
@@ -61,14 +62,25 @@ export const WebsocketControls: React.FC = () => {
     });
   };
   const handleDiscard = () => sendEvent({ type: "discard_recording" });
-  const handleLoad = () => {
-  };
+  const handleLoad = () => {};
   const handleCancelLoading = () => sendEvent({ type: "cancel_loading" });
-  const handleSimulateClose = (closeType: "abnormal_disconnect" | "intentional_close") => {
+  const handleSimulateClose = (
+    closeType: "abnormal_disconnect" | "intentional_close",
+  ) => {
     sendEvent({ type: "simulate_close", closeType });
   };
   const handleSimulateError = (errorCode: string, shouldClose: boolean) => {
     sendEvent({ type: "simulate_error", errorCode, shouldClose });
+  };
+  const handleSimulateSelected = () => {
+    if (!selectedError) return;
+    if (CLOSE_TYPES.includes(selectedError as (typeof CLOSE_TYPES)[number])) {
+      handleSimulateClose(selectedError as (typeof CLOSE_TYPES)[number]);
+    } else {
+      const config = ERROR_CODES[selectedError as keyof typeof ERROR_CODES];
+      handleSimulateError(selectedError, config.shouldClose);
+    }
+    setSelectedError("");
   };
   const isRecording = state.mode === "record";
   const isSaving = state.mode === "saving";
@@ -90,7 +102,11 @@ export const WebsocketControls: React.FC = () => {
 
         <div>
           <h2>Record Mode</h2>
-          <button onClick={handleStartRecord} hidden={isRecording} disabled={state.mode !== "pending"}>
+          <button
+            onClick={handleStartRecord}
+            hidden={isRecording}
+            disabled={state.mode !== "pending"}
+          >
             Start Record Mode
           </button>
           <button onClick={handleQuit} hidden={!isRecording}>
@@ -113,7 +129,7 @@ export const WebsocketControls: React.FC = () => {
             disabled={state.mode !== "pending"}
             hidden={isPlayback || isLoading}
           >
-            Play recording from {path}
+            Load recording from {path}
           </button>
           <button onClick={handleQuit} hidden={!isPlayback}>
             Exit Playback
@@ -130,37 +146,34 @@ export const WebsocketControls: React.FC = () => {
               Next Message ({state.messages.length} remaining)
             </button>
             <div>
-              <h4>Error Simulation:</h4>
-              <div>
-                <h5>Transport Errors:</h5>
-                <button
-                  onClick={() => handleSimulateClose("abnormal_disconnect")}
-                  disabled={!isPlayback || state.status !== "connected"}
-                >
+              <select
+                value={selectedError}
+                onChange={(e) => setSelectedError(e.target.value)}
+              >
+                <option value="">Select an error</option>
+                <option value="abnormal_disconnect">
                   Abnormal Disconnect (1006)
-                </button>
-                <button
-                  onClick={() => handleSimulateClose("intentional_close")}
-                  disabled={!isPlayback || state.status !== "connected"}
-                >
+                </option>
+                <option value="intentional_close">
                   Intentional Close (1000)
-                </button>
-              </div>
-              <div>
-                <h5>Inline Errors:</h5>
+                </option>
                 {ERROR_CODE_KEYS.map((code) => {
                   const config = ERROR_CODES[code];
                   return (
-                    <button
-                      key={code}
-                      onClick={() => handleSimulateError(code, config.shouldClose)}
-                      disabled={!isPlayback || state.status !== "connected"}
-                    >
+                    <option key={code} value={code}>
                       {config.slug.replace(/_/g, " ")} ({code})
-                    </button>
+                    </option>
                   );
                 })}
-              </div>
+              </select>
+              <button
+                onClick={handleSimulateSelected}
+                disabled={
+                  !selectedError || !isPlayback || state.status !== "connected"
+                }
+              >
+                Simulate
+              </button>
             </div>
           </div>
         </div>
