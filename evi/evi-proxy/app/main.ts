@@ -57,7 +57,7 @@ const serve = async (req: http.IncomingMessage, res: http.ServerResponse) => {
       return;
     } else {
       res.writeHead(404, { "Content-Type": "text/plain" });
-      res.write("out/index.html not found. Run (cd web && npm run build) to build the frontend.");
+      res.write("out/index.html not found. Run `cd web && npm install && npm run build` to build the frontend.");
       res.end();
       return;
     }
