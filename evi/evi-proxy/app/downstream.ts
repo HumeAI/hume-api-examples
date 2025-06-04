@@ -1,10 +1,10 @@
 import * as p from "@clack/prompts";
-import { WebSocketError } from 'hume/serialization/resources/empathicVoice'
+import { WebSocketError } from "hume/serialization/resources/empathicVoice";
 
 import { EventEmitter } from "events";
 import { Server } from "http";
 import { WebSocket, WebSocketServer } from "ws";
-import type { Message } from '../shared/types.ts';
+import type { Message } from "../shared/types.ts";
 import { truncateDataReplacer } from "./util";
 
 export class Downstream extends EventEmitter {
@@ -24,11 +24,10 @@ export class Downstream extends EventEmitter {
     maybeRejectConnectionWithMessage,
   }: {
     server: Server;
-    path: string,
+    path: string;
     port?: number;
     maybeRejectConnectionWithMessage: () => string | undefined;
   }): Downstream {
-
     const wss = new WebSocketServer({ server });
     wss.path = path;
     const downstream = new Downstream(maybeRejectConnectionWithMessage);
@@ -41,7 +40,7 @@ export class Downstream extends EventEmitter {
   }
 
   broadcast(message: Message) {
-    if (message.type === 'chat_metadata') {
+    if (message.type === "chat_metadata") {
       this.cachedClientMetadata = message;
     }
     if (this.client && this.client.readyState === WebSocket.OPEN) {
@@ -71,20 +70,20 @@ export class Downstream extends EventEmitter {
   sendError(error: WebSocketError.Raw) {
     if (this.client && this.client.readyState === WebSocket.OPEN) {
       p.log.info(`Sending error to client: ${JSON.stringify(error)}`);
-      this.client.send(JSON.stringify(error))
+      this.client.send(JSON.stringify(error));
     }
   }
 
   private audioTimeout: NodeJS.Timeout | null = null;
-  /** 
+  /**
    * Logs messages but throttles audio messages
    */
   private logMessage(message: { toString: () => string }) {
-    let parsedMessage
+    let parsedMessage;
     try {
       parsedMessage = JSON.parse(message.toString());
     } catch (e) {
-      parsedMessage = null
+      parsedMessage = null;
     }
     if (!parsedMessage || parsedMessage.type === "audio_input") {
       if (!this.audioTimeout) {
@@ -101,7 +100,7 @@ export class Downstream extends EventEmitter {
     p.log.info(
       `Received message from client: ${JSON.stringify(parsedMessage, truncateDataReplacer)}`,
     );
-  };
+  }
 
   handleConnection(ws: WebSocket): void {
     const rejectMessage = this.maybeRejectConnectionWithMessage();
@@ -111,7 +110,9 @@ export class Downstream extends EventEmitter {
       return;
     }
     if (this.client) {
-      p.log.error("A downstream client is already connected. Only one client is allowed at a time.");
+      p.log.error(
+        "A downstream client is already connected. Only one client is allowed at a time.",
+      );
       ws.close(4000, "Only one downstream client allowed");
       return;
     }
@@ -150,4 +151,3 @@ export class Downstream extends EventEmitter {
     });
   }
 }
-

@@ -9,19 +9,24 @@ const Card = (props: {
   };
 }) => {
   const { msg } = props;
-  
-  const topEmotions = msg.models.prosody?.scores 
+
+  const topEmotions = msg.models.prosody?.scores
     ? Object.entries(msg.models.prosody.scores)
         .sort(([, a], [, b]) => (b as number) - (a as number))
         .slice(0, 3)
-        .map(([emotion, score]) => `${emotion}: ${(score as number).toFixed(2)}`)
-        .join(', ')
-    : '';
+        .map(
+          ([emotion, score]) => `${emotion}: ${(score as number).toFixed(2)}`,
+        )
+        .join(", ")
+    : "";
 
   return (
     <div>
-      <strong>{msg.message.role.charAt(0).toUpperCase() + msg.message.role.slice(1)}</strong>{': '}
-      <span>{msg.message.content}</span>{' '}
+      <strong>
+        {msg.message.role.charAt(0).toUpperCase() + msg.message.role.slice(1)}
+      </strong>
+      {": "}
+      <span>{msg.message.content}</span>{" "}
       {topEmotions && <em>({topEmotions})</em>}
     </div>
   );

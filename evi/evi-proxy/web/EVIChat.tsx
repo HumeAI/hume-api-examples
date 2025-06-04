@@ -14,8 +14,7 @@ const StartCall = () => {
     <button
       onClick={() => {
         disconnect();
-        connect()
-          .catch((error) => console.error("Failed to connect:", error));
+        connect().catch((error) => console.error("Failed to connect:", error));
       }}
     >
       Start Call
@@ -29,7 +28,11 @@ export default function EVIChat({ accessToken }: { accessToken?: string }) {
 
   return (
     <div>
-      <p>Connect to the proxy from your own app by connecting to ws://localhost:3000 instead of wss://api.hume.ai, or use the Start Call button below.</p>
+      <p>
+        Connect to the proxy from your own app by connecting to
+        ws://localhost:3000 instead of wss://api.hume.ai, or use the Start Call
+        button below.
+      </p>
       <VoiceProvider
         auth={{ type: "apiKey", value: accessToken || "dummy" }}
         hostname={window.origin}

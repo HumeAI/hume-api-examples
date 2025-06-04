@@ -109,16 +109,9 @@ export const WebsocketControls: React.FC = () => {
           </div>
           {isSaving && (
             <div className="row">
-              <input
-                value={path}
-                onChange={(e) => setPath(e.target.value)}
-              />
-              <button onClick={handleSave}>
-                Save Recording
-              </button>
-              <button onClick={handleDiscard}>
-                Discard
-              </button>
+              <input value={path} onChange={(e) => setPath(e.target.value)} />
+              <button onClick={handleSave}>Save Recording</button>
+              <button onClick={handleDiscard}>Discard</button>
             </div>
           )}
         </fieldset>
@@ -127,10 +120,7 @@ export const WebsocketControls: React.FC = () => {
           <legend>Playback Mode</legend>
 
           <div className="row">
-            <input
-              value={path}
-              onChange={(e) => setPath(e.target.value)}
-            />
+            <input value={path} onChange={(e) => setPath(e.target.value)} />
             <button
               onClick={handleStartPlayback}
               disabled={state.mode !== "pending"}
@@ -151,7 +141,7 @@ export const WebsocketControls: React.FC = () => {
               onClick={handleNext}
               disabled={!isPlayback || state.status !== "connected"}
             >
-              {state.status === "connected" 
+              {state.status === "connected"
                 ? `Next Message (${state.messages.length} remaining)`
                 : `${state.messages.length} messages loaded, start call to play`}
             </button>
@@ -204,7 +194,6 @@ export const WebsocketControls: React.FC = () => {
             </div>
           </fieldset>
         )}
-
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import * as p from "@clack/prompts";
-import type { Message, WSMessage } from '../shared/types.ts';
+import type { Message, WSMessage } from "../shared/types.ts";
 import { WebSocket } from "ws";
 
 export abstract class BaseUpstream {
@@ -35,7 +35,9 @@ export class LiveUpstream extends BaseUpstream {
 
   public connect(args: ConnectArgs): void {
     if (this.closed) {
-      throw new Error("Unexpected: attempted to restart a closed LiveUpstream.");
+      throw new Error(
+        "Unexpected: attempted to restart a closed LiveUpstream.",
+      );
     }
     const { apiKey, configId, baseUrl } = args;
     const queryParams = {
@@ -131,14 +133,20 @@ export class PlaybackUpstream extends BaseUpstream {
 
 export class UninitializedUpstream extends BaseUpstream {
   public connect(_args?: any): void {
-    throw new Error("UninitializedUpstream cannot connect. Please initialize with LiveUpstream or PlaybackUpstream.");
+    throw new Error(
+      "UninitializedUpstream cannot connect. Please initialize with LiveUpstream or PlaybackUpstream.",
+    );
   }
 
   public close(): void {
-    throw new Error("UninitializedUpstream cannot close. Please initialize with LiveUpstream or PlaybackUpstream.");
+    throw new Error(
+      "UninitializedUpstream cannot close. Please initialize with LiveUpstream or PlaybackUpstream.",
+    );
   }
 
   public send(_message: WSMessage): void {
-    throw new Error("UninitializedUpstream cannot send messages. Please initialize with LiveUpstream or PlaybackUpstream.");
+    throw new Error(
+      "UninitializedUpstream cannot send messages. Please initialize with LiveUpstream or PlaybackUpstream.",
+    );
   }
 }

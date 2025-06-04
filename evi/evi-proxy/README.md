@@ -91,7 +91,7 @@ static assets.
 
 1. **Record Mode**: Captures real conversations with Hume EVI and saves them to JSONL files
 2. **Playback Mode**: Replays saved conversations for testing and debugging
-3. **Script Files**: Conversations are saved in JSONL format (default: `script.jsonl`)
+3. **Script Files**: Conversations are saved in JSONL format (default: `recording.jsonl`)
 
 ## Project Structure
 

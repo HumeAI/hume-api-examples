@@ -7,4 +7,3 @@ export const truncateDataReplacer = (k: string, v: unknown) => {
 export const exhaustive = (x: never): any => {
   throw new Error("Unexpected value: " + x);
 };
-

@@ -1,15 +1,19 @@
-import 'dotenv/config';
+import "dotenv/config";
 import * as fs from "fs";
 import * as p from "@clack/prompts";
 import * as http from "http";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { CLI } from "./cli.js";
-import type { Message, State, AppEvent, Effect } from '../shared/types.ts';
-import * as sharedTypes  from '../shared/types.ts';
-const { ERROR_CODES } = sharedTypes;
+import type { Message, State, AppEvent, Effect } from "../shared/types.ts";
+import { ERROR_CODES } from "../shared/types.ts";
 import { Api } from "./api.js";
-import { BaseUpstream, LiveUpstream, PlaybackUpstream, UninitializedUpstream } from "./upstream.js";
+import {
+  BaseUpstream,
+  LiveUpstream,
+  PlaybackUpstream,
+  UninitializedUpstream,
+} from "./upstream.js";
 import { Downstream } from "./downstream.js";
 import { exhaustive, truncateDataReplacer } from "./util.js";
 
@@ -19,7 +23,6 @@ const DIST_DIR = path.join(__dirname, "../web/dist");
 const PORT = 3000;
 const DOWNSTREAM_WS_PATH = "/v0/evi/chat";
 const UPSTREAM_WS_BASE_URL = "wss://api.hume.ai";
-
 
 let currentState: State = {
   mode: "pending",
@@ -58,7 +61,9 @@ const serve = async (req: http.IncomingMessage, res: http.ServerResponse) => {
       return;
     } else {
       res.writeHead(404, { "Content-Type": "text/plain" });
-      res.write("out/index.html not found. Run `cd web && npm install && npm run build` to build the frontend.");
+      res.write(
+        "out/index.html not found. Run `cd web && npm install && npm run build` to build the frontend.",
+      );
       res.end();
       return;
     }
@@ -121,7 +126,10 @@ const cleanupEffect = (): Effect => ({
   type: "cleanup",
 });
 
-const saveRecordingEffect = (messages: Message[], filePath: string): Effect => ({
+const saveRecordingEffect = (
+  messages: Message[],
+  filePath: string,
+): Effect => ({
   type: "save_recording",
   messages,
   filePath,
@@ -136,7 +144,13 @@ const next = (state: State, event: AppEvent): [State, Effect[]] => {
       if (!process.env.HUME_API_KEY) {
         return result({
           ...state,
-          errors: [...state.errors, [Date.now(), "Start the proxy with the HUME_API_KEY environment variable to use record mode"]]
+          errors: [
+            ...state.errors,
+            [
+              Date.now(),
+              "Start the proxy with the HUME_API_KEY environment variable to use record mode",
+            ],
+          ],
         });
       }
       return result({ ...state, mode: "record", messages: [] });
@@ -156,7 +170,10 @@ const next = (state: State, event: AppEvent): [State, Effect[]] => {
       // No more messages to send
       if (state.messages.length === 0) return result(state);
       const [nextMessage, ...rest] = state.messages;
-      return result({ ...state, messages: rest }, sendMessageEffect(nextMessage, 0));
+      return result(
+        { ...state, messages: rest },
+        sendMessageEffect(nextMessage, 0),
+      );
     }
     case "exit_playback":
       return result({ ...state, mode: "pending" }, cleanupEffect());
@@ -172,7 +189,10 @@ const next = (state: State, event: AppEvent): [State, Effect[]] => {
       return result(state);
     case "provide_save_path": {
       if (state.mode !== "saving") return result(state);
-      return result({ ...state, mode: "pending", messages: [] }, saveRecordingEffect(state.messages, event.filePath));
+      return result(
+        { ...state, mode: "pending", messages: [] },
+        saveRecordingEffect(state.messages, event.filePath),
+      );
     }
     case "discard_recording":
       if (state.mode !== "saving") return result(state);
@@ -181,22 +201,36 @@ const next = (state: State, event: AppEvent): [State, Effect[]] => {
       if (state.mode !== "loading") return result(state);
       return result({ ...state, mode: "pending" });
     case "provide_load_path": {
-      if (state.mode !== "loading" && state.mode !== 'pending') return result(state);
-      return result({...state, mode: 'loading'}, { type: "load_recording", filePath: event.filePath });
+      if (state.mode !== "loading" && state.mode !== "pending")
+        return result(state);
+      return result(
+        { ...state, mode: "loading" },
+        { type: "load_recording", filePath: event.filePath },
+      );
     }
     case "simulate_close": {
       if (state.mode !== "playback") return result(state);
-      return result(state, { type: "simulate_close", closeType: event.closeType });
+      return result(state, {
+        type: "simulate_close",
+        closeType: event.closeType,
+      });
     }
     case "simulate_error": {
       if (state.mode !== "playback") return result(state);
-      return result(state, { type: "simulate_error", errorCode: event.errorCode, shouldClose: event.shouldClose });
+      return result(state, {
+        type: "simulate_error",
+        errorCode: event.errorCode,
+        shouldClose: event.shouldClose,
+      });
     }
     case "connection_change":
       if (event.status === "disconnected") {
         // If we're recording and have messages, auto-transition to saving mode
         if (state.mode === "record" && state.messages.length > 0) {
-          return result({ ...state, mode: "saving", status: "disconnected" }, cleanupEffect());
+          return result(
+            { ...state, mode: "saving", status: "disconnected" },
+            cleanupEffect(),
+          );
         }
         return result({ ...state, status: "disconnected" }, cleanupEffect());
       }
@@ -204,7 +238,7 @@ const next = (state: State, event: AppEvent): [State, Effect[]] => {
     case "report_error":
       return result({
         ...state,
-        errors: [...state.errors, [Date.now(), event.message]]
+        errors: [...state.errors, [Date.now(), event.message]],
       });
     case "noop":
       return result(state);
@@ -231,13 +265,13 @@ async function* eventStream(api: Api, cli: CLI, eventQueue: AppEvent[]) {
       continue;
     }
     // Nothing to yield, just wait a bit
-    await new Promise(r => setTimeout(r, 50));
+    await new Promise((r) => setTimeout(r, 50));
   }
 }
 
 function shallowEqual(a: any, b: any): boolean {
   if (a === b) return true;
-  if (typeof a !== 'object' || typeof b !== 'object' || !a || !b) return false;
+  if (typeof a !== "object" || typeof b !== "object" || !a || !b) return false;
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
   if (aKeys.length !== bKeys.length) return false;
@@ -283,7 +317,7 @@ async function main() {
       type: "connection_change",
       status: "disconnected",
     });
-  })
+  });
 
   downstream.on("message", (message, isBinary) => {
     if (currentState.mode === "record") {
@@ -291,9 +325,14 @@ async function main() {
       // base64 encoding the binary messages explicitly seems like
       // a workaround.
       if (isBinary) {
-        upstream.send(JSON.stringify({ type: 'audio_input', data: message.toString('base64') }));
+        upstream.send(
+          JSON.stringify({
+            type: "audio_input",
+            data: message.toString("base64"),
+          }),
+        );
       } else {
-        upstream.send(message)
+        upstream.send(message);
       }
     }
   });
@@ -338,7 +377,9 @@ async function main() {
             });
           } else if (currentState.mode === "playback") {
             upstream = new PlaybackUpstream();
-            (upstream as PlaybackUpstream).setPlaybackMessages(currentState.messages);
+            (upstream as PlaybackUpstream).setPlaybackMessages(
+              currentState.messages,
+            );
             upstream.connect();
             upstream.onMessage((message) => {
               p.log.info(
@@ -386,17 +427,22 @@ async function main() {
           }
           break;
         case "simulate_error":
-          const errorConfig = ERROR_CODES[effect.errorCode as keyof typeof ERROR_CODES];
+          const errorConfig =
+            ERROR_CODES[effect.errorCode as keyof typeof ERROR_CODES];
           if (errorConfig) {
             downstream.sendError({
-              type: 'error',
+              type: "error",
               code: effect.errorCode,
               slug: errorConfig.slug,
               message: errorConfig.message,
               custom_session_id: null,
               request_id: "48a3d067-67de-4520-b11b-7dade319b76f762379",
             });
-            if (effect.shouldClose && errorConfig.shouldClose && errorConfig.closeCode) {
+            if (
+              effect.shouldClose &&
+              errorConfig.shouldClose &&
+              errorConfig.closeCode
+            ) {
               downstream.closeWithError(errorConfig.closeCode, "");
             }
           }
