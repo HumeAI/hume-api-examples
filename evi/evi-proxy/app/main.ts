@@ -55,6 +55,11 @@ const serve = async (req: http.IncomingMessage, res: http.ServerResponse) => {
       res.write(fs.readFileSync(htmlPath));
       res.end();
       return;
+    } else {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.write("out/index.html not found. Run (cd web && npm run build) to build the frontend.");
+      res.end();
+      return;
     }
   }
   const filePath = path.join(DIST_DIR, url.pathname);
