@@ -1,6 +1,6 @@
 import type { State, AppEvent } from '../shared/types.ts';
 import { ERROR_CODES, CLOSE_TYPES, ERROR_CODE_KEYS } from '../shared/types.ts';
-import * as p from "./clack_prompts.js";
+import * as p from "@clack/prompts";
 import { exhaustive } from './util.ts';
 
 const abortable = <T>(signal: AbortSignal, p: Promise<T>): Promise<T> => {

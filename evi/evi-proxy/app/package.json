@@ -10,10 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@clack/core": "^1.0.0-alpha.0",
+    "@clack/prompts": "https://pkg.pr.new/bombshell-dev/clack/@clack/prompts@340",
     "change-case": "^5.4.4",
     "dotenv": "^16.3.1",
-    "is-unicode-supported": "^2.1.0"
+    "is-unicode-supported": "^2.1.0",
+    "hume": "^0.11.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
