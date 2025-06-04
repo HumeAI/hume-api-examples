@@ -1,5 +1,6 @@
 import type { State, AppEvent } from '../shared/types.ts';
-import { ERROR_CODES, CLOSE_TYPES, ERROR_CODE_KEYS } from '../shared/types.ts';
+import * as sharedTypes  from '../shared/types.ts';
+const { ERROR_CODES, CLOSE_TYPES, ERROR_CODE_KEYS } = sharedTypes;
 import * as p from "@clack/prompts";
 import { exhaustive } from './util.ts';
 

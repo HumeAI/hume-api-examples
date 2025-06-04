@@ -6,6 +6,8 @@ This app is useful as an example in its own right: it demonstrates
   * how to connect to EVI from a Typescript backend,
   * how to accept websocket connections, process messages, and send them upstream to EVI
 
+See [upstream.ts](app/upstream.ts) and [downstream.ts](app/downstream.ts) for more details.
+
 It is also useful as a debugging tool: it supports
   * recording and replaying EVI conversations,
   * simulating error conditions that you might want to handle to make your EVI application more robust.

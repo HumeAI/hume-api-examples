@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "node --loader tsx ./main.ts"
+    "start": "node --import tsx ./main.ts"
   },
   "keywords": [],
   "author": "",
