@@ -148,6 +148,9 @@ const next = (state: State, event: AppEvent): [State, Effect[]] => {
       return result({ ...state, mode: "pending" }, cleanupEffect());
     case "save_and_exit_record": {
       if (state.mode !== "record") return result(state);
+      if (state.messages.length === 0) {
+        return result({ ...state, mode: "pending" }, cleanupEffect());
+      }
       return result({ ...state, mode: "saving" }, cleanupEffect());
     }
     case "confirm_save":

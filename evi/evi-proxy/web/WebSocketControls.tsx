@@ -62,7 +62,6 @@ export const WebsocketControls: React.FC = () => {
     });
   };
   const handleDiscard = () => sendEvent({ type: "discard_recording" });
-  const handleLoad = () => {};
   const handleCancelLoading = () => sendEvent({ type: "cancel_loading" });
   const handleSimulateClose = (
     closeType: "abnormal_disconnect" | "intentional_close",
@@ -86,20 +85,14 @@ export const WebsocketControls: React.FC = () => {
   const isSaving = state.mode === "saving";
   const isPlayback = state.mode === "playback";
   const isLoading = state.mode === "loading";
+  const showSaveControls =
+    state.status === "disconnected" &&
+    state.mode !== "playback" &&
+    state.messages.length > 0;
 
   return (
     <div>
-      <h1>Record/Playback</h1>
       <div>
-        <div>
-          <label htmlFor="path">Path to recording:</label>
-          <input
-            id="path"
-            value={path}
-            onChange={(e) => setPath(e.target.value)}
-          />
-        </div>
-
         <div>
           <h2>Record Mode</h2>
           <button
@@ -112,14 +105,16 @@ export const WebsocketControls: React.FC = () => {
           <button onClick={handleQuit} hidden={!isRecording}>
             Stop Recording
           </button>
-          <div>
-            <button onClick={handleSave} disabled={!isSaving}>
-              Save to: {path}
-            </button>
-            <button onClick={handleDiscard} disabled={!isSaving}>
-              Discard
-            </button>
-          </div>
+          {showSaveControls && (
+            <div>
+              <button onClick={handleSave} disabled={!isSaving}>
+                Save to: {path}
+              </button>
+              <button onClick={handleDiscard} disabled={!isSaving}>
+                Discard
+              </button>
+            </div>
+          )}
         </div>
 
         <div>
@@ -177,6 +172,15 @@ export const WebsocketControls: React.FC = () => {
             </div>
           </div>
         </div>
+        <div>
+          <label htmlFor="path">Path to recording:</label>
+          <input
+            id="path"
+            value={path}
+            onChange={(e) => setPath(e.target.value)}
+          />
+        </div>
+
       </div>
     </div>
   );
