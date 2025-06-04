@@ -164,8 +164,8 @@ const next = (state: State, event: AppEvent): [State, Effect[]] => {
       if (state.mode !== "loading") return result(state);
       return result({ ...state, mode: "pending" });
     case "provide_load_path": {
-      if (state.mode !== "loading") return result(state);
-      return result(state, { type: "load_recording", filePath: event.filePath });
+      if (state.mode !== "loading" && state.mode !== 'pending') return result(state);
+      return result({...state, mode: 'loading'}, { type: "load_recording", filePath: event.filePath });
     }
     case "simulate_close": {
       if (state.mode !== "playback") return result(state);

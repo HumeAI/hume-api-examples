@@ -32,7 +32,16 @@ export const WebsocketControls: React.FC = () => {
 
   // Event handlers
   const handleStartRecord = () => sendEvent({ type: "start_record_mode" });
-  const handleStartPlayback = () => sendEvent({ type: "start_loading_mode" });
+  const handleStartPlayback = () => {
+    if (!path.trim()) {
+      alert("Please enter a script file path");
+      return;
+    }
+    sendEvent({
+      type: "provide_load_path",
+      filePath: path,
+    });
+  };
   const handleNext = () => sendEvent({ type: "send_next_message" });
   const handleQuit = () => {
     if (state.mode === "record") {
@@ -53,14 +62,6 @@ export const WebsocketControls: React.FC = () => {
   };
   const handleDiscard = () => sendEvent({ type: "discard_recording" });
   const handleLoad = () => {
-    if (!path.trim()) {
-      alert("Please enter a script file path");
-      return;
-    }
-    sendEvent({
-      type: "provide_load_path",
-      filePath: path,
-    });
   };
   const handleCancelLoading = () => sendEvent({ type: "cancel_loading" });
   const handleSimulateClose = (closeType: "abnormal_disconnect" | "intentional_close") => {
@@ -89,10 +90,10 @@ export const WebsocketControls: React.FC = () => {
 
         <div>
           <h2>Record Mode</h2>
-          <button onClick={handleStartRecord} disabled={state.mode !== "pending"}>
+          <button onClick={handleStartRecord} hidden={isRecording} disabled={state.mode !== "pending"}>
             Start Record Mode
           </button>
-          <button onClick={handleQuit} disabled={!isRecording}>
+          <button onClick={handleQuit} hidden={!isRecording}>
             Stop Recording
           </button>
           <div>
@@ -110,17 +111,16 @@ export const WebsocketControls: React.FC = () => {
           <button
             onClick={handleStartPlayback}
             disabled={state.mode !== "pending"}
+            hidden={isPlayback || isLoading}
           >
-            Start Playback Mode
+            Play recording from {path}
           </button>
-          <div>
-            <button onClick={handleLoad} disabled={!isLoading}>
-              Load from: {path}
-            </button>
-            <button onClick={handleCancelLoading} disabled={!isLoading}>
-              Cancel Loading
-            </button>
-          </div>
+          <button onClick={handleQuit} hidden={!isPlayback}>
+            Exit Playback
+          </button>
+          <button onClick={handleCancelLoading} hidden={!isLoading}>
+            Cancel Loading
+          </button>
 
           <div>
             <button
@@ -162,9 +162,6 @@ export const WebsocketControls: React.FC = () => {
                 })}
               </div>
             </div>
-            <button onClick={handleQuit} disabled={!isPlayback}>
-              Exit Playback
-            </button>
           </div>
         </div>
 
