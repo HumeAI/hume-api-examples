@@ -1,6 +1,7 @@
 /// <reference lib="dom" />
 import EVIChat from "./EVIChat";
 import { WebsocketControls } from "./WebSocketControls";
+import { createRoot } from "react-dom/client";
 
 function App() {
   return (
@@ -17,6 +18,6 @@ function App() {
 // Initialize React app
 const container = document.getElementById("app");
 if (container) {
-  const root = require("react-dom/client").createRoot(container);
+  const root = createRoot(container);
   root.render(<App />);
 }

@@ -4,8 +4,10 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  base: './',
   build: {
     outDir: path.resolve(__dirname, '../out'),
     emptyOutDir: true,
+    commonjsOptions: { transformMixedEsModules: true } // Change
   },
 });
