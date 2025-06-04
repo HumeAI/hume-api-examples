@@ -14,7 +14,7 @@ import { Downstream } from "./downstream.js";
 import { exhaustive, truncateDataReplacer } from "./util.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DIST_DIR = path.join(__dirname, "../out");
+const DIST_DIR = path.join(__dirname, "../web/dist");
 
 const PORT = 3000;
 const DOWNSTREAM_WS_PATH = "/v0/evi/chat";
