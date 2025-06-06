@@ -5,6 +5,7 @@ import Messages from "./Messages";
 import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { ComponentRef, useRef } from "react";
+import StoryControls from "./StoryControls";
 
 export default function ClientComponent({
   accessToken,
@@ -40,6 +41,7 @@ export default function ClientComponent({
           }, 200);
         }}
       >
+        <StoryControls/>
         <Messages ref={ref} />
         <Controls />
         <StartCall />
