@@ -17,9 +17,7 @@ export default function ClientComponent({
 
   return (
     <div
-      className={
-        "relative grow flex flex-col mx-auto w-full overflow-hidden h-[0px]"
-      }
+      className={"relative flex flex-col grow w-full h-full overflow-hidden"}
     >
       <VoiceProvider
         // configId="YOUR_CONFIG_ID"
@@ -41,8 +39,10 @@ export default function ClientComponent({
           }, 200);
         }}
       >
-        <StoryControls/>
-        <Messages ref={ref} />
+        <div className="flex flex-1 overflow-hidden gap-4">
+          <Messages ref={ref} />
+          <StoryControls />
+        </div>
         <Controls />
         <StartCall />
       </VoiceProvider>
