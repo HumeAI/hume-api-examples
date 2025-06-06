@@ -20,7 +20,7 @@ export default function ClientComponent({
       className={"relative flex flex-col grow w-full h-full overflow-hidden"}
     >
       <VoiceProvider
-        // configId="YOUR_CONFIG_ID"
+        configId="4cefd3dd-70c4-44c6-9579-4e95a9077de6"
         auth={{ type: "accessToken", value: accessToken }}
         onMessage={() => {
           if (timeout.current) {
