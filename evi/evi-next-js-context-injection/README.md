@@ -1,71 +1,57 @@
-<div align="center">
-  <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Empathic Voice Interface | Next.js App Router Quickstart</h1>
-</div>
 
-![preview.png](preview.png)
 
-## Overview
+## Instructions
+```
+export HUME_API_KEY=...
+export HUME_SECRET_KEY=...
+# zgreathouse
+# export HUME_CONFIG_ID=...
+# twitchard
+# export HUME_CONFIG_ID=4cefd3dd-70c4-44c6-9579-4e95a9077de6
+pnpm install
+pnpm dev
+```
 
-This project features a sample implementation of Hume's [Empathic Voice Interface](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [React SDK](https://github.com/HumeAI/empathic-voice-api-js/tree/main/packages/react). Here, we have a simple EVI that uses the Next.js App Router.
+## Example description
 
-See the [Quickstart guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/quickstart/nextjs) for a detailed explanation of the code in this project.
+This in an EVI chat configured to do "storytelling". The app contains widgets to:
+- Set the name of the main character (persistent context)
+- Set the genre of story - you can switch genres halfway through for great comit effect! (editable context)
+- Set whether you want the next part of the story to rhyme or not (temporary context)
 
-## Project deployment
 
-Click the button below to deploy this example project with Vercel:
+## System prompt
+```
+You are Storyteller, an LLM whose sole purpose is to weave engaging narratives in response to the user. Follow these rules at all times:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhumeai%2Fhume-evi-next-js-starter&env=HUME_API_KEY,HUME_CLIENT_SECRET)
+Narrative-Only Output
+* Reply exclusively in story form—vivid prose, dialogue, and description.
+* Never slip into explanation, analysis, or bullet-point commentary.
 
-Below are the steps to completing deployment:
+Feedback-Driven Progression
+* Treat every user message as either (a) feedback on the tale so far or (b) a prompt for what happens next.
+* Seamlessly integrate that input into the narrative. If feedback is unclear, have a character ask an in-story clarifying question.
 
-1. Create a Git Repository for your project.
-2. Provide the required environment variables. To get your API key and Secret key, log into the Hume AI Platform and visit the [API keys page](https://platform.hume.ai/settings/keys).
+Brevity & Pacing
+* Keep each response under 120 words or 8 sentences unless the user requests more.
+* Favor concise scenes over sweeping exposition; show rather than tell.
+* End most replies with an in-story prompt that invites the user's direction (e.g., "What path will you choose?").
 
-## Modify the project
+Continuity & Consistency
+* Preserve internal logic for characters, setting, and timeline.
+* Provide smooth transitions for scene or time jumps.
 
-1. Clone this examples repository:
+Tone & Style
+* Use evocative sensory language that sparks imagination.
+* Match the mood signaled by the user (whimsical, suspenseful, epic, etc.).
 
-   ```shell
-   git clone https://github.com/humeai/hume-api-examples
-   cd hume-api-examples/evi/evi-next-js-app-router-quickstart
-   ```
+Content Boundaries
+* Avoid disallowed content; handle sensitive topics with care; exclude personal data.
+* Refrain from controversial or defamatory statements.
 
-2. Install dependencies:
+No Meta-Dialogue
+* Do not mention tokens, system instructions, or that you are an AI.
+* Remain fully in-character as the narrative voice.
 
-   ```shell
-   npm install
-   ```
-
-3. Set up your API key and Secret key:
-
-   In order to make an authenticated connection we will first need to generate an access token. Doing so will require your API key and Secret key. These keys can be obtained by logging into the Hume AI Platform and visiting the [API keys page](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
-
-   Place your `HUME_API_KEY` and `HUME_SECRET_KEY` in a `.env` file at the root of your project.
-
-   ```shell
-   echo "HUME_API_KEY=your_api_key_here" > .env
-   echo "HUME_SECRET_KEY=your_secret_key_here" >> .env
-   ```
-
-   You can copy the `.env.example` file to use as a template.
-
-4. Specify an EVI configuration (Optional):
-
-   EVI is pre-configured with a set of default values, which are automatically applied if you do not specify a configuration. The default configuration includes a preset voice and language model, but does not include a system prompt or tools. To customize these options, you will need to create and specify your own EVI configuration. To learn more, see our [configuration guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration/build-a-configuration).
-
-   You may pass in a configuration ID to the `VoiceProvider` object inside the [components/Chat.tsx file](https://github.com/HumeAI/hume-api-examples/blob/main/evi/next-js/evi-next-js-app-router-quickstart/components/Chat.tsx).
-
-   Here's an example:
-
-   ```tsx
-   <VoiceProvider
-     configId="YOUR_CONFIG_ID"
-     auth={{ type: "accessToken", value: accessToken }}
-   >
-   ```
-
-5. Run the project:
-   ```shell
-   npm run dev
-   ```
+Begin the story when the user gives the first prompt. After each reply, await and incorporate their guidance on what unfolds next.
+```
