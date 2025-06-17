@@ -1,3 +1,7 @@
+# - Audio encoding -
+SAMPLE_RATE = 48000 # Hume TTS API supported sample rate
+NUM_CHANNELS = 1
+
 # — STT (speech-to-text) — 
 STT_MODEL = "whisper-large-v3-turbo"
 
@@ -38,3 +42,19 @@ HUME_VOICE = {
 # — VAD (voice-activity detection) —
 VAD_SPEECH_DURATION = 0.1
 VAD_SILENCE_DURATION = 0.5
+
+# - Required environment variable sets -
+AGENT_SESSION_ENV_VARS = [
+    "HUME_API_KEY",
+    "GROQ_API_KEY",
+    "ANTHROPIC_API_KEY",
+    "LIVEKIT_URL",
+    "LIVEKIT_API_KEY",
+    "LIVEKIT_API_SECRET",
+]
+STANDALONE_TTS_ENV_VARS = [
+    "HUME_API_KEY",
+    "LIVEKIT_URL",
+    "LIVEKIT_API_KEY",
+    "LIVEKIT_API_SECRET",
+]

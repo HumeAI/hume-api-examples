@@ -5,17 +5,18 @@ from livekit.agents.stt.stream_adapter import StreamAdapter
 from livekit.plugins import hume, groq, anthropic, silero
 from livekit.plugins.hume import PostedUtterance
 
-from .utils import validate_env_vars
 from .constants import (
-    STT_MODEL,
-    LLM_MODEL,
-    LLM_TEMPERATURE,
-    LLM_PROMPT,
+    AGENT_SESSION_ENV_VARS,
     GREETING,
     HUME_VOICE,
-    VAD_SPEECH_DURATION,
+    LLM_MODEL,
+    LLM_PROMPT,
+    LLM_TEMPERATURE,
+    STT_MODEL,
     VAD_SILENCE_DURATION,
+    VAD_SPEECH_DURATION,
 )
+from .utils import validate_env_vars
 
 
 class VoiceAssistant(Agent):
@@ -29,6 +30,8 @@ async def entrypoint(ctx: JobContext):
     await ctx.connect()
 
     # Voice-activity detection + buffering for non-streaming STT
+    VAD_SPEECH_DURATION = 0.1
+    VAD_SILENCE_DURATION = 0.5
     vad = silero.VAD.load(
         min_speech_duration=VAD_SPEECH_DURATION,
         min_silence_duration=VAD_SILENCE_DURATION,
@@ -56,7 +59,7 @@ async def entrypoint(ctx: JobContext):
 
 def main():
     """Validate environment variables, default to console mode, then launch the worker."""
-    validate_env_vars()
+    validate_env_vars(AGENT_SESSION_ENV_VARS)
 
     if len(sys.argv) == 1:
         sys.argv.append("console")

@@ -69,7 +69,7 @@ You’ll need accounts and credentials for:
    **Agent Sessions**:
    
    ```sh
-   uv run python agent_session/main.py
+   uv run python src/agent_session.py
    ```
 
    Speak into your mic; the agent responds with Hume TTS.
@@ -77,7 +77,7 @@ You’ll need accounts and credentials for:
    **Standalone TTS**:
    
    ```sh
-   uv run python standalone_tts/main.py
+   uv run python src/standalone_tts.py
    ```
 
    Type text at the prompt and press Enter to hear it.

@@ -4,11 +4,15 @@ import asyncio
 
 import aiohttp
 import simpleaudio as sa
-from dotenv import load_dotenv
 from livekit.plugins import hume
 from livekit.plugins.hume import PostedUtterance
 
-from constants import HUME_VOICE, NUM_CHANNELS, SAMPLE_RATE
+from constants import (
+    HUME_VOICE,
+    NUM_CHANNELS,
+    SAMPLE_RATE,
+    STANDALONE_TTS_ENV_VARS,
+)
 from utils import validate_env_vars
 
 
@@ -51,6 +55,6 @@ async def async_main():
 
 if __name__ == "__main__":
     # Fail quickly if missing required environment variables
-    validate_env_vars()
+    validate_env_vars(STANDALONE_TTS_ENV_VARS)
 
     asyncio.run(async_main())
