@@ -1,16 +1,13 @@
-#!/usr/bin/env python3
 """
 Demo: LiveKit Agents with STT (Groq), LLM (Claude Haiku), and TTS (Hume).
 """
-
 import sys
 
-# third-party
 from livekit.agents import Agent, AgentSession, JobContext, WorkerOptions, cli
 from livekit.agents.stt.stream_adapter import StreamAdapter
 from livekit.plugins import hume, groq, anthropic, silero
+from livekit.plugins.hume import PostedUtterance
 
-# local
 from utils import validate_env_vars
 from settings import (
     STT_MODEL,
@@ -37,19 +34,23 @@ async def entrypoint(ctx: JobContext):
     # voice-activity detection + buffering for non-streaming STT
     vad = silero.VAD.load(
         min_speech_duration=VAD_SPEECH_DURATION,
-        min_silence_duration=VAD_SILENCE_DURATION
-    )
-    stt = StreamAdapter(
-        stt=groq.STT(model=STT_MODEL, language="en"),
-        vad=vad,
+        min_silence_duration=VAD_SILENCE_DURATION,
     )
 
-    # assemble the pipeline
     session = AgentSession(
         vad=vad,
-        stt=stt,
-        llm=anthropic.LLM(model=LLM_MODEL, temperature=LLM_TEMPERATURE),
-        tts=hume.TTS(voice=HUME_VOICE, instant_mode=True),
+        stt=StreamAdapter(
+            stt=groq.STT(model=STT_MODEL, language="en"),
+            vad=vad,
+        ),
+        llm=anthropic.LLM(
+            model=LLM_MODEL,
+            temperature=LLM_TEMPERATURE,
+        ),
+        tts=hume.TTS(
+            utterance_options=PostedUtterance(voice=HUME_VOICE),
+            instant_mode=True,
+        ),
     )
 
     await session.start(agent=VoiceAssistant(), room=ctx.room)
@@ -57,8 +58,8 @@ async def entrypoint(ctx: JobContext):
 
 
 def main():
-    """Validate env vars, default to console mode, then launch the worker."""
-    validate_env_vars()  # fail fast if keys/URLs are missing
+    """Validate environment variables, default to console mode, then launch the worker."""
+    validate_env_vars()
 
     if len(sys.argv) == 1:
         sys.argv.append("console")
