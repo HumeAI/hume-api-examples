@@ -1,6 +1,3 @@
-"""
-Demo: LiveKit Agents with STT (Groq), LLM (Claude Haiku), and TTS (Hume).
-"""
 import sys
 
 from livekit.agents import Agent, AgentSession, JobContext, WorkerOptions, cli
@@ -8,8 +5,8 @@ from livekit.agents.stt.stream_adapter import StreamAdapter
 from livekit.plugins import hume, groq, anthropic, silero
 from livekit.plugins.hume import PostedUtterance
 
-from utils import validate_env_vars
-from settings import (
+from .utils import validate_env_vars
+from .constants import (
     STT_MODEL,
     LLM_MODEL,
     LLM_TEMPERATURE,
@@ -31,7 +28,7 @@ async def entrypoint(ctx: JobContext):
     """Configure and run STT, LLM, and TTS in a LiveKit session."""
     await ctx.connect()
 
-    # voice-activity detection + buffering for non-streaming STT
+    # Voice-activity detection + buffering for non-streaming STT
     vad = silero.VAD.load(
         min_speech_duration=VAD_SPEECH_DURATION,
         min_silence_duration=VAD_SILENCE_DURATION,

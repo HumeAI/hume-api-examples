@@ -10,4 +10,5 @@ dependencies = [
     "livekit-plugins-groq>=1.1.0",
     "livekit-plugins-silero>=1.1.0",
     "python-dotenv>=1.1.0",
+    "simpleaudio>=1.0.4",
 ]

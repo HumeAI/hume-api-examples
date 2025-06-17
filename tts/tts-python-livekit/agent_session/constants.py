@@ -1,5 +1,3 @@
-"""Settings for the LiveKit Agents demo."""
-
 # — STT (speech-to-text) — 
 STT_MODEL = "whisper-large-v3-turbo"
 
@@ -26,6 +24,9 @@ INFORMATION HANDLING:
 - When unsure, offer to suggest next steps
 """
 
+# — Initial greeting —
+GREETING = "Say 'Hi there! How can I help you today?'"
+
 # — TTS (text-to-speech) —
 # Pick a voice in the Hume Voice Library https://platform.hume.ai/tts/voice-library
 # Use "HUME_AI" for Hume library voices or "CUSTOM_VOICE" for voices you’ve created
@@ -33,9 +34,6 @@ HUME_VOICE = {
     "name": "Male English Actor",
     "provider": "HUME_AI",
 }
-
-# — Initial greeting —
-GREETING = "Say 'Hi there! How can I help you today?'"
 
 # — VAD (voice-activity detection) —
 VAD_SPEECH_DURATION = 0.1
