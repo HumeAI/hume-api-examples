@@ -5,9 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "livekit-agents[hume]>=1.0.20",
-    "livekit-plugins-anthropic>=1.0.20",
-    "livekit-plugins-groq>=1.0.20",
-    "livekit-plugins-silero>=1.0.20",
+    "livekit-agents[hume]>=1.1.0",
+    "livekit-plugins-anthropic>=1.1.0",
+    "livekit-plugins-groq>=1.1.0",
+    "livekit-plugins-silero>=1.1.0",
     "python-dotenv>=1.1.0",
 ]
