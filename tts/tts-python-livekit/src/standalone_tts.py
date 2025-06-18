@@ -3,15 +3,15 @@ Standalone TTS demo for Hume LiveKit Agents TTS plugin.
 """
 import asyncio
 
-import aiohttp
 import simpleaudio as sa
+from aiohttp import ClientSession
 from livekit.plugins.hume import PostedUtterance, TTS
 
 from constants import HUME_VOICE, SAMPLE_RATE
 
 NUM_CHANNELS = 1
 
-async def synthesize_text(text: str, session: aiohttp.ClientSession) -> bytes:
+async def synthesize_text(text: str, session: ClientSession) -> bytes:
     """
     Synthesize `text` via the LiveKit Agents Hume TTS plugin using a shared
     aiohttp session and return raw PCM bytes.
@@ -46,7 +46,7 @@ async def interactive_repl() -> None:
     Exit on blank input or Ctrl-C/Ctrl-D.
     """
     print("Enter text (blank to quit):")
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         while True:
             try:
                 user_input = await asyncio.to_thread(input, "> ")
