@@ -3,9 +3,9 @@ Standalone TTS demo for Hume LiveKit Agents TTS plugin.
 """
 import asyncio
 
-import simpleaudio as sa
 from aiohttp import ClientSession
 from livekit.plugins.hume import PostedUtterance, TTS
+from simpleaudio import play_buffer
 
 from constants import HUME_VOICE, SAMPLE_RATE
 
@@ -25,19 +25,9 @@ async def synthesize_text(text: str, session: ClientSession) -> bytes:
     )
     async for chunk in tts.synthesize(text):
         pcm_buf.extend(chunk.frame.data)
+
     return bytes(pcm_buf)
 
-
-def play_audio(pcm: bytes) -> None:
-    """
-    Play back raw PCM bytes.
-    """
-    sa.play_buffer(
-        pcm,
-        num_channels=NUM_CHANNELS, # mono
-        bytes_per_sample=2,        # 16-bit
-        sample_rate=SAMPLE_RATE,   # 48 kHz
-    ).wait_done()
 
 async def interactive_repl() -> None:
     """
@@ -59,7 +49,12 @@ async def interactive_repl() -> None:
 
             try:
                 pcm = await synthesize_text(text, session)
-                play_audio(pcm)
+                play_buffer(
+                    pcm,
+                    num_channels=NUM_CHANNELS, # mono
+                    bytes_per_sample=2,        # 16-bit
+                    sample_rate=SAMPLE_RATE,   # 48 kHz
+                ).wait_done()
             except Exception as err:
                 print(f"[Error] Could not synthesize/play: {err}")
 
