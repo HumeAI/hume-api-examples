@@ -1,60 +1,71 @@
-import os
-import sys
+"""
+Standalone TTS demo for Hume LiveKit Agents TTS plugin.
+"""
 import asyncio
 
 import aiohttp
 import simpleaudio as sa
-from livekit.plugins import hume
-from livekit.plugins.hume import PostedUtterance
+from livekit.plugins.hume import PostedUtterance, TTS
 
-from constants import (
-    HUME_VOICE,
-    NUM_CHANNELS,
-    SAMPLE_RATE,
-    STANDALONE_TTS_ENV_VARS,
-)
-from utils import validate_env_vars
+from constants import HUME_VOICE, SAMPLE_RATE
+
+NUM_CHANNELS = 1
+
+async def synthesize_text(text: str, session: aiohttp.ClientSession) -> bytes:
+    """
+    Synthesize `text` via the LiveKit Agents Hume TTS plugin using a shared
+    aiohttp session and return raw PCM bytes.
+    """
+    pcm_buf = bytearray()
+    tts = TTS(
+        utterance_options=PostedUtterance(voice=HUME_VOICE),
+        instant_mode=True,
+        sample_rate=SAMPLE_RATE,
+        http_session=session,
+    )
+    async for chunk in tts.synthesize(text):
+        pcm_buf.extend(chunk.frame.data)
+    return bytes(pcm_buf)
 
 
-async def async_main():
-    # Create an HTTP session for the plugin
-    async with aiohttp.ClientSession() as http_session:
-        # Configure the Hume plugin
-        tts = hume.TTS(
-            utterance_options=PostedUtterance(voice=HUME_VOICE),
-            instant_mode=True,
-            sample_rate=SAMPLE_RATE,
-            http_session=http_session,
-        )
+def play_audio(pcm: bytes) -> None:
+    """
+    Play back raw PCM bytes.
+    """
+    sa.play_buffer(
+        pcm,
+        num_channels=NUM_CHANNELS, # mono
+        bytes_per_sample=2,        # 16-bit
+        sample_rate=SAMPLE_RATE,   # 48 kHz
+    ).wait_done()
 
-        print("Enter text input (blank line to quit):")
-        loop = asyncio.get_event_loop()
-
+async def interactive_repl() -> None:
+    """
+    Prompt the user for text, synthesize it, and play back audio.
+    Reuses a single aiohttp session across multiple requests.
+    Exit on blank input or Ctrl-C/Ctrl-D.
+    """
+    print("Enter text (blank to quit):")
+    async with aiohttp.ClientSession() as session:
         while True:
-            # Prompt for text input
-            text = await loop.run_in_executor(None, input, "> ")
-            text = text.strip()
-            if not text:
-                print("End")
+            try:
+                user_input = await asyncio.to_thread(input, "> ")
+            except (KeyboardInterrupt, EOFError):
                 break
 
-            # Synthesize + buffer all PCM
-            pcm_buf = bytearray()
-            stream = tts.synthesize(text)
-            async for chunk in stream:
-                pcm_buf.extend(chunk.frame.data)
+            text = user_input.strip()
+            if not text:
+                break
 
-            # Play back audio
-            sa.play_buffer(
-                pcm_buf,
-                num_channels=NUM_CHANNELS, # mono
-                bytes_per_sample=2,        # 16-bit
-                sample_rate=SAMPLE_RATE,   # 48kHz
-            ).wait_done()
+            try:
+                pcm = await synthesize_text(text, session)
+                play_audio(pcm)
+            except Exception as err:
+                print(f"[Error] Could not synthesize/play: {err}")
 
 
-if __name__ == "__main__":
-    # Fail quickly if missing required environment variables
-    validate_env_vars(STANDALONE_TTS_ENV_VARS)
-
-    asyncio.run(async_main())
+def standalone_tts() -> None:
+    """
+    Run the asynchronous REPL for standalone TTS.
+    """
+    asyncio.run(interactive_repl())
