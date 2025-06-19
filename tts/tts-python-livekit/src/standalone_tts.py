@@ -28,7 +28,6 @@ async def synthesize_text(text: str, session: ClientSession) -> bytes:
 
     return bytes(pcm_buf)
 
-
 async def interactive_repl() -> None:
     """
     Prompt the user for text, synthesize it, and play back audio.
@@ -57,7 +56,6 @@ async def interactive_repl() -> None:
                 ).wait_done()
             except Exception as err:
                 print(f"[Error] Could not synthesize/play: {err}")
-
 
 def standalone_tts() -> None:
     """
