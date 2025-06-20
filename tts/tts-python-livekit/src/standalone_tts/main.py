@@ -1,15 +1,14 @@
+#!/usr/bin/env python3
 """
 Standalone TTS demo for Hume LiveKit Agents TTS plugin.
 """
 import asyncio
 
 from aiohttp import ClientSession
-from livekit.plugins.hume import PostedUtterance, TTS
+from livekit.plugins.hume import AudioFormat, TTS, VoiceByName, VoiceProvider
 from simpleaudio import play_buffer
 
-from constants import HUME_VOICE, SAMPLE_RATE
-
-NUM_CHANNELS = 1
+from src.utils import validate_env_vars
 
 async def synthesize_text(text: str, session: ClientSession) -> bytes:
     """
@@ -18,9 +17,12 @@ async def synthesize_text(text: str, session: ClientSession) -> bytes:
     """
     pcm_buf = bytearray()
     tts = TTS(
-        utterance_options=PostedUtterance(voice=HUME_VOICE),
+        voice=VoiceByName(
+            name="Male English Actor",
+            provider=VoiceProvider.hume,
+        ),
         instant_mode=True,
-        sample_rate=SAMPLE_RATE,
+        audio_format=AudioFormat.wav,
         http_session=session,
     )
     async for chunk in tts.synthesize(text):
@@ -50,15 +52,23 @@ async def interactive_repl() -> None:
                 pcm = await synthesize_text(text, session)
                 play_buffer(
                     pcm,
-                    num_channels=NUM_CHANNELS, # mono
-                    bytes_per_sample=2,        # 16-bit
-                    sample_rate=SAMPLE_RATE,   # 48 kHz
+                    num_channels=1,     # mono
+                    bytes_per_sample=2, # 16-bit
+                    sample_rate=48000,  # 48 kHz
                 ).wait_done()
             except Exception as err:
                 print(f"[Error] Could not synthesize/play: {err}")
 
-def standalone_tts() -> None:
+
+if __name__ == "__main__":
     """
-    Run the asynchronous REPL for standalone TTS.
+    Validate environment variables then run the asynchronous REPL for standalone TTS.
     """
+    validate_env_vars([
+        "HUME_API_KEY",
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+    ])
+
     asyncio.run(interactive_repl())

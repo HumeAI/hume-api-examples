@@ -72,7 +72,7 @@ If using the Agent Session workflow you will additionally need accounts and cred
    **Standalone TTS**:
    
    ```sh
-   uv run python src/main.py --mode=standalone
+   uv run python -m src.standalone_tts.main
    ```
 
    Type text at the prompt and press Enter to hear it.
@@ -80,7 +80,7 @@ If using the Agent Session workflow you will additionally need accounts and cred
    **Agent Sessions**:
    
    ```sh
-   uv run python src/main.py --mode=agent
+   uv run python -m src.agent_session.main
    ```
 
    Speak into your mic; the agent responds with Hume TTS.
