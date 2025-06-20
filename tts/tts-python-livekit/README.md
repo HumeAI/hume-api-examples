@@ -84,5 +84,3 @@ If using the Agent Session workflow you will additionally need accounts and cred
    ```
 
    Speak into your mic; the agent responds with Hume TTS.
-
-   > Tip: the `mode` arg will default to `standalone` if not provided.
