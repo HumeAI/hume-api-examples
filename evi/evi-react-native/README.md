@@ -7,7 +7,7 @@
 
 This project features a sample implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using React Native. 
 
-**Targets:** The example supports iOS and web (Android support coming soon!)
+**Targets:** The example supports iOS, Android and web
 
 ## Setup Instructions
 
@@ -36,16 +36,26 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
     ```
 
 4. Prebuild, to include the `modules/audio` native module:
+  - ios:
     ```shell
     npx expo prebuild --platform ios
     ```
+  - android:
+    ```shell
+    npx expo prebuild --platform android
+    ```
+
 
 ## Usage
 
 Run the dev server:
-
+- ios:
   ```shell
   npm run ios
+  ```
+- android:
+  ```shell
+  npm run android
   ```
 
 ## 📝 Notes
@@ -53,7 +63,7 @@ Run the dev server:
   * Echo cancellation doesn't seem to work using the iOS simulator when forwarding audio from the host.
   * If you need to test using a simulator or emulator, or in an environment where echo cancellation is not provided, use headphones, or enable the mute button while EVI is speaking.
 
-* Because community libraries like `expo-av` module do not support streaming audio recording or echo cancellation, it is necessary to write native code to interface with the microphone and speaker. The example app includes a `modules/audio` with a very simple audio interface written in Swift. It works in simple scenarios, but will not handle scenarios like selecting between multiple possible audio devices, gracefully handling when the user switches audio devices mid-conversation, handling audio interruptions like incoming phone calls, "ducking" audio from other apps that might be playing, etc. You should use the provided module as a starting point and extend it to meet your app's unique requirements.
+* Because community libraries like `expo-av` module do not support streaming audio recording or echo cancellation, it is necessary to write native code to interface with the microphone and speaker. The example app includes a `modules/audio` with a very simple audio interface written in Swift for ios and Kotlin for android. It works in simple scenarios, but will not handle scenarios like selecting between multiple possible audio devices, gracefully handling when the user switches audio devices mid-conversation, handling audio interruptions like incoming phone calls, "ducking" audio from other apps that might be playing, etc. You should use the provided module as a starting point and extend it to meet your app's unique requirements.
 
 * This example uses Expo 52, on which ["The New Architecture" is the default](https://docs.expo.dev/guides/new-architecture/). If you use an older version of Expo, you may need to adapt the example to get the native module to work in your app.
 
