@@ -41,16 +41,18 @@ export function TtsForm({
         id="text"
         name="text"
         label="Text"
+        maxLength={1500}
         placeholder="Enter text to synthesize..."
         required
-        rows={3}
+        rows={4}
       />
       <TextAreaField
         id="description"
         name="description"
         label="Acting Instructions"
+        maxLength={1000}
         placeholder="Provide acting instructions to guide performance..."
-        rows={3}
+        rows={4}
       />
       <button
         type="submit"
