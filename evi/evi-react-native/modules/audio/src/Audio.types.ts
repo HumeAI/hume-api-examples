@@ -1,6 +1,6 @@
 export type AudioModuleEvents = {
   onAudioInput: (params: AudioEventPayload) => void;
-  onError: (params: { message: string }) => void;
+  onError: (params: { error: string }) => void;
 };
 
 export type AudioEventPayload = {

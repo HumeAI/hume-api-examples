@@ -6,8 +6,8 @@ Pod::Spec.new do |s|
   s.author         = 'Hume AI'
   s.homepage       = 'https://github.com/HumeAI/hume-api-examples/tree/main/evi-react-native-example'
   s.platforms      = {
-    :ios => '15.1',
-    :tvos => '15.1'
+    :ios => '16.0',
+    :tvos => '16.0'
   }
   s.source         = { git: '' }
   s.static_framework = true

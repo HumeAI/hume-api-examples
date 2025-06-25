@@ -6,6 +6,12 @@
   "apple": {
     "modules": [
       "AudioModule"
+    ],
+    "swiftPackages": [
+      {
+        "url": "https://github.com/humeai/hume-swift-sdk.git",
+        "from": "0.0.1-beta0"
+      }
     ]
   }
 }

@@ -1,44 +1,15 @@
 import AVFoundation
 import ExpoModulesCore
 import Foundation
+import Hume
 
 public class AudioModule: Module {
-    private var inittedAudioSession: Bool = false
-
-    // These should only be initialized after a call to `getPermissions`.
-    private lazy var microphone: Microphone = {
-        let microphone = Microphone()
-        microphone.onError({ error in
-            switch error {
-            case MicrophoneError.conversionFailed(let details):
-                self.sendEvent("onError", ["error": details])
-            default:
-                self.sendEvent("onError", ["error": "Unknown recording error"])
-            }
-        })
-        return microphone
-    }()
-    private lazy var soundPlayer: SoundPlayer = {
-        let soundPlayer = SoundPlayer()
-        soundPlayer.onError({ error in
-            switch error {
-            case SoundPlayerError.invalidBase64String:
-                self.sendEvent("onError", ["error": "Invalid base64 string"])
-            case SoundPlayerError.couldNotPlayAudio:
-                self.sendEvent("onError", ["error": "Could not play audio"])
-            case SoundPlayerError.decodeError(let details):
-                self.sendEvent("onError", ["error": details])
-            default:
-                self.sendEvent("onError", ["error": "Unknown playback error"])
-            }
-        })
-        return soundPlayer
-    }()
+    private var audioHub: AudioHub!
 
     public func definition() -> ModuleDefinition {
         Name("Audio")
 
-        Constants(["sampleRate": Microphone.sampleRate, "isLinear16PCM": Microphone.isLinear16PCM])
+        Constants(["sampleRate": 48000, "isLinear16PCM": true])
 
         Events("onAudioInput", "onError")
 
@@ -47,30 +18,56 @@ public class AudioModule: Module {
         }
 
         AsyncFunction("startRecording") {
-            try ensureInittedAudioSession()
-            try self.microphone.startRecording(onBase64EncodedAudio: { (data: String) in
-                self.sendEvent("onAudioInput", ["base64EncodedAudio": data])
-            })
+            try await ensureConfiguredAudioHub()
+
+            audioHub.microphoneDataChunkHandler = { [weak self] data, averagePower in
+                let base64String = data.base64EncodedString()
+                Task { @MainActor in
+                    self?.sendEvent("onAudioInput", ["base64EncodedAudio": base64String])
+                }
+            }
+        
+            try await self.audioHub.start()
         }
 
         AsyncFunction("stopRecording") {
-            try ensureInittedAudioSession()
-            self.microphone.stopRecording()
+            try await ensureConfiguredAudioHub()
+            try await self.audioHub.stop()
         }
 
         AsyncFunction("mute") {
-            self.microphone.mute()
+            guard let audioHub = audioHub else { return }
+            audioHub.muteMic(true)
         }
+        
         AsyncFunction("unmute") {
-            self.microphone.unmute()
+            guard let audioHub = audioHub else { return }
+            audioHub.muteMic(false)
         }
 
         AsyncFunction("enqueueAudio") { (base64EncodedAudio: String) in
-            try ensureInittedAudioSession()
-            return try await self.soundPlayer.enqueueAudio(base64EncodedAudio)
+            try await ensureConfiguredAudioHub()
+            
+            // Create a mock AudioOutput to convert to SoundClip
+            let audioOutput = AudioOutput(
+                customSessionId: nil,
+                data: base64EncodedAudio,
+                index: 0,
+                id: UUID().uuidString,
+                type: "audio_output"
+            )
+            
+            guard let soundClip = SoundClip.from(audioOutput) else {
+                throw NSError(domain: "AudioModule", code: 2, 
+                             userInfo: [NSLocalizedDescriptionKey: "Failed to create sound clip"])
+            }
+            
+            self.audioHub.enqueue(soundClip: soundClip)
         }
+        
         AsyncFunction("stopPlayback") {
-            self.soundPlayer.stopPlayback()
+            guard let audioHub = audioHub else { return }
+            audioHub.handleInterruption()
         }
     }
 
@@ -94,13 +91,14 @@ public class AudioModule: Module {
         }
     }
 
-    private func ensureInittedAudioSession() throws {
-        if self.inittedAudioSession { return }
-        let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(
-            .playAndRecord, mode: .voiceChat,
-            options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP])
-        try audioSession.setActive(true)
-        inittedAudioSession = true
+    private func ensureConfiguredAudioHub() async throws {
+        if audioHub != nil || audioHub.state != .unconfigured {
+            return
+        }
+        
+        audioHub = Hume.AudioHubImpl()
+
+        try await audioHub.configure()
+        isConfigured = true
     }
 }
