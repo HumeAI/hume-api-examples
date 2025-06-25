@@ -39,7 +39,7 @@ export default function Page() {
                   const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
                   const url = URL.createObjectURL(new Blob([bytes], { type: mimeType }));
 
-                  setClips((prev) => [{ voice, instructions, text, url }, ...prev]);
+                  setClips((prev) => [{ voice, text, instructions, url }, ...prev]);
                 });
               }}
               loading={isPending}

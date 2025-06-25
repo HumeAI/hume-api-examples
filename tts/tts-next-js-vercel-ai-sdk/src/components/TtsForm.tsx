@@ -47,8 +47,8 @@ export function TtsForm({
         rows={4}
       />
       <TextAreaField
-        id="description"
-        name="description"
+        id="instructions"
+        name="instructions"
         label="Acting Instructions"
         maxLength={1000}
         placeholder="Provide acting instructions to guide performance..."
