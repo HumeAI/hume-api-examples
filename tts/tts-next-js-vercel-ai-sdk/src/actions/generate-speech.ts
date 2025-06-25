@@ -1,6 +1,6 @@
 "use server";
 
-import { experimental_generateSpeech } from "ai";
+import { experimental_generateSpeech as generateSpeech } from "ai";
 import { createHume } from "@ai-sdk/hume";
 
 const hume = createHume({
@@ -9,7 +9,7 @@ const hume = createHume({
   },
 });
 
-export async function generateSpeech(formData: FormData): Promise<{
+export async function tts(formData: FormData): Promise<{
   voice: string;
   text: string;
   description: string;
@@ -26,7 +26,7 @@ export async function generateSpeech(formData: FormData): Promise<{
     },
   };
 
-  const result = await experimental_generateSpeech({
+  const result = await generateSpeech({
     model: hume.speech(),
     text,
     voice,

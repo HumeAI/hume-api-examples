@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { generateSpeech } from "@/actions/generate-speech";
+import { tts } from "@/actions/generate-speech";
 import { useVoices } from "@/hooks/useVoices";
 import { AudioGallery } from "@/components/AudioGallery";
 import { TtsForm } from "@/components/TtsForm";
@@ -40,9 +40,7 @@ export default function Page() {
               onVoiceChange={setSelectedVoiceId}
               onGenerate={async (formData) => {
                 startTransition(async () => {
-                  const { base64, mimeType, text, description, voice } = await generateSpeech(
-                    formData
-                  );
+                  const { base64, mimeType, text, description, voice } = await tts(formData);
 
                   const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
                   const url = URL.createObjectURL(new Blob([bytes], { type: mimeType }));
