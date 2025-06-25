@@ -6,13 +6,7 @@ import { useVoices } from "@/hooks/useVoices";
 import { AudioGallery } from "@/components/AudioGallery";
 import { TtsForm } from "@/components/TtsForm";
 import HumeLogo from "@/components/logos/Hume";
-
-interface Clip {
-  voice: string;
-  text: string;
-  description: string;
-  url: string;
-}
+import { Clip } from "@/types/clip";
 
 const DEFAULT_VOICE_ID = "9e068547-5ba4-4c8e-8e03-69282a008f04"; // Male English Actor
 
@@ -40,12 +34,12 @@ export default function Page() {
               onVoiceChange={setSelectedVoiceId}
               onGenerate={async (formData) => {
                 startTransition(async () => {
-                  const { base64, mimeType, text, description, voice } = await tts(formData);
+                  const { base64, mimeType, text, instructions, voice } = await tts(formData);
 
                   const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
                   const url = URL.createObjectURL(new Blob([bytes], { type: mimeType }));
 
-                  setClips((prev) => [{ voice, description, text, url }, ...prev]);
+                  setClips((prev) => [{ voice, instructions, text, url }, ...prev]);
                 });
               }}
               loading={isPending}

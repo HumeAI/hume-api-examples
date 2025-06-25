@@ -12,25 +12,19 @@ const hume = createHume({
 export async function tts(formData: FormData): Promise<{
   voice: string;
   text: string;
-  description: string;
+  instructions: string;
   base64: string;
   mimeType: string;
 }> {
   const voice = formData.get("voice")?.toString() ?? "";
   const text = formData.get("text")?.toString() ?? "";
-  const description = formData.get("description")?.toString() ?? "";
-
-  const providerOptions = {
-    hume: {
-      description,
-    },
-  };
+  const instructions = formData.get("instructions")?.toString() ?? "";
 
   const result = await generateSpeech({
     model: hume.speech(),
     text,
     voice,
-    providerOptions,
+    instructions,
   });
 
   if (!result.audio?.base64) {
@@ -41,7 +35,7 @@ export async function tts(formData: FormData): Promise<{
   return {
     voice,
     text,
-    description,
+    instructions,
     base64,
     mimeType,
   };

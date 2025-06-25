@@ -2,8 +2,8 @@
 
 import React, { FormEvent } from "react";
 import type { ReturnVoice } from "hume/api/resources/tts";
-import { TextAreaField } from "./TextAreaField";
-import { VoiceSelect } from "./VoiceSelect";
+import { TextAreaField } from "@/components/TextAreaField";
+import { VoiceSelect } from "@/components/VoiceSelect";
 
 interface TtsFormProps {
   voices: ReturnVoice[];

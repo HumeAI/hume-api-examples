@@ -5,11 +5,11 @@ import React from "react";
 interface ClipCardProps {
   voiceName: string;
   text: string;
-  description?: string;
+  instructions?: string;
   url: string;
 }
 
-export function AudioClipCard({ voiceName, text, description, url }: ClipCardProps) {
+export function AudioClipCard({ voiceName, text, instructions, url }: ClipCardProps) {
   return (
     <div className="flex flex-col items-start bg-gray-50 p-4 rounded-lg shadow-sm transition-colors">
       <p className="mb-2 font-medium text-gray-800">
@@ -18,9 +18,9 @@ export function AudioClipCard({ voiceName, text, description, url }: ClipCardPro
       <p className="mb-2 font-medium text-gray-800">
         <strong>Text:</strong> "{text}"
       </p>
-      {description && (
+      {instructions && (
         <p className="mb-2 font-medium text-gray-800">
-          <strong>Description:</strong> "{description}"
+          <strong>Instructions:</strong> "{instructions}"
         </p>
       )}
       <audio controls src={url} className="w-full" />
