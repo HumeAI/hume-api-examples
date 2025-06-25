@@ -1,0 +1,15 @@
+{
+  "originHash" : "745585fa76fd12f71e48da31b6ca69e174fcf41f849fa242cffc843b093fc5fa",
+  "pins" : [
+    {
+      "identity" : "hume-swift-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/HumeAI/hume-swift-sdk",
+      "state" : {
+        "branch" : "main",
+        "revision" : "12c6e1095bdbadbac1c9f1453b133eafcd7ae98b"
+      }
+    }
+  ],
+  "version" : 3
+}
