@@ -26,10 +26,13 @@ Whether you're using Python, TypeScript, Flutter, or Next.js, there's something 
 
 ## [Text-to-Speech (TTS)](https://dev.hume.ai/docs/text-to-speech-tts/overview)
 
-| Name                                                                                    | Language   | Framework       |
-| --------------------------------------------------------------------------------------- | ---------- | --------------- |
-| [`tts-python-quickstart`](/tts/tts-python-quickstart/README.md)                         | Python     |                 |
-| [`tts-typescript-quickstart`](/tts/tts-typescript-quickstart/README.md)                 | TypeScript |                 |
+| Name                                                                                       | Language   | Framework       |
+| ------------------------------------------------------------------------------------------ | ---------- | --------------- |
+| [`tts-next-js-chat`](/tts/tts-next-js-chat/README.md)                                      | TypeScript | Next.js         |
+| [`tts-next-js-vercel-ai-sdk`](/tts/tts-next-js-vercel-ai-sdk/README.md)                    | TypeScript | Next.js         |
+| [`tts-python-livekit`](/tts/tts-python-livekit/README.md)                                  | Python     | LiveKit         |
+| [`tts-python-quickstart`](/tts/tts-python-quickstart/README.md)                            | Python     |                 |
+| [`tts-typescript-quickstart`](/tts/tts-typescript-quickstart/README.md)                    | TypeScript |                 |
 
 ## [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview)
 
@@ -40,7 +43,7 @@ Whether you're using Python, TypeScript, Flutter, or Next.js, there's something 
 | [`evi-next-js-pages-router-quickstart`](/evi/evi-next-js-pages-router-quickstart/README.md)| TypeScript | Next.js         |
 | [`evi-next-js-function-calling`](/evi/evi-next-js-function-calling/README.md)              | TypeScript | Next.js         |
 | [`evi-prompting-examples`](/evi/evi-prompting-examples/README.md)                          |            |                 |
-| [`evi-proxy`](/evi/evi-proxy/README.md)                          |            |                 |
+| [`evi-proxy`](/evi/evi-proxy/README.md)                                                    |            |                 |
 | [`evi-python-chat-history`](/evi/evi-python-chat-history/README.md)                        | Python     |                 |
 | [`evi-python-clm-sse`](/evi/evi-python-clm-sse/README.md)                                  | Python     |                 |
 | [`evi-python-clm-wss`](/evi/evi-python-clm-wss/README.md)                                  | Python     |                 |
