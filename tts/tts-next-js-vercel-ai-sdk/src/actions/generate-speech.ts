@@ -11,7 +11,7 @@ export async function tts(formData: FormData): Promise<{
   voice: string;
   text: string;
   instructions: string;
-  base64: string;
+  uint8Array: Uint8Array;
   mimeType: string;
 }> {
   const voice = formData.get("voice")?.toString() ?? "";
@@ -29,12 +29,12 @@ export async function tts(formData: FormData): Promise<{
     throw new Error("No audio returned");
   }
 
-  const { base64, mimeType } = result.audio;
+  const { uint8Array, mimeType } = result.audio;
   return {
     voice,
     text,
     instructions,
-    base64,
+    uint8Array,
     mimeType,
   };
 }

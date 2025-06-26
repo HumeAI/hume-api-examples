@@ -34,11 +34,9 @@ export default function Page() {
               onVoiceChange={setSelectedVoiceId}
               onGenerate={async (formData) => {
                 startTransition(async () => {
-                  const { base64, mimeType, text, instructions, voice } = await tts(formData);
+                  const { uint8Array, mimeType, text, instructions, voice } = await tts(formData);
 
-                  const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
-                  const url = URL.createObjectURL(new Blob([bytes], { type: mimeType }));
-
+                  const url = URL.createObjectURL(new Blob([uint8Array], { type: mimeType }));
                   setClips((prev) => [{ voice, text, instructions, url }, ...prev]);
                 });
               }}
