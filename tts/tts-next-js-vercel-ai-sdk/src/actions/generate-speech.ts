@@ -25,7 +25,7 @@ export async function tts(formData: FormData): Promise<{
     instructions,
   });
 
-  if (!result.audio?.base64) {
+  if (!result.audio?.uint8Array || result.audio.uint8Array.length === 0) {
     throw new Error("No audio returned");
   }
 
