@@ -462,10 +462,10 @@
 		B7CC80BC2E0ADDA700E8796C /* XCRemoteSwiftPackageReference "hume-swift-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/HumeAI/hume-swift-sdk";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
+      requirement = {
+          kind = upToNextMajorVersion;
+          minimumVersion = "0.0.1-beta0";
+      };
 		};
 /* End XCRemoteSwiftPackageReference section */
 
