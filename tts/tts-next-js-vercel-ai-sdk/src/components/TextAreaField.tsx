@@ -43,7 +43,7 @@ export function TextAreaField({
         placeholder={placeholder}
         maxLength={maxLength}
         rows={rows}
-        className="mt-1 block w-full p-2 rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600 resize-none"
+        className="mt-1 block w-full p-2 text-gray-900 rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600 resize-none"
       />
       <div className="absolute bottom-1 right-2 text-sm text-gray-900">
         {count}/{maxLength}

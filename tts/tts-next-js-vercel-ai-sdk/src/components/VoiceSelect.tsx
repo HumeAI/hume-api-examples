@@ -20,7 +20,7 @@ export function VoiceSelect({ voices, selectedVoiceId, onChange }: VoiceSelectPr
         name="voice"
         value={selectedVoiceId}
         onChange={(e) => onChange(e.currentTarget.value)}
-        className="mt-1 block w-full p-2 cursor-pointer border focus:outline-none focus:ring-2 focus:ring-gray-600 rounded-md border-r-16 border-transparent shadow-sm"
+        className="mt-1 block w-full p-2 text-gray-900 cursor-pointer border focus:outline-none focus:ring-2 focus:ring-gray-600 rounded-md border-r-16 border-transparent shadow-sm"
       >
         {voices.map(({ id, name }) => (
           <option key={id} value={id}>
