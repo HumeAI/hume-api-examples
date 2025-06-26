@@ -1,6 +1,6 @@
 //
 //  UserMessageRow.swift
-//  HumeDemo
+//  EVIExample
 //
 //  Created by Daniel Rees on 5/23/24.
 //

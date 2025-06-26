@@ -18,12 +18,12 @@ processing of the appropriate details.
 
 ## Development setup
 
-You'll need to add a file called HumeDemo/Secrets.swift. The contents should be as the following:
+You'll need to add a file called EVIExample/Secrets.swift. The contents should be as the following:
 
 ```
 //
 //  Secrets.swift
-//  HumeDemo
+//  EVIExample
 //
 //
 

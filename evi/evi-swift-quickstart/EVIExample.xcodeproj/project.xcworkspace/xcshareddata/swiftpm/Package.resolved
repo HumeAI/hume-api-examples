@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/HumeAI/hume-swift-sdk",
       "state" : {
-        "branch" : "main",
-        "revision" : "12c6e1095bdbadbac1c9f1453b133eafcd7ae98b"
+        "revision" : "3de4d82fedf537e9265bb61b86726ba3efdbe817",
+        "version" : "0.0.1-beta0"
       }
     }
   ],

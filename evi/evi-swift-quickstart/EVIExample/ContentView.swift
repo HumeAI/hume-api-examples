@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  HumeDemo
+//  EVIExample
 //
 //  Created by Daniel Rees on 5/18/24.
 //

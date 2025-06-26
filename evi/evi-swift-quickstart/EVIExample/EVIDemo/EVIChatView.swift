@@ -1,6 +1,6 @@
 //
 //  ProductsListView.swift
-//  HumeDemo
+//  EVIExample
 //
 //  Created by Daniel Rees on 5/18/24.
 //
@@ -50,9 +50,7 @@ class EVIChatModel: NSObject, ObservableObject {
     @Published var events: [EventRow] = []
     
     override init() {
-        self.voiceProvider = VoiceProvider(
-            apiKey: Secrets.apiKey,
-            clientSecret: Secrets.clientSecret)
+        self.voiceProvider = VoiceProvider(apiKey: Secrets.apiKey)
         super.init()
         
         self.voiceProvider.onMessage = { event in
