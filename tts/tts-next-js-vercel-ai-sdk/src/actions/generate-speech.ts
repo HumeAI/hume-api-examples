@@ -4,9 +4,7 @@ import { experimental_generateSpeech as generateSpeech } from "ai";
 import { createHume } from "@ai-sdk/hume";
 
 const hume = createHume({
-  headers: {
-    "X-Hume-API-Key": process.env.HUME_API_KEY!,
-  },
+  apiKey: process.env.HUME_API_KEY!
 });
 
 export async function tts(formData: FormData): Promise<{
