@@ -9,95 +9,32 @@ import SwiftUI
 import Hume
 import AVFoundation
 
-struct EventRow: Identifiable {
-    let id = UUID()
-    let event: SubscribeEvent
-}
-
-struct EventRowView: View {
-    
-    let eventRow: EventRow
-    
-    var body: some View {
-        switch eventRow.event {
-        case .assistantEnd(let assistantEnd):
-            AssistantEndRow(resource: assistantEnd)
-        case .assistantMessage(let assistantMessage):
-            AssistantMessageRow(resource: assistantMessage)
-        case .webSocketError(let webSocketError):
-            WebSocketErrorRow(resource: webSocketError)
-        case .userInterruption(let userInterruption):
-            UserInterruptionRow(resource: userInterruption)
-        case .userMessage(let userMessage):
-            UserMessageRow(resource: userMessage)
-        case .toolCallMessage(let toolCallMessage):
-            ToolCallMessageRow(resource: toolCallMessage)
-        case .toolResponseMessage(let toolResponseMessage):
-            ToolResponseMessageRow(resource: toolResponseMessage)
-        case .toolErrorMessage(let toolErrorMessage):
-            ToolErrorMessageRow(resource: toolErrorMessage)
-        default:
-            EmptyView()
-        }
-    }
-}
-
-@MainActor
-class EVIChatModel: NSObject, ObservableObject {
-    
-    private let voiceProvider: VoiceProvider
-    
-    @Published var events: [EventRow] = []
-    
-    override init() {
-        self.voiceProvider = VoiceProvider(apiKey: Secrets.apiKey)
-        super.init()
-        
-        self.voiceProvider.onMessage = { event in
-            let eventRow = EventRow(event: event)
-            self.events.insert(eventRow, at: 0)
-        }
-    }
-    
-    func sendMessage(_ message: String) async {
-        await self.voiceProvider.sendUserInput(message: message)
-    }
-    
-    func sendAssistantMessage(_ message: String) async {
-        await self.voiceProvider.sendAssistantInput(message: message)
-    }
-    
-    func requestRecordPermission() async throws{
-        AVAudioApplication.requestRecordPermission { granted in
-            if granted {
-                print("granted")
-                Task {
-                    try await self.voiceProvider.connect()
-                }
-            } else {
-                print("denied")
-            }
-        }
-    }
-}
-
-
 struct EVIChatView: View {
     
-    @StateObject var model = EVIChatModel()
+    @EnvironmentObject var model: EVIChatModel
     
     @State private var message: String = ""
     
     // TODO: Show when the socket disconnects
     // TODO: Allow the socket to reconnect
     
+    private var displayedEvents: [EventRow] {
+        model.events.filter { eventRow in
+            switch eventRow.event {
+            case .audioOutput: return false
+            default: return true
+            }
+        }
+    }
+    
     
     var body: some View {
         VStack {
             List {
-                ForEach(model.events) { eventRow in
+                ForEach(displayedEvents) { eventRow in
                     EventRowView(eventRow: eventRow)
                         .flippedUpsideDown()
+                        .padding(.vertical)
                 }
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets())
@@ -107,26 +44,27 @@ struct EVIChatView: View {
             Spacer()
             VStack {
                 HStack(spacing: 16) {
-                    TextField("Talk with Hume", text: $message)
+                    TextField("Talk with EVI", text: $message)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .submitLabel(.send)
+                        .onSubmit { sendUserMessage() }
                 }
-                HStack {
-                    Button("Send UserInput") {
+                
+                HStack(spacing: 20) {
+                    Button("Send as User Input") {
                         guard message.count > 0 else { return }
-                        Task {
-                            await model.sendMessage(message)
-                            message = ""
-                        }
+                        sendUserMessage()
                     }
-                    Spacer().frame(width: 20)
-                    Button("Send AssistantInput") {
+                    .buttonStyle(.borderedProminent)
+                    
+                    Button("Send as Assistant Input") {
                         guard message.count > 0 else { return }
-                        Task {
-                            await model.sendAssistantMessage(message)
-                            message = ""
-                        }
+                        sendAssistantMessage()
                     }
-                    .foregroundStyle(Color.gray)
+                    .buttonStyle(.bordered)
+                    
+                    phoneButton()
+
                 }
             }
             
@@ -142,19 +80,56 @@ struct EVIChatView: View {
             }
         }
     }
-}
-
-
-
-struct FlippedUpsideDown: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .rotationEffect(.radians(.pi))
-            .scaleEffect(x: -1, y: 1, anchor: .center)
+    
+    // MARK: - Views
+    @ViewBuilder
+    private func phoneButton() -> some View {
+        let size: CGFloat = 50
+        switch model.connectionState {
+        case .connecting, .disconnecting:
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+                .frame(width: size, height: size)
+        case .connected, .disconnected:
+            let imageName = model.connectionState == .connected ? "phone.down.circle.fill" : "phone.circle.fill"
+            let color: Color = model.connectionState == .connected ? .red : .green
+            
+            Button {
+                Task {
+                    try await model.toggleVoiceProvider()
+                }
+            } label: {
+                Image(systemName: imageName)
+                    .resizable()
+                    .frame(width: size, height: size)
+                    .foregroundStyle(color)
+            }
+        }
+        
+    }
+    
+    // MARK: - Helpers
+    private func sendUserMessage() {
+        Task {
+            try await model.sendMessage(message)
+            message = ""
+        }
+    }
+    
+    private func sendAssistantMessage() {
+        Task {
+            try await model.sendAssistantMessage(message)
+            message = ""
+        }
     }
 }
-extension View{
-    func flippedUpsideDown() -> some View{
-        self.modifier(FlippedUpsideDown())
+
+
+#if DEBUG
+struct EVIChatView_Previews: PreviewProvider {
+    static var previews: some View {
+        return EVIChatView()
+            .environmentObject(EVIChatModel.makeForPreview())
     }
 }
+#endif

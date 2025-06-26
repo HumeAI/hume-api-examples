@@ -18,20 +18,8 @@ processing of the appropriate details.
 
 ## Development setup
 
-You'll need to add a file called EVIExample/Secrets.swift. The contents should be as the following:
-
-```
-//
-//  Secrets.swift
-//  EVIExample
-//
-//
-
-class Secrets {
-    static let apiKey: String = "YOUR_API_KEY"
-    static let clientSecret: String = "YOUR_SECRET"
-}
-```
+To interact with the Hume API from a mobile client, we recommend using the [token strategy](https://dev.hume.ai/docs/introduction/api-key#authentication-strategies). 
+In this example repo, we included a simple python server that demonstrates how to fetch an access token. To start the server, see the [README](access_token_service/README.md) for the service. For the client-side of this demonstration, see [AccessTokenClient](EVIExample/EVIDemo/Clients/AccessTokenClient.swift). 
 
 ## WIP
 

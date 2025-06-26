@@ -9,38 +9,40 @@
 /* Begin PBXBuildFile section */
 		634A0D942BFC217000639883 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = 634A0D932BFC217000639883 /* Hume */; };
 		634A0D982BFC236900639883 /* EVIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634A0D972BFC236900639883 /* EVIChatView.swift */; };
-		6353C6842BF950E700A9050A /* EviExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6353C6832BF950E700A9050A /* EviExampleApp.swift */; };
+		6353C6842BF950E700A9050A /* EVIExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6353C6832BF950E700A9050A /* EVIExampleApp.swift */; };
 		6353C6862BF950E700A9050A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6353C6852BF950E700A9050A /* ContentView.swift */; };
 		6353C6882BF950E800A9050A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6353C6872BF950E800A9050A /* Assets.xcassets */; };
 		6353C68B2BF950E800A9050A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6353C68A2BF950E800A9050A /* Preview Assets.xcassets */; };
-		63D840232C0025EB0091061C /* AssistantEndRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D840222C0025EB0091061C /* AssistantEndRow.swift */; };
-		63D840252C0026630091061C /* AssistantMessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D840242C0026630091061C /* AssistantMessageRow.swift */; };
-		63D840292C0027580091061C /* WebSocketErrorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D840282C0027580091061C /* WebSocketErrorRow.swift */; };
-		63D8402B2C0027850091061C /* UserInterruptionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D8402A2C0027850091061C /* UserInterruptionRow.swift */; };
-		63D8402D2C0027AE0091061C /* UserMessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D8402C2C0027AD0091061C /* UserMessageRow.swift */; };
-		63D8402F2C0027DE0091061C /* ToolCallMessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D8402E2C0027DE0091061C /* ToolCallMessageRow.swift */; };
-		63D840312C0027F40091061C /* ToolResponseMessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D840302C0027F40091061C /* ToolResponseMessageRow.swift */; };
-		63D840332C0028190091061C /* ToolErrorMessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D840322C0028190091061C /* ToolErrorMessageRow.swift */; };
-		8A22245C2C20BE1200FEE361 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = 8A22245B2C20BE1200FEE361 /* Hume */; };
-		8C8B09DE2C120CDD00462071 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8B09DD2C120CDD00462071 /* Secrets.swift */; };
+		63D8402D2C0027AE0091061C /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D8402C2C0027AD0091061C /* MessageRow.swift */; };
+		B7050D7C2DFB6CD2002F6479 /* AccessTokenClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7050D7B2DFB6CD2002F6479 /* AccessTokenClient.swift */; };
+		B7050D7E2DFB6D3E002F6479 /* EVIChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7050D7D2DFB6D3A002F6479 /* EVIChatModel.swift */; };
+		B7051C872DFCAE74002F6479 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B7051C862DFCAE74002F6479 /* Hume */; };
+		B7051C8A2DFCAEF4002F6479 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B7051C892DFCAEF4002F6479 /* Hume */; };
+		B7051C8C2DFCB4D1002F6479 /* FlippedUpsideDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7051C8B2DFCB4D1002F6479 /* FlippedUpsideDown.swift */; };
+		B7051C8E2DFCBA53002F6479 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7051C8D2DFCBA4E002F6479 /* Mocks.swift */; };
+		B7051CB52E007D28002F6479 /* EventRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7051CB42E007D28002F6479 /* EventRow.swift */; };
+		B70528C22E0114A6002F6479 /* EVIChatModel+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70528C12E011498002F6479 /* EVIChatModel+Previews.swift */; };
+		B70528C42E0121BF002F6479 /* DetailedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70528C32E0121BF002F6479 /* DetailedRow.swift */; };
+		B7CC80BE2E0ADDA700E8796C /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B7CC80BD2E0ADDA700E8796C /* Hume */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		634A0D972BFC236900639883 /* EVIChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVIChatView.swift; sourceTree = "<group>"; };
-		6353C6802BF950E700A9050A /* EviExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EviExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6353C6832BF950E700A9050A /* EviExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EviExampleApp.swift; sourceTree = "<group>"; };
+		6353C6802BF950E700A9050A /* EVIExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVIExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6353C6832BF950E700A9050A /* EVIExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EVIExampleApp.swift; sourceTree = "<group>"; };
 		6353C6852BF950E700A9050A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6353C6872BF950E800A9050A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6353C68A2BF950E800A9050A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		63D840222C0025EB0091061C /* AssistantEndRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantEndRow.swift; sourceTree = "<group>"; };
-		63D840242C0026630091061C /* AssistantMessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantMessageRow.swift; sourceTree = "<group>"; };
-		63D840282C0027580091061C /* WebSocketErrorRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketErrorRow.swift; sourceTree = "<group>"; };
-		63D8402A2C0027850091061C /* UserInterruptionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInterruptionRow.swift; sourceTree = "<group>"; };
-		63D8402C2C0027AD0091061C /* UserMessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMessageRow.swift; sourceTree = "<group>"; };
-		63D8402E2C0027DE0091061C /* ToolCallMessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolCallMessageRow.swift; sourceTree = "<group>"; };
-		63D840302C0027F40091061C /* ToolResponseMessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolResponseMessageRow.swift; sourceTree = "<group>"; };
-		63D840322C0028190091061C /* ToolErrorMessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolErrorMessageRow.swift; sourceTree = "<group>"; };
-		8C8B09DD2C120CDD00462071 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		63D8402C2C0027AD0091061C /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
+		B7050D7B2DFB6CD2002F6479 /* AccessTokenClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenClient.swift; sourceTree = "<group>"; };
+		B7050D7D2DFB6D3A002F6479 /* EVIChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EVIChatModel.swift; sourceTree = "<group>"; };
+		B7051C8B2DFCB4D1002F6479 /* FlippedUpsideDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedUpsideDown.swift; sourceTree = "<group>"; };
+		B7051C8D2DFCBA4E002F6479 /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
+		B7051CB42E007D28002F6479 /* EventRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRow.swift; sourceTree = "<group>"; };
+		B70522BA2E0096FE002F6479 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B70528C12E011498002F6479 /* EVIChatModel+Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EVIChatModel+Previews.swift"; sourceTree = "<group>"; };
+		B70528C32E0121BF002F6479 /* DetailedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedRow.swift; sourceTree = "<group>"; };
+		B70528D52E01A12B002F6479 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +51,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				634A0D942BFC217000639883 /* Hume in Frameworks */,
-				8A22245C2C20BE1200FEE361 /* Hume in Frameworks */,
+				B7051C872DFCAE74002F6479 /* Hume in Frameworks */,
+				B7051C8A2DFCAEF4002F6479 /* Hume in Frameworks */,
+				B7CC80BE2E0ADDA700E8796C /* Hume in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,7 +70,8 @@
 		6353C6772BF950E700A9050A = {
 			isa = PBXGroup;
 			children = (
-				6353C6822BF950E700A9050A /* EviExample */,
+				B70528D52E01A12B002F6479 /* README.md */,
+				6353C6822BF950E700A9050A /* EVIExample */,
 				6353C6812BF950E700A9050A /* Products */,
 				6344B7BB2BF951EC007BD3D1 /* Frameworks */,
 			);
@@ -75,27 +80,27 @@
 		6353C6812BF950E700A9050A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6353C6802BF950E700A9050A /* EviExample.app */,
+				6353C6802BF950E700A9050A /* EVIExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6353C6822BF950E700A9050A /* EviExample */ = {
+		6353C6822BF950E700A9050A /* EVIExample */ = {
 			isa = PBXGroup;
 			children = (
+				B70522BA2E0096FE002F6479 /* Info.plist */,
 				63D840202BFED72D0091061C /* EVIDemo */,
-				6353C6832BF950E700A9050A /* EviExampleApp.swift */,
-				6353C6852BF950E700A9050A /* ContentView.swift */,
+				6353C6832BF950E700A9050A /* EVIExampleApp.swift */,
 				6353C6872BF950E800A9050A /* Assets.xcassets */,
 				6353C6892BF950E800A9050A /* Preview Content */,
-				8C8B09DD2C120CDD00462071 /* Secrets.swift */,
 			);
-			path = EviExample;
+			path = EVIExample;
 			sourceTree = "<group>";
 		};
 		6353C6892BF950E800A9050A /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				B70528C12E011498002F6479 /* EVIChatModel+Previews.swift */,
 				6353C68A2BF950E800A9050A /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -104,8 +109,12 @@
 		63D840202BFED72D0091061C /* EVIDemo */ = {
 			isa = PBXGroup;
 			children = (
+				B7051C8D2DFCBA4E002F6479 /* Mocks.swift */,
+				B7051C822DFC8FB5002F6479 /* Views */,
+				B7050D7A2DFB6CCA002F6479 /* Clients */,
 				63D840212C0025D80091061C /* Rows */,
 				634A0D972BFC236900639883 /* EVIChatView.swift */,
+				B7050D7D2DFB6D3A002F6479 /* EVIChatModel.swift */,
 			);
 			path = EVIDemo;
 			sourceTree = "<group>";
@@ -113,24 +122,44 @@
 		63D840212C0025D80091061C /* Rows */ = {
 			isa = PBXGroup;
 			children = (
-				63D840222C0025EB0091061C /* AssistantEndRow.swift */,
-				63D840242C0026630091061C /* AssistantMessageRow.swift */,
-				63D840282C0027580091061C /* WebSocketErrorRow.swift */,
-				63D8402A2C0027850091061C /* UserInterruptionRow.swift */,
-				63D8402C2C0027AD0091061C /* UserMessageRow.swift */,
-				63D8402E2C0027DE0091061C /* ToolCallMessageRow.swift */,
-				63D840302C0027F40091061C /* ToolResponseMessageRow.swift */,
-				63D840322C0028190091061C /* ToolErrorMessageRow.swift */,
+				63D8402C2C0027AD0091061C /* MessageRow.swift */,
+				B70528C32E0121BF002F6479 /* DetailedRow.swift */,
 			);
 			path = Rows;
+			sourceTree = "<group>";
+		};
+		B7050D7A2DFB6CCA002F6479 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				B7050D7B2DFB6CD2002F6479 /* AccessTokenClient.swift */,
+			);
+			path = Clients;
+			sourceTree = "<group>";
+		};
+		B7051C822DFC8FB5002F6479 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B7051CB42E007D28002F6479 /* EventRow.swift */,
+				B7051C832DFC8FC5002F6479 /* Modifiers */,
+				6353C6852BF950E700A9050A /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B7051C832DFC8FC5002F6479 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				B7051C8B2DFCB4D1002F6479 /* FlippedUpsideDown.swift */,
+			);
+			path = Modifiers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6353C67F2BF950E700A9050A /* EviExample */ = {
+		6353C67F2BF950E700A9050A /* EVIExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6353C68E2BF950E800A9050A /* Build configuration list for PBXNativeTarget "EviExample" */;
+			buildConfigurationList = 6353C68E2BF950E800A9050A /* Build configuration list for PBXNativeTarget "EVIExample" */;
 			buildPhases = (
 				6353C67C2BF950E700A9050A /* Sources */,
 				6353C67D2BF950E700A9050A /* Frameworks */,
@@ -140,13 +169,15 @@
 			);
 			dependencies = (
 			);
-			name = EviExample;
+			name = EVIExample;
 			packageProductDependencies = (
 				634A0D932BFC217000639883 /* Hume */,
-				8A22245B2C20BE1200FEE361 /* Hume */,
+				B7051C862DFCAE74002F6479 /* Hume */,
+				B7051C892DFCAEF4002F6479 /* Hume */,
+				B7CC80BD2E0ADDA700E8796C /* Hume */,
 			);
-			productName = EviExample;
-			productReference = 6353C6802BF950E700A9050A /* EviExample.app */;
+			productName = EVIExample;
+			productReference = 6353C6802BF950E700A9050A /* EVIExample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -174,13 +205,13 @@
 			);
 			mainGroup = 6353C6772BF950E700A9050A;
 			packageReferences = (
-				8A22245A2C20BE1200FEE361 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */,
+				B7CC80BC2E0ADDA700E8796C /* XCRemoteSwiftPackageReference "hume-swift-sdk" */,
 			);
 			productRefGroup = 6353C6812BF950E700A9050A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6353C67F2BF950E700A9050A /* EviExample */,
+				6353C67F2BF950E700A9050A /* EVIExample */,
 			);
 		};
 /* End PBXProject section */
@@ -202,18 +233,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63D8402B2C0027850091061C /* UserInterruptionRow.swift in Sources */,
-				8C8B09DE2C120CDD00462071 /* Secrets.swift in Sources */,
+				B70528C42E0121BF002F6479 /* DetailedRow.swift in Sources */,
+				B7050D7C2DFB6CD2002F6479 /* AccessTokenClient.swift in Sources */,
 				6353C6862BF950E700A9050A /* ContentView.swift in Sources */,
-				63D840252C0026630091061C /* AssistantMessageRow.swift in Sources */,
-				63D840292C0027580091061C /* WebSocketErrorRow.swift in Sources */,
-				63D8402F2C0027DE0091061C /* ToolCallMessageRow.swift in Sources */,
-				63D840312C0027F40091061C /* ToolResponseMessageRow.swift in Sources */,
-				63D840332C0028190091061C /* ToolErrorMessageRow.swift in Sources */,
-				63D8402D2C0027AE0091061C /* UserMessageRow.swift in Sources */,
-				63D840232C0025EB0091061C /* AssistantEndRow.swift in Sources */,
-				6353C6842BF950E700A9050A /* EviExampleApp.swift in Sources */,
+				B7050D7E2DFB6D3E002F6479 /* EVIChatModel.swift in Sources */,
+				B70528C22E0114A6002F6479 /* EVIChatModel+Previews.swift in Sources */,
+				B7051C8C2DFCB4D1002F6479 /* FlippedUpsideDown.swift in Sources */,
+				63D8402D2C0027AE0091061C /* MessageRow.swift in Sources */,
+				6353C6842BF950E700A9050A /* EVIExampleApp.swift in Sources */,
 				634A0D982BFC236900639883 /* EVIChatView.swift in Sources */,
+				B7051C8E2DFCBA53002F6479 /* Mocks.swift in Sources */,
+				B7051CB52E007D28002F6479 /* EventRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,10 +377,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"EviExample/Preview Content\"";
-				DEVELOPMENT_TEAM = QNW744Q794;
+				DEVELOPMENT_ASSET_PATHS = "\"EVIExample/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EVIExample/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Captures audio to send to Hume";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -362,7 +393,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ai.hume.EviExample;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.hume.EVIExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -379,10 +410,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"EviExample/Preview Content\"";
-				DEVELOPMENT_TEAM = QNW744Q794;
+				DEVELOPMENT_ASSET_PATHS = "\"EVIExample/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EVIExample/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Captures audio to send to Hume";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -394,7 +426,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ai.hume.EviExample;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.hume.EVIExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -415,7 +447,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6353C68E2BF950E800A9050A /* Build configuration list for PBXNativeTarget "EviExample" */ = {
+		6353C68E2BF950E800A9050A /* Build configuration list for PBXNativeTarget "EVIExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6353C68F2BF950E800A9050A /* Debug */,
@@ -427,13 +459,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		8A22245A2C20BE1200FEE361 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */ = {
+		B7CC80BC2E0ADDA700E8796C /* XCRemoteSwiftPackageReference "hume-swift-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/HumeAI/hume-swift-sdk";
-      requirement = {
-          kind = upToNextMajorVersion;
-          minimumVersion = "0.0.1-beta0";
-      };
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
@@ -442,9 +474,17 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Hume;
 		};
-		8A22245B2C20BE1200FEE361 /* Hume */ = {
+		B7051C862DFCAE74002F6479 /* Hume */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 8A22245A2C20BE1200FEE361 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */;
+			productName = Hume;
+		};
+		B7051C892DFCAEF4002F6479 /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Hume;
+		};
+		B7CC80BD2E0ADDA700E8796C /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B7CC80BC2E0ADDA700E8796C /* XCRemoteSwiftPackageReference "hume-swift-sdk" */;
 			productName = Hume;
 		};
 /* End XCSwiftPackageProductDependency section */
