@@ -6,38 +6,52 @@ import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { ComponentRef, useRef } from "react";
 
+type ToolMeta = {
+  endpoint: string;
+  error: {
+    error: string;
+    code: string;
+    level: "warn" | "error";
+    content: string;
+  };
+};
+
+const tools: Record<string, ToolMeta> = {
+  get_current_weather: {
+    endpoint: "/api/fetchWeather",
+    error: {
+      error: "Weather tool error",
+      code: "weather_tool_error",
+      level: "warn",
+      content: "There was an error with the weather tool",
+    },
+  },
+};
+
 const handleToolCall: ToolCallHandler = async (message, send) => {
-  if (message.name === "get_current_weather") {
-    try {
-      const response = await fetch("/api/fetchWeather", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ parameters: message.parameters }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        return send.success(result.data);
-      } else {
-        return send.error(result.error);
-      }
-    } catch (error) {
-      return send.error({
-        error: "Weather tool error",
-        code: "weather_tool_error",
-        level: "warn",
-        content: "There was an error with the weather tool",
-      });
-    }
+  const tool = tools[message.name];
+  
+  if (!tool) {
+    return send.error({
+      error: "Tool not found",
+      code: "tool_not_found",
+      level: "warn",
+      content: "The tool you requested was not found",
+    });
   }
-
-  return send.error({
-    error: "Tool not found",
-    code: "tool_not_found",
-    level: "warn",
-    content: "The tool you requested was not found",
-  });
+  
+  try {
+    const response = await fetch(tool.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ parameters: message.parameters }),
+    });
+    
+    const result = await response.json();
+    return result.success ? send.success(result.data) : send.error(result.error);
+  } catch (err) {
+    return send.error(tool.error);
+  }
 };
 
 export default function ClientComponent({
