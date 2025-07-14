@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@humeai/voice-react':
-        specifier: ^0.1.22
-        version: 0.1.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.2.0
+        version: 0.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.1.0(@types/react@18.3.3)(react@18.3.1)
@@ -36,8 +36,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.1(next@14.2.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       hume:
-        specifier: ^0.10.3
-        version: 0.10.3
+        specifier: ^0.11.4
+        version: 0.11.4
       lucide-react:
         specifier: ^0.394.0
         version: 0.394.0(react@18.3.1)
@@ -169,8 +169,8 @@ packages:
     resolution: {integrity: sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==}
     engines: {node: '>=18.18'}
 
-  '@humeai/voice-react@0.1.22':
-    resolution: {integrity: sha512-Gy1mSONhob0tsEpxihBgKlIfel+CowY6R+sKCtdy86lSL3hCsFquSqFCLS80O/Vx1tfzfAE7fTHB4tZdAIHKkA==}
+  '@humeai/voice-react@0.2.0':
+    resolution: {integrity: sha512-E1nbohuvdLDGt1vfnVy2h+ZjZp00Q21ehv6wucC2rMXcD16/+jlTvwrSWAb5hUVP1sZiuwfUVNjKP1Sm3PWf7A==}
     peerDependencies:
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
@@ -416,9 +416,6 @@ packages:
 
   '@swc/helpers@0.5.5':
     resolution: {integrity: sha512-KGYxvIOXcceOAbEk4bi/dVLEK9z8sZ0uBB3Il5b1rhfClSpcX0yfRO0KmTkqR2cnQDymwLB+25ZyMzICg/cm/A==}
-
-  '@types/estree@1.0.5':
-    resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
@@ -1277,8 +1274,8 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  hume@0.10.3:
-    resolution: {integrity: sha512-CmTv98BXD5ZttNPyUbGarelB7yLoYQkCUJAy9IWSnn2WFoT2AeW6A9MYJ0ZtjiCwN/yVoKrTwyXvnlAva3BfZA==}
+  hume@0.11.4:
+    resolution: {integrity: sha512-DFS7qJhKWF3Cbos0cgiR6DLXYW17yJi8PpC0KSmtUqR2zr05CnbowYjVF2NXhWDzvKuJnARBeKu5AiNTmaO97A==}
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -1986,10 +1983,6 @@ packages:
     resolution: {integrity: sha512-WPS/HvHQTYnHisLo9McqBHOJk2FkHO/tlpvldyrnem4aeQp4hai3gythswg6p01oSoTl58rcpiFAjF2br2Ak2A==}
     engines: {node: '>= 0.4'}
 
-  side-channel@1.0.6:
-    resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
-    engines: {node: '>= 0.4'}
-
   side-channel@1.1.0:
     resolution: {integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==}
     engines: {node: '>= 0.4'}
@@ -2370,10 +2363,10 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.2': {}
 
-  '@humeai/voice-react@0.1.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@humeai/voice-react@0.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       date-fns: 3.6.0
-      hume: 0.10.3
+      hume: 0.11.4
       meyda: 5.6.3
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -2559,7 +2552,7 @@ snapshots:
 
   '@rollup/pluginutils@5.1.0':
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.7
       estree-walker: 2.0.2
       picomatch: 2.3.1
 
@@ -2573,8 +2566,6 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
       tslib: 2.6.3
-
-  '@types/estree@1.0.5': {}
 
   '@types/estree@1.0.7': {}
 
@@ -3692,7 +3683,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  hume@0.10.3:
+  hume@0.11.4:
     dependencies:
       form-data: 4.0.0
       form-data-encoder: 4.0.2
@@ -3726,7 +3717,7 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
       hasown: 2.0.2
-      side-channel: 1.0.6
+      side-channel: 1.1.0
 
   internal-slot@1.1.0:
     dependencies:
@@ -4455,13 +4446,6 @@ snapshots:
       get-intrinsic: 1.3.0
       object-inspect: 1.13.4
       side-channel-map: 1.0.1
-
-  side-channel@1.0.6:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      get-intrinsic: 1.2.4
-      object-inspect: 1.13.1
 
   side-channel@1.1.0:
     dependencies:
