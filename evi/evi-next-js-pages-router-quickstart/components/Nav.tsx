@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import HumeLogo from "./logos/Hume";
 import { Button } from "./ui/button";
 import { Moon, Sun } from "lucide-react";
@@ -10,7 +10,7 @@ import pkg from "@/package.json";
 export const Nav = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const el = document.documentElement;
 
     if (el.classList.contains("dark")) {
