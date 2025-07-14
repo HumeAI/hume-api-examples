@@ -1,10 +1,15 @@
-import { useVoice } from "@humeai/voice-react";
+import { ConnectOptions, useVoice } from "@humeai/voice-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Phone } from "lucide-react";
 
-export default function StartCall() {
+export default function StartCall({ accessToken }: { accessToken: string }) {
   const { status, connect } = useVoice();
+
+  const EVI_CONNECT_OPTIONS: ConnectOptions = {
+    auth: { type: "accessToken", value: accessToken },
+    configId: process.env.NEXT_PUBLIC_HUME_CONFIG_ID,
+  };
 
   return (
     <AnimatePresence>
@@ -33,7 +38,7 @@ export default function StartCall() {
               <Button
                 className={"z-50 flex items-center gap-1.5"}
                 onClick={() => {
-                  connect()
+                  connect(EVI_CONNECT_OPTIONS)
                     .then(() => {})
                     .catch(() => {})
                     .finally(() => {});

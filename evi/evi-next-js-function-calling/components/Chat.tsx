@@ -30,7 +30,7 @@ const tools: Record<string, ToolMeta> = {
 
 const handleToolCall: ToolCallHandler = async (message, send) => {
   const tool = tools[message.name];
-  
+
   if (!tool) {
     return send.error({
       error: "Tool not found",
@@ -39,16 +39,18 @@ const handleToolCall: ToolCallHandler = async (message, send) => {
       content: "The tool you requested was not found",
     });
   }
-  
+
   try {
     const response = await fetch(tool.endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ parameters: message.parameters }),
     });
-    
+
     const result = await response.json();
-    return result.success ? send.success(result.data) : send.error(result.error);
+    return result.success
+      ? send.success(result.data)
+      : send.error(result.error);
   } catch (err) {
     return send.error(tool.error);
   }
@@ -69,8 +71,6 @@ export default function ClientComponent({
       }
     >
       <VoiceProvider
-        configId={process.env.NEXT_PUBLIC_HUME_CONFIG_ID}
-        auth={{ type: "accessToken", value: accessToken }}
         onToolCall={handleToolCall}
         onMessage={() => {
           if (timeout.current) {
@@ -91,7 +91,7 @@ export default function ClientComponent({
       >
         <Messages ref={ref} />
         <Controls />
-        <StartCall />
+        <StartCall accessToken={accessToken} />
       </VoiceProvider>
     </div>
   );
