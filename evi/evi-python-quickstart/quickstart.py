@@ -30,7 +30,6 @@ async def main() -> None:
     HUME_CONFIG_ID = os.getenv("HUME_CONFIG_ID")
 
     client = AsyncHumeClient(api_key=HUME_API_KEY)
-    options = ChatConnectOptions(config_id=HUME_CONFIG_ID)
     
     stream = Stream.new()
 
@@ -57,7 +56,7 @@ async def main() -> None:
 
 
     async with client.empathic_voice.chat.connect_with_callbacks(
-        options=options,
+        options=ChatConnectOptions(config_id=HUME_CONFIG_ID),
         on_open=lambda: print("WebSocket connection opened."),
         on_message=on_message,
         on_close=lambda: print("WebSocket connection closed."),
