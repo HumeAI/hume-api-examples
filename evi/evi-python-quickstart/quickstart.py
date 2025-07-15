@@ -3,10 +3,10 @@ import base64
 import datetime
 import os
 from dotenv import load_dotenv
+from hume import MicrophoneInterface, Stream
 from hume.client import AsyncHumeClient
 from hume.empathic_voice.chat.socket_client import ChatConnectOptions
 from hume.empathic_voice.chat.types import SubscribeEvent
-from hume import MicrophoneInterface, Stream
 
 class WebSocketHandler:
     def __init__(self):
@@ -17,8 +17,9 @@ class WebSocketHandler:
 
     async def on_message(self, message: SubscribeEvent):
         if message.type == "chat_metadata":
-            self._print_prompt(f"<{message.type}> Chat ID: {message.chat_id}, Chat Group ID: {message.chat_group_id}")
-            return
+            self._print_prompt(
+                f"<{message.type}> Chat ID: {message.chat_id}, Chat Group ID: {message.chat_group_id}"
+            )
         elif message.type == "user_message" or message.type == "assistant_message":
             self._print_prompt(f"{message.message.role}: {message.message.content}")
             if message.models.prosody is not None:
@@ -27,17 +28,16 @@ class WebSocketHandler:
                 )
             else:
                 print("Emotion scores not available.")
-            return
         elif message.type == "audio_output":
             await self.byte_strs.put(
                 base64.b64decode(message.data.encode("utf-8"))
             )
-            return
         elif message.type == "error":
-            raise RuntimeError(f"Received error message from Hume websocket ({message.code}): {message.message}")
+            raise RuntimeError(
+                f"Received error message from Hume websocket ({message.code}): {message.message}"
+            )
         else:
             self._print_prompt(f"<{message.type}>")
-
         
     async def on_close(self):
         print("WebSocket connection closed.")
@@ -64,11 +64,10 @@ async def main() -> None:
     load_dotenv()
 
     HUME_API_KEY = os.getenv("HUME_API_KEY")
-    HUME_SECRET_KEY = os.getenv("HUME_SECRET_KEY")
     HUME_CONFIG_ID = os.getenv("HUME_CONFIG_ID")
 
     client = AsyncHumeClient(api_key=HUME_API_KEY)
-    options = ChatConnectOptions(config_id=HUME_CONFIG_ID, secret_key=HUME_SECRET_KEY)
+    options = ChatConnectOptions(config_id=HUME_CONFIG_ID)
 
     websocket_handler = WebSocketHandler()
 
