@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       hume:
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^0.12.1
+        version: 0.12.1
     devDependencies:
       '@types/node':
         specifier: ^22.15.18
@@ -374,8 +374,8 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  hume@0.12.0:
-    resolution: {integrity: sha512-VxHYP52VxVoUkFXoG4/lntkVWBZXXegKG9JsLL88BGuVqrc9wQOTUShk6BRSmLucDLDcv6kKcZ42nERkFSW7jQ==}
+  hume@0.12.1:
+    resolution: {integrity: sha512-6/u3lUVMIr/1BmzI2HLq+BoVW1bTR1m+5TOrxqfSPrMAfCXIHkZo+OHArZEA/gCqox02fvwDnmgXxTvPhRfnGg==}
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -793,7 +793,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  hume@0.12.0:
+  hume@0.12.1:
     dependencies:
       form-data: 4.0.2
       form-data-encoder: 4.0.2

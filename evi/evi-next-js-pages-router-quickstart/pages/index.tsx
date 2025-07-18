@@ -7,6 +7,12 @@ const Chat = dynamic(() => import("@/components/Chat"), {
 });
 
 export const getServerSideProps = async () => {
+  if (!process.env.HUME_API_KEY) {
+    throw new Error("The HUME_API_KEY environment variable is not set.");
+  }
+  if (!process.env.HUME_SECRET_KEY) {
+    throw new Error("The HUME_SECRET_KEY environment variable is not set.");
+  }
   try {
     const accessToken = await fetchAccessToken({
       apiKey: String(process.env.HUME_API_KEY),
