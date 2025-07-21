@@ -1,17 +1,10 @@
-[tool.poetry]
+[project]
 name = "evi-python-clm-sse"
 version = "0.1.0"
 description = ""
-authors = ["brian@hume.ai"]
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.11"
-fastapi = "^0.115.5"
-uvicorn = "^0.32.0"
-openai = "^1.54.4"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.5",
+    "uvicorn>=0.32.0",
+    "openai>=1.54.4",
+]

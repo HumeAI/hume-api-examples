@@ -8,23 +8,13 @@ from fastapi import HTTPException, Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 app = fastapi.FastAPI()
-"""
-This would be the server that Hume would send requests to, that would then 
-get streamed back to us.
-
-uvicorn openai_sse:app --reload
-"""
-
 client = openai.AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 
-async def get_response(
+async def stream_messages_from_openai(
     raw_messages: list[dict],
-    custom_session_id: Optional[str],
+    custom_session_id: Optional[str] = None,
 ) -> AsyncIterable[str]:
-    """
-    Stream a response from OpenAI back to Hume.
-    """
     messages: list[ChatCompletionMessageParam] = [
         {"role": m["role"], "content": m["content"]} for m in raw_messages
     ]
@@ -34,15 +24,17 @@ async def get_response(
         model="gpt-4o",
         stream=True,
     )
-
     async for chunk in chat_completion_chunk_stream:
+        if custom_session_id:
+            chunk.system_fingerprint = custom_session_id
         yield "data: " + chunk.model_dump_json(exclude_none=True) + "\n\n"
     yield "data: [DONE]\n\n"
 
 
 security = HTTPBearer()
-API_KEY = "your-secret-key-here"  # In production, use environment variables
-
+API_KEY = os.getenv('OPENAI_API_KEY')
+if not API_KEY:
+    raise ValueError("OPENAI_API_KEY environment variable not set")
 
 async def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)):
     if credentials.credentials != API_KEY:
@@ -53,9 +45,7 @@ async def verify_token(credentials: HTTPAuthorizationCredentials = Security(secu
 @app.post("/chat/completions", response_class=StreamingResponse)
 async def root(
     request: fastapi.Request,
-    # token: str = Security(verify_token)
 ):
-    """Chat completions endpoint with Bearer token authentication"""
     request_json = await request.json()
     messages = request_json["messages"]
     print(messages)
@@ -64,7 +54,7 @@ async def root(
     print(custom_session_id)
 
     return StreamingResponse(
-        get_response(messages, custom_session_id=custom_session_id),
+        stream_messages_from_openai(messages, custom_session_id=custom_session_id),
         media_type="text/event-stream",
     )
 
