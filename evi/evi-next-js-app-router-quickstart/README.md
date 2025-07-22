@@ -54,7 +54,7 @@ Below are the steps to completing deployment:
 
    EVI is pre-configured with a set of default values, which are automatically applied if you do not specify a configuration. The default configuration includes a preset voice and language model, but does not include a system prompt or tools. To customize these options, you will need to create and specify your own EVI configuration. To learn more, see our [configuration guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration/build-a-configuration).
 
-   Pass in a configuration ID to the `connect` method inside the [components/StartCall.tsx file](https://github.com/HumeAI/hume-api-examples/blob/main/evi/next-js/evi-next-js-app-router-quickstart/components/StartCall.tsx).
+   Pass in a configuration ID to the `connect` method inside the [components/StartCall.tsx file](https://github.com/HumeAI/hume-api-examples/blob/main/evi/evi-next-js-app-router-quickstart/components/StartCall.tsx).
 
    ```tsx
    connect({

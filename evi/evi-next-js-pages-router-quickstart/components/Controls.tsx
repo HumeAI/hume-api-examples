@@ -59,9 +59,7 @@ export default function Controls() {
 
             <Button
               className={"flex items-center gap-1"}
-              onClick={() => {
-                disconnect();
-              }}
+              onClick={async () => await disconnect()}
               variant={"destructive"}
             >
               <span>
