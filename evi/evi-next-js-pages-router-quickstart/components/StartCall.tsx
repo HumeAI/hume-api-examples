@@ -8,7 +8,7 @@ export default function StartCall({ accessToken }: { accessToken: string }) {
 
   const EVI_CONNECT_OPTIONS: ConnectOptions = {
     auth: { type: "accessToken", value: accessToken },
-    // configId="YOUR_CONFIG_ID"
+    // configId: "<YOUR_CONFIG_ID>"
   };
 
   return (
