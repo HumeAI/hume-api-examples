@@ -1,23 +1,26 @@
 {
   "expo": {
-    "name": "EVIExample",
-    "slug": "EVIExample",
+    "name": "eviexample",
+    "slug": "eviexample",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "icon": "./assets/images/icon.png",
+    "scheme": "eviexample",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "ios": {
       "deploymentTarget": "16.0",
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.EVIExample",
+      "bundleIdentifier": "com.twitchard.eviexample",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app uses the microphone to allow the user to talk to the EVI conversational AI interface"
       }
-    }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": []
   }
 }
