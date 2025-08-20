@@ -146,15 +146,16 @@ async def main() -> None:
 
     # Streaming example with audio playback
     print("Streaming audio...")
+    voice = PostedUtteranceVoiceWithName(name=name)
     with get_audio_player() as player:
         async for snippet in hume.tts.synthesize_json_streaming(
             context=PostedContextWithGenerationId(
                 generation_id=speech3.generations[0].generation_id,
             ),
             utterances=[
-                PostedUtterance(text="He's drawn the bow..."),
-                PostedUtterance(text="he's fired the arrow..."),
-                PostedUtterance(text="I can't believe it! A perfect bullseye!")
+                PostedUtterance(text="He's drawn the bow...", voice=voice),
+                PostedUtterance(text="he's fired the arrow...", voice=voice),
+                PostedUtterance(text="I can't believe it! A perfect bullseye!", voice=voice)
             ],
             # Uncomment to reduce latency to < 500ms, at a 10% higher cost
             # instant_mode=True,

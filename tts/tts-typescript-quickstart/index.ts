@@ -75,6 +75,7 @@ const main = async () => {
   await writeResultToFile(speech2.generations[0].audio, "speech2_0")
   await writeResultToFile(speech2.generations[1].audio, "speech2_1")
 
+  const voice = { name }
   const speech3 = await hume.tts.synthesizeJson({
     utterances: [{
       voice: { name },
@@ -93,14 +94,9 @@ const main = async () => {
     context: {
       generationId: speech3.generations[0].generationId,
     },
-    utterances: [{ text: "He's drawn the bow..." }, { text: "he's fired the arrow..." }, { text: "I can't believe it! A perfect bullseye!" }],
-    // Uncomment to reduce latency to < 500ms, at a 10% higher cost
-    // instantMode: true,
-    //
-    // By default, the audio data of every chunk returned by `synthesizeJsonStreaming` is a standalone 'mp3' file.
-    // The `playAudio` function expects to receive a single audio file. You can pass the `stripHeaders` option to
-    // remove the "headers" from each chunk so that the streamed audio can be played as a single file.
-    // TODO: stripHeaders: true
+    utterances: [{ voice, text: "He's drawn the bow..." }, { voice, text: "he's fired the arrow..." }, { voice, text: "I can't believe it! A perfect bullseye!" }],
+
+    stripHeaders: true
   })) {
     audioPlayer.sendAudio(snippet.audio)
   }
