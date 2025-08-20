@@ -1,2 +1,2 @@
 export { default } from './src/AudioModule';
-export * from  './src/Audio.types';
+export * from  './src/AudioModule.types';

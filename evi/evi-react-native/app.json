@@ -16,11 +16,10 @@
         "NSMicrophoneUsageDescription": "This app uses the microphone to allow the user to talk to the EVI conversational AI interface"
       }
     },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": []
+    "web": {},
+    "plugins": ["./plugins/withHume"],
+    "android": {
+      "package": "com.twitchard.eviexample"
+    }
   }
 }
