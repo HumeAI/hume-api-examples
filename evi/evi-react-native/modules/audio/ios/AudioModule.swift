@@ -4,8 +4,44 @@ import Foundation
 import Hume
 
 public class AudioModule: Module {
-    private var voiceProvider: VoiceProvider!
-    private var isConfigured = false
+    private let audioHub = AudioHub.shared
+    private var audioHubIsPrepared = false
+    private var _soundPlayer: SoundPlayer?
+
+    private func handleMicrophoneData(_ data: Data) {
+        self.sendEvent("onAudioInput", ["base64EncodedAudio": data])
+    }
+
+    private func handleAudioOutput(_ audioOutput: AudioOutput) {
+      guard let clip = SoundClip.from(audioOutput) else {
+        self.sendEvent("onError", ["message": "Failed to decode audio output"])
+        return
+      } 
+      Task {
+        do {
+          let soundPlayer = try await getSoundPlayer(format: AVAudioFormat(
+            commonFormat: .pcmFormatInt16,
+            sampleRate: 48000,
+            channels: 1,
+            interleaved: false
+          )!)
+          await soundPlayer.enqueueAudio(soundClip: clip)
+        } catch {
+            self.sendEvent("onError", ["message": error.localizedDescription])
+        }
+      }
+    }
+
+    /// Gets an existing SoundPlayer with the specified format or creates a new one if necessary.
+    private func getSoundPlayer(format: AVAudioFormat) async throws -> SoundPlayer {
+      if let _soundPlayer {
+        return _soundPlayer
+      } else {
+          _soundPlayer = SoundPlayer(format: format)
+      }
+      try await audioHub.addNode(_soundPlayer!.audioSourceNode, format: format)
+      return _soundPlayer!
+    }
 
     public func definition() -> ModuleDefinition {
         Name("Audio")
@@ -19,51 +55,30 @@ public class AudioModule: Module {
         }
 
         AsyncFunction("startRecording") {
-            try await ensureConfiguredVoiceProvider()
+            try await prepare()
+            try await self.audioHub.startMicrophone(handler: handleMicrophoneData)
 
-            // VoiceProvider manages audio internally
-            // For now, we'll implement a basic recording pattern
-            // The actual microphone data handling would be done through VoiceProvider delegates
         }
 
         AsyncFunction("stopRecording") {
-            try await ensureConfiguredVoiceProvider()
-            // VoiceProvider handles stopping internally
+            try await prepare()
+            try await self.audioHub.stopMicrophone()
         }
 
         AsyncFunction("mute") {
-            guard let voiceProvider = voiceProvider else { return }
-            // VoiceProvider would handle muting through its audio session
+            audioHub.muteMic(true)
         }
         
         AsyncFunction("unmute") {
-            guard let voiceProvider = voiceProvider else { return }
-            // VoiceProvider would handle unmuting through its audio session
+            audioHub.muteMic(false)
         }
 
         AsyncFunction("enqueueAudio") { (base64EncodedAudio: String) in
-            try await ensureConfiguredVoiceProvider()
-            
-            // Create a mock AudioOutput to convert to SoundClip
-            let audioOutput = AudioOutput(
-                customSessionId: nil,
-                data: base64EncodedAudio,
-                index: 0,
-                id: UUID().uuidString,
-                type: "audio_output"
-            )
-            
-            guard let soundClip = SoundClip.from(audioOutput) else {
-                throw NSError(domain: "AudioModule", code: 2, 
-                             userInfo: [NSLocalizedDescriptionKey: "Failed to create sound clip"])
-            }
-            
-            // VoiceProvider would handle audio playback
+            try await ensureConfiguredAudioHub()
         }
         
         AsyncFunction("stopPlayback") {
-            guard let voiceProvider = voiceProvider else { return }
-            // VoiceProvider would handle playback interruption
+            guard let audioHub = audioHub else { return }
         }
     }
 
@@ -87,17 +102,7 @@ public class AudioModule: Module {
         }
     }
 
-    private func ensureConfiguredVoiceProvider() async throws {
-        if voiceProvider != nil && isConfigured {
-            return
-        }
-        
-        // For basic usage, we'll create a minimal VoiceProvider setup
-        // In a real app, you'd need a proper Hume client with authentication
-        let token = "your-access-token" // This should come from your app configuration
-        let humeClient = HumeClient(options: .accessToken(token: token))
-        voiceProvider = VoiceProvider(client: humeClient)
-        
-        isConfigured = true
+    private func prepare() async throws {
+        self.audioHub.prepare()
     }
 }

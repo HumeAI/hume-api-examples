@@ -4,14 +4,8 @@ const withHume = (config) => {
   return withPodfile(config, (config) => {
     const podfile = config.modResults;
     
-    // Update deployment target to 17.0 for Hume compatibility
-    podfile.contents = podfile.contents.replace(
-      /platform :ios, podfile_properties\['ios\.deploymentTarget'\] \|\| '[^']+'/,
-      `platform :ios, podfile_properties['ios.deploymentTarget'] || '17.0'`
-    );
-    
     // Add Hume pod to the target
-    const humeDepString = `  pod 'Hume', :git => 'https://github.com/HumeAI/hume-swift-sdk', :tag => '0.0.1-beta3'`;
+    const humeDepString = `  pod 'Hume', :git => 'https://github.com/HumeAI/hume-swift-sdk', :tag => '0.0.1-beta4'`;
     
     if (!podfile.contents.includes("pod 'Hume'")) {
       // Find the target section and add the dependency
