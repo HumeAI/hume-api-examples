@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name           = 'Audio'
-  s.version        = '1.0.0'
-  s.summary        = 'A sample project summary'
-  s.description    = 'A sample project description'
+  s.version        = '0.0.1'
+  s.summary        = 'This is a native module for internal use inside a React Native project.'
+  s.description    = 'This native module provides basic (streaming) audio and playback capabilities necessary for communicating with EVI, the empathic voice interface from Hume AI'
   s.author         = ''
-  s.homepage       = 'https://docs.expo.dev/modules/'
+  s.homepage       = 'https://hume.ai'
   s.platforms      = {
     :ios => '16.0',
     :tvos => '16.0'
