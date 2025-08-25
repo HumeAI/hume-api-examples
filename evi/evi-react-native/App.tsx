@@ -85,9 +85,14 @@ const App = () => {
     await startClient();
     const hume = humeRef.current!;
     try {
-      await NativeAudio.getPermissions();
+      const hasPermission = await NativeAudio.getPermissions();
+      if (!hasPermission) {
+        console.error("Microphone permission denied");
+        return;
+      }
     } catch (error) {
       console.error("Failed to get permissions:", error);
+      return;
     }
 
     const chatSocket = hume.empathicVoice.chat.connect({
@@ -241,6 +246,7 @@ const App = () => {
       case "tool_call":
       case "tool_error":
       case "tool_response":
+      case "assistant_prosody":
         console.log(`Received unhandled message type: ${message.type}`);
         break;
       default:

@@ -16,7 +16,9 @@
         "NSMicrophoneUsageDescription": "This app uses the microphone to allow the user to talk to the EVI conversational AI interface"
       }
     },
-    "web": {},
+    "web": {
+      "bundler": "metro"
+    },
     "plugins": [
       [
         "expo-build-properties",

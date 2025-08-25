@@ -5,7 +5,7 @@ const withHume = (config) => {
     const podfile = config.modResults;
     
     // Add Hume pod to the target
-    const humeDepString = `  pod 'Hume', :git => 'https://github.com/HumeAI/hume-swift-sdk', :tag => '0.0.1-beta4'`;
+    const humeDepString = `  pod 'Hume', :git => 'https://github.com/HumeAI/hume-swift-sdk', :branch => 'main'`;
     
     if (!podfile.contents.includes("pod 'Hume'")) {
       // Find the target section and add the dependency
