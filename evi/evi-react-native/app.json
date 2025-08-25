@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "eviexample",
-    "slug": "eviexample",
+    "name": "EVIExample",
+    "slug": "EVIExample",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,7 +11,7 @@
     "ios": {
       "deploymentTarget": "16.0",
       "supportsTablet": true,
-      "bundleIdentifier": "com.twitchard.eviexample",
+      "bundleIdentifier": "com.example.EVIExample",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app uses the microphone to allow the user to talk to the EVI conversational AI interface"
       }
