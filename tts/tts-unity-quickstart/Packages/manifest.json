@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "com.humeai.unity": "https://github.com/humeai/hume-csharp-sdk.git?path=/Packages/com.humeai.unity#upm",
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.modules.unitywebrequest": "1.0.0"
+  }
+}
