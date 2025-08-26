@@ -1,51 +1,22 @@
 import { EventEmitter } from 'expo-modules-core';
-import { convertBlobToBase64, convertBase64ToBlob, getAudioStream, ensureSingleValidAudioTrack, getBrowserSupportedMimeType, MimeType } from 'hume';
-import { AudioModuleEvents } from './Audio.types';
+import { convertBlobToBase64, getAudioStream, ensureSingleValidAudioTrack, getBrowserSupportedMimeType, MimeType } from 'hume';
+import { EVIWebAudioPlayer } from "hume";
+import { AudioModuleEvents } from './AudioModule.types';
 
 const emitter = new EventEmitter<AudioModuleEvents>();
 
 let recorder: MediaRecorder | null = null;
 let audioStream: MediaStream | null = null;
-let currentAudio: HTMLAudioElement | null = null;
 let isMuted = false;
 
-/**
- * An AudioClip is a function that you can call to play some audio.
- * It returns a promise that is resolved when the audio is finished playing.
- */
-type AudioClip = () => Promise<void>;
-
-// EVI can send audio output messages faster than they can be played back.
-// It is important to buffer them in a queue so as not to cut off a clip of
-// playing audio with a more recent clip. `audioQueue` is a global
-// audio queue that manages this buffering.
-const audioQueue = {
-  clips: [] as Array<AudioClip>,
-  currentlyPlaying: false,
-
-  advance() {
-    if (this.clips.length === 0) {
-      this.currentlyPlaying = false;
-      return;
-    }
-    const nextClip = this.clips.shift()!;
-    nextClip().then(() => this.advance());
-    this.currentlyPlaying = true;
-  },
-
-  add(clip: AudioClip) {
-    this.clips.push(clip);
-
-    if (!this.currentlyPlaying) {
-      this.advance();
-    }
-  },
-
-  clear() {
-    this.clips = [];
-    this.currentlyPlaying = false;
-  },
-};
+let _player: EVIWebAudioPlayer | null = null;
+const player = async () => {
+  if (_player) return _player;
+  const p = new EVIWebAudioPlayer()
+  await p.init()
+  _player = p
+  return p
+}
 
 const mimeType: MimeType = (() => {
   const result = getBrowserSupportedMimeType();
@@ -53,10 +24,11 @@ const mimeType: MimeType = (() => {
 })();
 
 export default {
-  async getPermissions() {
+  async getPermissions(): Promise<boolean> {
     console.log('Requesting microphone permissions...');
     await navigator.mediaDevices.getUserMedia({ audio: true });
     console.log('Microphone permissions granted.');
+    return true
   },
 
   async startRecording(): Promise<void> {
@@ -90,13 +62,7 @@ export default {
   },
 
   async enqueueAudio(base64EncodedAudio: string): Promise<void> {
-    audioQueue.add(() => new Promise((resolve) => {
-      const audioBlob = convertBase64ToBlob(base64EncodedAudio);
-      const audioUrl = URL.createObjectURL(audioBlob);
-      currentAudio = new Audio(audioUrl);
-      currentAudio.onended = () => resolve()
-      currentAudio.play();
-    }))
+    (await player()).enqueue({ type: 'audio_output', data: base64EncodedAudio });
   },
 
   async mute(): Promise<void> {
@@ -108,8 +74,10 @@ export default {
   },
 
   async stopPlayback(): Promise<void> {
-    currentAudio?.pause();
-    currentAudio = null;
+    const p = await player()
+    if (p?.playing) {
+      p?.stop()
+    }
   },
 
   isLinear16PCM: false,

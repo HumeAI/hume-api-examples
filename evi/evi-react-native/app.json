@@ -4,20 +4,39 @@
     "slug": "EVIExample",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "icon": "./assets/images/icon.png",
+    "scheme": "eviexample",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "ios": {
-      "deploymentTarget": "15.1",
+      "deploymentTarget": "16.0",
       "supportsTablet": true,
       "bundleIdentifier": "com.example.EVIExample",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app uses the microphone to allow the user to talk to the EVI conversational AI interface"
       }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.0",
+            "extraPods": [
+              {
+                "name": "Hume",
+                "version": "0.0.1-beta5"
+              }
+            ]
+          }
+        }
+      ]
+    ],
+    "android": {
+      "package": "com.twitchard.eviexample"
     }
   }
 }

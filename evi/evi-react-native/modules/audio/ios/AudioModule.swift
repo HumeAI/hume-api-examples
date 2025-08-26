@@ -1,44 +1,58 @@
 import AVFoundation
 import ExpoModulesCore
 import Foundation
+import Hume
 
 public class AudioModule: Module {
-    private var inittedAudioSession: Bool = false
+    private let audioHub = AudioHub.shared
+    private var audioHubIsPrepared = false
+    private var _soundPlayer: SoundPlayer?
+    
+    private static let audioFormat = AVAudioFormat(
+        commonFormat: .pcmFormatInt16,
+        sampleRate: 48000,
+        channels: 1,
+        interleaved: false
+    )!
 
-    // These should only be initialized after a call to `getPermissions`.
-    private lazy var microphone: Microphone = {
-        let microphone = Microphone()
-        microphone.onError({ error in
-            switch error {
-            case MicrophoneError.conversionFailed(let details):
-                self.sendEvent("onError", ["error": details])
-            default:
-                self.sendEvent("onError", ["error": "Unknown recording error"])
-            }
-        })
-        return microphone
-    }()
-    private lazy var soundPlayer: SoundPlayer = {
-        let soundPlayer = SoundPlayer()
-        soundPlayer.onError({ error in
-            switch error {
-            case SoundPlayerError.invalidBase64String:
-                self.sendEvent("onError", ["error": "Invalid base64 string"])
-            case SoundPlayerError.couldNotPlayAudio:
-                self.sendEvent("onError", ["error": "Could not play audio"])
-            case SoundPlayerError.decodeError(let details):
-                self.sendEvent("onError", ["error": details])
-            default:
-                self.sendEvent("onError", ["error": "Unknown playback error"])
-            }
-        })
-        return soundPlayer
-    }()
+    private func handleMicrophoneData(_ data: Data, _: Float) {
+        self.sendEvent("onAudioInput", ["base64EncodedAudio": data.base64EncodedString()])
+    }
+
+    private func handleAudioOutput(_ audioOutput: AudioOutput) {
+      guard let clip = SoundClip.from(audioOutput) else {
+        self.sendEvent("onError", ["message": "Failed to decode audio output"])
+        return
+      }
+      playAudioClip(clip)
+    }
+    
+    private func playAudioClip(_ clip: SoundClip) {
+      Task {
+        do {
+          let soundPlayer = try await getSoundPlayer(format: Self.audioFormat)
+          await soundPlayer.enqueueAudio(soundClip: clip)
+        } catch {
+            self.sendEvent("onError", ["message": error.localizedDescription])
+        }
+      }
+    }
+
+    private func getSoundPlayer(format: AVAudioFormat) async throws -> SoundPlayer {
+      if let _soundPlayer {
+        // TODO: if the format changes, it will not be reflected.
+        return _soundPlayer
+      } else {
+          _soundPlayer = SoundPlayer(format: format)
+      }
+      try await audioHub.addNode(_soundPlayer!.audioSourceNode, format: format)
+      return _soundPlayer!
+    }
 
     public func definition() -> ModuleDefinition {
         Name("Audio")
 
-        Constants(["sampleRate": Microphone.sampleRate, "isLinear16PCM": Microphone.isLinear16PCM])
+        Constants(["sampleRate": 48000, "isLinear16PCM": true])
 
         Events("onAudioInput", "onError")
 
@@ -47,43 +61,61 @@ public class AudioModule: Module {
         }
 
         AsyncFunction("startRecording") {
-            try ensureInittedAudioSession()
-            try self.microphone.startRecording(onBase64EncodedAudio: { (data: String) in
-                self.sendEvent("onAudioInput", ["base64EncodedAudio": data])
-            })
+            // Ensure permissions are granted first
+            let hasPermission = try await self.getPermissions()
+            guard hasPermission else {
+                throw NSError(domain: "AudioModule", code: 2, userInfo: [NSLocalizedDescriptionKey: "Microphone permission not granted"])
+            }
+            try await prepare()
+            try await self.audioHub.startMicrophone(handler: handleMicrophoneData)
         }
 
         AsyncFunction("stopRecording") {
-            try ensureInittedAudioSession()
-            self.microphone.stopRecording()
+            try await prepare()
+            await self.audioHub.stopMicrophone()
         }
 
         AsyncFunction("mute") {
-            self.microphone.mute()
+            await audioHub.muteMic(true)
         }
+        
         AsyncFunction("unmute") {
-            self.microphone.unmute()
+            await audioHub.muteMic(false)
         }
 
         AsyncFunction("enqueueAudio") { (base64EncodedAudio: String) in
-            try ensureInittedAudioSession()
-            return try await self.soundPlayer.enqueueAudio(base64EncodedAudio)
+            try await prepare()
+            guard let audioData = Data(base64Encoded: base64EncodedAudio) else {
+                self.sendEvent("onError", ["message": "Invalid base64 audio data"])
+                return
+            }
+            guard let clip = SoundClip.from(audioData) else {
+                self.sendEvent("onError", ["message": "Failed to create sound clip"])
+                return
+            }
+            self.playAudioClip(clip)
         }
+        
         AsyncFunction("stopPlayback") {
-            self.soundPlayer.stopPlayback()
+            await _soundPlayer?.clearQueue()
         }
     }
 
     private func getPermissions() async throws -> Bool {
         let audioSession = AVAudioSession.sharedInstance()
+        print("AudioModule: Current permission state: \(audioSession.recordPermission.rawValue)")
         switch audioSession.recordPermission {
         case .granted:
+            print("AudioModule: Microphone permission already granted")
             return true
         case .denied:
+            print("AudioModule: Microphone permission denied")
             return false
         case .undetermined:
+            print("AudioModule: Requesting microphone permission...")
             return await withCheckedContinuation { continuation in
                 audioSession.requestRecordPermission { granted in
+                    print("AudioModule: Permission request result: \(granted)")
                     continuation.resume(returning: granted)
                 }
             }
@@ -94,13 +126,11 @@ public class AudioModule: Module {
         }
     }
 
-    private func ensureInittedAudioSession() throws {
-        if self.inittedAudioSession { return }
-        let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(
-            .playAndRecord, mode: .voiceChat,
-            options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP])
-        try audioSession.setActive(true)
-        inittedAudioSession = true
+    private func prepare() async throws {
+        guard !audioHubIsPrepared else { return }
+        print("AudioModule: Preparing AudioHub...")
+        await self.audioHub.prepare()
+        audioHubIsPrepared = true
+        print("AudioModule: AudioHub prepared successfully")
     }
 }
