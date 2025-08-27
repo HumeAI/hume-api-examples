@@ -1,0 +1,564 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		634A0D982BFC236900639883 /* EVIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634A0D972BFC236900639883 /* EVIChatView.swift */; };
+		6353C6842BF950E700A9050A /* HumeDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6353C6832BF950E700A9050A /* HumeDemoApp.swift */; };
+		6353C6882BF950E800A9050A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6353C6872BF950E800A9050A /* Assets.xcassets */; };
+		6353C68B2BF950E800A9050A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6353C68A2BF950E800A9050A /* Preview Assets.xcassets */; };
+		63D8402D2C0027AE0091061C /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D8402C2C0027AD0091061C /* MessageRow.swift */; };
+		B7050D7C2DFB6CD2002F6479 /* AccessTokenClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7050D7B2DFB6CD2002F6479 /* AccessTokenClient.swift */; };
+		B7050D7E2DFB6D3E002F6479 /* EVIChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7050D7D2DFB6D3A002F6479 /* EVIChatModel.swift */; };
+		B7051C8C2DFCB4D1002F6479 /* FlippedUpsideDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7051C8B2DFCB4D1002F6479 /* FlippedUpsideDown.swift */; };
+		B7051C8E2DFCBA53002F6479 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7051C8D2DFCBA4E002F6479 /* Mocks.swift */; };
+		B7051CB52E007D28002F6479 /* RowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7051CB42E007D28002F6479 /* RowView.swift */; };
+		B70528C22E0114A6002F6479 /* EVIChatModel+Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70528C12E011498002F6479 /* EVIChatModel+Previews.swift */; };
+		B70528C42E0121BF002F6479 /* DetailedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70528C32E0121BF002F6479 /* DetailedRow.swift */; };
+		B714454C2E57578A002371CA /* Dictionary+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B714454B2E57578A002371CA /* Dictionary+Additions.swift */; };
+		B72375C62E5E289A00B031D6 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B72375C52E5E289A00B031D6 /* Hume */; };
+		B72375C82E5E289A00B031D6 /* HumeTestingUtils in Frameworks */ = {isa = PBXBuildFile; productRef = B72375C72E5E289A00B031D6 /* HumeTestingUtils */; };
+		B72375CB2E5E2CF800B031D6 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B72375CA2E5E2CF800B031D6 /* Hume */; };
+		B72375CD2E5E2CF800B031D6 /* HumeTestingUtils in Frameworks */ = {isa = PBXBuildFile; productRef = B72375CC2E5E2CF800B031D6 /* HumeTestingUtils */; };
+		B72AD9102E536B1200C87E25 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B72AD90F2E536B1200C87E25 /* Hume */; };
+		B72AD9122E536B1200C87E25 /* HumeTestingUtils in Frameworks */ = {isa = PBXBuildFile; productRef = B72AD9112E536B1200C87E25 /* HumeTestingUtils */; };
+		B790ADAA2E0DC6EE000E1C0A /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B790ADA92E0DC6EE000E1C0A /* Hume */; };
+		B790ADAE2E0DCB88000E1C0A /* EventRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B790ADAD2E0DCB88000E1C0A /* EventRowView.swift */; };
+		B7D83ED92E0DE2F500564AA5 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = 634A0D932BFC217000639883 /* Hume */; };
+		B7D83EDA2E0DE2F500564AA5 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B7051C862DFCAE74002F6479 /* Hume */; };
+		B7D83EDB2E0DE2F500564AA5 /* Hume in Frameworks */ = {isa = PBXBuildFile; productRef = B7051C892DFCAEF4002F6479 /* Hume */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		634A0D972BFC236900639883 /* EVIChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVIChatView.swift; sourceTree = "<group>"; };
+		6353C6802BF950E700A9050A /* HumeDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HumeDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6353C6832BF950E700A9050A /* HumeDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumeDemoApp.swift; sourceTree = "<group>"; };
+		6353C6872BF950E800A9050A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6353C68A2BF950E800A9050A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		63D8402C2C0027AD0091061C /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
+		B7050D7B2DFB6CD2002F6479 /* AccessTokenClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenClient.swift; sourceTree = "<group>"; };
+		B7050D7D2DFB6D3A002F6479 /* EVIChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EVIChatModel.swift; sourceTree = "<group>"; };
+		B7051C8B2DFCB4D1002F6479 /* FlippedUpsideDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedUpsideDown.swift; sourceTree = "<group>"; };
+		B7051C8D2DFCBA4E002F6479 /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
+		B7051CB42E007D28002F6479 /* RowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowView.swift; sourceTree = "<group>"; };
+		B70522BA2E0096FE002F6479 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B70528C12E011498002F6479 /* EVIChatModel+Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EVIChatModel+Previews.swift"; sourceTree = "<group>"; };
+		B70528C32E0121BF002F6479 /* DetailedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedRow.swift; sourceTree = "<group>"; };
+		B70528D52E01A12B002F6479 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B714454B2E57578A002371CA /* Dictionary+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Additions.swift"; sourceTree = "<group>"; };
+		B790ADAD2E0DCB88000E1C0A /* EventRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRowView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6353C67D2BF950E700A9050A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7D83EDB2E0DE2F500564AA5 /* Hume in Frameworks */,
+				B72375C62E5E289A00B031D6 /* Hume in Frameworks */,
+				B72375CB2E5E2CF800B031D6 /* Hume in Frameworks */,
+				B72AD9102E536B1200C87E25 /* Hume in Frameworks */,
+				B7D83EDA2E0DE2F500564AA5 /* Hume in Frameworks */,
+				B7D83ED92E0DE2F500564AA5 /* Hume in Frameworks */,
+				B72AD9122E536B1200C87E25 /* HumeTestingUtils in Frameworks */,
+				B72375C82E5E289A00B031D6 /* HumeTestingUtils in Frameworks */,
+				B72375CD2E5E2CF800B031D6 /* HumeTestingUtils in Frameworks */,
+				B790ADAA2E0DC6EE000E1C0A /* Hume in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6344B7BB2BF951EC007BD3D1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6353C6772BF950E700A9050A = {
+			isa = PBXGroup;
+			children = (
+				B70528D52E01A12B002F6479 /* README.md */,
+				6353C6822BF950E700A9050A /* HumeDemo */,
+				6353C6812BF950E700A9050A /* Products */,
+				6344B7BB2BF951EC007BD3D1 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		6353C6812BF950E700A9050A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6353C6802BF950E700A9050A /* HumeDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6353C6822BF950E700A9050A /* HumeDemo */ = {
+			isa = PBXGroup;
+			children = (
+				B70522BA2E0096FE002F6479 /* Info.plist */,
+				63D840202BFED72D0091061C /* EVIDemo */,
+				6353C6832BF950E700A9050A /* HumeDemoApp.swift */,
+				6353C6872BF950E800A9050A /* Assets.xcassets */,
+				6353C6892BF950E800A9050A /* Preview Content */,
+			);
+			path = HumeDemo;
+			sourceTree = "<group>";
+		};
+		6353C6892BF950E800A9050A /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				B70528C12E011498002F6479 /* EVIChatModel+Previews.swift */,
+				6353C68A2BF950E800A9050A /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		63D840202BFED72D0091061C /* EVIDemo */ = {
+			isa = PBXGroup;
+			children = (
+				B714454A2E575778002371CA /* Extensions */,
+				B7051C8D2DFCBA4E002F6479 /* Mocks.swift */,
+				B7051C822DFC8FB5002F6479 /* Views */,
+				B7050D7A2DFB6CCA002F6479 /* Clients */,
+				63D840212C0025D80091061C /* Rows */,
+			);
+			path = EVIDemo;
+			sourceTree = "<group>";
+		};
+		63D840212C0025D80091061C /* Rows */ = {
+			isa = PBXGroup;
+			children = (
+				63D8402C2C0027AD0091061C /* MessageRow.swift */,
+				B70528C32E0121BF002F6479 /* DetailedRow.swift */,
+			);
+			path = Rows;
+			sourceTree = "<group>";
+		};
+		B7050D7A2DFB6CCA002F6479 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				B7050D7B2DFB6CD2002F6479 /* AccessTokenClient.swift */,
+			);
+			path = Clients;
+			sourceTree = "<group>";
+		};
+		B7051C822DFC8FB5002F6479 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B790ADAC2E0DCB7D000E1C0A /* Components */,
+				B7562FB32E0DA687006D89EC /* Models */,
+				B7051C832DFC8FC5002F6479 /* Modifiers */,
+				634A0D972BFC236900639883 /* EVIChatView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B7051C832DFC8FC5002F6479 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				B7051C8B2DFCB4D1002F6479 /* FlippedUpsideDown.swift */,
+			);
+			path = Modifiers;
+			sourceTree = "<group>";
+		};
+		B714454A2E575778002371CA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B714454B2E57578A002371CA /* Dictionary+Additions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B7562FB32E0DA687006D89EC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B7050D7D2DFB6D3A002F6479 /* EVIChatModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B790ADAC2E0DCB7D000E1C0A /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B790ADAD2E0DCB88000E1C0A /* EventRowView.swift */,
+				B7051CB42E007D28002F6479 /* RowView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6353C67F2BF950E700A9050A /* HumeDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6353C68E2BF950E800A9050A /* Build configuration list for PBXNativeTarget "HumeDemo" */;
+			buildPhases = (
+				6353C67C2BF950E700A9050A /* Sources */,
+				6353C67D2BF950E700A9050A /* Frameworks */,
+				6353C67E2BF950E700A9050A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HumeDemo;
+			packageProductDependencies = (
+				634A0D932BFC217000639883 /* Hume */,
+				B7051C862DFCAE74002F6479 /* Hume */,
+				B7051C892DFCAEF4002F6479 /* Hume */,
+				B790ADA92E0DC6EE000E1C0A /* Hume */,
+				B72AD90F2E536B1200C87E25 /* Hume */,
+				B72AD9112E536B1200C87E25 /* HumeTestingUtils */,
+				B72375C52E5E289A00B031D6 /* Hume */,
+				B72375C72E5E289A00B031D6 /* HumeTestingUtils */,
+				B72375CA2E5E2CF800B031D6 /* Hume */,
+				B72375CC2E5E2CF800B031D6 /* HumeTestingUtils */,
+			);
+			productName = HumeDemo;
+			productReference = 6353C6802BF950E700A9050A /* HumeDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6353C6782BF950E700A9050A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1510;
+				LastUpgradeCheck = 1510;
+				TargetAttributes = {
+					6353C67F2BF950E700A9050A = {
+						CreatedOnToolsVersion = 15.1;
+					};
+				};
+			};
+			buildConfigurationList = 6353C67B2BF950E700A9050A /* Build configuration list for PBXProject "HumeDemo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6353C6772BF950E700A9050A;
+			packageReferences = (
+				B72375C92E5E2CF800B031D6 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */,
+			);
+			productRefGroup = 6353C6812BF950E700A9050A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6353C67F2BF950E700A9050A /* HumeDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6353C67E2BF950E700A9050A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6353C68B2BF950E800A9050A /* Preview Assets.xcassets in Resources */,
+				6353C6882BF950E800A9050A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6353C67C2BF950E700A9050A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B70528C42E0121BF002F6479 /* DetailedRow.swift in Sources */,
+				B7050D7C2DFB6CD2002F6479 /* AccessTokenClient.swift in Sources */,
+				B7050D7E2DFB6D3E002F6479 /* EVIChatModel.swift in Sources */,
+				B714454C2E57578A002371CA /* Dictionary+Additions.swift in Sources */,
+				B70528C22E0114A6002F6479 /* EVIChatModel+Previews.swift in Sources */,
+				B7051C8C2DFCB4D1002F6479 /* FlippedUpsideDown.swift in Sources */,
+				63D8402D2C0027AE0091061C /* MessageRow.swift in Sources */,
+				B790ADAE2E0DCB88000E1C0A /* EventRowView.swift in Sources */,
+				6353C6842BF950E700A9050A /* HumeDemoApp.swift in Sources */,
+				634A0D982BFC236900639883 /* EVIChatView.swift in Sources */,
+				B7051C8E2DFCBA53002F6479 /* Mocks.swift in Sources */,
+				B7051CB52E007D28002F6479 /* RowView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		6353C68C2BF950E800A9050A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		6353C68D2BF950E800A9050A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6353C68F2BF950E800A9050A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"HumeDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HumeDemo/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Captures audio to send to Hume";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ai.hume.evi-demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6353C6902BF950E800A9050A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"HumeDemo/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HumeDemo/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Captures audio to send to Hume";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ai.hume.evi-demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6353C67B2BF950E700A9050A /* Build configuration list for PBXProject "HumeDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6353C68C2BF950E800A9050A /* Debug */,
+				6353C68D2BF950E800A9050A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6353C68E2BF950E800A9050A /* Build configuration list for PBXNativeTarget "HumeDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6353C68F2BF950E800A9050A /* Debug */,
+				6353C6902BF950E800A9050A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B72375C92E5E2CF800B031D6 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/HumeAI/hume-swift-sdk.git";
+			requirement = {
+				branch = "0.0.1-beta4";
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		634A0D932BFC217000639883 /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Hume;
+		};
+		B7051C862DFCAE74002F6479 /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Hume;
+		};
+		B7051C892DFCAEF4002F6479 /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Hume;
+		};
+		B72375C52E5E289A00B031D6 /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Hume;
+		};
+		B72375C72E5E289A00B031D6 /* HumeTestingUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HumeTestingUtils;
+		};
+		B72375CA2E5E2CF800B031D6 /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B72375C92E5E2CF800B031D6 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */;
+			productName = Hume;
+		};
+		B72375CC2E5E2CF800B031D6 /* HumeTestingUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B72375C92E5E2CF800B031D6 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */;
+			productName = HumeTestingUtils;
+		};
+		B72AD90F2E536B1200C87E25 /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Hume;
+		};
+		B72AD9112E536B1200C87E25 /* HumeTestingUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HumeTestingUtils;
+		};
+		B790ADA92E0DC6EE000E1C0A /* Hume */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Hume;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 6353C6782BF950E700A9050A /* Project object */;
+}
