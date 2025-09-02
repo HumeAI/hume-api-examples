@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using System.Threading;
 using HumeApi;
 using HumeApi.Tts;
 
@@ -107,11 +109,13 @@ class Program
 
         await WriteResultToFile(speech3.Generations.First().Audio, "speech3_0", outputDir);
 
-        // Streaming example with audio playback
-        Console.WriteLine("Streaming audio...");
+        // Streaming example with real-time audio playback
+        Console.WriteLine("Streaming audio in real-time...");
         var voice = new PostedUtteranceVoiceWithName { Name = name };
         
-        using var audioPlayer = GetAudioPlayer();
+        using var streamingPlayer = GetStreamingAudioPlayer();
+        await streamingPlayer.StartStreamingAsync();
+        
         await foreach (var snippet in client.Tts.SynthesizeJsonStreamingAsync(new PostedTts
         {
             Context = new PostedContextWithGenerationId 
@@ -124,184 +128,122 @@ class Program
                 new PostedUtterance { Text = "he's fired the arrow...", Voice = voice },
                 new PostedUtterance { Text = "I can't believe it! A perfect bullseye!", Voice = voice }
             },
-            Format = new Format(new Format.Pcm(new FormatPcm()))
+            Format = new Format(new Format.Wav()),
+            StripHeaders = true,
         }))
         {
-            audioPlayer.SendAudio(Convert.FromBase64String(snippet.Audio));
+            await streamingPlayer.SendAudioAsync(Convert.FromBase64String(snippet.Audio));
         }
 
-        await audioPlayer.PlayAll();
+        await streamingPlayer.StopStreamingAsync();
 
         Console.WriteLine("Done");
     }
 
-    // Audio player setup for streaming playback
-    // This is only needed for the streaming example below
-    public class AudioPlayer : IDisposable
+    // Real-time streaming audio player using pipe-based approach
+    public class StreamingAudioPlayer : IDisposable
     {
-        private readonly List<byte[]> _audioChunks = new();
+        private Process? _audioProcess;
+        private int _chunkCounter = 0;
+        private bool _isStreaming = false;
 
-        public void SendAudio(byte[] audioBytes)
+        public Task StartStreamingAsync()
         {
-            _audioChunks.Add(audioBytes);
+            _isStreaming = true;
+            StartAudioProcess();
+            Console.WriteLine("Streaming audio player started...");
+            return Task.CompletedTask;
         }
 
-        public async Task PlayAll()
+        public Task SendAudioAsync(byte[] audioBytes)
         {
-            var allAudioData = _audioChunks.SelectMany(chunk => chunk).ToArray();
-            if (allAudioData.Length == 0) return;
+            if (!_isStreaming || _audioProcess?.HasExited != false) return Task.CompletedTask;
             
-            var tempFile = Path.GetTempFileName() + ".wav";
             try
             {
-                var header = CreateWavHeader(allAudioData.Length);
-                var wavData = header.Concat(allAudioData).ToArray();
-                File.WriteAllBytes(tempFile, wavData);
-                
-                await PlayAudioFile(tempFile);
+                _audioProcess?.StandardInput.BaseStream.Write(audioBytes, 0, audioBytes.Length);
+                _audioProcess?.StandardInput.BaseStream.Flush();
             }
-            finally
+            catch (Exception ex)
             {
-                try { File.Delete(tempFile); } catch { }
+                Console.WriteLine($"Error sending audio chunk: {ex.Message}");
             }
+            
+            return Task.CompletedTask;
         }
 
-        private async Task PlayAudioFile(string filePath)
+        public async Task StopStreamingAsync()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            _isStreaming = false;
+            
+            try
             {
-                var startInfo = new ProcessStartInfo
+                if (_audioProcess != null && !_audioProcess.HasExited)
                 {
-                    FileName = "powershell.exe",
-                    Arguments = $"-Command \"(New-Object System.Media.SoundPlayer '{filePath}').PlaySync()\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                using var process = Process.Start(startInfo);
-                if (process != null)
-                    await process.WaitForExitAsync();
-                    
-                if (process?.ExitCode != 0)
-                {
-                    throw new InvalidOperationException($"PowerShell audio playback failed with exit code {process?.ExitCode}");
+                    _audioProcess.StandardInput.Close();
+                    await _audioProcess.WaitForExitAsync();
                 }
             }
-            else
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error stopping audio process: {ex.Message}");
+            }
+            
+            Console.WriteLine("Streaming audio player stopped.");
+        }
+
+        private void StartAudioProcess()
+        {
+            try
             {
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = "ffplay",
-                    Arguments = $"-nodisp -autoexit \"{filePath}\"",
+                    Arguments = "-nodisp -autoexit -infbuf -i -",
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    RedirectStandardError = true
+                    RedirectStandardInput = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true
                 };
-                using var process = Process.Start(startInfo);
-                if (process != null)
-                    await process.WaitForExitAsync();
-                    
-                if (process?.ExitCode != 0)
+                
+                _audioProcess = Process.Start(startInfo);
+                
+                if (_audioProcess == null)
                 {
-                    throw new InvalidOperationException($"ffplay audio playback failed with exit code {process?.ExitCode}");
+                    throw new InvalidOperationException("Failed to start ffplay process");
                 }
+                
+                _audioProcess.ErrorDataReceived += (sender, e) => {
+                    if (!string.IsNullOrEmpty(e.Data))
+                        Console.WriteLine($"ffplay: {e.Data}");
+                };
+                _audioProcess.BeginErrorReadLine();
             }
-        }
-
-        private static byte[] CreateWavHeader(int dataLength)
-        {
-            var header = new byte[44];
-            var writer = new BinaryWriter(new MemoryStream(header));
-            
-            writer.Write("RIFF".ToCharArray());
-            writer.Write(36 + dataLength);
-            writer.Write("WAVE".ToCharArray());
-            writer.Write("fmt ".ToCharArray());
-            writer.Write(16);
-            writer.Write((short)1);
-            writer.Write((short)1);
-            writer.Write(48000);
-            writer.Write(96000);
-            writer.Write((short)2);
-            writer.Write((short)16);
-            writer.Write("data".ToCharArray());
-            writer.Write(dataLength);
-            
-            return header;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to start ffplay: {ex.Message}");
+                Console.WriteLine("Please install ffmpeg to enable streaming audio playback.");
+            }
         }
 
         public void Dispose()
         {
-            // Nothing to clean up now since we use temp files that are auto-deleted
+            try
+            {
+                if (_audioProcess != null && !_audioProcess.HasExited)
+                {
+                    _audioProcess.Kill();
+                }
+                _audioProcess?.Dispose();
+            }
+            catch { }
         }
     }
 
-    public class DummyAudioPlayer : AudioPlayer
+    private static StreamingAudioPlayer GetStreamingAudioPlayer()
     {
-        public new void SendAudio(byte[] audioBytes)
-        {
-            Console.WriteLine("Skipping playing back audio chunk...");
-        }
-
-        public new Task PlayAll()
-        {
-            return Task.CompletedTask;
-        }
-    }
-
-    private static AudioPlayer GetAudioPlayer()
-    {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            try
-            {
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = "powershell.exe",
-                    Arguments = "-Command \"Get-Host\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
-                using var process = Process.Start(startInfo);
-                process?.WaitForExit();
-                
-                if (process?.ExitCode == 0)
-                {
-                    return new AudioPlayer();
-                }
-            }
-            catch { }
-            
-            Console.WriteLine("Skipping audio playback. PowerShell is required for audio playback on Windows.");
-            return new DummyAudioPlayer();
-        }
-        else
-        {
-            try
-            {
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = "which",
-                    Arguments = "ffplay",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
-                using var process = Process.Start(startInfo);
-                process?.WaitForExit();
-                
-                if (process?.ExitCode == 0)
-                {
-                    return new AudioPlayer();
-                }
-            }
-            catch { }
-            
-            Console.WriteLine("Skipping audio playback. Install ffplay (from FFmpeg) to enable audio playback.");
-            return new DummyAudioPlayer();
-        }
+        return new StreamingAudioPlayer();
     }
 
     private static async Task WriteResultToFile(string base64EncodedAudio, string filename, string outputDir)
