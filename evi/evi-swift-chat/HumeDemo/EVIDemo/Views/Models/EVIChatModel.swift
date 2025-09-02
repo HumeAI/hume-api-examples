@@ -57,7 +57,8 @@ class EVIChatModel: ObservableObject {
         }
         
         // Get a config id from https://platform.hume.ai/evi/configs
-        let options = ChatConnectOptions(configId: "<#config id#>")
+        // let options = ChatConnectOptions(configId: "<#config id#>")
+        let options = ChatConnectOptions()
         let sessionSettings = SessionSettings(
             audio: nil, // recommendation: keep nil to allow the SDK to fully manage audio
             builtinTools: nil,
