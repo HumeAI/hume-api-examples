@@ -1,0 +1,12 @@
+venv/
+.venv/
+build/
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata/
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/xcshareddata/WorkspaceSettings.xcsettings
+.swiftpm/
+.build/
+*.xcarchive
