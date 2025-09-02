@@ -157,8 +157,6 @@ async def main() -> None:
                 PostedUtterance(text="he's fired the arrow...", voice=voice),
                 PostedUtterance(text="I can't believe it! A perfect bullseye!", voice=voice)
             ],
-            # Uncomment to reduce latency to < 500ms, at a 10% higher cost
-            # instant_mode=True,
             format=FormatPcm(type="pcm"),
         ):
             player.send_audio(base64.b64decode(snippet.audio))
