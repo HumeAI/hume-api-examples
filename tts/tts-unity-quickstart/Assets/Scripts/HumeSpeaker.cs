@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using HumeApi.Tts;
-using HumeApi;
+using Hume.Tts;
+using Hume;
 
 [RequireComponent(typeof(AudioSource))]
 public class HumeSpeaker : MonoBehaviour
@@ -34,25 +34,21 @@ public class HumeSpeaker : MonoBehaviour
             audioSource = GetComponent<AudioSource>();
         }
 
-        var client = new HumeApiClient(apiKey);
+        var client = new HumeClient(apiKey);
 
-        var result = await client.Tts.SynthesizeJsonAsync(
-            new SynthesizeJsonRequest
+        var result = await client.Tts.SynthesizeJsonAsync(new PostedTts
             {
-                Body = new PostedTts
+                Format = new Hume.Tts.Format.Pcm(),
+                Utterances = new List<PostedUtterance>()
                 {
-                    Format = new HumeApi.Tts.Format.Pcm(),
-                    Utterances = new List<PostedUtterance>()
+                    new PostedUtterance
                     {
-                        new PostedUtterance
+                        Text = textToSpeak,
+                        Voice = new PostedUtteranceVoiceWithName
                         {
-                            Text = textToSpeak,
-                            Voice = new PostedUtteranceVoiceWithName
-                            {
-                                Name = "Fastidious Robo-Butler",
-                                Provider = VoiceProvider.HumeAi
-                            },
-                        }
+                            Name = "Fastidious Robo-Butler",
+                            Provider = VoiceProvider.HumeAi
+                        },
                     }
                 }
             }
