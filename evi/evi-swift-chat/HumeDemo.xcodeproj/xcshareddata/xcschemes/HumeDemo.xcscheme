@@ -53,8 +53,8 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "ACCESS_TOKEN_HOST"
-            value = "..."
-            isEnabled = "NO">
+            value = "10.0.0.11"
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
