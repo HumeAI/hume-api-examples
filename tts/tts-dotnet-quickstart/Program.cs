@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Threading;
-using HumeApi;
-using HumeApi.Tts;
+using Hume;
+using Hume.Tts;
 
 namespace TtsCsharpQuickstart;
 
@@ -23,7 +23,7 @@ class Program
             throw new InvalidOperationException("HUME_API_KEY not found in environment variables.");
         }
 
-        var client = new HumeApiClient(apiKey);
+        var client = new HumeClient(apiKey);
         
         // Create an output directory in the temporary folder
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -33,20 +33,20 @@ class Program
         Console.WriteLine($"Results will be written to {outputDir}");
 
         // Synthesizing speech with a new voice
-        var speech1 = await client.Tts.SynthesizeJsonAsync(new SynthesizeJsonRequest
-        {
-            Body = new PostedTts
-            {
-                Utterances = new List<PostedUtterance>
+        var speech1 = await client.Tts.SynthesizeJsonAsync
+            (
+                new PostedTts
                 {
-                    new PostedUtterance
+                    Utterances = new List<PostedUtterance>
                     {
-                        Description = "A refined, British aristocrat",
-                        Text = "Take an arrow from the quiver."
+                        new PostedUtterance
+                        {
+                            Description = "A refined, British aristocrat",
+                            Text = "Take an arrow from the quiver."
+                        }
                     }
                 }
-            }
-        });
+            );
 
         await WriteResultToFile(speech1.Generations.First().Audio, "speech1_0", outputDir);
 
@@ -62,9 +62,7 @@ class Program
         });
 
         // Continuing previously-generated speech
-        var speech2 = await client.Tts.SynthesizeJsonAsync(new SynthesizeJsonRequest
-        {
-            Body = new PostedTts
+        var speech2 = await client.Tts.SynthesizeJsonAsync(new PostedTts
             {
                 Utterances = new List<PostedUtterance>
                 {
@@ -80,15 +78,13 @@ class Program
                 Context = new PostedContextWithGenerationId { GenerationId = generationId },
                 NumGenerations = 2
             }
-        });
+        );
 
         await WriteResultToFile(speech2.Generations.First().Audio, "speech2_0", outputDir);
         await WriteResultToFile(speech2.Generations.Skip(1).First().Audio, "speech2_1", outputDir);
 
         // Acting instructions: modulating the speech from a previously-generated voice
-        var speech3 = await client.Tts.SynthesizeJsonAsync(new SynthesizeJsonRequest
-        {
-            Body = new PostedTts
+        var speech3 = await client.Tts.SynthesizeJsonAsync(new PostedTts
             {
                 Utterances = new List<PostedUtterance>
                 {
@@ -105,7 +101,7 @@ class Program
                 },
                 NumGenerations = 1
             }
-        });
+        );
 
         await WriteResultToFile(speech3.Generations.First().Audio, "speech3_0", outputDir);
 
@@ -144,7 +140,6 @@ class Program
     public class StreamingAudioPlayer : IDisposable
     {
         private Process? _audioProcess;
-        private int _chunkCounter = 0;
         private bool _isStreaming = false;
 
         public Task StartStreamingAsync()

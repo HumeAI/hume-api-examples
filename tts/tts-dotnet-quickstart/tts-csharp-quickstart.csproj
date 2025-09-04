@@ -9,9 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="HumeApi">
-      <HintPath>/Users/twitchard/dev/hume-csharp-sdk/main/src/HumeApi/bin/Debug/net8.0/HumeApi.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Hume" Version="0.1.0" />
     <PackageReference Include="OneOf" Version="3.0.271" />
     <PackageReference Include="OneOf.Extended" Version="3.0.271" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
