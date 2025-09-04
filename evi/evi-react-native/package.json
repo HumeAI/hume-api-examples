@@ -5,9 +5,9 @@
   "scripts": {
     "start": "expo start",
     "ios": "expo run:ios",
+    "ios:device": "expo run:ios --device",
     "web": "expo start --web",
-    "lint": "expo lint",
-    "android": "expo run:android"
+    "lint": "expo lint"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
