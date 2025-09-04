@@ -210,14 +210,6 @@
 			);
 			name = HumeDemo;
 			packageProductDependencies = (
-				634A0D932BFC217000639883 /* Hume */,
-				B7051C862DFCAE74002F6479 /* Hume */,
-				B7051C892DFCAEF4002F6479 /* Hume */,
-				B790ADA92E0DC6EE000E1C0A /* Hume */,
-				B72AD90F2E536B1200C87E25 /* Hume */,
-				B72AD9112E536B1200C87E25 /* HumeTestingUtils */,
-				B72375C52E5E289A00B031D6 /* Hume */,
-				B72375C72E5E289A00B031D6 /* HumeTestingUtils */,
 				B72375CA2E5E2CF800B031D6 /* Hume */,
 				B72375CC2E5E2CF800B031D6 /* HumeTestingUtils */,
 			);
@@ -251,7 +243,6 @@
 			mainGroup = 6353C6772BF950E700A9050A;
 			packageReferences = (
 				B72375C92E5E2CF800B031D6 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */,
-				DD6530922E68F6E7007EAEF0 /* XCLocalSwiftPackageReference "../../../hume-swift-sdk" */,
 			);
 			productRefGroup = 6353C6812BF950E700A9050A /* Products */;
 			projectDirPath = "";
@@ -505,41 +496,19 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		DD6530922E68F6E7007EAEF0 /* XCLocalSwiftPackageReference "../../../hume-swift-sdk" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../hume-swift-sdk";
-		};
-/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
 		B72375C92E5E2CF800B031D6 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/HumeAI/hume-swift-sdk.git";
+			requirement = {
+				kind = exactVersion;
+				version = "0.0.1-beta6";
+			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		634A0D932BFC217000639883 /* Hume */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Hume;
-		};
-		B7051C862DFCAE74002F6479 /* Hume */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Hume;
-		};
-		B7051C892DFCAEF4002F6479 /* Hume */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Hume;
-		};
-		B72375C52E5E289A00B031D6 /* Hume */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Hume;
-		};
-		B72375C72E5E289A00B031D6 /* HumeTestingUtils */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HumeTestingUtils;
-		};
 		B72375CA2E5E2CF800B031D6 /* Hume */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B72375C92E5E2CF800B031D6 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */;
@@ -549,18 +518,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B72375C92E5E2CF800B031D6 /* XCRemoteSwiftPackageReference "hume-swift-sdk" */;
 			productName = HumeTestingUtils;
-		};
-		B72AD90F2E536B1200C87E25 /* Hume */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Hume;
-		};
-		B72AD9112E536B1200C87E25 /* HumeTestingUtils */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HumeTestingUtils;
-		};
-		B790ADA92E0DC6EE000E1C0A /* Hume */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Hume;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
