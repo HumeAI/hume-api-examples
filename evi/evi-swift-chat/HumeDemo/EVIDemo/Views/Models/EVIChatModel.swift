@@ -9,6 +9,8 @@ class EVIChatModel: ObservableObject {
     
     @Published var events: [EventRow] = []
     @Published var connectionState: VoiceProviderState = .disconnected
+    @Published var isMicrophoneMuted: Bool = false
+    @Published var isOutputMuted: Bool = false
     
     private var connectionStateCancellable: AnyCancellable?
         
@@ -75,6 +77,16 @@ class EVIChatModel: ObservableObject {
     
     func stopVoiceProvider() async {
         await self.voiceProvider.disconnect()
+    }
+    
+    func toggleMicrophoneMute() {
+        isMicrophoneMuted.toggle()
+        voiceProvider.mute(isMicrophoneMuted)
+    }
+    
+    func toggleOutputMute() async {
+        isOutputMuted.toggle()
+        await voiceProvider.muteOutput(isOutputMuted)
     }
 }
 

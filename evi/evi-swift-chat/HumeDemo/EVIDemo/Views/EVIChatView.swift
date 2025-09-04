@@ -64,8 +64,9 @@ struct EVIChatView: View {
                     .buttonStyle(.bordered)
                     
                     phoneButton()
-
                 }
+                
+                muteButtons()
             }
             
         }
@@ -82,6 +83,52 @@ struct EVIChatView: View {
     }
     
     // MARK: - Views
+    @ViewBuilder
+    private func muteButtons() -> some View {
+        HStack(spacing: 16) {
+            // Microphone mute button
+            Button {
+                model.toggleMicrophoneMute()
+            } label: {
+                VStack(spacing: 4) {
+                    Image(systemName: model.isMicrophoneMuted ? "mic.slash.fill" : "mic.fill")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundStyle(model.isMicrophoneMuted ? .red : .blue)
+                    Text("Mic")
+                        .font(.caption)
+                        .foregroundStyle(model.isMicrophoneMuted ? .red : .blue)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+            }
+            .buttonStyle(.bordered)
+            .disabled(model.connectionState != .connected)
+            
+            // Output mute button
+            Button {
+                Task {
+                    await model.toggleOutputMute()
+                }
+            } label: {
+                VStack(spacing: 4) {
+                    Image(systemName: model.isOutputMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundStyle(model.isOutputMuted ? .red : .green)
+                    Text("Audio")
+                        .font(.caption)
+                        .foregroundStyle(model.isOutputMuted ? .red : .green)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+            }
+            .buttonStyle(.bordered)
+            .disabled(model.connectionState != .connected)
+        }
+        .padding(.top, 8)
+    }
+    
     @ViewBuilder
     private func phoneButton() -> some View {
         let size: CGFloat = 50
