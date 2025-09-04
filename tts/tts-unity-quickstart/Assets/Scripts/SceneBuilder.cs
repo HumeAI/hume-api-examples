@@ -5,6 +5,11 @@ public class SceneBuilder : MonoBehaviour
     [Header("⚠️ Set your API key here BEFORE pressing Play!")]
     [SerializeField] private string humeApiKey = "YOUR_HUME_API_KEY_HERE";
     
+    void Awake()
+    {
+        Debug.Log("SceneBuilder Awake()");
+    }
+
     void Start()
     {
         BuildScene();
