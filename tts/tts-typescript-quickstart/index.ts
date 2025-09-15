@@ -31,12 +31,13 @@ const example1 = async () => {
   })
 
   const audioPlayer = startAudioPlayer()
-  console.log('Playing audio: Example 1 - Pre-existing voice')
+  console.log('Example 1: Synthesizing audio using a pre-existing voice...')
   for await (const snippet of stream) {
     const buffer = Buffer.from(snippet.audio, "base64")
     audioPlayer.stdin.write(buffer)
   }
   await audioPlayer.stop()
+  console.log('Done!')
 }
 
 /** Example 2: Voice Design.
@@ -55,12 +56,11 @@ const example2 = async () => {
     }],
     numGenerations: 2,
     stripHeaders: true,
-    // Voice design is currently only supported when instant mode is disabled.
-    instantMode: false,
   })
 
 
-  const audioPlayer = startAudioPlayer()
+  console.log('Example 2: Synthesizing voice options for voice creation...')
+  let audioPlayer = startAudioPlayer()
   let sampleNumber = 1;
   for (const generation of result1.generations) {
     const buffer = Buffer.from(generation.audio, "base64")
@@ -112,11 +112,14 @@ const example2 = async () => {
     },
     stripHeaders: true
   })
+  console.log('streamed')
 
   for await (const snippet of stream) {
+    console.log('chunk')
     const buffer = Buffer.from(snippet.audio, "base64")
     audioPlayer.stdin.write(buffer)
   }
+  console.log('Done!')
 
   await audioPlayer.stop()
 }
@@ -141,7 +144,8 @@ const example3 = async () => {
   const sendInput = async () => {
     stream.send({ text: "Hello world." });
     stream.sendFlush();
-    await new Promise(r => setTimeout(r, 3000));
+    console.log('Waiting 8 seconds...')
+    await new Promise(r => setTimeout(r, 8000));
     stream.send({ text: "Goodbye, world." });
     stream.sendFlush();
     stream.sendClose();
@@ -163,8 +167,8 @@ const example3 = async () => {
 }
 
 const main = async () => {
-  await example1()
-  await example2()
+  // await example1()
+  // await example2()
   await example3()
 }
 
