@@ -128,10 +128,7 @@ const example2 = async () => {
 const example3 = async () => {
   const stream = await StreamingTtsClient.connect(process.env.HUME_API_KEY!);
   const player = startAudioPlayer('raw');
-  const BYTES_PER_SAMPLE = 2; // 16-bit samples
-  const SAMPLE_RATE = 48000;
-  const BUFFER_SIZE = Math.floor(SAMPLE_RATE * 0.1 * BYTES_PER_SAMPLE); // 100ms buffer
-  const silenceFiller = new SilenceFiller(BUFFER_SIZE, SAMPLE_RATE, BYTES_PER_SAMPLE, 10);
+  const silenceFiller = new SilenceFiller();
 
   // Pipe silence filler output to audio player stdin
   silenceFiller.pipe(player.stdin);
@@ -167,8 +164,8 @@ const example3 = async () => {
 }
 
 const main = async () => {
-  // await example1()
-  // await example2()
+  await example1()
+  await example2()
   await example3()
 }
 
