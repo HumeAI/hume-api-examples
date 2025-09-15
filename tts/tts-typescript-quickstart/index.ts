@@ -1,9 +1,7 @@
-import { HumeClient } from "hume"
-import * as readline from "readline"
+import { HumeClient, SilenceFiller } from "hume"
 import dotenv from "dotenv"
 import { StreamingTtsClient } from "./streaming";
 import { startAudioPlayer } from "./audio_player";
-import { SilenceFiller } from "./silence_filler";
 
 dotenv.config()
 
@@ -11,39 +9,28 @@ const hume = new HumeClient({
   apiKey: process.env.HUME_API_KEY!,
 })
 
-const promptUserInput = (question: string): Promise<string> => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  })
-
-  return new Promise((resolve) => {
-    rl.question(question, (answer) => {
-      rl.close()
-      resolve(answer.trim())
-    })
-  })
-}
 
 /** Example 1: Using a pre-existing voice.
  *
  * Use this method if you want to synthesize speech with a high-quality voice from
  * Hume's Voice Library, or specify `provider: 'CUSTOM_VOICE'` to use a voice that
- * you created previously via the Hume Platform or via the API.
+ * you created previously via the Hume Platform or the API.
  * */
 const example1 = async () => {
-  const voice = { name: 'Ava Song', provider: 'HUME_AI' } as const;
-  const audioPlayer = startAudioPlayer()
+  const utterance = {
+    text: "Dogs became domesticated between 23,000 and 30,000 years ago.",
+    voice: { name: 'Ava Song', provider: 'HUME_AI' as const }
+  }
 
   const stream = await hume.tts.synthesizeJsonStreaming({
-    utterances: [
-      { voice, text: "Dogs became domesticated between 23,000 and 30,000 years ago." },
-    ],
-    // With `stripHeaders: true`, only the first audio chunk will contain headers in container formats (wav, mp3). This allows you to start a single audio player and
-    // stream all audio chunks to it without artifacts.
+    utterances: [utterance],
+    // With `stripHeaders: true`, only the first audio chunk will contain
+    // headers in container formats (wav, mp3). This allows you to start a
+    // single audio player and stream all audio chunks to it without artifacts.
     stripHeaders: true
   })
 
+  const audioPlayer = startAudioPlayer()
   console.log('Playing audio: Example 1 - Pre-existing voice')
   for await (const snippet of stream) {
     const buffer = Buffer.from(snippet.audio, "base64")
@@ -61,57 +48,43 @@ const example1 = async () => {
  * voice by name or generation_id.
  */
 const example2 = async () => {
-  const generationIds: string[] = []
-  {
-    const stream = await hume.tts.synthesizeJsonStreaming({
-      utterances: [{
-        description: "Crisp, upper-class British accent with impeccably articulated consonants and perfectly placed vowels. Authoritative and theatrical, as if giving a lecture.",
-        text: "The science of speech. That's my profession; also my hobby. Happy is the man who can make a living by his hobby!"
-      }],
-      numGenerations: 2,
-      stripHeaders: true,
-      // Voice design is currently only supported when instant mode is disabled.
-      instantMode: false,
-    })
+  const result1 = await hume.tts.synthesizeJson({
+    utterances: [{
+      description: "Crisp, upper-class British accent with impeccably articulated consonants and perfectly placed vowels. Authoritative and theatrical, as if giving a lecture.",
+      text: "The science of speech. That's my profession; also my hobby. Happy is the man who can make a living by his hobby!"
+    }],
+    numGenerations: 2,
+    stripHeaders: true,
+    // Voice design is currently only supported when instant mode is disabled.
+    instantMode: false,
+  })
 
-    // When specifying `numGenerations` > 1, the resulting stream of snippets will
-    // contain interleaved audio from different generations. The `collate` helper
-    // function (defined below) will reorder the stream so that all snippets from
-    // the same generation are contiguous.
-    const contiguousStream = collate(
-      stream,
-      (snippet) => snippet.generationId,
-      (snippet) => snippet.isLastChunk
-    );
 
-    const audioPlayer = startAudioPlayer()
-    let optionNumber = 1;
-    for await (const snippet of contiguousStream) {
-      const buffer = Buffer.from(snippet.audio, "base64")
-      audioPlayer.stdin.write(buffer)
+  const audioPlayer = startAudioPlayer()
+  let sampleNumber = 1;
+  for (const generation of result1.generations) {
+    const buffer = Buffer.from(generation.audio, "base64")
+    audioPlayer.stdin.write(buffer)
 
-      if (snippet.generationId && !generationIds.includes(snippet.generationId)) {
-        generationIds.push(snippet.generationId)
-        console.log(`Playing option ${optionNumber}...`)
-        optionNumber++;
-      }
-    }
-    await audioPlayer.stop()
+    console.log(`Playing option ${sampleNumber}...`)
+    sampleNumber++;
   }
+  await audioPlayer.stop()
 
   // Prompt user to select which voice they prefer
   console.log('\nWhich voice did you prefer?')
-  console.log('1. First voice (generation ID:', generationIds[0], ')')
-  console.log('2. Second voice (generation ID:', generationIds[1], ')')
+  console.log('1. First voice (generation ID:', result1.generations[0].generationId, ')')
+  console.log('2. Second voice (generation ID:', result1.generations[1].generationId, ')')
 
-  const userChoice = await promptUserInput('Enter your choice (1 or 2): ')
+  const readFromStdin = () => new Promise<string>(resolve => process.stdin.once('data', (data) => resolve(data.toString().trim())))
+  process.stdout.write('Enter your choice (1 or 2): '); const userChoice = await readFromStdin()
   const selectedIndex = parseInt(userChoice) - 1
 
   if (selectedIndex !== 0 && selectedIndex !== 1) {
     throw new Error('Invalid choice. Please select 1 or 2.')
   }
 
-  const selectedGenerationId = generationIds[selectedIndex]
+  const selectedGenerationId = result1.generations[selectedIndex].generationId
   console.log(`Selected voice option ${selectedIndex + 1} (generation ID: ${selectedGenerationId})`)
 
   // Save the selected voice
@@ -140,78 +113,12 @@ const example2 = async () => {
     stripHeaders: true
   })
 
-  console.log('Playing audio: Example 2 - Voice continuation')
-  const audioPlayer = startAudioPlayer()
   for await (const snippet of stream) {
     const buffer = Buffer.from(snippet.audio, "base64")
     audioPlayer.stdin.write(buffer)
   }
+
   await audioPlayer.stop()
-}
-/**
- * Takes an async iterator that yields interleaved items from different groups
- * and produces an iterator that yield items in group order.
- *
- * Example
- *   Input:  A1, B1, A2, A3 (final), C1, C2, C3 (final), B2 (final)
- *   Output: A1, A2, A3, B1, B2, C1, C2, C3
- *
- * @param source - The source async iterable producing interleaved items.
- * @param groupBy - Function to determine a "key" that determines the group identity for each item.
- * @param isFinal - Function to determine if an item is the final item in its group.
- */
-async function* collate<TItem, TKey>(
-  source: AsyncIterable<TItem>,
-  groupBy: (x: TItem) => TKey,
-  isFinal: (x: TItem) => boolean
-): AsyncIterable<TItem> {
-  const buffers = new Map<TKey, TItem[]>();
-  const order: TKey[] = [];
-  let current: TKey | undefined;
-
-  const ensure = (k: TKey) => {
-    if (!buffers.has(k)) {
-      buffers.set(k, []);
-      order.push(k);
-    }
-  };
-
-  const flushGroup = function*(k: TKey) {
-    const buf = buffers.get(k);
-    if (!buf) return;
-    for (const item of buf) yield item;
-    buffers.delete(k);
-  };
-
-  const nextGroup = (): TKey | undefined => {
-    // pop the next group in first-seen order that still has a buffer
-    while (order.length && !buffers.has(order[0])) order.shift();
-    return order.shift();
-  };
-
-  for await (const item of source) {
-    const k = groupBy(item);
-
-    if (current === undefined) current = k;
-    ensure(k);
-    buffers.get(k)!.push(item);
-
-    // if we just saw the final item for the current group, flush it and advance
-    if (k === current && isFinal(item)) {
-      yield* flushGroup(current);
-      current = nextGroup();
-    }
-  }
-
-  // stream ended; flush remaining groups in first-seen order
-  if (current !== undefined) {
-    if (buffers.has(current)) yield* flushGroup(current);
-    while (true) {
-      const k = nextGroup();
-      if (k === undefined) break;
-      yield* flushGroup(k);
-    }
-  }
 }
 
 // Example 3: Bidirectional streaming
