@@ -1,6 +1,6 @@
 import { spawn } from "child_process";
 
-const SAMPLE_RATE = 48000; // 48kHz, s16le mono
+const SAMPLE_RATE = 48000;
 
 /**
  * This is a simple audio player that spawns an `ffplay` process and plays audio
@@ -21,7 +21,6 @@ export function startAudioPlayer(mode: 'raw' | 'container' = 'container') {
   args.push(
     "-i", "-"
   );
-  console.log(args)
 
   // Use ffplay for audio playback
   args.push("-nodisp", "-autoexit");

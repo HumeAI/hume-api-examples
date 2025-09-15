@@ -98,6 +98,7 @@ const example2 = async () => {
 
   console.log('\nContinuing speech with the selected voice...')
 
+  audioPlayer = startAudioPlayer()
   const stream = await hume.tts.synthesizeJsonStreaming({
     utterances: [{
       voice: { name: voiceName },
@@ -112,10 +113,8 @@ const example2 = async () => {
     },
     stripHeaders: true
   })
-  console.log('streamed')
 
   for await (const snippet of stream) {
-    console.log('chunk')
     const buffer = Buffer.from(snippet.audio, "base64")
     audioPlayer.stdin.write(buffer)
   }
