@@ -128,7 +128,8 @@ const example2 = async () => {
   const stream = await hume.tts.synthesizeJsonStreaming({
     utterances: [{
       voice: { name: voiceName },
-      text: "You can spot an Irishman or a Yorkshireman by his brogue. I can place any man within six miles. I can place him within two miles in London. Sometimes within two streets."
+      text: "YOU can spot an Irishman or a Yorkshireman by his brogue. I can place any man within six miles. I can place him within two miles in London. Sometimes within two streets.",
+      description: "Bragging about his abilities"
     }],
     context: {
       // This demonstrates the "continuation" feature. You can specify the
