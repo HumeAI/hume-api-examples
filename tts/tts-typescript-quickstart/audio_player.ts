@@ -13,6 +13,8 @@ export function startAudioPlayer(mode: 'raw' | 'container' = 'container') {
   const args: string[] = [];
   if (mode === 'raw') {
     args.push(
+      "-nodisp",
+      "-hide_banner",
       "-f", "s16le",
       "-ar", `${SAMPLE_RATE}`,
       "-fflags", "nobuffer", "-flags", "low_delay", "-probesize", "32", "-analyzeduration", "0",
@@ -24,7 +26,7 @@ export function startAudioPlayer(mode: 'raw' | 'container' = 'container') {
 
   // Use ffplay for audio playback
   args.push("-nodisp", "-autoexit");
-  const ff = spawn("ffplay", args, { stdio: ["pipe", "ignore", "inherit"] });
+  const ff = spawn("ffplay", args, { stdio: ["pipe", "ignore", "ignore"] });
 
   ff.stdin.on('error', (err) => {
     if (err.message.includes('ENOENT')) {

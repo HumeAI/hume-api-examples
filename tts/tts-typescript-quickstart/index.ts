@@ -5,7 +5,6 @@ import { StreamingTtsClient } from "./streaming";
 import { startAudioPlayer } from "./audio_player";
 import { SilenceFiller } from "./silence_filler";
 
-
 dotenv.config()
 
 const hume = new HumeClient({
@@ -45,6 +44,7 @@ const example1 = async () => {
     stripHeaders: true
   })
 
+  console.log('Playing audio: Example 1 - Pre-existing voice')
   for await (const snippet of stream) {
     const buffer = Buffer.from(snippet.audio, "base64")
     audioPlayer.stdin.write(buffer)
@@ -63,7 +63,6 @@ const example1 = async () => {
 const example2 = async () => {
   const generationIds: string[] = []
   {
-    console.log('Generating two voice options...')
     const stream = await hume.tts.synthesizeJsonStreaming({
       utterances: [{
         description: "Crisp, upper-class British accent with impeccably articulated consonants and perfectly placed vowels. Authoritative and theatrical, as if giving a lecture.",
@@ -86,12 +85,15 @@ const example2 = async () => {
     );
 
     const audioPlayer = startAudioPlayer()
+    let optionNumber = 1;
     for await (const snippet of contiguousStream) {
       const buffer = Buffer.from(snippet.audio, "base64")
       audioPlayer.stdin.write(buffer)
 
       if (snippet.generationId && !generationIds.includes(snippet.generationId)) {
         generationIds.push(snippet.generationId)
+        console.log(`Playing option ${optionNumber}...`)
+        optionNumber++;
       }
     }
     await audioPlayer.stop()
@@ -137,6 +139,7 @@ const example2 = async () => {
     stripHeaders: true
   })
 
+  console.log('Playing audio: Example 2 - Voice continuation')
   const audioPlayer = startAudioPlayer()
   for await (const snippet of stream) {
     const buffer = Buffer.from(snippet.audio, "base64")
@@ -237,6 +240,7 @@ const example3 = async () => {
   };
 
   const handleMessages = async () => {
+    console.log('Playing audio: Example 3 - Bidirectional streaming')
     for await (const chunk of stream) {
       const buf = Buffer.from(chunk.audio, "base64");
       silenceFiller.writeAudio(buf);
