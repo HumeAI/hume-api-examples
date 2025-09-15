@@ -3,7 +3,7 @@ import * as readline from "readline"
 import dotenv from "dotenv"
 import { StreamingTtsClient } from "./streaming";
 import { startAudioPlayer } from "./audio_player";
-import { LiveSilenceFiller } from "./silence_filler";
+import { SilenceFiller } from "./silence_filler";
 
 
 dotenv.config()
@@ -26,8 +26,13 @@ const promptUserInput = (question: string): Promise<string> => {
   })
 }
 
-/** Example 0: Using a Hume-provided voice. */
-const example0 = async () => {
+/** Example 1: Using a pre-existing voice.
+ *
+ * Use this method if you want to synthesize speech with a high-quality voice from
+ * Hume's Voice Library, or specify `provider: 'CUSTOM_VOICE'` to use a voice that
+ * you created previously via the Hume Platform or via the API.
+ * */
+const example1 = async () => {
   const voice = { name: 'Ava Song', provider: 'HUME_AI' } as const;
   const audioPlayer = startAudioPlayer()
 
@@ -35,6 +40,8 @@ const example0 = async () => {
     utterances: [
       { voice, text: "Dogs became domesticated between 23,000 and 30,000 years ago." },
     ],
+    // With `stripHeaders: true`, only the first audio chunk will contain headers in container formats (wav, mp3). This allows you to start a single audio player and
+    // stream all audio chunks to it without artifacts.
     stripHeaders: true
   })
 
@@ -45,9 +52,16 @@ const example0 = async () => {
   await audioPlayer.stop()
 }
 
-// Example 1: Creating and using a new voice
-const example1 = async () => {
-  const generationIds: string[] = [];
+/** Example 2: Voice Design.
+ * 
+ * This method demonstrates how you can create a custom voice via the API.
+ * First, synthesize speech by specifying a `description` prompt and characteristic
+ * sample text. Specify the generation_id of the resulting audio in a subsequent
+ * call to create a voice. Then, future calls to tts endpoints can specify the
+ * voice by name or generation_id.
+ */
+const example2 = async () => {
+  const generationIds: string[] = []
   {
     console.log('Generating two voice options...')
     const stream = await hume.tts.synthesizeJsonStreaming({
@@ -57,16 +71,22 @@ const example1 = async () => {
       }],
       numGenerations: 2,
       stripHeaders: true,
+      // Voice design is currently only supported when instant mode is disabled.
       instantMode: false,
     })
-    const inGroupOrder = collate(
+
+    // When specifying `numGenerations` > 1, the resulting stream of snippets will
+    // contain interleaved audio from different generations. The `collate` helper
+    // function (defined below) will reorder the stream so that all snippets from
+    // the same generation are contiguous.
+    const contiguousStream = collate(
       stream,
       (snippet) => snippet.generationId,
       (snippet) => snippet.isLastChunk
     );
 
     const audioPlayer = startAudioPlayer()
-    for await (const snippet of inGroupOrder) {
+    for await (const snippet of contiguousStream) {
       const buffer = Buffer.from(snippet.audio, "base64")
       audioPlayer.stdin.write(buffer)
 
@@ -109,6 +129,9 @@ const example1 = async () => {
       text: "You can spot an Irishman or a Yorkshireman by his brogue. I can place any man within six miles. I can place him within two miles in London. Sometimes within two streets."
     }],
     context: {
+      // This demonstrates the "continuation" feature. You can specify the
+      // generationId of previous speech that the speech in this request is
+      // meant to follow, to make it sound natural when the speech is played
       generationId: selectedGenerationId
     },
     stripHeaders: true
@@ -121,7 +144,6 @@ const example1 = async () => {
   }
   await audioPlayer.stop()
 }
-
 /**
  * Takes an async iterator that yields interleaved items from different groups
  * and produces an iterator that yield items in group order.
@@ -134,7 +156,7 @@ const example1 = async () => {
  * @param groupBy - Function to determine a "key" that determines the group identity for each item.
  * @param isFinal - Function to determine if an item is the final item in its group.
  */
-export async function* collate<TItem, TKey>(
+async function* collate<TItem, TKey>(
   source: AsyncIterable<TItem>,
   groupBy: (x: TItem) => TKey,
   isFinal: (x: TItem) => boolean
@@ -188,14 +210,14 @@ export async function* collate<TItem, TKey>(
   }
 }
 
-// Example 2: Bidirectional streaming
-const example2 = async () => {
+// Example 3: Bidirectional streaming
+const example3 = async () => {
   const stream = await StreamingTtsClient.connect(process.env.HUME_API_KEY!);
   const player = startAudioPlayer('raw');
   const BYTES_PER_SAMPLE = 2; // 16-bit samples
   const SAMPLE_RATE = 48000;
   const BUFFER_SIZE = Math.floor(SAMPLE_RATE * 0.1 * BYTES_PER_SAMPLE); // 100ms buffer
-  const silenceFiller = new LiveSilenceFiller(BUFFER_SIZE, SAMPLE_RATE, BYTES_PER_SAMPLE, 10);
+  const silenceFiller = new SilenceFiller(BUFFER_SIZE, SAMPLE_RATE, BYTES_PER_SAMPLE, 10);
 
   // Pipe silence filler output to audio player stdin
   silenceFiller.pipe(player.stdin);
@@ -229,9 +251,9 @@ const example2 = async () => {
 }
 
 const main = async () => {
-  await example0()
   await example1()
   await example2()
+  await example3()
 }
 
 main().then(() => console.log('Done')).catch(console.error)

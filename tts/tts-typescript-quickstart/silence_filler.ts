@@ -1,6 +1,119 @@
 import { Readable } from "stream";
 
-export class SilenceFiller {
+/**
+ * SilenceFiller is a Readable stream that intersperses incoming audio data
+ * with bytes of silence. This is important in some cases to keep an audio
+ * stream "alive". Audio players, such as ffmpeg, can interpret inactivity as
+ * meaning the stream is ended, or disconnected.
+ */
+export class SilenceFiller extends Readable {
+  private unclockedSilenceFiller: UnclockedSilenceFiller;
+  private isStarted: boolean = false;
+  private pushInterval: NodeJS.Timeout | null = null;
+  private bytesPerSample: number;
+  private pushIntervalMs: number;
+
+  constructor(
+    bufferSize: number,
+    sampleRate: number,
+    bytesPerSample: number,
+    pushIntervalMs: number = 5
+  ) {
+    super({ objectMode: false });
+    this.unclockedSilenceFiller = new UnclockedSilenceFiller(bufferSize, sampleRate, bytesPerSample);
+    this.bytesPerSample = bytesPerSample;
+    this.pushIntervalMs = pushIntervalMs;
+  }
+
+  writeAudio(audioBuffer: Buffer): void {
+    const now = Date.now();
+    try {
+      this.unclockedSilenceFiller.writeAudio(audioBuffer, now);
+      if (!this.isStarted && this.unclockedSilenceFiller.donePrebuffering) {
+        this.isStarted = true;
+        this.startPushInterval();
+      }
+    } catch (error) {
+      console.error(`[SilenceFiller] Error writing audio:`, error);
+      this.emit('error', error);
+    }
+  }
+
+  private startPushInterval(): void {
+    this.pushInterval = setInterval(() => {
+      this.pushData();
+    }, this.pushIntervalMs);
+  }
+
+  private pushData(): void {
+    if (!this.isStarted) return;
+
+    try {
+      const now = Date.now();
+      const audioChunk = this.unclockedSilenceFiller.readAudio(now);
+
+      if (audioChunk && audioChunk.length > 0) {
+        // Ensure chunk size is aligned to bytesPerSample
+        const alignedChunkSize = Math.floor(audioChunk.length / this.bytesPerSample) * this.bytesPerSample;
+
+        if (alignedChunkSize > 0) {
+          const chunk = audioChunk.subarray(0, alignedChunkSize);
+          this.push(chunk);
+        }
+      }
+    } catch (error) {
+      console.error(`[SilenceFiller] Error pushing data:`, error);
+      this.emit('error', error);
+    }
+  }
+
+  _read(): void { }
+
+  _destroy(error: Error | null, callback: (error?: Error | null) => void): void {
+    super._destroy(error, callback);
+  }
+
+  endStream(): Promise<void> {
+    return new Promise((resolve) => {
+      // Stop pushing data
+      if (this.pushInterval) {
+        clearInterval(this.pushInterval);
+        this.pushInterval = null;
+      }
+
+      // Drain all remaining audio from SilenceFiller
+      const now = Date.now();
+
+      // Keep reading until no more audio is available
+      while (true) {
+        const remainingChunk = this.unclockedSilenceFiller.readAudio(now);
+
+        if (!remainingChunk || remainingChunk.length === 0) {
+          break;
+        }
+
+        const alignedChunkSize = Math.floor(remainingChunk.length / this.bytesPerSample) * this.bytesPerSample;
+        if (alignedChunkSize > 0) {
+          const chunk = remainingChunk.subarray(0, alignedChunkSize);
+          this.push(chunk);
+        }
+      }
+
+      this.push(null); // Signal end of stream
+
+      this.once('end', () => {
+        resolve();
+      });
+    });
+  }
+}
+
+/**
+ * Does the actual calculation of how interspersing audio with silence
+ * is "pure" in the sense that it does not rely on the system clock.
+ * It's up to the caller to provide timestamps.
+ */
+class UnclockedSilenceFiller {
   private audioQueue: Buffer[] = [];
   private totalBufferedBytes: number = 0;
   private startTimestamp: number | null = null;
@@ -85,105 +198,3 @@ export class SilenceFiller {
   }
 }
 
-export class LiveSilenceFiller extends Readable {
-  private silenceFiller: SilenceFiller;
-  private isStarted: boolean = false;
-  private pushInterval: NodeJS.Timeout | null = null;
-  private bytesPerSample: number;
-  private pushIntervalMs: number;
-
-  constructor(
-    bufferSize: number,
-    sampleRate: number,
-    bytesPerSample: number,
-    pushIntervalMs: number = 5
-  ) {
-    super({ objectMode: false });
-    this.silenceFiller = new SilenceFiller(bufferSize, sampleRate, bytesPerSample);
-    this.bytesPerSample = bytesPerSample;
-    this.pushIntervalMs = pushIntervalMs;
-  }
-
-  writeAudio(audioBuffer: Buffer): void {
-    const now = performance.now();
-    try {
-      this.silenceFiller.writeAudio(audioBuffer, now);
-      if (!this.isStarted && this.silenceFiller.donePrebuffering) {
-        this.isStarted = true;
-        this.startPushInterval();
-      }
-    } catch (error) {
-      console.error(`[LiveSilenceFiller] Error writing audio:`, error);
-      this.emit('error', error);
-    }
-  }
-
-  private startPushInterval(): void {
-    this.pushInterval = setInterval(() => {
-      this.pushData();
-    }, this.pushIntervalMs);
-  }
-
-  private pushData(): void {
-    if (!this.isStarted) return;
-
-    try {
-      const now = performance.now();
-      const audioChunk = this.silenceFiller.readAudio(now);
-
-      if (audioChunk && audioChunk.length > 0) {
-        // Ensure chunk size is aligned to bytesPerSample
-        const alignedChunkSize = Math.floor(audioChunk.length / this.bytesPerSample) * this.bytesPerSample;
-
-        if (alignedChunkSize > 0) {
-          const chunk = audioChunk.subarray(0, alignedChunkSize);
-          this.push(chunk);
-        }
-      }
-    } catch (error) {
-      console.error(`[LiveSilenceFiller] Error pushing data:`, error);
-      this.emit('error', error);
-    }
-  }
-
-  _read(): void { }
-
-  _destroy(error: Error | null, callback: (error?: Error | null) => void): void {
-    super._destroy(error, callback);
-  }
-
-  endStream(): Promise<void> {
-    return new Promise((resolve) => {
-      // Stop pushing data
-      if (this.pushInterval) {
-        clearInterval(this.pushInterval);
-        this.pushInterval = null;
-      }
-
-      // Drain all remaining audio from SilenceFiller
-      const now = performance.now();
-
-      // Keep reading until no more audio is available
-      while (true) {
-        const remainingChunk = this.silenceFiller.readAudio(now);
-
-        if (!remainingChunk || remainingChunk.length === 0) {
-          break;
-        }
-
-        const alignedChunkSize = Math.floor(remainingChunk.length / this.bytesPerSample) * this.bytesPerSample;
-        if (alignedChunkSize > 0) {
-          const chunk = remainingChunk.subarray(0, alignedChunkSize);
-          this.push(chunk);
-        }
-      }
-
-
-      this.push(null); // Signal end of stream
-
-      this.once('end', () => {
-        resolve();
-      });
-    });
-  }
-}
