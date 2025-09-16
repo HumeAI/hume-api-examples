@@ -76,8 +76,14 @@ const example2 = async () => {
   console.log('1. First voice (generation ID:', result1.generations[0].generationId, ')')
   console.log('2. Second voice (generation ID:', result1.generations[1].generationId, ')')
 
-  const readFromStdin = () => new Promise<string>(resolve => process.stdin.once('data', (data) => resolve(data.toString().trim())))
-  process.stdout.write('Enter your choice (1 or 2): '); const userChoice = await readFromStdin()
+  const readFromStdin = () => new Promise<string>(resolve => {
+    process.stdin.once('data', (data) => {
+      process.stdin.pause(); // Stop reading from stdin
+      resolve(data.toString().trim());
+    });
+  });
+  process.stdout.write('Enter your choice (1 or 2): '); 
+  const userChoice = await readFromStdin()
   const selectedIndex = parseInt(userChoice) - 1
 
   if (selectedIndex !== 0 && selectedIndex !== 1) {
