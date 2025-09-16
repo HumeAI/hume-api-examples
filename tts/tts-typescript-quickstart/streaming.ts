@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import HumeSerialization from "hume/serialization";
+import {SnippetAudioChunk} from "hume/serialization/resources/tts/types/SnippetAudioChunk";
 import { PublishTts } from "hume/api/resources/tts";
 
 
@@ -99,7 +99,7 @@ export class StreamingTtsClient {
 
   async *[Symbol.asyncIterator]() {
     for await (const item of this.queue) {
-      yield HumeSerialization.tts.SnippetAudioChunk.parseOrThrow(JSON.parse(item), {
+      yield SnippetAudioChunk.parseOrThrow(JSON.parse(item), {
         unrecognizedObjectKeys: "passthrough",
       });
     }

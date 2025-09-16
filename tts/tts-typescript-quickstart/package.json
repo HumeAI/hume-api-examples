@@ -11,8 +11,10 @@
   "license": "ISC",
   "description": "<div align=\"center\">   <img src=\"https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png\">   <h1>Text-to-Speech | TypeScript Quickstart</h1>   <p>     <strong>Jumpstart your development with Hume's OCTAVE TTS API!</strong>   </p> </div>",
   "dependencies": {
+    "@types/ws": "^8.18.1",
     "dotenv": "^16.4.7",
-    "hume": "^0.10.1"
+    "hume": "^0.13.5",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
