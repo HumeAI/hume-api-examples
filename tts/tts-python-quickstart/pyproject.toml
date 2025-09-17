@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "aiofiles>=24.1.0",
-  "hume>=0.8.1",
+  "hume[microphone]>=0.11.5",
   "python-dotenv>=1.0.1",
+  "websockets>=12.0",
 ]
