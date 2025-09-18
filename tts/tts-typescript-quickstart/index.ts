@@ -6,9 +6,8 @@ import { startAudioPlayer } from "./audio_player";
 dotenv.config()
 
 const hume = new HumeClient({
-  apiKey: process.env.HUME_API_KEY!,
+  apiKey: process.env.HUME_API_KEY!
 })
-
 
 /** Example 1: Using a pre-existing voice.
  *
@@ -41,7 +40,7 @@ const example1 = async () => {
 }
 
 /** Example 2: Voice Design.
- * 
+ *
  * This method demonstrates how you can create a custom voice via the API.
  * First, synthesize speech by specifying a `description` prompt and characteristic
  * sample text. Specify the generation_id of the resulting audio in a subsequent
@@ -49,7 +48,8 @@ const example1 = async () => {
  * voice by name or generation_id.
  */
 const example2 = async () => {
-  const result1 = await hume.tts.synthesizeJson({
+  // Create voice options for user selection
+  const result = await hume.tts.synthesizeJson({
     utterances: [{
       description: "Crisp, upper-class British accent with impeccably articulated consonants and perfectly placed vowels. Authoritative and theatrical, as if giving a lecture.",
       text: "The science of speech. That's my profession; also my hobby. Happy is the man who can make a living by his hobby!"
@@ -58,14 +58,12 @@ const example2 = async () => {
     stripHeaders: true,
   })
 
-
   console.log('Example 2: Synthesizing voice options for voice creation...')
   let audioPlayer = startAudioPlayer()
   let sampleNumber = 1;
-  for (const generation of result1.generations) {
+  for (const generation of result.generations) {
     const buffer = Buffer.from(generation.audio, "base64")
     audioPlayer.stdin.write(buffer)
-
     console.log(`Playing option ${sampleNumber}...`)
     sampleNumber++;
   }
@@ -73,8 +71,8 @@ const example2 = async () => {
 
   // Prompt user to select which voice they prefer
   console.log('\nWhich voice did you prefer?')
-  console.log('1. First voice (generation ID:', result1.generations[0].generationId, ')')
-  console.log('2. Second voice (generation ID:', result1.generations[1].generationId, ')')
+  console.log('1. First voice (generation ID:', result.generations[0].generationId, ')')
+  console.log('2. Second voice (generation ID:', result.generations[1].generationId, ')')
 
   const readFromStdin = () => new Promise<string>(resolve => {
     process.stdin.once('data', (data) => {
@@ -82,7 +80,7 @@ const example2 = async () => {
       resolve(data.toString().trim());
     });
   });
-  process.stdout.write('Enter your choice (1 or 2): '); 
+  process.stdout.write('Enter your choice (1 or 2): ');
   const userChoice = await readFromStdin()
   const selectedIndex = parseInt(userChoice) - 1
 
@@ -90,7 +88,7 @@ const example2 = async () => {
     throw new Error('Invalid choice. Please select 1 or 2.')
   }
 
-  const selectedGenerationId = result1.generations[selectedIndex].generationId
+  const selectedGenerationId = result.generations[selectedIndex].generationId
   console.log(`Selected voice option ${selectedIndex + 1} (generation ID: ${selectedGenerationId})`)
 
   // Save the selected voice
@@ -102,8 +100,8 @@ const example2 = async () => {
 
   console.log(`Created voice: ${voiceName}`)
 
+  // Continuing previous speech
   console.log('\nContinuing speech with the selected voice...')
-
   audioPlayer = startAudioPlayer()
   const stream = await hume.tts.synthesizeJsonStreaming({
     utterances: [{
@@ -132,7 +130,23 @@ const example2 = async () => {
 // Example 3: Bidirectional streaming
 const example3 = async () => {
   const stream = await StreamingTtsClient.connect(process.env.HUME_API_KEY!);
-  const player = startAudioPlayer('raw');
+
+  // Helper methods for flushing and closing the stream
+  const sendFlush = () => stream.send({ flush: true });
+  const sendClose = () => stream.send({ close: true });
+
+  const voice = { name: "Ava Song", provider: "HUME_AI" } as const;
+  const sendInput = async () => {
+    stream.send({ text: "Hello world.", voice });
+    sendFlush();
+    console.log('Waiting 8 seconds...')
+    await new Promise(r => setTimeout(r, 8000));
+    stream.send({ text: "Goodbye, world.", voice });
+    sendFlush();
+    sendClose();
+  };
+
+  const player = startAudioPlayer();
   const silenceFiller = new SilenceFiller();
 
   // Pipe silence filler output to audio player stdin
@@ -140,18 +154,8 @@ const example3 = async () => {
 
   // Handle pipe errors
   silenceFiller.on('error', (err) => {
-    console.error("LiveSilenceFiller error:", err);
+    console.error("SilenceFiller error:", err);
   });
-
-  const sendInput = async () => {
-    stream.send({ text: "Hello world." });
-    stream.sendFlush();
-    console.log('Waiting 8 seconds...')
-    await new Promise(r => setTimeout(r, 8000));
-    stream.send({ text: "Goodbye, world." });
-    stream.sendFlush();
-    stream.sendClose();
-  };
 
   const handleMessages = async () => {
     console.log('Playing audio: Example 3 - Bidirectional streaming')
@@ -161,7 +165,6 @@ const example3 = async () => {
     }
 
     await silenceFiller.endStream();
-
     await player.stop();
   };
 
