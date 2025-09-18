@@ -135,13 +135,13 @@ const example3 = async () => {
   const player = startAudioPlayer('raw');
   const silenceFiller = new SilenceFiller();
 
-  // Pipe silence filler output to audio player stdin
-  silenceFiller.pipe(player.stdin);
-
-  // Handle pipe errors
-  silenceFiller.on('error', (err) => {
-    console.error("LiveSilenceFiller error:", err);
-  });
+  // Set up interval to read from silenceFiller and write to player
+  const readInterval = setInterval(() => {
+    const chunk = silenceFiller.readAudio();
+    if (chunk) {
+      player.stdin.write(Buffer.from(chunk));
+    }
+  }, 5); // Read every 5ms
 
   const sendInput = async () => {
     stream.send({ text: "Hello world." });
@@ -160,7 +160,12 @@ const example3 = async () => {
       silenceFiller.writeAudio(buf);
     }
 
-    await silenceFiller.endStream();
+    // Drain remaining audio
+    clearInterval(readInterval);
+    const remaining = silenceFiller.drain();
+    if (remaining) {
+      player.stdin.write(Buffer.from(remaining));
+    }
 
     await player.stop();
   };
