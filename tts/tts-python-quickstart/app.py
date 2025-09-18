@@ -128,16 +128,23 @@ async def example2():
 async def example3():
     stream = await StreamingTtsClient.connect(api_key)
     
+    # Helper functions for flushing and closing the stream
+    def send_flush():
+        asyncio.create_task(stream._send_dict({"flush": True}))
+
+    def send_close():
+        asyncio.create_task(stream._send_dict({"close": True}))
+
     async def send_input():
         print("Sending TTS messages...")
         stream.send(PublishTts(text="Hello world."))
-        stream.send_flush()
+        send_flush()
         print('Waiting 8 seconds...')
         await asyncio.sleep(8)
         stream.send(PublishTts(text="Goodbye, world."))
-        stream.send_flush()
+        send_flush()
         print("Closing stream...")
-        stream.send_close()
+        send_close()
     
     async def handle_messages():
         await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream)

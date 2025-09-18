@@ -55,11 +55,6 @@ class StreamingTtsClient:
     async def _send_dict(self, message: Dict[str, Any]):
         await self._websocket.send(json.dumps(message))
 
-    def send_flush(self):
-        asyncio.create_task(self._send_dict({"flush": True}))
-
-    def send_close(self):
-        asyncio.create_task(self._send_dict({"close": True}))
 
     async def close(self):
         if self._websocket and not self._websocket.closed:
