@@ -22,6 +22,7 @@ import { HumeClient, type Hume } from "hume";
 // The provided native module is a good starting place, but you should
 // modify it to fit the audio recording needs of your specific app.
 import NativeAudio, { AudioEventPayload } from "./modules/audio";
+import VoiceIsolationModePrompt from "./VoiceIsolationModePrompt";
 
 // Represents a chat message in the chat display.
 interface ChatEntry {
@@ -55,6 +56,8 @@ const App = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [chatEntries, setChatEntries] = useState<ChatEntry[]>([]);
+  const [showVoiceIsolationPrompt, setShowVoiceIsolationPrompt] = useState(false);
+  const [currentMicMode, setCurrentMicMode] = useState("Standard");
   const humeRef = useRef<HumeClient | null>(null);
   const addChatEntry = (entry: ChatEntry) => {
     setChatEntries((prev) => [...prev, entry]);
@@ -89,6 +92,15 @@ const App = () => {
       if (!hasPermission) {
         console.error("Microphone permission denied");
         return;
+      }
+
+      // Check microphone mode
+      const micMode = await NativeAudio.getMicrophoneMode();
+      setCurrentMicMode(micMode);
+
+      // Show prompt if not in Voice Isolation mode
+      if (micMode !== "Voice Isolation") {
+        setShowVoiceIsolationPrompt(true);
       }
     } catch (error) {
       console.error("Failed to get permissions:", error);
@@ -290,6 +302,12 @@ const App = () => {
           />
         </View>
       </SafeAreaView>
+
+      <VoiceIsolationModePrompt
+        isVisible={showVoiceIsolationPrompt}
+        currentMode={currentMicMode}
+        onDismiss={() => setShowVoiceIsolationPrompt(false)}
+      />
     </View>
   );
 };

@@ -9,6 +9,8 @@ declare class AudioModule extends NativeModule<AudioModuleEvents> {
   stopPlayback(): Promise<void>;
   mute(): Promise<void>;
   unmute(): Promise<void>;
+  showMicrophoneModes(): Promise<void>;
+  getMicrophoneMode(): Promise<string>;
 }
 
 // This call loads the native module object from the JSI.
