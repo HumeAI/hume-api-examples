@@ -3,7 +3,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Phone } from "lucide-react";
 
-export default function StartCall({ accessToken }: { accessToken: string }) {
+export default function StartCall({
+  accessToken,
+  onStartCall, // new prop
+}: {
+  accessToken: string;
+  onStartCall?: () => void; // optional callback
+}) {
   const { status, connect } = useVoice();
 
   const EVI_CONNECT_OPTIONS: ConnectOptions = {
@@ -39,7 +45,9 @@ export default function StartCall({ accessToken }: { accessToken: string }) {
                 className={"z-50 flex items-center gap-1.5"}
                 onClick={() => {
                   connect(EVI_CONNECT_OPTIONS)
-                    .then(() => {})
+                    .then(() => {
+                      if (onStartCall) onStartCall(); // start timer when connected
+                    })
                     .catch(() => {})
                     .finally(() => {});
                 }}
