@@ -5,8 +5,8 @@ import {
   Button,
   Linking,
   Platform,
+  Modal,
 } from 'react-native';
-import Modal from 'react-native-modal';
 import NativeAudio from './modules/audio';
 
 interface VoiceIsolationModePromptProps {
@@ -35,27 +35,36 @@ const VoiceIsolationModePrompt: React.FC<VoiceIsolationModePromptProps> = ({
   };
 
   const handleShowMeHow = () => {
-    const supportUrl = 'https://support.apple.com/guide/iphone/aside/iph45075b5b2/ios';
+    const supportUrl = 'https://support.apple.com/en-us/101993';
     Linking.openURL(supportUrl);
   };
 
   return (
     <Modal
-      isVisible={isVisible}
-      onBackdropPress={onDismiss}
+      visible={isVisible}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={onDismiss}
     >
-      <View style={{ backgroundColor: 'white', padding: 20 }}>
-        <Text>Enable voice isolation for the best experience</Text>
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+      }}>
+        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '90%' }}>
+          <Text>Enable voice isolation for the best experience</Text>
 
-        <Text>
-          Your device is currently using a {currentMode} microphone mode.
-          Enabling voice isolation will provide the best audio experience
-          in a noisy setting.
-        </Text>
+          <Text>
+            Your device is currently using a {currentMode} microphone mode.
+            Enabling voice isolation will provide the best audio experience
+            in a noisy setting.
+          </Text>
 
-        <Button title="Open settings" onPress={handleOpenSettings} />
-        <Button title="Show me how" onPress={handleShowMeHow} />
-        <Button title="I'll do this later" onPress={onDismiss} />
+          <Button title="Open settings" onPress={handleOpenSettings} />
+          <Button title="Show me how" onPress={handleShowMeHow} />
+          <Button title="I'll do this later" onPress={onDismiss} />
+        </View>
       </View>
     </Modal>
   );
