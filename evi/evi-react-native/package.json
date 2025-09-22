@@ -7,7 +7,8 @@
     "ios": "expo run:ios",
     "ios:device": "expo run:ios --device",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "android": "expo run:android"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
