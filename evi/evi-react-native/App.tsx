@@ -101,6 +101,7 @@ const App = () => {
       // Show prompt if not in Voice Isolation mode
       if (micMode !== "Voice Isolation") {
         setShowVoiceIsolationPrompt(true);
+        return
       }
     } catch (error) {
       console.error("Failed to get permissions:", error);
