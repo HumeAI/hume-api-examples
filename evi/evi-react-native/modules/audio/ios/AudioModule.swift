@@ -102,7 +102,18 @@ public class AudioModule: Module {
 
         AsyncFunction("showMicrophoneModes") {
             if #available(iOS 15.0, *) {
+                let wasRecording = await self.audioHub.isRecording
+
+                if !wasRecording {
+                    try await self.prepare()
+                    try await self.audioHub.startMicrophone(handler: { _, _ in })
+                }
+
                 AVCaptureDevice.showSystemUserInterface(.microphoneModes)
+
+                if !wasRecording {
+                    await self.audioHub.stopMicrophone()
+                }
             } else {
                 throw NSError(
                     domain: "AudioModule", code: 3,
@@ -121,10 +132,12 @@ public class AudioModule: Module {
                 case .wideSpectrum:
                     return "Wide Spectrum"
                 default:
-                    return "Unknown"
+                    throw NSError(
+                        domain: "AudioModule", code: 4,
+                        userInfo: [NSLocalizedDescriptionKey: "Unknown microphone mode encountered"])
                 }
             } else {
-                return "Standard"
+                return "N/A"
             }
         }
     }

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'expo-modules-core';
 import { convertBlobToBase64, getAudioStream, ensureSingleValidAudioTrack, getBrowserSupportedMimeType, MimeType } from 'hume';
 import { EVIWebAudioPlayer } from "hume";
-import { AudioModuleEvents } from './AudioModule.types';
+import { AudioModuleEvents, MicrophoneMode } from './AudioModule.types';
 
 const emitter = new EventEmitter<AudioModuleEvents>();
 
@@ -84,5 +84,14 @@ export default {
   async addListener(eventName: keyof AudioModuleEvents, f: AudioModuleEvents[typeof eventName]): Promise<void> {
     emitter.addListener(eventName, f);
     return
+  },
+
+  async showMicrophoneModes(): Promise<void> {
+    console.log('Microphone modes are only available on iOS');
+    return;
+  },
+
+  async getMicrophoneMode(): Promise<MicrophoneMode> {
+    return 'N/A';
   }
 };

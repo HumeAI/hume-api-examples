@@ -7,6 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
   LayoutAnimation,
+  Platform,
 } from "react-native";
 import { useEvent } from 'expo'
 
@@ -93,19 +94,17 @@ const App = () => {
         console.error("Microphone permission denied");
         return;
       }
-
-      // Check microphone mode
-      const micMode = await NativeAudio.getMicrophoneMode();
-      setCurrentMicMode(micMode);
-
-      // Show prompt if not in Voice Isolation mode
-      if (micMode !== "Voice Isolation") {
-        setShowVoiceIsolationPrompt(true);
-        return
-      }
     } catch (error) {
       console.error("Failed to get permissions:", error);
       return;
+    }
+
+    const micMode = await NativeAudio.getMicrophoneMode();
+    setCurrentMicMode(micMode);
+
+    if (micMode !== "N/A" && micMode !== "Voice Isolation") {
+      setShowVoiceIsolationPrompt(true);
+      return
     }
 
     const chatSocket = hume.empathicVoice.chat.connect({
@@ -156,13 +155,24 @@ const App = () => {
 
   const handleDisconnect = async () => {
     try {
+      if (chatSocketRef.current) {
+        chatSocketRef.current.close();
+        chatSocketRef.current = null;
+      }
+    } catch (error) {
+      console.error("Error while closing websocket", error);
+    }
+
+    try {
       await NativeAudio.stopRecording();
-      await NativeAudio.stopPlayback();
     } catch (error) {
       console.error("Error while stopping recording", error);
     }
-    if (chatSocketRef.current) {
-      chatSocketRef.current.close();
+
+    try {
+      await NativeAudio.stopPlayback();
+    } catch (error) {
+      console.error("Error while stopping playback", error);
     }
   };
 

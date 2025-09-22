@@ -1,6 +1,6 @@
 import { NativeModule, requireNativeModule } from 'expo';
 
-import { AudioModuleEvents } from './AudioModule.types';
+import { AudioModuleEvents, MicrophoneMode } from './AudioModule.types';
 
 declare class AudioModule extends NativeModule<AudioModuleEvents> {
   getPermissions(): Promise<boolean>;
@@ -10,7 +10,7 @@ declare class AudioModule extends NativeModule<AudioModuleEvents> {
   mute(): Promise<void>;
   unmute(): Promise<void>;
   showMicrophoneModes(): Promise<void>;
-  getMicrophoneMode(): Promise<string>;
+  getMicrophoneMode(): Promise<MicrophoneMode>;
 }
 
 // This call loads the native module object from the JSI.
