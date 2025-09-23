@@ -99,6 +99,47 @@ public class AudioModule: Module {
         AsyncFunction("stopPlayback") {
             await _soundPlayer?.clearQueue()
         }
+
+        AsyncFunction("showMicrophoneModes") {
+            if #available(iOS 15.0, *) {
+                let wasRecording = await self.audioHub.isRecording
+
+                if !wasRecording {
+                    try await self.prepare()
+                    try await self.audioHub.startMicrophone(handler: { _, _ in })
+                }
+
+                AVCaptureDevice.showSystemUserInterface(.microphoneModes)
+
+                if !wasRecording {
+                    await self.audioHub.stopMicrophone()
+                }
+            } else {
+                throw NSError(
+                    domain: "AudioModule", code: 3,
+                    userInfo: [NSLocalizedDescriptionKey: "Microphone modes are only available on iOS 15+"])
+            }
+        }
+
+        AsyncFunction("getMicrophoneMode") { () -> String in
+            if #available(iOS 15.0, *) {
+                let mode = AVCaptureDevice.preferredMicrophoneMode
+                switch mode {
+                case .standard:
+                    return "Standard"
+                case .voiceIsolation:
+                    return "Voice Isolation"
+                case .wideSpectrum:
+                    return "Wide Spectrum"
+                default:
+                    throw NSError(
+                        domain: "AudioModule", code: 4,
+                        userInfo: [NSLocalizedDescriptionKey: "Unknown microphone mode encountered"])
+                }
+            } else {
+                return "N/A"
+            }
+        }
     }
 
     private func getPermissions() async throws -> Bool {

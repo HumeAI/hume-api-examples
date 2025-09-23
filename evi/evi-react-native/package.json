@@ -7,11 +7,13 @@
     "ios": "expo run:ios",
     "ios:device": "expo run:ios --device",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "android": "expo run:android"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
     "expo": "~53.0.20",
+    "expo-build-properties": "~0.14.8",
     "expo-router": "^5.1.4",
     "expo-status-bar": "~2.0.0",
     "hume": "0.13.4",
@@ -19,8 +21,7 @@
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
     "react-native-web": "~0.20.0",
-    "stream-browserify": "^3.0.0",
-    "expo-build-properties": "~0.14.8"
+    "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
