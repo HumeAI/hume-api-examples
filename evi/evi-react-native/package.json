@@ -20,7 +20,6 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
-    "react-native-modal": "^14.0.0-rc.1",
     "react-native-web": "~0.20.0",
     "stream-browserify": "^3.0.0"
   },
