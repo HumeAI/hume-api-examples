@@ -2,7 +2,7 @@ export type MicrophoneMode = "N/A" | "Standard" | "Voice Isolation" | "Wide Spec
 
 export type AudioModuleEvents = {
   onAudioInput: (params: AudioEventPayload) => void;
-  onError: (params: { error: string }) => void;
+  onError: (params: { message: string }) => void;
 };
 
 export type AudioEventPayload = {

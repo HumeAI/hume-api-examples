@@ -7,9 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
   LayoutAnimation,
-  Platform,
 } from "react-native";
-import { useEvent } from 'expo'
 
 // We use Hume's low-level typescript SDK for this example.
 // The React SDK (@humeai/voice-react) does not support React Native.
@@ -154,61 +152,42 @@ const App = () => {
   };
 
   const handleDisconnect = async () => {
-    try {
-      if (chatSocketRef.current) {
-        chatSocketRef.current.close();
-        chatSocketRef.current = null;
-      }
-    } catch (error) {
-      console.error("Error while closing websocket", error);
+    if (chatSocketRef.current) {
+      chatSocketRef.current.close();
+      chatSocketRef.current = null;
     }
-
     try {
       await NativeAudio.stopRecording();
     } catch (error) {
       console.error("Error while stopping recording", error);
     }
 
-    try {
-      await NativeAudio.stopPlayback();
-    } catch (error) {
-      console.error("Error while stopping playback", error);
-    }
+    await NativeAudio.stopPlayback();
   };
 
   useEffect(() => {
     if (isConnected) {
-      handleConnect().catch((error) => {
-        console.error("Error while connecting:", error);
-      });
+      handleConnect()
     } else {
-      handleDisconnect().catch((error) => {
-        console.error("Error while disconnecting:", error);
-      });
+      handleDisconnect()
     }
     const onUnmount = () => {
-      NativeAudio.stopRecording().catch((error: any) => {
-        console.error("Error while stopping recording", error);
-      });
-      if (
-        chatSocketRef.current &&
-        chatSocketRef.current.readyState === WebSocket.OPEN
-      ) {
-        chatSocketRef.current?.close();
+      if (chatSocketRef.current) {
+        chatSocketRef.current.close();
+        chatSocketRef.current = null;
       }
+
+      NativeAudio.stopRecording();
+      NativeAudio.stopPlayback();
     };
     return onUnmount;
   }, [isConnected]);
 
   useEffect(() => {
     if (isMuted) {
-      NativeAudio.mute().catch((error) => {
-        console.error("Error while muting", error);
-      });
+      NativeAudio.mute();
     } else {
-      NativeAudio.unmute().catch((error) => {
-        console.error("Error while unmuting", error);
-      });
+      NativeAudio.unmute();
     }
   }, [isMuted]);
 
