@@ -6,13 +6,6 @@ type PhonemeEvent = {
   timestamp: number;
 };
 
-type TimelineSegment = {
-  startTime: number;
-  endTime: number;
-  startShape: MouthShape;
-  endShape: MouthShape;
-};
-
 // I had GPT 5-pro generate some constant XY coordinates to represent the mouth shapes for each viseme, using
 // `mirror` to enforce left-right symmetry.
 function mirror(leftSide: [number, number][]): MouthShape {
@@ -119,9 +112,8 @@ const PHONEME_MAP: Array<[Viseme, string[]]> = [
 ];
 
 function phonemeToViseme(phoneme: string): Viseme {
-  const p = phoneme.toLowerCase().trim();
   for (const [viseme, phonemes] of PHONEME_MAP) {
-    if (phonemes.includes(p)) return viseme;
+    if (phonemes.includes(phoneme)) return viseme;
   }
   console.warn(`Unknown phoneme: ${phoneme}, defaulting to silence`);
   return 'sil';
@@ -133,47 +125,11 @@ const interpolatePoint = (a: Point2D, x: Point2D, t: number): Point2D =>
 const interpolateShape = (a: MouthShape, x: MouthShape, t: number): MouthShape =>
   a.map((p, i) => interpolatePoint(p, x[i]!, t)) as MouthShape;
 
-/**
- * Clip a segment to fit within a time range, interpolating shapes as needed.
- * Returns null if the segment doesn't overlap with the range.
- */
-function clipSegment(
-  segment: TimelineSegment,
-  startTime: number,
-  endTime: number
-): TimelineSegment | null {
-  // No overlap
-  if (segment.endTime <= startTime || segment.startTime >= endTime) {
-    return null;
-  }
-
-  const segmentDuration = segment.endTime - segment.startTime;
-  const newStart = Math.max(segment.startTime, startTime);
-  const newEnd = Math.min(segment.endTime, endTime);
-
-  // Calculate interpolated shapes at the clip points
-  const startProgress = segmentDuration > 0
-    ? (newStart - segment.startTime) / segmentDuration
-    : 0;
-  const endProgress = segmentDuration > 0
-    ? (newEnd - segment.startTime) / segmentDuration
-    : 1;
-
-  return {
-    startTime: newStart,
-    endTime: newEnd,
-    startShape: interpolateShape(segment.startShape, segment.endShape, startProgress),
-    endShape: interpolateShape(segment.startShape, segment.endShape, endProgress)
-  };
-}
-
 class Mouth {
   private phonemeQueue: PhonemeEvent[] = [];
   private lastTimestamp: number = -Infinity;
-  private lastReadTime: number = -Infinity;
   private currentViseme: Viseme = 'sil';
   private currentVisemeTime: number = 0;
-  private segments: TimelineSegment[] = [];
 
   addPhoneme(phoneme: string, timestamp: number): void {
     if (timestamp < this.lastTimestamp) {
@@ -187,74 +143,35 @@ class Mouth {
   }
 
   /**
-   * Read timeline segments up to the given end time.
-   * Maintains internal state to track what has already been read.
-   * @param endTime - End of the time range to read (inclusive)
-   * @returns Array of timeline segments from last read position to endTime
+   * Get the mouth shape at a specific time.
+   * Processes queued phonemes up to that time and returns the interpolated shape.
    */
-  readUntil(endTime: number): TimelineSegment[] {
-    while (this.phonemeQueue.length > 0) {
-      const event = this.phonemeQueue[0]!;
-      const nextViseme = phonemeToViseme(event.phoneme);
-
-      // Create transition from current viseme to next viseme
-      // Transition ends when the phoneme timestamp is reached
-      this.segments.push({
-        startTime: this.currentVisemeTime,
-        endTime: event.timestamp,
-        startShape: VISEME_SHAPES[this.currentViseme],
-        endShape: VISEME_SHAPES[nextViseme]
-      });
-
-      this.currentViseme = nextViseme;
+  getShapeAt(time: number): MouthShape {
+    // Process any phonemes that have occurred by this time
+    while (this.phonemeQueue.length > 0 && this.phonemeQueue[0]!.timestamp <= time) {
+      const event = this.phonemeQueue.shift()!;
+      this.currentViseme = phonemeToViseme(event.phoneme);
       this.currentVisemeTime = event.timestamp;
-      this.phonemeQueue.shift();
     }
 
-    // Collect segments that overlap with [lastReadTime, endTime]
-    const result: TimelineSegment[] = [];
+    // If there's a future phoneme, interpolate toward it
+    if (this.phonemeQueue.length > 0) {
+      const nextEvent = this.phonemeQueue[0]!;
+      const nextViseme = phonemeToViseme(nextEvent.phoneme);
+      const duration = nextEvent.timestamp - this.currentVisemeTime;
 
-    // Remove fully consumed segments
-    while (this.segments.length > 0 && this.segments[0]!.endTime <= this.lastReadTime) {
-      this.segments.shift();
-    }
-
-    // Process segments that overlap with our read range
-    for (const segment of this.segments) {
-      if (segment.startTime >= endTime) {
-        break; // No more relevant segments
-      }
-
-      if (segment.endTime > this.lastReadTime) {
-        // This segment overlaps with our read range
-        const clippedSegment = clipSegment(segment, this.lastReadTime, endTime);
-        if (clippedSegment) {
-          result.push(clippedSegment);
-        }
+      if (duration > 0) {
+        const progress = Math.min(1, (time - this.currentVisemeTime) / duration);
+        return interpolateShape(
+          VISEME_SHAPES[this.currentViseme],
+          VISEME_SHAPES[nextViseme],
+          progress
+        );
       }
     }
 
-    // If we're reading past all known segments, add a hold segment
-    const lastSegmentEnd = this.segments.length > 0
-      ? this.segments[this.segments.length - 1]!.endTime
-      : this.lastReadTime;
-
-    if (endTime > lastSegmentEnd && lastSegmentEnd >= this.lastReadTime) {
-      result.push({
-        startTime: Math.max(lastSegmentEnd, this.lastReadTime),
-        endTime: endTime,
-        startShape: VISEME_SHAPES[this.currentViseme],
-        endShape: VISEME_SHAPES[this.currentViseme]
-      });
-    }
-
-    this.lastReadTime = endTime;
-    return result.length > 0 ? result : [{
-      startTime: this.lastReadTime,
-      endTime: endTime,
-      startShape: VISEME_SHAPES[this.currentViseme],
-      endShape: VISEME_SHAPES[this.currentViseme]
-    }];
+    // Hold at current viseme
+    return VISEME_SHAPES[this.currentViseme];
   }
 
   /**
@@ -353,19 +270,10 @@ class MouthAnimation {
     if (!this.animationRunning || this.startTime === null) return;
 
     const currentTime = performance.now() - this.startTime;
-    const segments = this.mouth.readUntil(currentTime);
+    const currentShape = this.mouth.getShapeAt(currentTime);
 
-    if (segments.length > 0) {
-      const segment = segments[segments.length - 1]!;
-      const segmentDuration = segment.endTime - segment.startTime;
-      const progress = segmentDuration > 0
-        ? Math.min(1, (currentTime - segment.startTime) / segmentDuration)
-        : 1;
-
-      const currentShape = interpolateShape(segment.startShape, segment.endShape, progress);
-      this.ctx.clearRect(0, 0, this.width, this.height);
-      drawMouth(this.ctx, currentShape, this.width, this.height);
-    }
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    drawMouth(this.ctx, currentShape, this.width, this.height);
 
     requestAnimationFrame(this.animate);
   }
