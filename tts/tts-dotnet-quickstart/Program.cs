@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using Hume;
 using Hume.Tts;
+using DotNetEnv;
 
 namespace TtsCsharpQuickstart;
 
@@ -15,8 +16,11 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        Env.Load();
+
         Console.WriteLine("Starting...");
         
+        // Get the API key from .env file
         var apiKey = Environment.GetEnvironmentVariable("HUME_API_KEY");
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -128,7 +132,10 @@ class Program
             StripHeaders = true,
         }))
         {
-            await streamingPlayer.SendAudioAsync(Convert.FromBase64String(snippet.Audio));
+            if (snippet.IsAudio)
+            {
+                await streamingPlayer.SendAudioAsync(Convert.FromBase64String(snippet.AsAudio().Audio));
+            }
         }
 
         await streamingPlayer.StopStreamingAsync();
