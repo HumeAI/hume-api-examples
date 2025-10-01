@@ -16,11 +16,11 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        // Get the API key from .env file
         Env.Load();
 
         Console.WriteLine("Starting...");
         
-        // Get the API key from .env file
         var apiKey = Environment.GetEnvironmentVariable("HUME_API_KEY");
         if (string.IsNullOrEmpty(apiKey))
         {
