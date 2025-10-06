@@ -137,7 +137,10 @@ async def example3():
 
     async def send_input():
         print("Sending TTS messages...")
-        stream.send(PublishTts(text="Hello world."))
+        stream.send(PublishTts(text="Hello"))
+        stream.send(PublishTts(text=" world."))
+        # The whitespace             ^ is important
+        # Otherwise the model would see "Helloworld." and not "Hello world."
         send_flush()
         print('Waiting 8 seconds...')
         await asyncio.sleep(8)
