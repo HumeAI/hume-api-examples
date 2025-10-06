@@ -13,7 +13,7 @@
   "dependencies": {
     "@types/ws": "^8.18.1",
     "dotenv": "^16.4.7",
-    "hume": "^0.13.5",
+    "hume": "^0.14.1",
     "ws": "^8.18.3"
   },
   "devDependencies": {
