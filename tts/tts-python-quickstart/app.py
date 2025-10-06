@@ -1,6 +1,5 @@
 import asyncio
 import base64
-import json
 import os
 import time
 from hume import AsyncHumeClient
@@ -42,7 +41,7 @@ async def example1():
         strip_headers=True
     )
 
-    await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream)
+    await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream if chunk.type == 'audio')
 
 
 # Example 2: Voice Design.
@@ -117,7 +116,7 @@ async def example2():
         strip_headers=True
     )
     
-    await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream)
+    await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream if chunk.type == 'audio')
 
 
 # Example 3: Bidirectional streaming
@@ -126,6 +125,7 @@ async def example2():
 #
 # Native support in the Hume Python SDK is coming soon.
 async def example3():
+    assert api_key, "HUME_API_KEY not found in environment variables."
     stream = await StreamingTtsClient.connect(api_key)
     
     # Helper functions for flushing and closing the stream
