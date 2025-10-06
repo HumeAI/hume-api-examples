@@ -149,11 +149,14 @@ const example3 = async () => {
   });
 
   const sendInput = async () => {
-    stream.send({ text: "Hello world." });
+    stream.send({ text: "Hello" });
+    stream.send({ text: " world." });
+    // The whitespace    ^ is important, otherwise the model would see
+    // "Helloworld." and not "Hello world."
     stream.sendFlush();
     console.log('Waiting 8 seconds...')
     await new Promise(r => setTimeout(r, 8000));
-    stream.send({ text: "Goodbye, world." });
+    stream.send({ text: " Goodbye, world." });
     stream.sendFlush();
     stream.sendClose();
   };
