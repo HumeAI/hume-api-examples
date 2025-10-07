@@ -7,7 +7,6 @@ using System.Threading;
 using Hume;
 using Hume.Tts;
 using System.Collections.Generic;
-using TtsCsharpQuickstart;
 
 namespace TtsCsharpQuickstart;
 
@@ -35,9 +34,9 @@ class Program
 
         Console.WriteLine($"Results will be written to {_outputDir}");
 
-        // await Example1Async();
-        // await Example2Async();
-        await Example3Async();
+        await Example1Async();
+        await Example2Async();
+        // await Example3Async();
 
         Console.WriteLine("Done");
     }
@@ -180,45 +179,6 @@ class Program
             await streamingPlayer2.SendAudioAsync(Convert.FromBase64String(snippet.Audio));
         }
         await streamingPlayer2.StopStreamingAsync();
-        Console.WriteLine("Done!");
-    }
-
-    static async Task Example3Async()
-    {
-        Console.WriteLine("Example 3: Bidirectional streaming...");
-
-        using var streamingTtsClient = new StreamingTtsClient(_apiKey!);
-        await streamingTtsClient.ConnectAsync();
-
-        using var audioPlayer = StartAudioPlayer();
-        using var silenceFiller = new SilenceFiller(audioPlayer.StandardInput!);
-        silenceFiller.Start();
-
-        var sendInputTask = Task.Run(async () =>
-        {
-            await streamingTtsClient.SendAsync(new { Utterances = new List<PostedUtterance> { new PostedUtterance { Text = "Hello world." } } });
-            await streamingTtsClient.SendFlushAsync();
-            Console.WriteLine("Waiting 8 seconds...");
-            await Task.Delay(8000);
-            await streamingTtsClient.SendAsync(new { Utterances = new List<PostedUtterance> { new PostedUtterance { Text = "Goodbye, world." } } });
-            await streamingTtsClient.SendFlushAsync();
-            await streamingTtsClient.SendCloseAsync();
-        });
-
-        var handleMessagesTask = Task.Run(async () =>
-        {
-            Console.WriteLine("Playing audio: Example 3 - Bidirectional streaming");
-            await foreach (var chunk in streamingTtsClient.ReceiveAudioChunksAsync())
-            {
-                var buf = Convert.FromBase64String(chunk.Audio);
-                silenceFiller.WriteAudio(buf);
-            }
-            await silenceFiller.EndStreamAsync();
-            await audioPlayer.StopStreamingAsync();
-        });
-
-        await Task.WhenAll(sendInputTask, handleMessagesTask);
-
         Console.WriteLine("Done!");
     }
 
