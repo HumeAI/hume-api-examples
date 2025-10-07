@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <title>Empathic Voice Interface</title>
+</head>
+
+<body>
+  <main id="app">
+    <header id="heading-container">
+      <div id="instructions-container">
+        <h1>EVI TypeScript Quickstart</h2>
+          <p id="instructions">
+            Click <strong>Start</strong> to connect, grant mic access, then speak.
+            Click <strong>Stop</strong> to end the session.
+            Click <strong>Switch Voice</strong> to switch voice mid-chat.</br>
+            ⚙️ Open your browser console to see socket logs and errors.
+          </p>
+      </div>
+      <div id="btn-container">
+        <button id="start-btn">Start</button>
+        <button id="stop-btn" disabled="true">Stop</button>
+        <button id="switch-btn" disabled="true">Switch Voice</button>
+      </div>
+    </header>
+
+    <section id="chat"></section>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
