@@ -1,18 +1,11 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Empathic Voice Interface | Sample Implementation</h1>
-  <p>
-    <strong>Jumpstart your development with Hume's Empathic Voice Interface!</strong>
-  </p>
+  <h1>Empathic Voice Interface | Switch Voices Mid-Chat</h1>
 </div>
-
-![preview.png](preview.png)
 
 ## Overview
 
-This project features a sample implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [Typescript SDK](https://github.com/HumeAI/hume-typescript-sdk). It demonstrates how to authenticate, connect to, and display output from EVI in a frontend web application.
-
-See the [Quickstart guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/quickstart/typescript) for a detailed explanation of the code in this project.
+This project illustrates how you can switch voices mid-chat (new feature released in September 2025).
 
 ## Prerequisites
 
@@ -71,4 +64,5 @@ This implementation of Hume's Empathic User Interface (EVI) is minimal, using de
 1. Click the `Start` button to establish an authenticated connection and to begin capturing audio.
 2. Upon clicking `Start`, you will be prompted for permissions to use your microphone. Grant the permission to the application to continue.
 3. Once permission is granted, you can begin speaking with the interface. The transcript of the conversation will be displayed on the webpage in realtime.
-4. Click `Stop` when finished speaking with the interface to stop audio capture and to disconnect the Web Socket.
+4. Click the `Switch Voice` button to switch between different voice IDs defined in `main.ts` while preserving the context of the conversation.
+5. Click `Stop` when finished speaking with the interface to stop audio capture and to disconnect the Web Socket.
