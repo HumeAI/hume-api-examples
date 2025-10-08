@@ -75,7 +75,7 @@ This implementation of Hume's Empathic User Interface (EVI) is minimal, using de
 
 ## Example 1: Switching Voice Mid-Chat
 
-Starting September 2025, Hume allows switching voiceId (and many other Session Settings) mid-chat.
+Starting September 2025, Hume allows switching voiceId (and many other [Session Settings](https://dev.hume.ai/reference/speech-to-speech-evi/chat#send.SessionSettings)) mid-chat.
 
 To see it in action, uncomment the code under "Example 1: Voice Switching Mid - Chat" in `src/main.ts` and `index.html`.
 
