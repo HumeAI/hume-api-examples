@@ -8,7 +8,7 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
   const apiKey = import.meta.env.VITE_HUME_API_KEY!;
   const configId = import.meta.env.VITE_HUME_CONFIG_ID;
 
-  // // Uncomment the lines below for Example 1: Voice Switching Mid - Chat
+  // // Uncomment the lines below for Example 1: Voice Switching Mid-Chat
   // // Define two voice IDs to switch between
   // const voices = {
   //   player1: "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c",
@@ -50,7 +50,7 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
   function setConnected(on: boolean): void {
     if (startBtn) startBtn.disabled = on;
     if (stopBtn) stopBtn.disabled = !on;
-    // if (switchBtn) switchBtn.disabled = !on; // Uncomment for Example 1: Voice Switching Mid - Chat
+    // if (switchBtn) switchBtn.disabled = !on; // Uncomment for Example 1: Voice Switching Mid-Chat
   }
 
   async function handleOpen() {
