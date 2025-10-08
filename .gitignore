@@ -2,3 +2,6 @@
 __pycache__/
 .venv/
 .DS_Store
+.env
+node_modules/
+dist/

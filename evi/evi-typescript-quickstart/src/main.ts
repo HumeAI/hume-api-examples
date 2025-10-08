@@ -8,6 +8,37 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
   const apiKey = import.meta.env.VITE_HUME_API_KEY!;
   const configId = import.meta.env.VITE_HUME_CONFIG_ID;
 
+  // // Uncomment the lines below for Example 1: Voice Switching Mid - Chat
+  // // Define two voice IDs to switch between
+  // const voices = {
+  //   player1: "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c",
+  //   player2: "ee96fb5f-ec1a-4f41-a9ba-6d119e64c8fd"
+  // }
+  // // Start with the voice used in your VITE_HUME_CONFIG_ID
+  // // If no config ID, Hume defaults to "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c"
+  // let currentVoice = voices.player1;
+
+  // const switchBtn = document.querySelector<HTMLButtonElement>("button#switch-btn");
+
+
+  // function switchVoice() {
+  //   // Toggle between the two voice IDs
+  //   if (currentVoice === voices.player1) {
+  //     currentVoice = voices.player2;
+  //   } else {
+  //     currentVoice = voices.player1;
+  //   }
+
+  //   console.log("Switching voice to:", currentVoice);
+
+  //   // Send session settings update to switch voice
+  //   socket?.sendSessionSettings({
+  //     voiceId: currentVoice
+  //   });
+  // }
+
+  // switchBtn?.addEventListener("click", switchVoice);
+
   const startBtn = document.querySelector<HTMLButtonElement>("button#start-btn");
   const stopBtn = document.querySelector<HTMLButtonElement>("button#stop-btn");
   const chatContainer = document.querySelector<HTMLElement>("section#chat");
@@ -19,6 +50,7 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
   function setConnected(on: boolean): void {
     if (startBtn) startBtn.disabled = on;
     if (stopBtn) stopBtn.disabled = !on;
+    // if (switchBtn) switchBtn.disabled = !on; // Uncomment for Example 1: Voice Switching Mid - Chat
   }
 
   async function handleOpen() {
