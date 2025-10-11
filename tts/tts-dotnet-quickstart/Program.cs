@@ -14,6 +14,11 @@ namespace TtsCsharpQuickstart;
 
 class Program
 {
+    // Constants
+    private const string ApiKeyEnvironmentVariable = "HUME_API_KEY";
+    private const string DefaultVoiceName = "Ava Song";
+    private const int VoiceCreationDelaySeconds = 8;
+    
     private static string? _apiKey;
     private static HumeClient? _client;
     private static string? _outputDir;
@@ -25,10 +30,10 @@ class Program
 
         Console.WriteLine("Starting...");
 
-        _apiKey = Environment.GetEnvironmentVariable("HUME_API_KEY");
+        _apiKey = Environment.GetEnvironmentVariable(ApiKeyEnvironmentVariable);
         if (string.IsNullOrEmpty(_apiKey))
         {
-            throw new InvalidOperationException("HUME_API_KEY not found in environment variables.");
+            throw new InvalidOperationException($"{ApiKeyEnvironmentVariable} not found in environment variables.");
         }
 
         _client = new HumeClient(_apiKey);
@@ -51,26 +56,27 @@ class Program
         await RunExamplesAsync();
     }
 
-    /** Example 1: Using a pre-existing voice.
-    *
-    * Use this method if you want to synthesize speech with a high-quality voice from
-    * Hume's Voice Library, or specify `provider: 'CUSTOM_VOICE'` to use a voice that
-    * you created previously via the Hume Platform or the API.
-    * */
+    /// <summary>
+    /// Example 1: Using a pre-existing voice.
+    /// 
+    /// Use this method if you want to synthesize speech with a high-quality voice from
+    /// Hume's Voice Library, or specify `provider: 'CUSTOM_VOICE'` to use a voice that
+    /// you created previously via the Hume Platform or the API.
+    /// </summary>
     static async Task Example1Async()
     {
         Console.WriteLine("Example 1: Synthesizing audio using a pre-existing voice...");
 
         var voice = new PostedUtteranceVoiceWithName
         {
-            Name = "Ava Song",
+            Name = DefaultVoiceName,
             Provider = new VoiceProvider(Hume.Tts.VoiceProvider.Values.HumeAi)
         };
 
         using var streamingPlayer = StartAudioPlayer();
         await streamingPlayer.StartStreamingAsync();
 
-        await foreach (var snippet in _client!.Tts.SynthesizeJsonStreamingAsync(new PostedTts
+        var ttsRequest = new PostedTts
         {
             Utterances = new List<PostedUtterance>
             {
@@ -80,16 +86,9 @@ class Program
             // headers in container formats (wav, mp3). This allows you to start a
             // single audio player and stream all audio chunks to it without artifacts.
             StripHeaders = true,
-        }))
-        {
-            // Handle both TtsOutput and OneOf types for SDK compatibility
-            var snippetValue = snippet.Value;
-            if (snippetValue is SnippetAudioChunk audio)
-            {
-                await streamingPlayer.SendAudioAsync(Convert.FromBase64String(audio.Audio));
-            }
-        }
+        };
 
+        await StreamAudioToPlayerAsync(_client!.Tts.SynthesizeJsonStreamingAsync(ttsRequest), streamingPlayer);
         await streamingPlayer.StopStreamingAsync();
         Console.WriteLine("Done!");
     }
@@ -165,7 +164,7 @@ class Program
         using var streamingPlayer2 = StartAudioPlayer();
         await streamingPlayer2.StartStreamingAsync();
 
-        await foreach (var snippet in _client!.Tts.SynthesizeJsonStreamingAsync(new PostedTts
+        var continuationRequest = new PostedTts
         {
             Utterances = new List<PostedUtterance>
             {
@@ -181,19 +180,20 @@ class Program
                 GenerationId = selectedGenerationId
             },
             StripHeaders = true,
-        }))
-        {
-            // Handle both TtsOutput and OneOf types for SDK compatibility
-            var snippetValue = snippet.Value;
-            if (snippetValue is SnippetAudioChunk audio)
-            {
-                await streamingPlayer2.SendAudioAsync(Convert.FromBase64String(audio.Audio));
-            }
-        }
+        };
+
+        await StreamAudioToPlayerAsync(_client!.Tts.SynthesizeJsonStreamingAsync(continuationRequest), streamingPlayer2);
         await streamingPlayer2.StopStreamingAsync();
         Console.WriteLine("Done!");
     }
 
+    /// <summary>
+    /// Example 3: Bidirectional streaming.
+    /// 
+    /// Demonstrates how to use WebSocket-based streaming for real-time text-to-speech.
+    /// This allows you to send text incrementally and receive audio chunks as they're generated,
+    /// enabling low-latency conversational experiences.
+    /// </summary>
     static async Task Example3Async()
     {
         Console.WriteLine("Example 3: Bidirectional streaming...");
@@ -207,6 +207,7 @@ class Program
         using var silenceFiller = new SilenceFiller(audioPlayer.StandardInput!);
         silenceFiller.Start();
 
+        // Task 1: Send text input to the TTS service
         var sendInputTask = Task.Run(async () =>
         {
             await streamingTtsClient.SendAsync(new { text = "Hello" });
@@ -214,20 +215,23 @@ class Program
             // The whitespace    ^ is important, otherwise the model would see
             // "Helloworld." and not "Hello world."
             await streamingTtsClient.SendFlushAsync();
-            Console.WriteLine("Waiting 8 seconds...");
-            await Task.Delay(8000);
+            
+            // Simulate a delay before continuing the conversation
+            await Task.Delay(TimeSpan.FromSeconds(VoiceCreationDelaySeconds));
+            
             await streamingTtsClient.SendAsync(new { text = " Goodbye, world." });
             await streamingTtsClient.SendFlushAsync();
             await streamingTtsClient.SendCloseAsync();
         });
 
+        // Task 2: Receive and play audio chunks as they arrive
         var handleMessagesTask = Task.Run(async () =>
         {
             Console.WriteLine("Playing audio: Example 3 - Bidirectional streaming");
             await foreach (var chunk in streamingTtsClient.ReceiveAudioChunksAsync())
             {
-                var buf = Convert.FromBase64String(chunk.Audio);
-                silenceFiller.WriteAudio(buf);
+                var audioBytes = Convert.FromBase64String(chunk.Audio);
+                silenceFiller.WriteAudio(audioBytes);
             }
             await silenceFiller.EndStreamAsync();
             await audioPlayer.StopStreamingAsync();
@@ -238,7 +242,30 @@ class Program
         Console.WriteLine("Done!");
     }
 
-    // Real-time streaming audio player using pipe-based approach
+    /// <summary>
+    /// Helper method to stream audio chunks from a TTS response to an audio player.
+    /// Handles SDK compatibility by working with both TtsOutput and OneOf types.
+    /// </summary>
+    private static async Task StreamAudioToPlayerAsync<T>(
+        IAsyncEnumerable<T> snippetStream,
+        StreamingAudioPlayer player)
+    {
+        await foreach (var snippet in snippetStream)
+        {
+            // Handle both TtsOutput and OneOf types for SDK compatibility
+            // Using dynamic type inspection for compatibility across SDK versions
+            var snippetValue = (snippet as dynamic)?.Value;
+            if (snippetValue is SnippetAudioChunk audio)
+            {
+                await player.SendAudioAsync(Convert.FromBase64String(audio.Audio));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Real-time streaming audio player using ffplay.
+    /// Pipes audio data to ffplay process for immediate playback without writing to disk.
+    /// </summary>
     public class StreamingAudioPlayer : IDisposable
     {
         private Process? _audioProcess;
@@ -246,6 +273,13 @@ class Program
         private bool _isStreaming = false;
         private readonly bool _usePcmFormat;
 
+        /// <summary>
+        /// Creates a new StreamingAudioPlayer.
+        /// </summary>
+        /// <param name="usePcmFormat">
+        /// If true, configures ffplay for raw PCM audio (48kHz, 16-bit signed little-endian).
+        /// If false, uses auto-detection for container formats like WAV or MP3 (default).
+        /// </param>
         public StreamingAudioPlayer(bool usePcmFormat = false)
         {
             _usePcmFormat = usePcmFormat;

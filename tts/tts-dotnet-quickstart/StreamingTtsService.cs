@@ -13,7 +13,7 @@ using Hume.Tts;
 namespace TtsCsharpQuickstart
 {
     /// <summary>
-    /// Thread-safe async queue implementation.
+    /// Thread-safe async queue implementation for WebSocket message handling.
     /// 
     /// Race Condition Fix: This queue is accessed from multiple threads:
     /// 1. The WebSocket receive loop (background thread) calls Push()
@@ -24,7 +24,7 @@ namespace TtsCsharpQuickstart
     /// _waiting, _ended) is accessed atomically. TaskCompletionSource is completed outside the lock
     /// to avoid potential deadlocks.
     /// </summary>
-    public class Queue<T>
+    internal class Queue<T>
     {
         private readonly object _lock = new object();
         private readonly List<T> _pushed = new List<T>();
@@ -108,21 +108,36 @@ namespace TtsCsharpQuickstart
         }
     }
 
+    /// <summary>
+    /// WebSocket client for bidirectional streaming TTS.
+    /// Handles connection management, message sending/receiving, and audio chunk streaming.
+    /// </summary>
     public class StreamingTtsClient : IDisposable
     {
+        private const int WebSocketBufferSize = 8192;
+        private const string WebSocketEndpoint = "wss://api.hume.ai/v0/tts/stream/input";
+        
         private readonly ClientWebSocket _webSocket;
         private readonly string _apiKey;
         private readonly Uri _websocketUri;
         private readonly Queue<string> _queue = new Queue<string>();
+        private readonly bool _enableDebugLogging;
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
-        public StreamingTtsClient(string apiKey)
+        /// <summary>
+        /// Creates a new StreamingTtsClient for bidirectional TTS streaming.
+        /// </summary>
+        /// <param name="apiKey">Your Hume API key</param>
+        /// <param name="enableDebugLogging">Enable verbose logging for debugging (default: false)</param>
+        public StreamingTtsClient(string apiKey, bool enableDebugLogging = false)
         {
             _apiKey = apiKey;
+            _enableDebugLogging = enableDebugLogging;
             _webSocket = new ClientWebSocket();
+            
             // For bidirectional streaming, use PCM format with strip_headers=true
             // to ensure continuous streaming without per-chunk headers
-            _websocketUri = new Uri($"wss://api.hume.ai/v0/tts/stream/input?api_key={apiKey}&no_binary=true&instant_mode=true&strip_headers=true&format_type=pcm"); 
+            _websocketUri = new Uri($"{WebSocketEndpoint}?api_key={apiKey}&no_binary=true&instant_mode=true&strip_headers=true&format_type=pcm"); 
         }
 
         public async Task ConnectAsync()
@@ -130,7 +145,7 @@ namespace TtsCsharpQuickstart
             try
             {
                 await _webSocket.ConnectAsync(_websocketUri, _cts.Token);
-                Console.WriteLine("WebSocket connected.");
+                LogDebug("WebSocket connected.");
             }
             catch (WebSocketException ex)
             {
@@ -140,19 +155,19 @@ namespace TtsCsharpQuickstart
 
             _ = Task.Run(async () =>
             {
-                var buffer = new byte[8192];
+                var buffer = new byte[WebSocketBufferSize];
                 var messageBuffer = new MemoryStream();
                 int messagesReceived = 0;
                 try
                 {
-                    Console.WriteLine("WebSocket receive loop started");
+                    LogDebug("WebSocket receive loop started");
                     while (_webSocket.State == WebSocketState.Open)
                     {
                         var result = await _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cts.Token);
 
                         if (result.MessageType == WebSocketMessageType.Close)
                         {
-                            Console.WriteLine("WebSocket close message received");
+                            LogDebug("WebSocket close message received");
                             await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Server closed", _cts.Token);
                             _queue.End();
                             break;
@@ -165,22 +180,22 @@ namespace TtsCsharpQuickstart
                         if (result.EndOfMessage)
                         {
                             messagesReceived++;
-                            var json = System.Text.Encoding.UTF8.GetString(messageBuffer.ToArray());
-                            Console.WriteLine($"WebSocket received message #{messagesReceived}: {json.Substring(0, Math.Min(60, json.Length))}...");
+                            var json = Encoding.UTF8.GetString(messageBuffer.ToArray());
+                            LogDebug($"Received message #{messagesReceived}");
                             _queue.Push(json);
                             messageBuffer.SetLength(0); // Reset the buffer for the next message
                         }
                     }
-                    Console.WriteLine($"WebSocket receive loop exited normally. State: {_webSocket.State}, Messages received: {messagesReceived}");
+                    LogDebug($"WebSocket receive loop exited. State: {_webSocket.State}, Messages: {messagesReceived}");
                 }
                 catch (WebSocketException ex)
                 {
-                    Console.WriteLine($"WebSocket error in Receive loop: {ex.Message}");
+                    Console.WriteLine($"WebSocket error: {ex.Message}");
                     _queue.End();
                 }
                 catch (OperationCanceledException)
                 {
-                    Console.WriteLine("WebSocket receive loop cancelled");
+                    LogDebug("WebSocket receive loop cancelled");
                     _queue.End();
                 }
                 finally
@@ -212,9 +227,10 @@ namespace TtsCsharpQuickstart
 
         public async IAsyncEnumerable<SnippetAudioChunk> ReceiveAudioChunksAsync()
         {
-            Console.WriteLine("Starting to receive audio chunks...");
+            LogDebug("Starting to receive audio chunks...");
             int messageCount = 0;
             int audioChunkCount = 0;
+            
             await foreach (var item in _queue.GetAsyncEnumerable())
             {
                 messageCount++;
@@ -224,17 +240,27 @@ namespace TtsCsharpQuickstart
                     {
                         // It's an audio chunk, deserialize and yield
                         audioChunkCount++;
-                        Console.WriteLine($"Yielding audio chunk #{audioChunkCount}");
+                        LogDebug($"Yielding audio chunk #{audioChunkCount}");
                         var chunk = JsonSerializer.Deserialize<SnippetAudioChunk>(item)!;
                         yield return chunk; 
                     }
                     else
                     {
-                        Console.WriteLine($"Message #{messageCount} is not an audio chunk (might be timestamp or other message type)");
+                        // Non-audio messages (e.g., timestamps) are silently ignored
+                        LogDebug($"Message #{messageCount} is not an audio chunk");
                     }
                 }
             }
-            Console.WriteLine($"Finished receiving. Total messages: {messageCount}, Audio chunks: {audioChunkCount}");
+            
+            LogDebug($"Finished receiving. Total messages: {messageCount}, Audio chunks: {audioChunkCount}");
+        }
+
+        private void LogDebug(string message)
+        {
+            if (_enableDebugLogging)
+            {
+                Console.WriteLine($"[StreamingTtsClient] {message}");
+            }
         }
 
         public void Dispose()
@@ -245,6 +271,12 @@ namespace TtsCsharpQuickstart
         }
     }
 
+    /// <summary>
+    /// Buffers and streams audio chunks to an output stream in a continuous manner.
+    /// Prevents audio playback gaps by maintaining a buffer between audio chunk arrival
+    /// and playback. Useful for real-time streaming scenarios where chunks may arrive
+    /// with slight delays.
+    /// </summary>
     public class SilenceFiller : IDisposable
     {
         private readonly BlockingCollection<byte[]> _audioBuffer = new BlockingCollection<byte[]>();
@@ -252,16 +284,26 @@ namespace TtsCsharpQuickstart
         private Task? _playbackTask;
         private readonly Stream _outputStream;
 
+        /// <summary>
+        /// Creates a new SilenceFiller that writes audio to the specified output stream.
+        /// </summary>
+        /// <param name="outputStream">The stream to write audio data to (typically ffplay's stdin)</param>
         public SilenceFiller(Stream outputStream)
         {
             _outputStream = outputStream;
         }
 
+        /// <summary>
+        /// Adds an audio chunk to the buffer for playback.
+        /// </summary>
         public void WriteAudio(byte[] audioBytes)
         {
             _audioBuffer.Add(audioBytes);
         }
 
+        /// <summary>
+        /// Starts the background task that continuously writes buffered audio to the output stream.
+        /// </summary>
         public void Start()
         {
             _playbackTask = Task.Run(async () =>
@@ -281,6 +323,9 @@ namespace TtsCsharpQuickstart
             });
         }
 
+        /// <summary>
+        /// Signals that no more audio will be added and waits for all buffered audio to be written.
+        /// </summary>
         public async Task EndStreamAsync()
         {
             _audioBuffer.CompleteAdding();
