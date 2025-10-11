@@ -41,7 +41,7 @@ class Program
 
         await Example1Async();
         await Example2Async();
-        // await Example3Async();
+        await Example3Async();
 
         Console.WriteLine("Done");
     }
@@ -201,7 +201,7 @@ class Program
         using var streamingTtsClient = new StreamingTtsClient(_apiKey!);
         await streamingTtsClient.ConnectAsync();
 
-        using var audioPlayer = StartAudioPlayer();
+        using var audioPlayer = new StreamingAudioPlayer("pcm");
         await audioPlayer.StartStreamingAsync();
         using var silenceFiller = new SilenceFiller(audioPlayer.StandardInput!);
         silenceFiller.Start();
@@ -239,6 +239,12 @@ class Program
         private Process? _audioProcess;
         public Stream? StandardInput { get; private set; }
         private bool _isStreaming = false;
+        private readonly string _audioFormat;
+
+        public StreamingAudioPlayer(string audioFormat = "container")
+        {
+            _audioFormat = audioFormat;
+        }
 
         public Task StartStreamingAsync()
         {
@@ -289,10 +295,15 @@ class Program
         {
             try
             {
+                // Choose ffplay arguments based on audio format
+                var arguments = _audioFormat == "pcm"
+                    ? "-f s16le -ar 48000 -fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 -i - -nodisp -autoexit"
+                    : "-nodisp -autoexit -infbuf -i -";
+
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = "ffplay",
-                    Arguments = "-nodisp -autoexit -infbuf -i -",
+                    Arguments = arguments,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardInput = true,

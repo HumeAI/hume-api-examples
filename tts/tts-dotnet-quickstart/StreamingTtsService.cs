@@ -70,7 +70,7 @@ namespace TtsCsharpQuickstart
         {
             _apiKey = apiKey;
             _webSocket = new ClientWebSocket();
-            _websocketUri = new Uri($"wss://api.hume.ai/v0/tts/stream/input?api_key={apiKey}&no_binary=true&instant_mode=true&strip_headers=true&format_type=pcm"); 
+            _websocketUri = new Uri($"wss://api.hume.ai/v0/tts/stream/input?api_key={apiKey}&no_binary=true&instant_mode=true&format_type=pcm"); 
         }
 
         public async Task ConnectAsync()
@@ -89,6 +89,7 @@ namespace TtsCsharpQuickstart
             _ = Task.Run(async () =>
             {
                 var buffer = new byte[8192];
+                var messageBuffer = new MemoryStream();
                 try
                 {
                     while (_webSocket.State == WebSocketState.Open)
@@ -102,8 +103,16 @@ namespace TtsCsharpQuickstart
                             break;
                         }
 
-                        var json = System.Text.Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        _queue.Push(json);
+                        // Write the received chunk to the message buffer
+                        messageBuffer.Write(buffer, 0, result.Count);
+
+                        // Check if this is the end of the message
+                        if (result.EndOfMessage)
+                        {
+                            var json = System.Text.Encoding.UTF8.GetString(messageBuffer.ToArray());
+                            _queue.Push(json);
+                            messageBuffer.SetLength(0); // Reset the buffer for the next message
+                        }
                     }
                 }
                 catch (WebSocketException ex)
@@ -114,6 +123,10 @@ namespace TtsCsharpQuickstart
                 catch (OperationCanceledException)
                 {
                     _queue.End();
+                }
+                finally
+                {
+                    messageBuffer.Dispose();
                 }
             });
         }
