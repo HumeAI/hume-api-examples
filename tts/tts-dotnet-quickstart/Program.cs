@@ -1,21 +1,22 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using DotNetEnv;
 using Hume;
 using Hume.Tts;
-using System.Collections.Generic;
 using TtsCsharpQuickstart;
-using DotNetEnv;
 
 namespace TtsCsharpQuickstart;
 
 class Program
 {
     // Constants
-    private const string ApiKeyEnvironmentVariable = "HUME_API_KEY";
+    private const string HumeApiKey = "HUME_API_KEY";
     private const string DefaultVoiceName = "Ava Song";
     private const int VoiceCreationDelaySeconds = 8;
     
@@ -30,10 +31,10 @@ class Program
 
         Console.WriteLine("Starting...");
 
-        _apiKey = Environment.GetEnvironmentVariable(ApiKeyEnvironmentVariable);
+        _apiKey = Environment.GetEnvironmentVariable(HumeApiKey);
         if (string.IsNullOrEmpty(_apiKey))
         {
-            throw new InvalidOperationException($"{ApiKeyEnvironmentVariable} not found in environment variables.");
+            throw new InvalidOperationException($"{HumeApiKey} not found in environment variables.");
         }
 
         _client = new HumeClient(_apiKey);
@@ -45,7 +46,7 @@ class Program
         Console.WriteLine($"Results will be written to {_outputDir}");
 
         await Example1Async();
-        // await Example2Async();
+        await Example2Async();
         await Example3Async();
 
         Console.WriteLine("Done");
@@ -201,11 +202,9 @@ class Program
         using var streamingTtsClient = new StreamingTtsClient(_apiKey!);
         await streamingTtsClient.ConnectAsync();
 
-        // For bidirectional streaming with PCM, use specific ffplay arguments
-        using var audioPlayer = new StreamingAudioPlayer(usePcmFormat: true);
+        // Use buffered mode for bidirectional streaming to handle irregular chunk arrival timing
+        using var audioPlayer = new StreamingAudioPlayer(usePcmFormat: true, useBuffering: true);
         await audioPlayer.StartStreamingAsync();
-        using var silenceFiller = new SilenceFiller(audioPlayer.StandardInput!);
-        silenceFiller.Start();
 
         // Task 1: Send text input to the TTS service
         var sendInputTask = Task.Run(async () =>
@@ -231,9 +230,8 @@ class Program
             await foreach (var chunk in streamingTtsClient.ReceiveAudioChunksAsync())
             {
                 var audioBytes = Convert.FromBase64String(chunk.Audio);
-                silenceFiller.WriteAudio(audioBytes);
+                await audioPlayer.SendAudioAsync(audioBytes);
             }
-            await silenceFiller.EndStreamAsync();
             await audioPlayer.StopStreamingAsync();
         });
 
@@ -265,13 +263,19 @@ class Program
     /// <summary>
     /// Real-time streaming audio player using ffplay.
     /// Pipes audio data to ffplay process for immediate playback without writing to disk.
+    /// Supports optional buffering for scenarios with variable chunk arrival timing.
     /// </summary>
     public class StreamingAudioPlayer : IDisposable
     {
         private Process? _audioProcess;
-        public Stream? StandardInput { get; private set; }
         private bool _isStreaming = false;
         private readonly bool _usePcmFormat;
+        private readonly bool _useBuffering;
+        
+        // Buffering support for bidirectional streaming scenarios
+        private BlockingCollection<byte[]>? _audioBuffer;
+        private CancellationTokenSource? _bufferCts;
+        private Task? _bufferTask;
 
         /// <summary>
         /// Creates a new StreamingAudioPlayer.
@@ -280,27 +284,72 @@ class Program
         /// If true, configures ffplay for raw PCM audio (48kHz, 16-bit signed little-endian).
         /// If false, uses auto-detection for container formats like WAV or MP3 (default).
         /// </param>
-        public StreamingAudioPlayer(bool usePcmFormat = false)
+        /// <param name="useBuffering">
+        /// If true, enables buffered mode where audio chunks are queued and played continuously
+        /// by a background task. This is useful for bidirectional streaming where chunks may
+        /// arrive with irregular timing. If false, audio is written directly to ffplay (default).
+        /// </param>
+        public StreamingAudioPlayer(bool usePcmFormat = false, bool useBuffering = false)
         {
             _usePcmFormat = usePcmFormat;
+            _useBuffering = useBuffering;
+            
+            if (_useBuffering)
+            {
+                _audioBuffer = new BlockingCollection<byte[]>();
+                _bufferCts = new CancellationTokenSource();
+            }
         }
 
         public Task StartStreamingAsync()
         {
             _isStreaming = true;
             StartAudioProcess();
+            
+            // Start buffer draining task if buffering is enabled
+            if (_useBuffering && _audioBuffer != null && _bufferCts != null && _audioProcess != null)
+            {
+                _bufferTask = Task.Run(async () =>
+                {
+                    try
+                    {
+                        foreach (var audioBytes in _audioBuffer.GetConsumingEnumerable(_bufferCts.Token))
+                        {
+                            if (_audioProcess?.StandardInput?.BaseStream != null)
+                            {
+                                await _audioProcess.StandardInput.BaseStream.WriteAsync(audioBytes, _bufferCts.Token);
+                                await _audioProcess.StandardInput.BaseStream.FlushAsync(_bufferCts.Token);
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Expected when stopping
+                    }
+                });
+            }
+            
             Console.WriteLine("Streaming audio player started...");
             return Task.CompletedTask;
         }
 
         public Task SendAudioAsync(byte[] audioBytes)
         {
-            if (!_isStreaming || _audioProcess?.HasExited != false) return Task.CompletedTask;
+            if (!_isStreaming) return Task.CompletedTask;
 
             try
             {
-                _audioProcess?.StandardInput.BaseStream.Write(audioBytes, 0, audioBytes.Length);
-                _audioProcess?.StandardInput.BaseStream.Flush();
+                if (_useBuffering && _audioBuffer != null)
+                {
+                    // Buffered mode: add to queue for background task to process
+                    _audioBuffer.Add(audioBytes);
+                }
+                else if (_audioProcess?.HasExited == false)
+                {
+                    // Direct mode: write immediately to ffplay
+                    _audioProcess?.StandardInput.BaseStream.Write(audioBytes, 0, audioBytes.Length);
+                    _audioProcess?.StandardInput.BaseStream.Flush();
+                }
             }
             catch (Exception ex)
             {
@@ -316,6 +365,17 @@ class Program
 
             try
             {
+                // Complete buffered audio if using buffering
+                if (_useBuffering && _audioBuffer != null)
+                {
+                    _audioBuffer.CompleteAdding();
+                    if (_bufferTask != null)
+                    {
+                        await _bufferTask;
+                    }
+                }
+                
+                // Close ffplay process
                 if (_audioProcess != null && !_audioProcess.HasExited)
                 {
                     _audioProcess.StandardInput.Close();
@@ -357,8 +417,6 @@ class Program
                     throw new InvalidOperationException("Failed to start ffplay process");
                 }
 
-                StandardInput = _audioProcess.StandardInput.BaseStream;
-
                 _audioProcess.ErrorDataReceived += (sender, e) =>
                 {
                     if (!string.IsNullOrEmpty(e.Data))
@@ -377,11 +435,19 @@ class Program
         {
             try
             {
+                // Cancel buffering operations
+                _bufferCts?.Cancel();
+                
+                // Kill ffplay process if still running
                 if (_audioProcess != null && !_audioProcess.HasExited)
                 {
                     _audioProcess.Kill();
                 }
+                
+                // Dispose resources
                 _audioProcess?.Dispose();
+                _audioBuffer?.Dispose();
+                _bufferCts?.Dispose();
             }
             catch { }
         }
