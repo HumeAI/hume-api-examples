@@ -40,7 +40,7 @@ class Program
         Console.WriteLine($"Results will be written to {_outputDir}");
 
         await Example1Async();
-        await Example2Async();
+        // await Example2Async();
         await Example3Async();
 
         Console.WriteLine("Done");
@@ -201,7 +201,8 @@ class Program
         using var streamingTtsClient = new StreamingTtsClient(_apiKey!);
         await streamingTtsClient.ConnectAsync();
 
-        using var audioPlayer = new StreamingAudioPlayer("pcm");
+        // For bidirectional streaming with PCM, use specific ffplay arguments
+        using var audioPlayer = new StreamingAudioPlayer(usePcmFormat: true);
         await audioPlayer.StartStreamingAsync();
         using var silenceFiller = new SilenceFiller(audioPlayer.StandardInput!);
         silenceFiller.Start();
@@ -210,7 +211,11 @@ class Program
         {
             await streamingTtsClient.SendAsync(new { text = "Hello" });
             await streamingTtsClient.SendAsync(new { text = " world." });
+            // The whitespace    ^ is important, otherwise the model would see
+            // "Helloworld." and not "Hello world."
             await streamingTtsClient.SendFlushAsync();
+            Console.WriteLine("Waiting 8 seconds...");
+            await Task.Delay(8000);
             await streamingTtsClient.SendAsync(new { text = " Goodbye, world." });
             await streamingTtsClient.SendFlushAsync();
             await streamingTtsClient.SendCloseAsync();
@@ -239,11 +244,11 @@ class Program
         private Process? _audioProcess;
         public Stream? StandardInput { get; private set; }
         private bool _isStreaming = false;
-        private readonly string _audioFormat;
+        private readonly bool _usePcmFormat;
 
-        public StreamingAudioPlayer(string audioFormat = "container")
+        public StreamingAudioPlayer(bool usePcmFormat = false)
         {
-            _audioFormat = audioFormat;
+            _usePcmFormat = usePcmFormat;
         }
 
         public Task StartStreamingAsync()
@@ -295,8 +300,8 @@ class Program
         {
             try
             {
-                // Choose ffplay arguments based on audio format
-                var arguments = _audioFormat == "pcm"
+                // PCM format requires explicit format specification, WAV/MP3 can auto-detect
+                var arguments = _usePcmFormat
                     ? "-f s16le -ar 48000 -fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 -i - -nodisp -autoexit"
                     : "-nodisp -autoexit -infbuf -i -";
 

@@ -12,47 +12,97 @@ using Hume.Tts;
 
 namespace TtsCsharpQuickstart
 {
+    /// <summary>
+    /// Thread-safe async queue implementation.
+    /// 
+    /// Race Condition Fix: This queue is accessed from multiple threads:
+    /// 1. The WebSocket receive loop (background thread) calls Push()
+    /// 2. The ReceiveAudioChunksAsync() enumerator (foreground thread) calls GetAsyncEnumerable()
+    /// 
+    /// Without proper locking, these concurrent accesses caused a race condition where audio chunks
+    /// were lost (only 1 out of 22 chunks was being yielded). The lock ensures all state (_pushed,
+    /// _waiting, _ended) is accessed atomically. TaskCompletionSource is completed outside the lock
+    /// to avoid potential deadlocks.
+    /// </summary>
     public class Queue<T>
     {
+        private readonly object _lock = new object();
         private readonly List<T> _pushed = new List<T>();
         private TaskCompletionSource<T?>? _waiting = null;
         private bool _ended = false;
 
         public void Push(T x)
         {
-            if (_ended) return;
-            if (_waiting != null)
+            TaskCompletionSource<T?>? toComplete = null;
+            lock (_lock)
             {
-                _waiting.SetResult(x);
-                _waiting = null;
+                if (_ended) return;
+                if (_waiting != null)
+                {
+                    toComplete = _waiting;
+                    _waiting = null;
+                }
+                else _pushed.Add(x);
             }
-            else _pushed.Add(x);
+            // Complete outside the lock to avoid potential deadlocks
+            toComplete?.SetResult(x);
         }
 
         public void End()
         {
-            if (_ended) return;
-            _ended = true;
-            if (_waiting != null) { _waiting.SetResult(default); _waiting = null; }
+            TaskCompletionSource<T?>? toComplete = null;
+            lock (_lock)
+            {
+                if (_ended) return;
+                _ended = true;
+                if (_waiting != null)
+                {
+                    toComplete = _waiting;
+                    _waiting = null;
+                }
+            }
+            // Complete outside the lock
+            toComplete?.SetResult(default);
         }
 
         public async IAsyncEnumerable<T> GetAsyncEnumerable()
         {
             while (true)
             {
-                if (_pushed.Any())
+                T? item = default;
+                bool hasItem = false;
+                TaskCompletionSource<T?>? tcs = null;
+
+                lock (_lock)
                 {
-                    var item = _pushed[0];
-                    _pushed.RemoveAt(0);
-                    yield return item;
+                    if (_pushed.Any())
+                    {
+                        item = _pushed[0];
+                        _pushed.RemoveAt(0);
+                        hasItem = true;
+                    }
+                    else if (!_ended)
+                    {
+                        _waiting = new TaskCompletionSource<T?>();
+                        tcs = _waiting;
+                    }
                 }
-                else
+
+                if (hasItem)
                 {
-                    _waiting = new TaskCompletionSource<T?>();
-                    var x = await _waiting.Task;
+                    yield return item!;
+                }
+                else if (tcs != null)
+                {
+                    var x = await tcs.Task;
                     if (x == null) break;
                     if (x is T concreteX) yield return concreteX;
                     else throw new InvalidOperationException("Received null from queue when a non-null value was expected.");
+                }
+                else
+                {
+                    // Queue ended and no more items
+                    break;
                 }
             }
         }
@@ -70,7 +120,9 @@ namespace TtsCsharpQuickstart
         {
             _apiKey = apiKey;
             _webSocket = new ClientWebSocket();
-            _websocketUri = new Uri($"wss://api.hume.ai/v0/tts/stream/input?api_key={apiKey}&no_binary=true&instant_mode=true&format_type=pcm"); 
+            // For bidirectional streaming, use PCM format with strip_headers=true
+            // to ensure continuous streaming without per-chunk headers
+            _websocketUri = new Uri($"wss://api.hume.ai/v0/tts/stream/input?api_key={apiKey}&no_binary=true&instant_mode=true&strip_headers=true&format_type=pcm"); 
         }
 
         public async Task ConnectAsync()
@@ -90,14 +142,17 @@ namespace TtsCsharpQuickstart
             {
                 var buffer = new byte[8192];
                 var messageBuffer = new MemoryStream();
+                int messagesReceived = 0;
                 try
                 {
+                    Console.WriteLine("WebSocket receive loop started");
                     while (_webSocket.State == WebSocketState.Open)
                     {
                         var result = await _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cts.Token);
 
                         if (result.MessageType == WebSocketMessageType.Close)
                         {
+                            Console.WriteLine("WebSocket close message received");
                             await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Server closed", _cts.Token);
                             _queue.End();
                             break;
@@ -109,11 +164,14 @@ namespace TtsCsharpQuickstart
                         // Check if this is the end of the message
                         if (result.EndOfMessage)
                         {
+                            messagesReceived++;
                             var json = System.Text.Encoding.UTF8.GetString(messageBuffer.ToArray());
+                            Console.WriteLine($"WebSocket received message #{messagesReceived}: {json.Substring(0, Math.Min(60, json.Length))}...");
                             _queue.Push(json);
                             messageBuffer.SetLength(0); // Reset the buffer for the next message
                         }
                     }
+                    Console.WriteLine($"WebSocket receive loop exited normally. State: {_webSocket.State}, Messages received: {messagesReceived}");
                 }
                 catch (WebSocketException ex)
                 {
@@ -122,6 +180,7 @@ namespace TtsCsharpQuickstart
                 }
                 catch (OperationCanceledException)
                 {
+                    Console.WriteLine("WebSocket receive loop cancelled");
                     _queue.End();
                 }
                 finally
@@ -153,18 +212,29 @@ namespace TtsCsharpQuickstart
 
         public async IAsyncEnumerable<SnippetAudioChunk> ReceiveAudioChunksAsync()
         {
+            Console.WriteLine("Starting to receive audio chunks...");
+            int messageCount = 0;
+            int audioChunkCount = 0;
             await foreach (var item in _queue.GetAsyncEnumerable())
             {
+                messageCount++;
                 using (JsonDocument doc = JsonDocument.Parse(item))
                 {
                     if (doc.RootElement.TryGetProperty("audio", out JsonElement audioElement))
                     {
                         // It's an audio chunk, deserialize and yield
+                        audioChunkCount++;
+                        Console.WriteLine($"Yielding audio chunk #{audioChunkCount}");
                         var chunk = JsonSerializer.Deserialize<SnippetAudioChunk>(item)!;
                         yield return chunk; 
                     }
+                    else
+                    {
+                        Console.WriteLine($"Message #{messageCount} is not an audio chunk (might be timestamp or other message type)");
+                    }
                 }
             }
+            Console.WriteLine($"Finished receiving. Total messages: {messageCount}, Audio chunks: {audioChunkCount}");
         }
 
         public void Dispose()
