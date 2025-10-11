@@ -39,9 +39,9 @@ class Program
 
         Console.WriteLine($"Results will be written to {_outputDir}");
 
-        // await Example1Async();
-        // await Example2Async();
-        await Example3Async();
+        await Example1Async();
+        await Example2Async();
+        // await Example3Async();
 
         Console.WriteLine("Done");
     }
@@ -82,9 +82,11 @@ class Program
             StripHeaders = true,
         }))
         {
-            if (snippet.IsAudio)
+            // Handle both TtsOutput and OneOf types for SDK compatibility
+            var snippetValue = snippet.Value;
+            if (snippetValue is SnippetAudioChunk audio)
             {
-                await streamingPlayer.SendAudioAsync(Convert.FromBase64String(snippet.AsAudio().Audio));
+                await streamingPlayer.SendAudioAsync(Convert.FromBase64String(audio.Audio));
             }
         }
 
@@ -163,7 +165,7 @@ class Program
         using var streamingPlayer2 = StartAudioPlayer();
         await streamingPlayer2.StartStreamingAsync();
 
-        var stream = (System.Collections.Generic.IAsyncEnumerable<SnippetAudioChunk>)_client!.Tts.SynthesizeJsonStreamingAsync(new PostedTts
+        await foreach (var snippet in _client!.Tts.SynthesizeJsonStreamingAsync(new PostedTts
         {
             Utterances = new List<PostedUtterance>
             {
@@ -179,11 +181,14 @@ class Program
                 GenerationId = selectedGenerationId
             },
             StripHeaders = true,
-        });
-
-        await foreach (var snippet in stream)
+        }))
         {
-            await streamingPlayer2.SendAudioAsync(Convert.FromBase64String(snippet.Audio));
+            // Handle both TtsOutput and OneOf types for SDK compatibility
+            var snippetValue = snippet.Value;
+            if (snippetValue is SnippetAudioChunk audio)
+            {
+                await streamingPlayer2.SendAudioAsync(Convert.FromBase64String(audio.Audio));
+            }
         }
         await streamingPlayer2.StopStreamingAsync();
         Console.WriteLine("Done!");
@@ -287,7 +292,7 @@ class Program
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = "ffplay",
-                    Arguments = "-f s16le -ar 48000 -fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 -i - -nodisp -autoexit",
+                    Arguments = "-nodisp -autoexit -infbuf -i -",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardInput = true,
