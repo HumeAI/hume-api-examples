@@ -1,0 +1,2 @@
+overrides:
+  hume: link:../../../../.pnpm/bin/global/5/node_modules/hume

@@ -1,4 +1,4 @@
-import { HumeClient, SilenceFiller } from "hume"
+import { HumeClient, createSilenceFiller } from "hume"
 import dotenv from "dotenv"
 import { StreamingTtsClient } from "./streaming";
 import { startAudioPlayer } from "./audio_player";
@@ -32,9 +32,11 @@ const example1 = async () => {
 
   const audioPlayer = startAudioPlayer()
   console.log('Example 1: Synthesizing audio using a pre-existing voice...')
-  for await (const snippet of stream) {
-    const buffer = Buffer.from(snippet.audio, "base64")
-    audioPlayer.stdin.write(buffer)
+  for await (const chunk of stream) {
+    if (chunk.type === 'audio') {
+      const buffer = Buffer.from(chunk.audio, "base64")
+      audioPlayer.stdin.write(buffer)
+    }
   }
   await audioPlayer.stop()
   console.log('Done!')
@@ -82,7 +84,7 @@ const example2 = async () => {
       resolve(data.toString().trim());
     });
   });
-  process.stdout.write('Enter your choice (1 or 2): '); 
+  process.stdout.write('Enter your choice (1 or 2): ');
   const userChoice = await readFromStdin()
   const selectedIndex = parseInt(userChoice) - 1
 
@@ -120,9 +122,11 @@ const example2 = async () => {
     stripHeaders: true
   })
 
-  for await (const snippet of stream) {
-    const buffer = Buffer.from(snippet.audio, "base64")
-    audioPlayer.stdin.write(buffer)
+  for await (const chunk of stream) {
+    if (chunk.type === 'audio') {
+      const buffer = Buffer.from(chunk.audio, "base64")
+      audioPlayer.stdin.write(buffer)
+    }
   }
   console.log('Done!')
 
@@ -133,6 +137,7 @@ const example2 = async () => {
 const example3 = async () => {
   const stream = await StreamingTtsClient.connect(process.env.HUME_API_KEY!);
   const player = startAudioPlayer('raw');
+  const SilenceFiller = await createSilenceFiller()
   const silenceFiller = new SilenceFiller();
 
   // Pipe silence filler output to audio player stdin
@@ -144,11 +149,14 @@ const example3 = async () => {
   });
 
   const sendInput = async () => {
-    stream.send({ text: "Hello world." });
+    stream.send({ text: "Hello" });
+    stream.send({ text: " world." });
+    // The whitespace    ^ is important, otherwise the model would see
+    // "Helloworld." and not "Hello world."
     stream.sendFlush();
     console.log('Waiting 8 seconds...')
     await new Promise(r => setTimeout(r, 8000));
-    stream.send({ text: "Goodbye, world." });
+    stream.send({ text: " Goodbye, world." });
     stream.sendFlush();
     stream.sendClose();
   };
