@@ -72,7 +72,6 @@ class Program
             {
                 new PostedUtterance { Text = "Dogs became domesticated between 23,000 and 30,000 years ago.", Voice = voice },
             },
-            Format = new Format(new Format.Wav()),
             // With `stripHeaders: true`, only the first audio chunk will contain
             // headers in container formats (wav, mp3). This allows you to start a
             // single audio player and stream all audio chunks to it without artifacts.
@@ -85,7 +84,7 @@ class Program
         await streamingPlayer.StopStreamingAsync();
         Console.WriteLine("Done!");
     }
-    
+
     /** Example 2: Voice Design.
     * 
     * This method demonstrates how you can create a custom voice via the API.
@@ -191,16 +190,16 @@ class Program
         await streamingTtsClient.ConnectAsync();
 
         using var audioPlayer = StartAudioPlayer();
+        await audioPlayer.StartStreamingAsync();
         using var silenceFiller = new SilenceFiller(audioPlayer.StandardInput!);
         silenceFiller.Start();
 
         var sendInputTask = Task.Run(async () =>
         {
-            await streamingTtsClient.SendAsync(new { Utterances = new List<PostedUtterance> { new PostedUtterance { Text = "Hello world." } } });
+            await streamingTtsClient.SendAsync(new { text = "Hello" });
+            await streamingTtsClient.SendAsync(new { text = " world." });
             await streamingTtsClient.SendFlushAsync();
-            Console.WriteLine("Waiting 8 seconds...");
-            await Task.Delay(8000);
-            await streamingTtsClient.SendAsync(new { Utterances = new List<PostedUtterance> { new PostedUtterance { Text = "Goodbye, world." } } });
+            await streamingTtsClient.SendAsync(new { text = " Goodbye, world." });
             await streamingTtsClient.SendFlushAsync();
             await streamingTtsClient.SendCloseAsync();
         });
@@ -281,7 +280,7 @@ class Program
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = "ffplay",
-                    Arguments = "-nodisp -autoexit -infbuf -i -",
+                    Arguments = "-f s16le -ar 48000 -fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 -i - -nodisp -autoexit",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardInput = true,
