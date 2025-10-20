@@ -10,6 +10,7 @@ from simpleaudio import play_buffer
 
 from src.utils import validate_env_vars
 
+
 async def synthesize_text(text: str, session: ClientSession) -> bytes:
     """
     Synthesize `text` via the LiveKit Agents Hume TTS plugin using a shared
@@ -24,11 +25,14 @@ async def synthesize_text(text: str, session: ClientSession) -> bytes:
         instant_mode=True,
         audio_format=AudioFormat.wav,
         http_session=session,
+        # use Octave 2 (preview): https://dev.hume.ai/docs/text-to-speech-tts/overview#octave-versions
+        model_version="2",
     )
     async for chunk in tts.synthesize(text):
         pcm_buf.extend(chunk.frame.data)
 
     return bytes(pcm_buf)
+
 
 async def interactive_repl() -> None:
     """
@@ -53,7 +57,7 @@ async def interactive_repl() -> None:
                 play_buffer(
                     pcm,
                     num_channels=1,     # mono
-                    bytes_per_sample=2, # 16-bit
+                    bytes_per_sample=2,  # 16-bit
                     sample_rate=48000,  # 48 kHz
                 ).wait_done()
             except Exception as err:
