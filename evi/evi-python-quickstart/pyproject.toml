@@ -1,0 +1,10 @@
+[project]
+name = "evi-python-quickstart"
+version = "0.1.0"
+description = "EVI Python quickstart example"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "hume[microphone]>=0.12.1",
+  "python-dotenv>=1.0.1",
+]
