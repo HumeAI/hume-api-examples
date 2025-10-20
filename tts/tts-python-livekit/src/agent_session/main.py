@@ -14,10 +14,12 @@ from livekit.plugins.silero import VAD
 from src.agent_session.constants import SYSTEM_PROMPT, GREETING_INSTRUCTIONS
 from src.utils import validate_env_vars
 
+
 class VoiceAssistant(Agent):
     """
     Agent using the voice-assistant prompt.
     """
+
     def __init__(self):
         super().__init__(instructions=SYSTEM_PROMPT)
 
@@ -30,7 +32,7 @@ async def entrypoint(ctx: JobContext) -> None:
 
     # Voice-activity detection + buffering for non-streaming STT
     vad = VAD.load(
-        min_speech_duration=0.1, 
+        min_speech_duration=0.1,
         min_silence_duration=0.5
     )
 
@@ -38,21 +40,23 @@ async def entrypoint(ctx: JobContext) -> None:
         vad=vad,
         stt=StreamAdapter(
             stt=STT(
-                model="whisper-large-v3-turbo", 
+                model="whisper-large-v3-turbo",
                 language="en",
             ),
             vad=vad,
         ),
         llm=LLM(
-            model="claude-3-5-haiku-latest", 
+            model="claude-3-5-haiku-latest",
             temperature=0.5,
         ),
         tts=TTS(
             voice=VoiceByName(
                 name="Male English Actor",
                 provider=VoiceProvider.hume,
-            ), 
-            instant_mode=True
+            ),
+            instant_mode=True,
+            # use Octave 2 (preview): https://dev.hume.ai/docs/text-to-speech-tts/overview#octave-versions
+            model_version="2",
         ),
     )
 
