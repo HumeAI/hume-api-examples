@@ -6,11 +6,12 @@
     <RootNamespace>TtsCsharpQuickstart</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Hume" Version="0.2.1" />
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
-    <PackageReference Include="Hume" Version="0.2.0" />
     <PackageReference Include="OneOf" Version="3.0.271" />
     <PackageReference Include="OneOf.Extended" Version="3.0.271" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
