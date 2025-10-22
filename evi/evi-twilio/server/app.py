@@ -23,10 +23,10 @@ app = Flask(__name__)
 def find_or_create_room(room_name):
     try:
         # try to fetch an in-progress room with this name
-        twilio_client.video.rooms(room_name).fetch()
+        twilio_client.video.v1.rooms(room_name).fetch()
     except twilio.base.exceptions.TwilioRestException:
-        # the room did not exist, so create it
-        twilio_client.video.rooms.create(unique_name=room_name, type="go")
+        # Create a room without specifying type (defaults to group room)
+        twilio_client.video.v1.rooms.create(unique_name=room_name)
 
 
 def get_access_token(room_name):
@@ -64,4 +64,5 @@ def join_room():
 
 # Start the server when this file runs
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="0.0.0.0", debug=True, port=port)
