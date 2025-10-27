@@ -11,6 +11,7 @@ import twilio.rest
 import websockets
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
+from flask_sock import Sock
 
 from audio_processors import TwilioAudioProcessor, EviAudioProcessor, AudioProcessingConfig
 
@@ -26,6 +27,7 @@ EVI_CHAT_ENDPOINT = "wss://api.hume.ai/v0/evi/chat"
 
 # Create a Flask app
 app = Flask(__name__)
+sock = Sock(app)
 
 
 def find_or_create_room(room_name):
@@ -166,7 +168,37 @@ async def evi_text_to_audio_example():
 
 @app.route("/")
 def serve_homepage():
-    return "In progress!"
+    return "EVI + Twilio Integration Server"
+
+
+@app.route("/twiml", methods=["POST"])
+def twiml_response():
+    """
+    TwiML endpoint for Twilio to call when a phone call comes in.
+    Returns TwiML that starts a Media Stream to our WebSocket endpoint.
+
+    Configure this URL in your Twilio phone number settings:
+    https://your-server.com/twiml
+    """
+    # Get the server's base URL (you may need to configure this for production)
+    # For local testing with ngrok: use your ngrok URL
+    # For production: use your actual domain
+    server_url = request.url_root.replace(
+        "http://", "wss://").replace("https://", "wss://")
+
+    # Build TwiML response
+    twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say>Connecting you to E V I</Say>
+    <Connect>
+        <Stream url="{server_url}media-stream" />
+    </Connect>
+</Response>"""
+
+    print(f"📞 Incoming call - returning TwiML")
+    print(f"   Media Stream URL: {server_url}media-stream")
+
+    return twiml, 200, {"Content-Type": "application/xml"}
 
 
 @app.route("/join-room", methods=["POST"])
@@ -198,6 +230,88 @@ def evi_demo():
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}, 500
+
+
+@sock.route("/media-stream")
+def media_stream(ws):
+    """
+    Twilio Media Stream WebSocket endpoint.
+    Receives audio from Twilio phone calls and can send audio back.
+
+    Based on Hume's reference implementation.
+    See: https://www.twilio.com/docs/voice/twiml/stream
+    """
+    print("📞 Twilio Media Stream WebSocket connected")
+
+    stream_sid = None
+
+    try:
+        while True:
+            message = ws.receive()
+            if message is None:
+                break
+
+            data = json.loads(message)
+            event_type = data.get("event")
+
+            if event_type == "connected":
+                print("✅ Twilio Media Stream: Connected")
+
+            elif event_type == "start":
+                # Extract stream information
+                stream_sid = data.get("streamSid")
+                start_data = data.get("start", {})
+                print(f"🎤 Media Stream started: {stream_sid}")
+                print(f"   Call SID: {start_data.get('callSid')}")
+                print(f"   Tracks: {start_data.get('tracks')}")
+
+            elif event_type == "media":
+                # Received audio from Twilio (μ-law base64)
+                media_data = data.get("media", {})
+                payload = media_data.get("payload")  # Base64 μ-law audio
+                timestamp = media_data.get("timestamp")
+
+                print(f"🔊 Received audio chunk at {timestamp}ms")
+
+                # Here you would:
+                # 1. Decode the μ-law audio
+                # 2. Convert to EVI format (linear16)
+                # 3. Send to EVI
+                # 4. Receive response from EVI
+                # 5. Convert back to μ-law
+                # 6. Send back to Twilio (see example below)
+
+            elif event_type == "stop":
+                print("🛑 Media Stream stopped")
+                break
+
+    except Exception as e:
+        print(f"❌ Media Stream error: {e}")
+    finally:
+        print("👋 Media Stream WebSocket closed")
+
+
+def send_audio_to_twilio(ws, stream_sid, audio_base64_mulaw):
+    """
+    Send audio back to Twilio Media Stream.
+
+    Args:
+        ws: WebSocket connection
+        stream_sid: Stream SID from Twilio
+        audio_base64_mulaw: Base64-encoded μ-law audio
+
+    Based on reference: twilio_message_broker.py lines 158-172
+    """
+    payload = {
+        "event": "media",
+        "streamSid": stream_sid,
+        "media": {
+            "payload": audio_base64_mulaw
+        }
+    }
+
+    ws.send(json.dumps(payload))
+    print(f"📤 Sent audio to Twilio stream {stream_sid}")
 
 
 # Start the server when this file runs

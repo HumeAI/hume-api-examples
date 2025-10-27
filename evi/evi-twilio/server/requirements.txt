@@ -1,4 +1,5 @@
 flask
+flask-sock
 python-dotenv
 twilio
 websockets
