@@ -2,4 +2,7 @@ flask
 python-dotenv
 twilio
 websockets
+pydub
+numpy
+scipy
 
