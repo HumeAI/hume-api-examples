@@ -1,9 +1,0 @@
-flask
-flask-sock
-python-dotenv
-twilio
-websockets
-pydub
-numpy
-scipy
-
