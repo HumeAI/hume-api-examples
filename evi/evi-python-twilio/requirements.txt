@@ -1,0 +1,8 @@
+flask
+flask-sock
+python-dotenv
+websockets
+pydub
+numpy
+scipy
+
