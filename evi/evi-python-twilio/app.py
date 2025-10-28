@@ -31,7 +31,7 @@ def serve_homepage():
 def twiml_response():
     """
     TwiML endpoint that Twilio calls when a phone call comes in.
-    Configure this URL in your Twilio phone number webhook settings.
+    Configure this URL in your Twilio phone number webhook settings (Phone Numbers > Active Numbers > Configure > A call comes in)
     """
     server_url = request.url_root.replace(
         "http://", "wss://").replace("https://", "wss://")
@@ -39,7 +39,7 @@ def twiml_response():
 # Response is what Twilio voice will pronounce at the beginning of the call.
     twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Say>Connecting you to Hume AI</Say>
+    <Say>Connecting you to Hume AI EVI customer support assistant</Say>
     <Connect>
         <Stream url="{server_url}media-stream" />
     </Connect>
@@ -53,9 +53,6 @@ def twiml_response():
 
 @sock.route("/media-stream")
 def media_stream(ws):
-    """WebSocket endpoint for bidirectional audio streaming between Twilio and EVI."""
-    print("📞 Twilio Media Stream WebSocket connected")
-
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
