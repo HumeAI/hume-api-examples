@@ -9,8 +9,9 @@ from flask_sock import Sock
 from hume import AsyncHumeClient
 from hume.empathic_voice.chat.socket_client import ChatConnectOptions
 from hume.empathic_voice.chat.types import SubscribeEvent
-from hume.empathic_voice import SessionSettings, AudioInput, UserInput
+from hume.empathic_voice import SessionSettings, AudioInput, UserInput, ToolResponseMessage, ToolErrorMessage
 from audio_processors import TwilioAudioProcessor, EviAudioProcessor
+from toolFunction import get_ticket_status
 
 # Load environment variables from .env file
 load_dotenv()
@@ -35,6 +36,7 @@ def twiml_response():
     server_url = request.url_root.replace(
         "http://", "wss://").replace("https://", "wss://")
 
+# Response is what Twilio voice will pronounce at the beginning of the call.
     twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Say>Connecting you to Hume AI</Say>
@@ -126,6 +128,55 @@ async def handle_media_stream(ws):
                         data=base64.b64encode(chunk).decode("utf-8"))
                     await evi_socket.send_audio_input(audio_input)
 
+        async def handle_tool_call(message: SubscribeEvent):
+            """Handles tool calls from EVI."""
+            tool_name = message.name
+            call_id = message.tool_call_id
+
+            print(f"🔧 Tool call: {tool_name}")
+
+            try:
+                if tool_name == "get_ticket_status":
+                    # Extract ticket_id from parameters
+                    ticket_id = message.parameters.get("ticket_id", "")
+
+                    if not ticket_id:
+                        raise ValueError("ticket_id parameter is required")
+
+                    # Call the tool function
+                    result = await get_ticket_status(ticket_id)
+
+                    # Send success response back to EVI
+                    await evi_socket.send_tool_response(
+                        ToolResponseMessage(
+                            tool_call_id=call_id,
+                            content=result
+                        )
+                    )
+                    print(f"✅ Tool response sent: {result}")
+
+                else:
+                    # Unknown tool
+                    await evi_socket.send_tool_error(
+                        ToolErrorMessage(
+                            tool_call_id=call_id,
+                            error="Tool not found",
+                            content=f"Unknown tool: {tool_name}"
+                        )
+                    )
+                    print(f"❌ Unknown tool: {tool_name}")
+
+            except Exception as e:
+                # Send error response back to EVI
+                await evi_socket.send_tool_error(
+                    ToolErrorMessage(
+                        tool_call_id=call_id,
+                        error="Tool execution failed",
+                        content=str(e)
+                    )
+                )
+                print(f"❌ Tool error: {e}")
+
         async def on_evi_message(message: SubscribeEvent):
             """Handles messages received from EVI."""
             if message.type == "chat_metadata":
@@ -147,6 +198,10 @@ async def handle_media_stream(ws):
             elif message.type == "assistant_message":
                 print(f"💬 EVI: {message.message.content}")
 
+            elif message.type == "tool_call":
+                # Handle tool calls from EVI
+                await handle_tool_call(message)
+
             elif message.type == "error":
                 print(f"❌ EVI Error: {message.message}")
 
@@ -166,8 +221,29 @@ async def handle_media_stream(ws):
         # Connect to EVI
         print("🔌 Connecting to EVI...")
 
+        user_name = "Benedict Cumberbatch from Hume AI"
+
+        # You can provide query parameters to EVI on handshake:
+        # https://dev.hume.ai/reference/speech-to-speech-evi/chat#request.query
+        connect_options = ChatConnectOptions(
+            session_settings={
+                # Do not delete the audio setting, as they are needed for audio streaming.
+                "audio": {
+                    "encoding": "linear16",
+                    "sample_rate": 8000,
+                    "channels": 1
+                },
+                # Add user context if provided
+                # See: https://dev.hume.ai/reference/speech-to-speech-evi/chat#send.SessionSettings.context
+                **({"context": {
+                    "type": "persistent",
+                    "text": f"You are a helpful customer support assistant. The user's name is {user_name}. Remember to use their name when appropriate."
+                }} if user_name else {})
+            }
+        )
+
         async with hume_client.empathic_voice.chat.connect_with_callbacks(
-            options=ChatConnectOptions(),
+            options=connect_options,
             on_open=lambda: print("✅ EVI connected"),
             on_message=on_evi_message,
             on_close=lambda: print("👋 EVI disconnected"),
@@ -175,25 +251,25 @@ async def handle_media_stream(ws):
         ) as socket:
             evi_socket = socket
 
-            session_settings_config = {
-                "audio": {
-                    "encoding": "linear16",
-                    "sample_rate": 8000,
-                    "channels": 1
-                }
-            }
+            # OPTION 2: Send session settings as a separate message (currently commented out)
+            # This approach sends settings after the connection is established
+            # Uncomment the block below to use this approach instead:
 
-            # Add user name as persistent context if provided
-            # See more here: https://dev.hume.ai/reference/speech-to-speech-evi/chat#send.SessionSettings.context
-            user_name = "Benedict Cumberbatch from Hume AI"
-
-            if user_name:
-                session_settings_config["context"] = {
-                    "type": "persistent",
-                    "text": f"The user's name is {user_name}. Remember to use their name when appropriate."
-                }
-
-            await socket.send_session_settings(SessionSettings(**session_settings_config))
+            # session_settings_config = {
+            #     "audio": {
+            #         "encoding": "linear16",
+            #         "sample_rate": 8000,
+            #         "channels": 1
+            #     }
+            # }
+            #
+            # if user_name:
+            #     session_settings_config["context"] = {
+            #         "type": "persistent",
+            #         "text": f"The user's name is {user_name}. Remember to use their name when appropriate."
+            #     }
+            #
+            # await socket.send_session_settings(SessionSettings(**session_settings_config))
 
             # Run all audio streaming tasks concurrently
             tasks = [
