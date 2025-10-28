@@ -6,7 +6,7 @@ Customer support tool for handling ticket status lookups.
 # Rewrite it with you custom logic based on this example: https://github.com/HumeAI/hume-api-examples/blob/main/evi/evi-python-function-calling/main.py
 
 
-async def get_ticket_status(ticket_id: str) -> str:
+async def supportAssistant(ticket_id: str) -> str:
     """
     Retrieves the status of a customer support ticket.
 

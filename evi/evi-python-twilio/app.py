@@ -11,7 +11,7 @@ from hume.empathic_voice.chat.socket_client import ChatConnectOptions
 from hume.empathic_voice.chat.types import SubscribeEvent
 from hume.empathic_voice import SessionSettings, AudioInput, UserInput, ToolResponseMessage, ToolErrorMessage
 from audio_processors import TwilioAudioProcessor, EviAudioProcessor
-from toolFunction import get_ticket_status
+from toolFunction import supportAssistant
 
 # Load environment variables from .env file
 load_dotenv()
@@ -136,15 +136,20 @@ async def handle_media_stream(ws):
             print(f"🔧 Tool call: {tool_name}")
 
             try:
-                if tool_name == "get_ticket_status":
+                # Parse the JSON parameters string into a dictionary
+                tool_parameters = json.loads(message.parameters)
+                print(f"📋 Tool parameters: {tool_parameters}")
+
+                if tool_name == "supportAssistant":
                     # Extract ticket_id from parameters
-                    ticket_id = message.parameters.get("ticket_id", "")
+                    ticket_id = tool_parameters.get("ticket_id", "")
+                    print(f"🎫 Extracted ticket_id: '{ticket_id}'")
 
                     if not ticket_id:
                         raise ValueError("ticket_id parameter is required")
 
                     # Call the tool function
-                    result = await get_ticket_status(ticket_id)
+                    result = await supportAssistant(ticket_id)
 
                     # Send success response back to EVI
                     await evi_socket.send_tool_response(
@@ -226,6 +231,7 @@ async def handle_media_stream(ws):
         # You can provide query parameters to EVI on handshake:
         # https://dev.hume.ai/reference/speech-to-speech-evi/chat#request.query
         connect_options = ChatConnectOptions(
+            config_id="2e7ba66e-db54-4772-ad5f-1a58a95ebc78",
             session_settings={
                 # Do not delete the audio setting, as they are needed for audio streaming.
                 "audio": {
@@ -251,24 +257,7 @@ async def handle_media_stream(ws):
         ) as socket:
             evi_socket = socket
 
-            # OPTION 2: Send session settings as a separate message (currently commented out)
-            # This approach sends settings after the connection is established
-            # Uncomment the block below to use this approach instead:
-
-            # session_settings_config = {
-            #     "audio": {
-            #         "encoding": "linear16",
-            #         "sample_rate": 8000,
-            #         "channels": 1
-            #     }
-            # }
-            #
-            # if user_name:
-            #     session_settings_config["context"] = {
-            #         "type": "persistent",
-            #         "text": f"The user's name is {user_name}. Remember to use their name when appropriate."
-            #     }
-            #
+            # TODO: send a message to EVI with an updated session Settings
             # await socket.send_session_settings(SessionSettings(**session_settings_config))
 
             # Run all audio streaming tasks concurrently
