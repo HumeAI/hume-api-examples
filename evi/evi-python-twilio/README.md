@@ -1,3 +1,7 @@
+# Description
+
+This example uses Hume AI's Emphatic Voice Interface (EVI) to respond to phone calls via Twilio. The example includes a mock Tool call to update the user calling in on the status of their customer support request. EVI is able to parse the ticket ID from speech and make the tool call. [Learn more about tool calling with EVI here.](https://dev.hume.ai/docs/speech-to-speech-evi/features/tool-use)
+
 # Setup
 
 1. Rename `.env.example` to `.env` and paste your [Hume API key](https://platform.hume.ai/settings/keys) there
