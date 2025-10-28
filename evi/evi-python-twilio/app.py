@@ -11,7 +11,7 @@ from hume.empathic_voice.chat.socket_client import ChatConnectOptions
 from hume.empathic_voice.chat.types import SubscribeEvent
 from hume.empathic_voice import SessionSettings, AudioInput, UserInput, ToolResponseMessage, ToolErrorMessage
 from audio_processors import TwilioAudioProcessor, EviAudioProcessor
-from toolFunction import supportAssistant
+from tools import supportAssistant
 
 # Load environment variables from .env file
 load_dotenv()
