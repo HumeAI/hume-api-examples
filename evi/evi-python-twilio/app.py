@@ -138,9 +138,7 @@ async def handle_media_stream(ws):
                 print(f"📋 Tool parameters: {tool_parameters}")
 
                 if tool_name == "supportAssistant":
-                    # Extract ticket_id from parameters
                     ticket_id = tool_parameters.get("ticket_id", "")
-                    print(f"🎫 Extracted ticket_id: '{ticket_id}'")
 
                     if not ticket_id:
                         raise ValueError("ticket_id parameter is required")
