@@ -228,6 +228,7 @@ async def handle_media_stream(ws):
         # You can provide query parameters to EVI on handshake:
         # https://dev.hume.ai/reference/speech-to-speech-evi/chat#request.query
         connect_options = ChatConnectOptions(
+            # Replace with your own config ID from Hume AI dashboard: https://platform.hume.ai/evi/configs
             config_id="2e7ba66e-db54-4772-ad5f-1a58a95ebc78",
             session_settings={
                 # Do not delete the audio setting, as they are needed for audio streaming.
@@ -240,7 +241,7 @@ async def handle_media_stream(ws):
                 # See: https://dev.hume.ai/reference/speech-to-speech-evi/chat#send.SessionSettings.context
                 **({"context": {
                     "type": "persistent",
-                    "text": f"You are a helpful customer support assistant. The user's name is {user_name}. Remember to use their name when appropriate."
+                    "text": f"You are a helpful customer support assistant. The user's name is {user_name}. Use their name and ask them for their support ticket ID, so you can give them an update on their ticket status."
                 }} if user_name else {})
             }
         )

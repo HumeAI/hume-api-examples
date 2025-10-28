@@ -17,6 +17,8 @@
   "required": ["ticket_id"]
 }
 ```
+5. In Hume AI dashboard, [create a new config](https://platform.hume.ai/evi/configs) and add the tool from step 4 to that config, save. Copy its ID.
+6. In `app.py`, change the `config_id` on line 232 with the config ID from step 5.
 
 # Run the example
 
