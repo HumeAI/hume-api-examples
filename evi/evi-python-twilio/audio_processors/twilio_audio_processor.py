@@ -17,7 +17,6 @@ class TwilioAudioProcessor:
     # we will buffer 20 twilio messages corresponding to 0.4 seconds of audio to improve throughput performance
     BUFFER_SIZE: ClassVar[int] = 20 * 160
     TWILIO_FRAME_RATE: ClassVar[int] = 8000
-    ASSISTANT_FRAME_RATE: ClassVar[int] = 24000
     # (2 bytes = 16 bit) linear PCM 16-bit signed little-endian
     SAMPLE_WIDTH: ClassVar[int] = 2
     CHANNELS: ClassVar[int] = 1
