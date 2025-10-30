@@ -1,7 +1,7 @@
-import fs from "fs"; 
+import fs from "fs";
 import dotenv from "dotenv";
 import { HumeClient } from "hume";
-import { ReturnChatEvent, EmotionScores } from "hume/api/resources/empathicVoice";
+import { type Hume } from "hume";
 
 dotenv.config();
 
@@ -54,7 +54,7 @@ main().catch((err) => console.log("An error occurred:", err))
  * @returns A promise that resolves to an array of chat events.
  * @throws If the HUME_API_KEY environment variable is not set.
  */
-async function fetchAllChatEvents(chatId: string): Promise<ReturnChatEvent[]> {
+async function fetchAllChatEvents(chatId: string): Promise<Hume.empathicVoice.ReturnChatEvent[]> {
   const apiKey = process.env.HUME_API_KEY;
 
   if (!apiKey) {
@@ -62,7 +62,7 @@ async function fetchAllChatEvents(chatId: string): Promise<ReturnChatEvent[]> {
   }
 
   const client = new HumeClient({ apiKey });
-  const allChatEvents: ReturnChatEvent[] = [];
+  const allChatEvents: Hume.empathicVoice.ReturnChatEvent[] = [];
 
   // Retrieve an async iterator over all chat events
   const chatEventsIterator = await client.empathicVoice.chats.listChatEvents(chatId, {
@@ -86,7 +86,7 @@ async function fetchAllChatEvents(chatId: string): Promise<ReturnChatEvent[]> {
  * @param chatEvents An array of chat events to parse.
  * @returns A formatted transcript string.
  */
-function generateTranscript(chatEvents: ReturnChatEvent[]): string {
+function generateTranscript(chatEvents: Hume.empathicVoice.ReturnChatEvent[]): string {
   // Filter events for user and assistant messages
   const relevantChatEvents = chatEvents.filter(
     (chatEvent) => chatEvent.type === "USER_MESSAGE" || chatEvent.type === "AGENT_MESSAGE"
@@ -115,7 +115,7 @@ function generateTranscript(chatEvents: ReturnChatEvent[]): string {
  * @param chatEvents The chat events to analyze.
  * @returns The top 3 emotions and their average scores.
  */
-function getTopEmotions(chatEvents: ReturnChatEvent[]): Partial<EmotionScores> {
+function getTopEmotions(chatEvents: Hume.empathicVoice.ReturnChatEvent[]): Partial<Hume.empathicVoice.EmotionScores> {
   // Extract user messages that have emotion features
   const userMessages = chatEvents.filter(
     (event) => event.type === "USER_MESSAGE" && event.emotionFeatures
@@ -124,17 +124,17 @@ function getTopEmotions(chatEvents: ReturnChatEvent[]): Partial<EmotionScores> {
   const totalMessages = userMessages.length;
 
   // Infer emotion keys from the first user message
-  const firstMessageEmotions = JSON.parse(userMessages[0].emotionFeatures!) as EmotionScores;
-  const emotionKeys = Object.keys(firstMessageEmotions) as (keyof EmotionScores)[];
+  const firstMessageEmotions = JSON.parse(userMessages[0].emotionFeatures!) as Hume.empathicVoice.EmotionScores;
+  const emotionKeys = Object.keys(firstMessageEmotions) as (keyof Hume.empathicVoice.EmotionScores)[];
 
   // Initialize sums for all emotions to 0 (no extra type assertions needed)
-  const emotionSums: Record<keyof EmotionScores, number> = Object.fromEntries(
+  const emotionSums: Record<keyof Hume.empathicVoice.EmotionScores, number> = Object.fromEntries(
     emotionKeys.map((key) => [key, 0])
-  ) as Record<keyof EmotionScores, number>;
+  ) as Record<keyof Hume.empathicVoice.EmotionScores, number>;
 
   // Accumulate emotion scores from each user message
   for (const event of userMessages) {
-    const emotions = JSON.parse(event.emotionFeatures!) as EmotionScores;
+    const emotions = JSON.parse(event.emotionFeatures!) as Hume.empathicVoice.EmotionScores;
     for (const key of emotionKeys) {
       emotionSums[key] += emotions[key];
     }
@@ -151,7 +151,7 @@ function getTopEmotions(chatEvents: ReturnChatEvent[]): Partial<EmotionScores> {
   const top3 = averageEmotions.slice(0, 3);
 
   // Build a Partial<EmotionScores> with only the top 3 emotions
-  const result: Partial<EmotionScores> = {};
+  const result: Partial<Hume.empathicVoice.EmotionScores> = {};
   for (const { emotion, score } of top3) {
     result[emotion] = score;
   }
