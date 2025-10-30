@@ -1,8 +1,0 @@
-flask
-flask-sock
-python-dotenv
-hume==0.12.1
-pydub
-numpy
-scipy
-
