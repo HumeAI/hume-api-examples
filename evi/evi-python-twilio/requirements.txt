@@ -1,7 +1,7 @@
 flask
 flask-sock
 python-dotenv
-hume
+hume==0.12.1
 pydub
 numpy
 scipy
