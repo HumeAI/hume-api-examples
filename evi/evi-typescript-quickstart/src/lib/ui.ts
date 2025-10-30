@@ -1,4 +1,4 @@
-import { AssistantMessage, UserMessage } from "hume/api/resources/empathicVoice";
+import { type Hume } from "hume";
 
 /**
  * Extracts and returns the top three emotion scores from a prosody analysis.
@@ -14,7 +14,7 @@ import { AssistantMessage, UserMessage } from "hume/api/resources/empathicVoice"
  *          The `score` property is formatted as a string with exactly two decimal places.
  */
 function extractTopThreeEmotions(
-  message: UserMessage | AssistantMessage
+  message: Hume.empathicVoice.UserMessage | Hume.empathicVoice.AssistantMessage
 ): { emotion: string; score: string }[] {
   const scores = message.models.prosody?.scores;
   const scoresArray = Object.entries(scores || {});
@@ -37,7 +37,7 @@ function extractTopThreeEmotions(
  */
 export function appendChatMessage(
   container: HTMLElement | null,
-  msg: UserMessage | AssistantMessage
+  msg: Hume.empathicVoice.UserMessage | Hume.empathicVoice.AssistantMessage
 ): void {
   if (!container || !msg) return;
 

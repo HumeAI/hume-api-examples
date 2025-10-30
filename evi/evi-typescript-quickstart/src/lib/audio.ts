@@ -5,7 +5,7 @@ import {
   getBrowserSupportedMimeType,
   MimeType,
 } from "hume";
-import type { ChatSocket } from "hume/api/resources/empathicVoice/resources/chat";
+import type { Hume } from "hume";
 
 /**
  * Begins capturing microphone audio and streams it into the given EVI ChatSocket.
@@ -28,7 +28,7 @@ import type { ChatSocket } from "hume/api/resources/empathicVoice/resources/chat
  * @throws {Error} If MediaRecorder cannot be constructed with the given MIME type.
  */
 export async function startAudioCapture(
-  socket: ChatSocket,
+  socket: Hume.empathicVoice.chat.ChatSocket,
   timeSliceMs = 80
 ): Promise<MediaRecorder> {
   const mimeTypeResult = getBrowserSupportedMimeType();

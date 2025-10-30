@@ -1,5 +1,5 @@
 import { HumeClient } from "hume";
-import type { ChatSocket } from "hume/api/resources/empathicVoice/resources/chat";
+import type { Hume } from "hume";
 
 let client: HumeClient | null = null;
 
@@ -31,9 +31,9 @@ function getClient(apiKey: string): HumeClient {
  */
 export function connectEVI(
   apiKey: string,
-  handlers: ChatSocket.EventHandlers,
+  handlers: Hume.empathicVoice.chat.ChatSocket.EventHandlers,
   configId?: string
-): ChatSocket {
+): Hume.empathicVoice.chat.ChatSocket {
   if (!apiKey) {
     throw new Error("VITE_HUME_API_KEY is not set.");
   }
