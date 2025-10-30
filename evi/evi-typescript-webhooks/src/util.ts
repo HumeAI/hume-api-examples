@@ -1,5 +1,5 @@
 import { HumeClient } from 'hume';
-import { ReturnChatEvent } from 'hume/api/resources/empathicVoice';
+import { type Hume } from 'hume';
 import path from 'path';
 import fs from 'fs/promises';
 import * as crypto from 'crypto';
@@ -32,11 +32,11 @@ function getHumeApiKey(): string {
  * @returns A promise that resolves to an array of chat events.
  * @throws If the HUME_API_KEY environment variable is not set.
  */
-async function fetchAllChatEvents(chatId: string): Promise<ReturnChatEvent[]> {
+async function fetchAllChatEvents(chatId: string): Promise<Hume.empathicVoice.ReturnChatEvent[]> {
   const apiKey = getHumeApiKey();
 
   const client = new HumeClient({ apiKey });
-  const allChatEvents: ReturnChatEvent[] = [];
+  const allChatEvents: Hume.empathicVoice.ReturnChatEvent[] = [];
 
   // Retrieve an async iterator over all chat events
   const chatEventsIterator = await client.empathicVoice.chats.listChatEvents(chatId);
@@ -58,7 +58,7 @@ async function fetchAllChatEvents(chatId: string): Promise<ReturnChatEvent[]> {
  * @param chatEvents An array of chat events to parse.
  * @returns A formatted transcript string.
  */
-function generateTranscript(chatEvents: ReturnChatEvent[]): string {
+function generateTranscript(chatEvents: Hume.empathicVoice.ReturnChatEvent[]): string {
   // Filter events for user and assistant messages
   const relevantChatEvents = chatEvents.filter(
     (chatEvent) => chatEvent.type === 'USER_MESSAGE' || chatEvent.type === 'AGENT_MESSAGE',
