@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
 import { getChatTranscript, validateHmacSignature, validateTimestamp } from './util';
-import { WebhookEvent } from "hume/serialization/resources/empathicVoice/types/WebhookEvent";
+import * as HumeSerialization from 'hume/serialization';
+const { WebhookEvent } = HumeSerialization.empathicVoice;
 
 dotenv.config();
 

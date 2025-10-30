@@ -1,5 +1,5 @@
 import * as http from "http";
-import type { State, AppEvent } from "../shared/types.ts";
+import type { State, AppEvent } from "../shared/types.mts";
 
 export class Api {
   private apiEventQueue: AppEvent[] = [];

@@ -1,7 +1,6 @@
 import "./styles/globals.css";
 import { EVIWebAudioPlayer } from "hume";
-import type { ChatSocket, SubscribeEvent } from "hume/api/resources/empathicVoice/resources/chat";
-import type { CloseEvent } from "hume/core/websocket/events";
+import type { Hume } from "hume"
 import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
 
 (async () => {
@@ -43,7 +42,7 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
   const stopBtn = document.querySelector<HTMLButtonElement>("button#stop-btn");
   const chatContainer = document.querySelector<HTMLElement>("section#chat");
 
-  let socket: ChatSocket | null = null;
+  let socket: Hume.empathicVoice.chat.ChatSocket | null = null;
   let recorder: MediaRecorder | null = null;
   let player = new EVIWebAudioPlayer();
 
@@ -59,7 +58,7 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
     await player.init();
   }
 
-  async function handleMessage(msg: SubscribeEvent) {
+  async function handleMessage(msg: Hume.empathicVoice.chat.SubscribeEvent) {
     switch (msg.type) {
       case "chat_metadata":
         console.log(msg);
@@ -88,7 +87,7 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
     console.error("Socket error:", err);
   }
 
-  function handleClose(e: CloseEvent) {
+  function handleClose(e: unknown) {
     console.log("Socket closed:", e);
     disconnect();
   }

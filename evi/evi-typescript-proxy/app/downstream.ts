@@ -1,10 +1,14 @@
 import * as p from "@clack/prompts";
-import { WebSocketError } from "hume/serialization/resources/empathicVoice";
+import type { serialization } from "hume";
+
+// Helper type to extract Raw type from schema
+type InferRaw<T> = T extends { parse: (raw: infer R) => any } ? R : never;
+type WebSocketErrorRaw = InferRaw<typeof serialization.empathicVoice.WebSocketError>;
 
 import { EventEmitter } from "events";
 import { Server } from "http";
 import { WebSocket, WebSocketServer } from "ws";
-import type { Message } from "../shared/types.ts";
+import type { Message } from "../shared/types.mts";
 import { truncateDataReplacer } from "./util";
 
 export class Downstream extends EventEmitter {
@@ -67,7 +71,7 @@ export class Downstream extends EventEmitter {
     }
   }
 
-  sendError(error: WebSocketError.Raw) {
+  sendError(error: WebSocketErrorRaw) {
     if (this.client && this.client.readyState === WebSocket.OPEN) {
       p.log.info(`Sending error to client: ${JSON.stringify(error)}`);
       this.client.send(JSON.stringify(error));

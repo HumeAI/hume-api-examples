@@ -1,6 +1,5 @@
 import { HumeClient, createSilenceFiller } from "hume"
 import dotenv from "dotenv"
-import { StreamingTtsClient } from "./streaming";
 import { startAudioPlayer } from "./audio_player";
 
 dotenv.config()
@@ -135,7 +134,15 @@ const example2 = async () => {
 
 // Example 3: Bidirectional streaming
 const example3 = async () => {
-  const stream = await StreamingTtsClient.connect(process.env.HUME_API_KEY!);
+  const stream = await hume.tts.streamInput.connect({
+    apiKey: process.env.HUME_API_KEY!,
+    noBinary: true,
+    instantMode: true,
+    stripHeaders: true,
+    formatType: 'pcm',
+    version: "2"
+  });
+  await stream.waitForOpen()
   const player = startAudioPlayer('raw');
   const SilenceFiller = await createSilenceFiller()
   const silenceFiller = new SilenceFiller();
@@ -149,31 +156,32 @@ const example3 = async () => {
   });
 
   const sendInput = async () => {
-    stream.send({ text: "Hello" });
-    stream.send({ text: " world." });
-    // The whitespace    ^ is important, otherwise the model would see
-    // "Helloworld." and not "Hello world."
-    stream.sendFlush();
+    stream.sendPublish({ text: "Hello" });
+    stream.sendPublish({ text: "world." });
+    stream.sendPublish({ flush: true });
     console.log('Waiting 8 seconds...')
     await new Promise(r => setTimeout(r, 8000));
-    stream.send({ text: " Goodbye, world." });
-    stream.sendFlush();
-    stream.sendClose();
+    stream.sendPublish({ text: "Goodbye, world." });
+    stream.sendPublish({ close: true });
   };
 
-  const handleMessages = async () => {
+  const handleMessages = new Promise<void>((resolve, reject) => {
     console.log('Playing audio: Example 3 - Bidirectional streaming')
-    for await (const chunk of stream) {
-      const buf = Buffer.from(chunk.audio, "base64");
-      silenceFiller.writeAudio(buf);
-    }
+    stream.on('message', (chunk) => {
+      if (chunk.type === 'audio') {
+        const buf = Buffer.from(chunk.audio, "base64");
+        silenceFiller.writeAudio(buf);
+      }
+    })
+    stream.on('error', reject)
+    stream.on('close', async () => {
+      await silenceFiller.endStream();
+      await player.stop();
+      resolve()
+    })
+  })
 
-    await silenceFiller.endStream();
-
-    await player.stop();
-  };
-
-  await Promise.all([handleMessages(), sendInput()]);
+  await Promise.all([handleMessages, sendInput()]);
 }
 
 const main = async () => {
