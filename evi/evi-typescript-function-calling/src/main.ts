@@ -2,10 +2,10 @@ import {
   Hume,
   HumeClient,
   convertBlobToBase64,
-  convertBase64ToBlob,
   ensureSingleValidAudioTrack,
   getAudioStream,
   getBrowserSupportedMimeType,
+  EVIWebAudioPlayer,
   MimeType,
 } from 'hume';
 import { handleToolCallMessage } from './handleToolCall';
@@ -46,15 +46,9 @@ import './styles.css';
   let audioStream: MediaStream | null = null;
 
   /**
-   * the current audio element to be played
+   * the audio player for handling audio output from EVI
    */
-
-  let currentAudio: HTMLAudioElement | null = null;
-  
-  /**
-   * flag which denotes whether audio is currently playing or not
-   */
-  let isPlaying = false;
+  let player = new EVIWebAudioPlayer();
 
   /**
    * flag which denotes whether to utilize chat resumability (preserve context from one chat to the next)
@@ -65,11 +59,6 @@ import './styles.css';
    * The ChatGroup ID used to resume the chat if disconnected unexpectedly
    */
   let chatGroupId: string | undefined;
-
-  /**
-   * audio playback queue
-   */
-  const audioQueue: Blob[] = [];
 
   /**
    * mime type supported by the browser the application is running in
@@ -87,12 +76,11 @@ import './styles.css';
     if (!client) {
       client = new HumeClient({
         apiKey: import.meta.env.VITE_HUME_API_KEY || "",
-        secretKey: import.meta.env.VITE_HUME_SECRET_KEY || "",
       });
     }
 
     // instantiates WebSocket and establishes an authenticated connection
-    socket = await client.empathicVoice.chat.connect({
+    socket = client.empathicVoice.chat.connect({
       // configuration that includes the get_current_weather tool
       configId: import.meta.env.VITE_HUME_WEATHER_ASSISTANT_CONFIG_ID || null,
       resumedChatGroupId: chatGroupId,
@@ -115,10 +103,10 @@ import './styles.css';
     toggleBtnStates();
 
     // stop audio playback
-    stopAudio();
+    player.stop();
 
     // stop audio capture
-    recorder?.stop();
+    recorder?.stream.getTracks().forEach((t) => t.stop());
     recorder = null;
     audioStream = null;
 
@@ -129,6 +117,9 @@ import './styles.css';
     if (!resumeChats) {
       chatGroupId = undefined;
     }
+
+    // dispose of player resources
+    player.dispose();
 
     // closed the Web Socket connection
     socket?.close();
@@ -170,53 +161,6 @@ import './styles.css';
     recorder.start(timeSlice);
   }
 
-  /**
-   * play the audio within the playback queue, converting each Blob into playable HTMLAudioElements
-   */
-  function playAudio(): void {
-    // IF there is nothing in the audioQueue OR audio is currently playing then do nothing
-    if (!audioQueue.length || isPlaying) return;
-
-    // update isPlaying state
-    isPlaying = true;
-
-    // pull next audio output from the queue
-    const audioBlob = audioQueue.shift();
-
-    // IF audioBlob is unexpectedly undefined then do nothing
-    if (!audioBlob) return;
-
-    // converts Blob to AudioElement for playback
-    const audioUrl = URL.createObjectURL(audioBlob);
-    currentAudio = new Audio(audioUrl);
-
-    // play audio
-    currentAudio.play();
-
-    // callback for when audio finishes playing
-    currentAudio.onended = () => {
-      // update isPlaying state
-      isPlaying = false;
-
-      // attempt to pull next audio output from queue
-      if (audioQueue.length) playAudio();
-    };
-  }
-
-  /**
-   * stops audio playback, clears audio playback queue, and updates audio playback state
-   */
-  function stopAudio(): void {
-    // stop the audio playback
-    currentAudio?.pause();
-    currentAudio = null;
-
-    // update audio playback state
-    isPlaying = false;
-
-    // clear the audioQueue
-    audioQueue.length = 0;
-  }
 
   /**
    * callback function to handle a WebSocket opened event
@@ -227,6 +171,9 @@ import './styles.css';
 
     // ensures socket will reconnect if disconnected unintentionally
     connected = true;
+
+    // initialize the audio player
+    await player.init();
 
     await captureAudio();
   }
@@ -258,27 +205,22 @@ import './styles.css';
       // append user and assistant messages to UI for chat visibility
       case "user_message":
       case "assistant_message":
+        if (message.type === "user_message") {
+          player.stop();
+        }
         const { role, content } = message.message;
         const topThreeEmotions = extractTopThreeEmotions(message);
         appendMessage(role, content ?? "", topThreeEmotions);
         break;
 
-      // add received audio to the playback queue, and play next audio output
+      // enqueue received audio for playback
       case "audio_output":
-        // convert base64 encoded audio to a Blob
-        const audioOutput = message.data;
-        const blob = convertBase64ToBlob(audioOutput);
-
-        // add audio Blob to audioQueue
-        audioQueue.push(blob);
-
-        // play the next audio output
-        if (audioQueue.length >= 1) playAudio();
+        await player.enqueue(message);
         break;
 
-      // stop audio playback, clear audio playback queue, and update audio playback state on interrupt
+      // stop audio playback on user interruption
       case "user_interruption":
-        stopAudio();
+        player.stop();
         break;
 
       // invoke tool upon receiving a tool_call message
