@@ -1,5 +1,5 @@
 import * as p from "@clack/prompts";
-import type { Message, WSMessage } from "../shared/types.ts";
+import type { Message, WSMessage } from "../shared/types.mts";
 import { WebSocket } from "ws";
 
 export abstract class BaseUpstream {
