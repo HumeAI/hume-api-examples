@@ -39,7 +39,7 @@ async function sendControlMessage(chatId: string, message: any): Promise<void> {
  * This demonstrates how to use POST /v0/evi/chat/:chatId/send
  * to send control messages like updating session settings or system prompt.
  */
-async function sendControlMessages(chatId: string) {
+export async function sendControlMessages(chatId: string) {
   console.log("\n=== Example 1: Sending Control Messages ===\n");
   console.log(`Chat ID: ${chatId}`);
 
@@ -77,10 +77,8 @@ async function sendControlMessages(chatId: string) {
     // Example 1d: Send a user message
     console.log("\n4. Sending a user message...");
     await sendControlMessage(chatId, {
-      type: "user_message",
-      user_message: {
-        content: "Hello from the control plane!",
-      },
+      type: "user_input",
+      text: "Hello from the control plane!",
     });
     console.log("✓ User message sent successfully");
 
@@ -96,7 +94,7 @@ async function sendControlMessages(chatId: string) {
  * This demonstrates how to use WSS /chat/:chatId/connect
  * to attach to a running chat and receive full history + live events.
  */
-async function observeActiveChat(chatId: string) {
+export async function observeActiveChat(chatId: string) {
   const client = new HumeClient({ apiKey: API_KEY });
 
   console.log("\n=== Example 2: Observing Active Chat ===\n");
@@ -229,5 +227,7 @@ async function main() {
   }
 }
 
-// Run the examples
-main().catch(console.error);
+// Run the examples only if this file is executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch(console.error);
+}
