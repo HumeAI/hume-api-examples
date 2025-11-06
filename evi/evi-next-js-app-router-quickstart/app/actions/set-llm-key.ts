@@ -10,22 +10,17 @@ const hume = new HumeClient({
  * Securely set the supplemental LLM API key for an active chat.
  * Call once after you get ChatMetadata with the chat_id.
  */
-export async function setLlmKeyForChat(opts: {
-  chatId: string;
-}) {
-
-  const { chatId } = opts;
-  const providerApiKey = process.env.SUPPLEMENTAL_LLM_API_KEY!;
+export async function setLlmKeyForChat(chatId: string) {
+  const languageModelApiKey = process.env.SUPPLEMENTAL_LLM_API_KEY!;
 
   // Only use supplemental LLM API key if provided
-  if (!providerApiKey) return;
+  if (!languageModelApiKey) return;
 
   const message = {
     type: 'session_settings' as const,
-    session_settings: {
-      language_model_api_key: providerApiKey,
-    },
+    languageModelApiKey,
   };
 
   await hume.empathicVoice.controlPlane.send(chatId, message);
+  console.log("Supplemental API Key is set!")
 }
