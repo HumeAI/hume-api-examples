@@ -21,7 +21,7 @@ export default function ClientComponent({
       }
     >
       <VoiceProvider
-        onMessage={() => {
+        onMessage={async (msg) => {
           if (timeout.current) {
             window.clearTimeout(timeout.current);
           }
@@ -36,6 +36,16 @@ export default function ClientComponent({
               });
             }
           }, 200);
+
+          // Securely set your own API key server-side for supplemental LLM (if applicable)
+          // if (msg.type === "chat_metadata" && msg.chatId) {
+          //   await fetch("/api/control-plane/set-llm-key", {
+          //     method: "POST",
+          //     headers: { "content-type": "application/json" },
+          //     body: JSON.stringify({ chatId: msg.chatId }),
+          //     cache: "no-store",
+          //   });
+          // }
         }}
       >
         <Messages ref={ref} />
