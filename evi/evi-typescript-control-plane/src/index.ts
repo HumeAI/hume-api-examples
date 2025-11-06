@@ -141,15 +141,29 @@ export async function observeActiveChat(chatId: string) {
 
       switch (event.type) {
         case "chat_metadata":
+          const metadata = event as any;
           console.log("  Chat metadata:", JSON.stringify(event, null, 2));
+          const metadataChatId = metadata.chat_id || metadata.chatId;
+          if (metadataChatId && metadataChatId !== chatId) {
+            console.log(`  ⚠️  Warning: Metadata chatId (${metadataChatId}) differs from requested chatId (${chatId})`);
+          } else if (metadataChatId === chatId) {
+            console.log(`  ✓ Confirmed: Metadata chatId matches requested chatId`);
+          }
           break;
         case "user_message":
           const userMsg = event as any;
-          console.log(`  User message: ${userMsg.user_message?.content || userMsg.message_text || JSON.stringify(userMsg)}`);
+          console.log("  User message event:", JSON.stringify(userMsg, null, 2));
+          const userContent = userMsg.user_message?.content || userMsg.message_text || userMsg.text || JSON.stringify(userMsg);
+          console.log(`  User message content: ${userContent}`);
+          // Check if this matches our control plane message
+          if (userContent.includes("Hello from the control plane")) {
+            console.log("  ✓ This matches the message we sent via control plane!");
+          }
           break;
         case "assistant_message":
           const assistantMsg = event as any;
-          console.log(`  Assistant message: ${assistantMsg.assistant_message?.content || assistantMsg.message_text || JSON.stringify(assistantMsg)}`);
+          const assistantContent = assistantMsg.assistant_message?.content || assistantMsg.message_text || JSON.stringify(assistantMsg);
+          console.log(`  Assistant message: ${assistantContent}`);
           break;
         case "audio_output":
           console.log("  Audio output received (base64 encoded)");
