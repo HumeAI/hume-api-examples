@@ -6,31 +6,17 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const API_KEY = process.env.HUME_API_KEY || "cY7Yjq84riLl3HcGcRQos0h5HkAFF8cYLlBb1uOGKuYbCNpm";
-const API_BASE_URL = "https://api.hume.ai";
 
 if (!API_KEY) {
   throw new Error("HUME_API_KEY environment variable is required");
 }
 
 /**
- * Send a control message to an active chat using the REST API
+ * Send a control message to an active chat using the SDK's control plane API
  */
 async function sendControlMessage(chatId: string, message: any): Promise<void> {
-  const url = `${API_BASE_URL}/v0/evi/chat/${chatId}/send`;
-  
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Hume-Api-Key": API_KEY,
-    },
-    body: JSON.stringify(message),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Failed to send control message: ${response.status} ${response.statusText} - ${errorText}`);
-  }
+  const client = new HumeClient({ apiKey: API_KEY });
+  await client.empathicVoice.controlPlane.send(chatId, message);
 }
 
 /**
@@ -101,101 +87,87 @@ export async function observeActiveChat(chatId: string) {
   console.log(`Connecting to chat: ${chatId}`);
 
   return new Promise<void>((resolve, reject) => {
-    // Note: The SDK's connect() method may not support chatId parameter yet.
-    // According to the API docs, the endpoint is WSS /chat/:chatId/connect
-    // If the SDK doesn't support this, you may need to construct the WebSocket URL manually
-    // or wait for SDK updates.
-    
-    // For now, we'll attempt to connect and note that this is a limitation
-    console.log("Note: SDK may not support chatId parameter yet.");
-    console.log("Connecting to observe chat (this may create a new chat if chatId is not supported)...\n");
-    
-    // Try to connect - if chatId is supported, it will connect to the existing chat
-    // Otherwise, this will create a new chat connection
-    // @ts-ignore - checking if chatId parameter exists in the SDK
-    let socket: Hume.empathicVoice.chat.ChatSocket;
-    
-    try {
-      // Attempt to connect with chatId (if supported by SDK)
-      // @ts-ignore
-      socket = client.empathicVoice.chat.connect({ chatId });
-      console.log("Connected using chatId parameter");
-    } catch (err) {
-      // If chatId is not supported, fall back to standard connect
-      // Note: This will create a new chat, not observe the existing one
-      console.log("Warning: chatId parameter not supported. Falling back to standard connect.");
-      console.log("This will create a new chat instead of observing the existing one.");
-      socket = client.empathicVoice.chat.connect({});
-    }
+    // Use the SDK's control plane connect method
+    // Note: connect() returns a Promise that resolves to a ControlPlaneSocket
+    // The SDK may need chatId to be passed, but current version constructs URL as /chat/
+    // instead of /chat/:chatId/connect - this may need SDK update
+    // @ts-ignore - attempting to pass chatId even if types don't support it yet
+    client.empathicVoice.controlPlane.connect({ chatId })
+      .then((socket) => {
+        console.log("✓ Control plane socket connected");
+        let eventCount = 0;
 
-    let eventCount = 0;
+        socket.on("open", () => {
+          console.log("✓ Connected to chat successfully");
+          console.log("Waiting for events (history replay + live events)...\n");
+        });
 
-    socket.on("open", () => {
-      console.log("✓ Connected to chat successfully");
-      console.log("Waiting for events (history replay + live events)...\n");
-    });
+        socket.on("message", (event: Hume.empathicVoice.chat.SubscribeEvent) => {
+          eventCount++;
+          console.log(`[Event ${eventCount}] Type: ${event.type}`);
 
-    socket.on("message", (event: Hume.empathicVoice.chat.SubscribeEvent) => {
-      eventCount++;
-      console.log(`[Event ${eventCount}] Type: ${event.type}`);
-
-      switch (event.type) {
-        case "chat_metadata":
-          const metadata = event as any;
-          console.log("  Chat metadata:", JSON.stringify(event, null, 2));
-          const metadataChatId = metadata.chat_id || metadata.chatId;
-          if (metadataChatId && metadataChatId !== chatId) {
-            console.log(`  ⚠️  Warning: Metadata chatId (${metadataChatId}) differs from requested chatId (${chatId})`);
-          } else if (metadataChatId === chatId) {
-            console.log(`  ✓ Confirmed: Metadata chatId matches requested chatId`);
+          switch (event.type) {
+            case "chat_metadata":
+              const metadata = event as any;
+              console.log("  Chat metadata:", JSON.stringify(event, null, 2));
+              const metadataChatId = metadata.chat_id || metadata.chatId;
+              if (metadataChatId && metadataChatId !== chatId) {
+                console.log(`  ⚠️  Warning: Metadata chatId (${metadataChatId}) differs from requested chatId (${chatId})`);
+              } else if (metadataChatId === chatId) {
+                console.log(`  ✓ Confirmed: Metadata chatId matches requested chatId`);
+              }
+              break;
+            case "user_message":
+              const userMsg = event as any;
+              console.log("  User message event:", JSON.stringify(userMsg, null, 2));
+              const userContent = userMsg.user_message?.content || userMsg.message_text || userMsg.text || JSON.stringify(userMsg);
+              console.log(`  User message content: ${userContent}`);
+              // Check if this matches our control plane message
+              if (userContent.includes("Hello from the control plane")) {
+                console.log("  ✓ This matches the message we sent via control plane!");
+              }
+              break;
+            case "assistant_message":
+              const assistantMsg = event as any;
+              const assistantContent = assistantMsg.assistant_message?.content || assistantMsg.message_text || JSON.stringify(assistantMsg);
+              console.log(`  Assistant message: ${assistantContent}`);
+              break;
+            case "audio_output":
+              console.log("  Audio output received (base64 encoded)");
+              break;
+            case "user_interruption":
+              console.log("  User interruption detected");
+              break;
+            case "error":
+              const errorEvent = event as any;
+              console.error(`  Error: ${errorEvent.error?.message || errorEvent.message || JSON.stringify(errorEvent)}`);
+              break;
+            default:
+              console.log("  Event data:", JSON.stringify(event, null, 2));
           }
-          break;
-        case "user_message":
-          const userMsg = event as any;
-          console.log("  User message event:", JSON.stringify(userMsg, null, 2));
-          const userContent = userMsg.user_message?.content || userMsg.message_text || userMsg.text || JSON.stringify(userMsg);
-          console.log(`  User message content: ${userContent}`);
-          // Check if this matches our control plane message
-          if (userContent.includes("Hello from the control plane")) {
-            console.log("  ✓ This matches the message we sent via control plane!");
-          }
-          break;
-        case "assistant_message":
-          const assistantMsg = event as any;
-          const assistantContent = assistantMsg.assistant_message?.content || assistantMsg.message_text || JSON.stringify(assistantMsg);
-          console.log(`  Assistant message: ${assistantContent}`);
-          break;
-        case "audio_output":
-          console.log("  Audio output received (base64 encoded)");
-          break;
-        case "user_interruption":
-          console.log("  User interruption detected");
-          break;
-        case "error":
-          const errorEvent = event as any;
-          console.error(`  Error: ${errorEvent.error?.message || errorEvent.message || JSON.stringify(errorEvent)}`);
-          break;
-        default:
-          console.log("  Event data:", JSON.stringify(event, null, 2));
-      }
-    });
+        });
 
-    socket.on("error", (error) => {
-      console.error("Socket error:", error);
-      reject(error);
-    });
+        socket.on("error", (error: any) => {
+          console.error("Socket error:", error);
+          reject(error);
+        });
 
-    socket.on("close", (event) => {
-      console.log("\n✓ Socket closed:", event);
-      resolve();
-    });
+        socket.on("close", (event: any) => {
+          console.log("\n✓ Socket closed:", event);
+          resolve();
+        });
 
-    // Auto-close after 30 seconds for demo purposes
-    // In production, you'd keep this open to observe the chat
-    setTimeout(() => {
-      console.log("\nClosing observation connection after 30 seconds...");
-      socket.close();
-    }, 30000);
+        // Auto-close after 30 seconds for demo purposes
+        // In production, you'd keep this open to observe the chat
+        setTimeout(() => {
+          console.log("\nClosing observation connection after 30 seconds...");
+          socket.close();
+        }, 30000);
+      })
+      .catch((error) => {
+        console.error("Failed to connect:", error);
+        reject(error);
+      });
   });
 }
 
