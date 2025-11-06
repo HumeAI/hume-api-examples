@@ -11,7 +11,7 @@ const hume = new HumeClient({
  * Call once after you get ChatMetadata with the chat_id.
  */
 export async function setLlmKeyForChat(chatId: string) {
-  const languageModelApiKey = process.env.SUPPLEMENTAL_LLM_API_KEY!;
+  const languageModelApiKey = process.env.SUPPLEMENTAL_LLM_API_KEY;
 
   // Only use supplemental LLM API key if provided
   if (!languageModelApiKey) return;
