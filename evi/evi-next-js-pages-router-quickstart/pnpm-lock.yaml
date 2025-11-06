@@ -36,8 +36,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.1(next@14.2.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       hume:
-        specifier: 0.15.3-beta.2
-        version: 0.15.3-beta.2
+        specifier: 0.15.3
+        version: 0.15.3
       lucide-react:
         specifier: ^0.394.0
         version: 0.394.0(react@18.3.1)
@@ -1161,8 +1161,8 @@ packages:
   hume@0.14.1:
     resolution: {integrity: sha512-ko2nD/3aiBRNVcQynPdZPOahQDQJSnT6ALqa5z5yunoWyGCCqMuRzOsr5RU180MQ4sWhyYVw4h0cHPPUCYoIBQ==}
 
-  hume@0.15.3-beta.2:
-    resolution: {integrity: sha512-+4F5SarRPvSLx+idel9/Dx0+2kvEnUxiQX51SO4U7fl1olRJPLuSNpivOUq6rgG7gsaV4KMZ55gXTAmx8plRAQ==}
+  hume@0.15.3:
+    resolution: {integrity: sha512-DhCzZ12Xaa7NqfakGs8H9/0u+Q5KEKykV91BioBeUxEVf+OyqS1qDEenDxZTsqNGP3TtXKiG+c6tqe5esTqCIw==}
     engines: {node: '>=18.0.0'}
 
   ieee754@1.2.1:
@@ -3216,7 +3216,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  hume@0.15.3-beta.2:
+  hume@0.15.3:
     dependencies:
       uuid: 9.0.1
       ws: 8.18.1
