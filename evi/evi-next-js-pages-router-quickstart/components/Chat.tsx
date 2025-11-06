@@ -38,14 +38,14 @@ export default function ClientComponent({
           }, 200);
 
           // Securely set your own API key server-side for supplemental LLM (if applicable)
-          // if (msg.type === "chat_metadata" && msg.chatId) {
-          //   await fetch("/api/control-plane/set-llm-key", {
-          //     method: "POST",
-          //     headers: { "content-type": "application/json" },
-          //     body: JSON.stringify({ chatId: msg.chatId }),
-          //     cache: "no-store",
-          //   });
-          // }
+          if (msg.type === "chat_metadata" && msg.chatId) {
+            await fetch("/api/control-plane/set-llm-key", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ chatId: msg.chatId }),
+              cache: "no-store",
+            });
+          }
         }}
       >
         <Messages ref={ref} />
