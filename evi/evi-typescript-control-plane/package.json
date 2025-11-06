@@ -10,7 +10,7 @@
     "test": "tsx src/test.ts"
   },
   "dependencies": {
-    "hume": "0.15.3-beta.1",
+    "hume": "0.15.3-beta.2",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {

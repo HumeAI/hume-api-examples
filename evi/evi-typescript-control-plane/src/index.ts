@@ -89,9 +89,6 @@ export async function observeActiveChat(chatId: string) {
   return new Promise<void>((resolve, reject) => {
     // Use the SDK's control plane connect method
     // Note: connect() returns a Promise that resolves to a ControlPlaneSocket
-    // The SDK may need chatId to be passed, but current version constructs URL as /chat/
-    // instead of /chat/:chatId/connect - this may need SDK update
-    // @ts-ignore - attempting to pass chatId even if types don't support it yet
     client.empathicVoice.controlPlane.connect({ chatId })
       .then((socket) => {
         console.log("✓ Control plane socket connected");
