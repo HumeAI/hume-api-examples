@@ -122,7 +122,7 @@ async def handle_media_stream(ws):
                 if evi_socket:
                     audio_input = AudioInput(
                         data=base64.b64encode(chunk).decode("utf-8"))
-                    await evi_socket.send_audio_input(audio_input)
+                    await evi_socket.send_publish(audio_input)
 
         async def handle_tool_call(message: SubscribeEvent):
             """Handles tool calls from EVI."""
@@ -146,7 +146,7 @@ async def handle_media_stream(ws):
                     result = await supportAssistant(ticket_id)
 
                     # Send success response back to EVI
-                    await evi_socket.send_tool_response(
+                    await evi_socket.send_publish(
                         ToolResponseMessage(
                             tool_call_id=call_id,
                             content=result
@@ -156,7 +156,7 @@ async def handle_media_stream(ws):
 
                 else:
                     # Unknown tool
-                    await evi_socket.send_tool_error(
+                    await evi_socket.send_publish(
                         ToolErrorMessage(
                             tool_call_id=call_id,
                             error="Tool not found",
@@ -167,7 +167,7 @@ async def handle_media_stream(ws):
 
             except Exception as e:
                 # Send error response back to EVI
-                await evi_socket.send_tool_error(
+                await evi_socket.send_publish(
                     ToolErrorMessage(
                         tool_call_id=call_id,
                         error="Tool execution failed",
