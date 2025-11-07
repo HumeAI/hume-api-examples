@@ -7,9 +7,8 @@ from dotenv import load_dotenv
 from flask import Flask, request
 from flask_sock import Sock
 from hume import AsyncHumeClient
-from hume.empathic_voice.chat.socket_client import ChatConnectOptions
-from hume.empathic_voice.chat.types import SubscribeEvent
-from hume.empathic_voice import SessionSettings, AudioInput, UserInput, ToolResponseMessage, ToolErrorMessage
+from hume.empathic_voice.types import SubscribeEvent
+from hume.empathic_voice import AudioInput, ToolResponseMessage, ToolErrorMessage
 from audio_processors import TwilioAudioProcessor, EviAudioProcessor
 from tools import supportAssistant
 
@@ -223,42 +222,57 @@ async def handle_media_stream(ws):
 
         # You can provide query parameters to EVI on handshake:
         # https://dev.hume.ai/reference/speech-to-speech-evi/chat#request.query
-        connect_options = ChatConnectOptions(
-            # Replace with your own config ID from Hume AI dashboard: https://platform.hume.ai/evi/configs
-            config_id="2e7ba66e-db54-4772-ad5f-1a58a95ebc78",
-            session_settings={
-                # Do not delete the audio setting, as they are needed for audio streaming.
-                "audio": {
-                    "encoding": "linear16",
-                    "sample_rate": 8000,
-                    "channels": 1
-                },
-                # Add user context if provided
-                # See: https://dev.hume.ai/reference/speech-to-speech-evi/chat#send.SessionSettings.context
-                **({"context": {
-                    "type": "persistent",
-                    "text": f"You are a helpful customer support assistant. Use their name and ask them for their support ticket ID, so you can give them an update on their ticket status."
-                }})
-            }
-        )
+        session_variables = {
+            "name": "Joshua"
+        }
 
-        async with hume_client.empathic_voice.chat.connect_with_callbacks(
-            options=connect_options,
-            on_open=lambda: print("✅ EVI connected"),
-            on_message=on_evi_message,
-            on_close=lambda: print("👋 EVI disconnected"),
-            on_error=lambda err: print(f"❌ EVI Error: {err}")
+        session_settings_config = {
+            # Do not delete the audio setting, as they are needed for audio streaming.
+            "audio": {
+                "encoding": "linear16",
+                "sample_rate": 8000,
+                "channels": 1
+            },
+            # Variables must be serialized as JSON for the websocket handshake.
+            # See SDK implementation in `hume-python-sdk/src/hume/empathic_voice/chat/client.py`.
+            "variables": json.dumps(session_variables),
+            # Add user context if provided
+            # See: https://dev.hume.ai/reference/speech-to-speech-evi/chat#send.SessionSettings.context
+            "context": {
+                "type": "persistent",
+                "text": (
+                    "You are a helpful customer support assistant. Use their name and ask "
+                    "them for their support ticket ID, so you can give them an update on "
+                    "their ticket status."
+                )
+            }
+        }
+
+        async with hume_client.empathic_voice.chat.connect(
+            config_id="2e7ba66e-db54-4772-ad5f-1a58a95ebc78",
+            session_settings=session_settings_config
         ) as socket:
+            print("✅ EVI connected")
             evi_socket = socket
 
-            # TODO: send a message to EVI with an updated session Settings
-            # await socket.send_session_settings(SessionSettings(**session_settings_config))
+            async def listen_to_evi():
+                try:
+                    async for message in socket:
+                        await on_evi_message(message)
+                except asyncio.CancelledError:
+                    raise
+                except Exception as err:
+                    print(f"❌ EVI Error: {err}")
+                    raise
+                finally:
+                    print("👋 EVI disconnected")
 
             # Run all audio streaming tasks concurrently
             tasks = [
                 asyncio.create_task(receive_from_twilio()),
                 asyncio.create_task(send_to_evi()),
                 asyncio.create_task(send_to_twilio()),
+                asyncio.create_task(listen_to_evi()),
             ]
 
             # Wait for any task to complete, then clean up
