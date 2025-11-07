@@ -17,7 +17,8 @@ When you run the script, it will:
 1. **Start a Hume AI EVI server** - Runs an EVI speech-to-speech server and redirects calls made to a Twilio phone number to that server.
 2. **Init a chat with your config and `{{name}}` variable** - the Hume configuration defines a voice, a system prompt (EVI instructions), a tool call to `{{tools.py}}` located in the same directory; and we're also passing in a `{{name}}` variable.
 3. **EVI will refer to you by `{{name}}`, and ask for your ticket ID, and send that as `{ticket_id}` to `{{tools.py}}`**
-4. **EVI will tell you that the ticket with `{ticket_id}` has been resolved** - the assistant will use the hard-coded logic we currently have in `{{tools.py}}`.
+4. **EVI will switch a voice mid-chat** - this demonstrates that you can update session settings at any moment during the chat.
+5. **EVI will tell you that the ticket with `{ticket_id}` has been resolved** - the assistant will use the hard-coded logic we currently have in `{{tools.py}}`.
 
 # Setup
 
@@ -51,11 +52,10 @@ Follow these principles in every interaction:
 <tone_and_style>
 -  Speak in a clear, upbeat, conversational manner.
 -  Use plain language, short sentences, and positive framing.
-- Express genuine empathy ("I'm sorry you're experiencing this; let's fix it together").
 </tone_and_style>
 
 <core_flow>
-1. Greet the customer: "Hello {{name}}, thank you for calling Hume AI. This is EV. How may I help you today?"
+1. Greet the customer: "Hello {{name}}, thank you for calling Hume AI. This is EV. How may I help you today?". Try to use the {{name}} of the user several times throughout the conversation.
 2. Clarify – Ask concise, open-ended questions; paraphrase back to confirm understanding.
 3. Authenticate – Prompt for required account details only once; confirm aloud.
 4. Resolve / Educate

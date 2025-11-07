@@ -8,7 +8,7 @@ from flask import Flask, request
 from flask_sock import Sock
 from hume import AsyncHumeClient
 from hume.empathic_voice.types import SubscribeEvent
-from hume.empathic_voice import AudioInput, ToolResponseMessage, ToolErrorMessage
+from hume.empathic_voice import AudioInput, ToolResponseMessage, ToolErrorMessage, SessionSettings
 from audio_processors import TwilioAudioProcessor, EviAudioProcessor
 from tools import supportAssistant
 
@@ -132,7 +132,6 @@ async def handle_media_stream(ws):
             print(f"🔧 Tool call: {tool_name}")
 
             try:
-                # Parse the JSON parameters string into a dictionary
                 tool_parameters = json.loads(message.parameters)
                 print(f"📋 Tool parameters: {tool_parameters}")
 
@@ -227,16 +226,14 @@ async def handle_media_stream(ws):
         }
 
         session_settings_config = {
-            # Do not delete the audio setting, as they are needed for audio streaming.
+            # Do not delete the audio settings, as they are needed for audio streaming.
             "audio": {
                 "encoding": "linear16",
                 "sample_rate": 8000,
                 "channels": 1
             },
-            # Variables must be serialized as JSON for the websocket handshake.
-            # See SDK implementation in `hume-python-sdk/src/hume/empathic_voice/chat/client.py`.
             "variables": json.dumps(session_variables),
-            # Add user context if provided
+            # Add user context (optional)
             # See: https://dev.hume.ai/reference/speech-to-speech-evi/chat#send.SessionSettings.context
             "context": {
                 "type": "persistent",
@@ -267,18 +264,48 @@ async def handle_media_stream(ws):
                 finally:
                     print("👋 EVI disconnected")
 
+            async def update_session_settings():
+                try:
+                    await asyncio.sleep(10)
+                    if evi_socket:
+                        session_settings_message = SessionSettings(
+                            voice_id="ebba4902-69de-4e01-9846-d8feba5a1a3f" # TikTok Fashion Influencer
+                        )
+                        await evi_socket.send_publish(session_settings_message)
+                        print("🎛️ Session settings updated with new voice: TikTok Fashion Influencer")
+                except asyncio.CancelledError:
+                    raise
+                except Exception as err:
+                    print(f"❌ Failed to update session settings: {err}")
+                    raise
+
             # Run all audio streaming tasks concurrently
-            tasks = [
+            streaming_tasks = [
                 asyncio.create_task(receive_from_twilio()),
                 asyncio.create_task(send_to_evi()),
                 asyncio.create_task(send_to_twilio()),
                 asyncio.create_task(listen_to_evi()),
             ]
+            voice_update_task = asyncio.create_task(update_session_settings())
 
-            # Wait for any task to complete, then clean up
-            await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-            for task in tasks:
+            # Wait for any core streaming task to complete, then clean up
+            await asyncio.wait(streaming_tasks, return_when=asyncio.FIRST_COMPLETED)
+
+            for task in streaming_tasks:
                 task.cancel()
+
+            voice_update_task.cancel()
+
+            for task in streaming_tasks:
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+
+            try:
+                await voice_update_task
+            except asyncio.CancelledError:
+                pass
 
     except Exception as e:
         print(f"❌ Error: {e}")
