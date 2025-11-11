@@ -139,7 +139,7 @@ async def control_plane_demo(client: AsyncHumeClient, chat_id: str, api_key: str
     await send_control_message(client, chat_id, user_input_message)
     
     # Wait before next example
-    await asyncio.sleep(3)
+    await asyncio.sleep(10)
     
     # Example 2: Update session settings via control plane
     # This demonstrates updating session settings privately from a trusted backend.
