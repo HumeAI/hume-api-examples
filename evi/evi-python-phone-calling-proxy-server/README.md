@@ -1,8 +1,8 @@
 <div align="center">
   <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>Empathic Voice Interface | Twilio Phone Calling Example</h1>
+  <h1>Empathic Voice Interface | Twilio Phone Calling Proxy Server Example</h1>
   <p>
-    <strong>Test Twilio phone calling with Hume's Empathic Voice Interface!</strong>
+    <strong>Test phone calling via a proxy server with Hume's Empathic Voice Interface!</strong>
   </p>
 </div>
 
