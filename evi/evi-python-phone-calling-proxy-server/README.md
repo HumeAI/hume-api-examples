@@ -8,7 +8,9 @@
 
 ## Overview
 
-This example uses Hume AI's Emphatic Voice Interface (EVI) to respond to phone calls via Twilio. The example includes a mock Tool call to update the user calling in on the status of their customer support request. EVI is able to parse the ticket ID from speech and make the tool call. [Learn more about tool calling with EVI here.](https://dev.hume.ai/docs/speech-to-speech-evi/features/tool-use)
+This example spins up a proxy server to connect Hume AI's Empathic Voice Interface (EVI) with a telephony provider. We showcase Twilio as the sample provider, but this pattern is meant for proxy-based calling integrations. If you're building directly on Twilio, use Hume's [simpler integration via webhook](https://dev.hume.ai/docs/integrations/twilio) instead.
+
+The example includes a mock tool call to update the caller on the status of their customer support request. EVI parses the ticket ID from speech and executes the tool call. [Learn more about tool calling with EVI here.](https://dev.hume.ai/docs/speech-to-speech-evi/features/tool-use)
 
 ## What this example demonstrates
 
