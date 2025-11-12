@@ -220,7 +220,10 @@ class Program
             
             await streamingTtsClient.SendAsync(new { text = " Goodbye, world." });
             await streamingTtsClient.SendFlushAsync();
-            await streamingTtsClient.SendCloseAsync();
+            
+            // Give the server time to generate and send all audio chunks before closing
+            // This ensures "Goodbye, world." audio is fully received and played
+            await Task.Delay(TimeSpan.FromSeconds(3));
         });
 
         // Task 2: Receive and play audio chunks as they arrive
@@ -235,7 +238,15 @@ class Program
             await audioPlayer.StopStreamingAsync();
         });
 
-        await Task.WhenAll(sendInputTask, handleMessagesTask);
+        // Wait for send task to complete (all text sent, flushed, and delay elapsed)
+        await sendInputTask;
+        
+        // Now close the connection - the receive task will continue to process
+        // any remaining chunks that are already in flight
+        await streamingTtsClient.SendCloseAsync();
+        
+        // Wait for receive task to finish processing all audio chunks
+        await handleMessagesTask;
 
         Console.WriteLine("Done!");
     }
