@@ -122,14 +122,14 @@ export default function Page() {
 				justifyContent: 'center',
 				gap: 24,
 				padding: 24,
-				background: '#0f172a',
-				color: '#e2e8f0',
+				background: 'white',
+				color: 'black',
 			}}>
 			<div style={{ textAlign: 'center', maxWidth: 480 }}>
 				<h1 style={{ fontSize: 32, marginBottom: 12 }}>
-					Hume Conversational AI
+					Agora Conversational AI with Hume TTS
 				</h1>
-				<p style={{ fontSize: 16, color: '#94a3b8' }}>
+				<p style={{ fontSize: 16, color: '#666' }}>
 					Start a live conversation with the Agora Conversational AI agent
 					powered by Hume TTS.
 				</p>
@@ -142,17 +142,17 @@ export default function Page() {
 						disabled={isStarting}
 						style={{
 							padding: '12px 32px',
-							borderRadius: 999,
-							border: 'none',
-							backgroundColor: '#2563eb',
-							color: '#ffffff',
+							borderRadius: 4,
+							border: '1px solid black',
+							backgroundColor: 'black',
+							color: 'white',
 							fontSize: 16,
 							cursor: 'pointer',
 						}}>
 						{isStarting ? 'Starting…' : 'Start Conversation'}
 					</button>
 					{error && (
-						<p style={{ color: '#f97316', maxWidth: 400, textAlign: 'center' }}>
+						<p style={{ color: '#d00', maxWidth: 400, textAlign: 'center' }}>
 							{error}
 						</p>
 					)}
@@ -165,10 +165,9 @@ export default function Page() {
 								width: '100%',
 								maxWidth: 960,
 								minHeight: 600,
-								borderRadius: 16,
-								backgroundColor: '#ffffff',
-								color: '#0f172a',
-								boxShadow: '0 24px 60px rgba(15, 23, 42, 0.4)',
+								border: '1px solid #ccc',
+								background: 'white',
+								color: 'black',
 								position: 'relative',
 							}}>
 							<ConversationComponent

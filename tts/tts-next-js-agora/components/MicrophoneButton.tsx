@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { IMicrophoneAudioTrack } from 'agora-rtc-react';
 import { useRTCClient } from 'agora-rtc-react';
-import { Mic, MicOff } from 'lucide-react';
 
 interface MicrophoneButtonProps {
 	isEnabled: boolean;
@@ -109,8 +108,8 @@ export function MicrophoneButton({
 				width: 64,
 				height: 64,
 				borderRadius: '50%',
-				border: 'none',
-				backgroundColor: isEnabled ? '#f1f5f9' : '#ef4444',
+				border: '1px solid black',
+				backgroundColor: isEnabled ? 'white' : '#a00',
 				display: 'flex',
 				alignItems: 'center',
 				justifyContent: 'center',
@@ -133,18 +132,20 @@ export function MicrophoneButton({
 							width: 4,
 							height: `${Math.max(8, level * 48)}px`,
 							borderRadius: 2,
-							backgroundColor: isEnabled ? '#22c55e' : '#94a3b8',
+							backgroundColor: isEnabled ? '#0a0' : '#666',
 							transition: 'height 0.1s ease',
 						}}
 					/>
 				))}
 			</div>
-			<div style={{ position: 'relative', zIndex: 1 }}>
-				{isEnabled ? (
-					<Mic size={24} color='#1f2937' />
-				) : (
-					<MicOff size={24} color='#ffffff' />
-				)}
+			<div
+				style={{
+					position: 'relative',
+					zIndex: 1,
+					fontSize: 12,
+					fontWeight: 600,
+				}}>
+				{isEnabled ? 'Mic' : 'Off'}
 			</div>
 		</button>
 	);

@@ -326,10 +326,12 @@ export default function ConversationComponent({
 					justifyContent: 'space-between',
 					alignItems: 'center',
 					gap: 16,
+					borderBottom: '1px solid #ccc',
+					paddingBottom: 16,
 				}}>
 				<div>
 					<h2 style={{ fontSize: 20, marginBottom: 4 }}>Voice Conversation</h2>
-					<p style={{ fontSize: 14, color: '#64748b' }}>
+					<p style={{ fontSize: 14, color: '#666' }}>
 						Channel: <strong>{agoraData.channel}</strong> · UID:{' '}
 						<strong>{agoraData.uid}</strong>
 					</p>
@@ -340,7 +342,7 @@ export default function ConversationComponent({
 							width: 10,
 							height: 10,
 							borderRadius: '50%',
-							backgroundColor: isConnected ? '#22c55e' : '#ef4444',
+							backgroundColor: isConnected ? '#0a0' : '#a00',
 						}}
 					/>
 					<span style={{ fontSize: 14 }}>
@@ -355,11 +357,12 @@ export default function ConversationComponent({
 						disabled={isConnecting}
 						style={{
 							padding: '8px 16px',
-							borderRadius: 999,
-							border: 'none',
-							backgroundColor: '#2563eb',
-							color: '#ffffff',
+							borderRadius: 4,
+							border: '1px solid black',
+							backgroundColor: 'black',
+							color: 'white',
 							cursor: 'pointer',
+							fontSize: 14,
 						}}>
 						{isAgentConnected
 							? isConnecting
@@ -378,12 +381,11 @@ export default function ConversationComponent({
 					flexDirection: 'column',
 					gap: 16,
 					padding: 16,
-					borderRadius: 12,
-					backgroundColor: '#f8fafc',
+					border: '1px solid #ccc',
 				}}>
 				<h3 style={{ margin: 0, fontSize: 16 }}>Agent Audio</h3>
 				{remoteUsers.length === 0 ? (
-					<p style={{ fontSize: 14, color: '#64748b' }}>
+					<p style={{ fontSize: 14, color: '#666' }}>
 						Waiting for the agent to join the channel…
 					</p>
 				) : (

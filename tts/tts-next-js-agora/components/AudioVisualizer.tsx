@@ -67,7 +67,7 @@ export function AudioVisualizer({ track }: AudioVisualizerProps) {
 		analyserRef.current.getByteFrequencyData(dataArray);
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.fillStyle = '#111827';
+		ctx.fillStyle = 'white';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 		const barWidth = (canvas.width / bufferLength) * 1.5;
@@ -75,7 +75,7 @@ export function AudioVisualizer({ track }: AudioVisualizerProps) {
 
 		for (let i = 0; i < bufferLength; i += 1) {
 			const barHeight = (dataArray[i] / 255) * canvas.height;
-			ctx.fillStyle = '#3b82f6';
+			ctx.fillStyle = 'black';
 			ctx.fillRect(
 				x,
 				canvas.height - barHeight,
@@ -97,8 +97,8 @@ export function AudioVisualizer({ track }: AudioVisualizerProps) {
 				width: '100%',
 				maxWidth: '360px',
 				height: '80px',
-				borderRadius: '8px',
-				backgroundColor: '#111827',
+				border: '1px solid #ccc',
+				backgroundColor: 'white',
 			}}
 		/>
 	);

@@ -49,17 +49,16 @@ export default function ConvoTextStream({
 				width: 320,
 				maxHeight: 320,
 				padding: 16,
-				borderRadius: 12,
-				backgroundColor: '#f1f5f9',
-				color: '#0f172a',
+				border: '1px solid #ccc',
+				backgroundColor: 'white',
+				color: 'black',
 				overflowY: 'auto',
-				boxShadow: '0 12px 32px rgba(15, 23, 42, 0.15)',
 			}}>
 			<h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>
 				Conversation
 			</h3>
 			{entries.length === 0 ? (
-				<p style={{ fontSize: 14, color: '#475569' }}>
+				<p style={{ fontSize: 14, color: '#666' }}>
 					Start speaking to see the agent responses here.
 				</p>
 			) : (
@@ -77,17 +76,13 @@ export default function ConvoTextStream({
 							style={{
 								listStyle: 'none',
 								padding: 12,
-								borderRadius: 8,
-								backgroundColor: isAgentMessage(message)
-									? '#e0f2fe'
-									: '#e5e7eb',
+								border: '1px solid #ccc',
+								backgroundColor: isAgentMessage(message) ? '#f5f5f5' : 'white',
 							}}>
 							<div
 								style={{
 									fontSize: 12,
 									fontWeight: 600,
-									letterSpacing: 0.5,
-									color: '#334155',
 									marginBottom: 4,
 								}}>
 								{isAgentMessage(message) ? 'AI Agent' : 'You'}
