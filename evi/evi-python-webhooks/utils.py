@@ -1,13 +1,17 @@
+import os
+import time
 from datetime import datetime
 import hashlib
 import hmac
-from hume.client import AsyncHumeClient
-from hume.empathic_voice.types import ReturnChatEvent
-import os
+import json
+import httpx
 from starlette.datastructures import Headers
-import time
+from hume.client import AsyncHumeClient
+from hume.empathic_voice.control_plane.client import AsyncControlPlaneClient
+from hume.empathic_voice.types import ReturnChatEvent
+from hume.empathic_voice import ToolCallMessage, ToolErrorMessage, ToolResponseMessage
 
-async def fetch_all_chat_events(chat_id: str) -> list[ReturnChatEvent]:
+async def fetch_all_chat_events(client: AsyncHumeClient, chat_id: str) -> list[ReturnChatEvent]:
     """
     Fetches all Chat Events for the given chat ID using the AsyncHumeClient.
     The function returns all events in chronological order.
@@ -16,12 +20,6 @@ async def fetch_all_chat_events(chat_id: str) -> list[ReturnChatEvent]:
     :return: A list of ReturnChatEvent objects representing all fetched events.
     :raises ValueError: If HUME_API_KEY is not set in environment variables.
     """
-    api_key = os.environ.get("HUME_API_KEY")
-    if not api_key:
-        raise ValueError("HUME_API_KEY is not set in the environment variables.")
-
-    client = AsyncHumeClient(api_key=api_key)
-
     all_chat_events: list[ReturnChatEvent] = []
     # The response is an iterator over Chat Events
     response = await client.empathic_voice.chats.list_chat_events(id=chat_id, page_number=0, ascending_order=True)
@@ -64,9 +62,9 @@ def save_transcript_to_file(transcript: str, chat_id: str) -> None:
         f.write(transcript)
     print(f"Transcript saved to {transcript_file_name}")
 
-async def get_chat_transcript(chat_id: str) -> None:
+async def get_chat_transcript(client: AsyncHumeClient, chat_id: str) -> None:
     # Fetch all chat events for the given chat_id
-    chat_events = await fetch_all_chat_events(chat_id)
+    chat_events = await fetch_all_chat_events(client, chat_id)
 
     # Construct a formatted transcript string
     transcript = construct_transcript(chat_events)
@@ -171,3 +169,142 @@ def validate_headers(payload: str, headers: Headers) -> None:
 
     validate_hmac_signature(payload, timestamp, signature)
     validate_timestamp(timestamp)
+
+async def fetch_weather(parameters: str) -> str:
+    """
+    Fetches the weather forecast for a given location and temperature scale.
+
+    Args:
+        parameters (str): The parameters of the tool call.
+
+    Returns:
+        str: The JSON-formatted string of the weather forecast.
+    """
+    # Retrieve the Geocoding API key from environment variables
+    GEOCODING_API_KEY = os.getenv("GEOCODING_API_KEY")
+    if not GEOCODING_API_KEY:
+        return "ERROR: Geocoding API key is not set."
+
+    tool_parameters = json.loads(parameters)
+    location = tool_parameters.get('location')
+    temp_scale = tool_parameters.get('format', 'text')
+
+    # Construct the URL for the Geocoding API request
+    location_api_url = f"https://geocode.maps.co/search?q={location}&api_key={GEOCODING_API_KEY}"
+
+    # Create an HTTP client that automatically follows redirects
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        try:
+            # Step 1: Fetch location data
+            location_response = await client.get(location_api_url)
+            location_response.raise_for_status()
+            location_data = location_response.json()
+        except httpx.HTTPError as e:
+            return f"ERROR: Failed to fetch location data. {str(e)}"
+
+        if not location_data:
+            return "ERROR: No location data found."
+
+        try:
+            # Extract latitude and longitude from the location data
+            lat = location_data[0]['lat']
+            lon = location_data[0]['lon']
+        except (IndexError, KeyError):
+            return "ERROR: Unable to extract latitude and longitude."
+
+        # Construct the URL for the Weather.gov API points endpoint
+        point_metadata_endpoint = f"https://api.weather.gov/points/{float(lat):.4f},{float(lon):.4f}"
+
+        try:
+            # Step 2: Fetch point metadata
+            point_metadata_response = await client.get(point_metadata_endpoint)
+            point_metadata_response.raise_for_status()
+            point_metadata = point_metadata_response.json()
+        except httpx.HTTPError as e:
+            return f"ERROR: Failed to fetch point metadata. {str(e)}"
+
+        try:
+            # Extract the forecast URL from the point metadata
+            forecast_url = point_metadata['properties']['forecast']
+        except KeyError:
+            return "ERROR: Unable to extract forecast URL from point metadata."
+
+        try:
+            # Step 3: Fetch the weather forecast
+            forecast_response = await client.get(forecast_url)
+            forecast_response.raise_for_status()
+            forecast_data = forecast_response.json()
+        except httpx.HTTPError as e:
+            return f"ERROR: Failed to fetch weather forecast. {str(e)}"
+
+        try:
+            # Extract the forecast periods from the response
+            periods = forecast_data['properties']['periods']
+        except KeyError:
+            return "ERROR: Unable to extract forecast periods."
+
+        # Validate the desired temperature format
+        desired_unit = temp_scale.lower()
+        if desired_unit not in ['fahrenheit', 'celsius']:
+            return "ERROR: Invalid format specified. Please use 'fahrenheit' or 'celsius'."
+
+        # Convert temperatures for all periods to the desired unit
+        for period in periods:
+            temperature = period.get('temperature')
+            temperature_unit = period.get('temperatureUnit')
+
+            if temperature is not None and temperature_unit is not None:
+                if desired_unit == 'celsius' and temperature_unit == 'F':
+                    # Convert Fahrenheit to Celsius
+                    converted_temp = round((temperature - 32) * 5 / 9)
+                    period['temperature'] = converted_temp
+                    period['temperatureUnit'] = 'C'
+                elif desired_unit == 'fahrenheit' and temperature_unit == 'C':
+                    # Convert Celsius to Fahrenheit
+                    converted_temp = round((temperature * 9 / 5) + 32)
+                    period['temperature'] = converted_temp
+                    period['temperatureUnit'] = 'F'
+
+        # Return the forecast data as a JSON-formatted string
+        forecast = json.dumps(periods, indent=2)
+        return forecast
+
+async def fetch_weather_tool(
+    control_plane_client: AsyncControlPlaneClient, 
+    chat_id: str, 
+    tool_call_message: ToolCallMessage
+) -> None:
+    """
+    Function which invokes the get_current_weather tool and sends the result back to the chat via the control plane.
+
+    Args:
+        control_plane_client (AsyncControlPlaneClient): The control plane client instance.
+        chat_id (str): The ID of the chat.
+        tool_call_message (ToolCallMessage): The tool call message.
+    """
+    parameters = tool_call_message.parameters
+    tool_call_id = tool_call_message.tool_call_id
+    tool_name = tool_call_message.name
+
+    if tool_name != "get_current_weather":
+        return
+    
+    try:
+        current_weather = await fetch_weather(parameters)
+        await control_plane_client.send(
+            chat_id=chat_id, 
+            request=ToolResponseMessage(
+                tool_call_id=tool_call_id,
+                content=current_weather
+            )
+        )
+    except Exception as e:
+        print(f"Error fetching weather: {e}")
+        await control_plane_client.send(
+            chat_id=chat_id, 
+            request=ToolErrorMessage(
+                tool_call_id=tool_call_id,
+                error="WeatherFetchError",
+                content=str(e)
+            )
+        )
