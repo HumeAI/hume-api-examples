@@ -92,33 +92,10 @@ export interface AgoraStartRequest
   };
 }
 
-export enum TTSVendor
-{
-  Microsoft = 'microsoft',
-  ElevenLabs = 'elevenlabs',
-  Hume = 'hume',
-}
-
-export interface MicrosoftTTSParams
-{
-  key: string;
-  region: string;
-  voice_name: string;
-  rate?: number;
-  volume?: number;
-}
-
-export interface ElevenLabsTTSParams
-{
-  key: string;
-  voice_id: string;
-  model_id: string;
-}
-
 export interface TTSConfig
 {
-  vendor: TTSVendor | string;
-  params: MicrosoftTTSParams | ElevenLabsTTSParams | HumeTTSParams;
+  vendor: 'humeai';
+  params: HumeTTSParams;
 }
 
 export interface TokenRenewalHandler

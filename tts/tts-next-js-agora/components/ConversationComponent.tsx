@@ -15,12 +15,7 @@ import {
 import { MicrophoneButton } from './MicrophoneButton';
 import { AudioVisualizer } from './AudioVisualizer';
 import ConvoTextStream from './ConvoTextStream';
-import {
-	MessageEngine,
-	IMessageListItem,
-	EMessageStatus,
-	EMessageEngineMode,
-} from '@/lib/message';
+import { MessageEngine, IMessageListItem, EMessageStatus } from '@/lib/message';
 import type {
 	ConversationComponentProps,
 	StopConversationRequest,
@@ -62,7 +57,6 @@ export default function ConversationComponent({
 
 		if (messageEngineRef.current) {
 			try {
-				messageEngineRef.current.teardownInterval();
 				messageEngineRef.current.cleanup();
 			} catch (error) {
 				console.error('Error cleaning up MessageEngine:', error);
@@ -71,31 +65,26 @@ export default function ConversationComponent({
 		}
 
 		try {
-			const engine = new MessageEngine(
-				client,
-				EMessageEngineMode.TEXT,
-				(updatedMessages) => {
-					// Sort messages by turn_id to maintain order
-					const sortedMessages = [...updatedMessages].sort(
-						(a, b) => a.turn_id - b.turn_id
-					);
+			const engine = new MessageEngine(client, (updatedMessages) => {
+				// Sort messages by turn_id to maintain order
+				const sortedMessages = [...updatedMessages].sort(
+					(a, b) => a.turn_id - b.turn_id
+				);
 
-					// Find the latest in-progress message
-					const inProgressMsg = sortedMessages.find(
-						(msg) => msg.status === EMessageStatus.IN_PROGRESS
-					);
+				// Find the latest in-progress message
+				const inProgressMsg = sortedMessages.find(
+					(msg) => msg.status === EMessageStatus.IN_PROGRESS
+				);
 
-					// Update states
-					setMessageList(
-						sortedMessages.filter(
-							(msg) => msg.status !== EMessageStatus.IN_PROGRESS
-						)
-					);
-					setInProgressMessage(inProgressMsg || null);
-				}
-			);
+				// Update states
+				setMessageList(
+					sortedMessages.filter(
+						(msg) => msg.status !== EMessageStatus.IN_PROGRESS
+					)
+				);
+				setInProgressMessage(inProgressMsg || null);
+			});
 			messageEngineRef.current = engine;
-			engine.run({ legacyMode: false });
 		} catch (error) {
 			console.error('Failed to initialise MessageEngine:', error);
 		}
@@ -103,7 +92,6 @@ export default function ConversationComponent({
 		return () => {
 			if (messageEngineRef.current) {
 				try {
-					messageEngineRef.current.teardownInterval();
 					messageEngineRef.current.cleanup();
 				} catch (error) {
 					console.error('Error cleaning up MessageEngine:', error);
@@ -123,12 +111,6 @@ export default function ConversationComponent({
 				messageEngineRef.current.handleStreamMessage(payload);
 			} catch (error) {
 				console.error('Failed to handle stream message:', error);
-				// Try to restart the message engine
-				try {
-					messageEngineRef.current.run({ legacyMode: false });
-				} catch (restartError) {
-					console.error('Failed to restart MessageEngine:', restartError);
-				}
 			}
 		} else if (isAgentStream && !messageEngineRef.current) {
 			console.warn(

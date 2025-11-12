@@ -4,8 +4,6 @@ import
   ClientStartRequest,
   AgentResponse,
   AgoraStartRequest,
-  TTSConfig,
-  TTSVendor,
   HumeTTSParams,
 } from '@/types/conversation';
 
@@ -66,32 +64,9 @@ function createAuthorizationHeader (): string
   return `Basic ${ Buffer.from( credentials, 'utf8' ).toString( 'base64' ) }`;
 }
 
-function getTTSConfig ( vendor: TTSVendor ): TTSConfig
-{
-  if ( vendor === TTSVendor.Hume )
-  {
-    return {
-      vendor,
-      params: {
-        voice_id: HUME_VOICE_ID,
-        key: HUME_API_KEY,
-        trailing_silence: 0.35,
-        speed: 1,
-        provider: 'HUME_AI',
-      },
-    };
-  }
-
-  throw new Error( `Unsupported TTS vendor: ${ vendor }` );
-}
-
 function getConfig ()
 {
   validateEnvironment();
-
-  const ttsVendor =
-    ( process.env.NEXT_PUBLIC_TTS_VENDOR as TTSVendor | undefined ) ??
-    TTSVendor.Hume;
 
   return {
     agora: {
@@ -107,7 +82,13 @@ function getConfig ()
       api_key: OPENAI_API_KEY,
       model: OPENAI_MODEL,
     },
-    tts: getTTSConfig( ttsVendor ),
+    tts: {
+      voice_id: HUME_VOICE_ID,
+      key: HUME_API_KEY,
+      trailing_silence: 0.35,
+      speed: 1,
+      provider: 'HUME_AI',
+    } as HumeTTSParams,
   };
 }
 
@@ -122,8 +103,6 @@ export async function POST ( request: Request )
     const remoteUids = body.requester_id
       ? [ body.requester_id ]
       : [ config.agora.agentUid ];
-
-    const humeParams = config.tts.params as HumeTTSParams;
 
     const payload: AgoraStartRequest = {
       name:
@@ -167,11 +146,11 @@ export async function POST ( request: Request )
         tts: {
           vendor: 'humeai',
           params: {
-            voice_id: humeParams.voice_id,
-            provider: 'HUME_AI',
-            key: humeParams.key ?? HUME_API_KEY,
-            trailing_silence: humeParams.trailing_silence ?? 0.35,
-            speed: humeParams.speed ?? 1,
+            voice_id: config.tts.voice_id,
+            provider: config.tts.provider ?? 'HUME_AI',
+            key: config.tts.key,
+            trailing_silence: config.tts.trailing_silence ?? 0.35,
+            speed: config.tts.speed ?? 1,
           },
         },
         advanced_features: {
