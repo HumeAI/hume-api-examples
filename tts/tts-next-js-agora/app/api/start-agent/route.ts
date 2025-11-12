@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 
-const AGORA_APP_ID =
+export const AGORA_APP_ID =
   process.env.AGORA_APP_ID ?? process.env.AGORA_PROJECT_APP_ID ?? '';
-const AGORA_BASE_URL =
+export const AGORA_BASE_URL =
   process.env.AGORA_CONVERSATIONAL_AI_BASE_URL ??
   'https://api.agora.io/api/conversational-ai-agent/v2';
-const AGORA_CUSTOMER_ID = process.env.AGORA_CUSTOMER_ID ?? '';
-const AGORA_CUSTOMER_SECRET = process.env.AGORA_CUSTOMER_SECRET ?? '';
-const HUME_API_KEY = process.env.HUME_API_KEY ?? '';
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
+export const AGORA_CUSTOMER_ID = process.env.AGORA_CUSTOMER_ID ?? '';
+export const AGORA_CUSTOMER_SECRET = process.env.AGORA_CUSTOMER_SECRET ?? '';
+export const HUME_API_KEY = process.env.HUME_API_KEY ?? '';
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
 
-function validateEnvironment ()
+export function validateEnvironment ()
 {
   const missingVariables = [
     AGORA_APP_ID ? null : 'AGORA_APP_ID or AGORA_PROJECT_APP_ID',
@@ -28,7 +28,7 @@ function validateEnvironment ()
   }
 }
 
-function createAgoraAuthorizationHeader (): string
+export function createAgoraAuthorizationHeader (): string
 {
   const credentials = `${ AGORA_CUSTOMER_ID }:${ AGORA_CUSTOMER_SECRET }`;
   const encoded = Buffer.from( credentials, 'utf8' ).toString( 'base64' );
