@@ -2,13 +2,12 @@
 name = "evi-python-webhooks-example"
 version = "0.1.0"
 description = ""
-authors = ["zach <zachary.greathouse@hume.ai>"]
 readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
-hume = "^0.7.7"
+hume = "^0.13.4"
 python-dotenv = "^1.0.1"
 fastapi = "^0.115.6"
 uvicorn = "^0.34.0"
