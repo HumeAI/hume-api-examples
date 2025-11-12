@@ -17,7 +17,7 @@
 **Key Features:**
 
 - **Webhook integration:** Configurable endpoint to receive real-time events.
-- **Event handling:** Parse and process `chat_started`, chat_ended`, and `tool_call` events with utilities.
+- **Event handling:** Parse and process `chat_started`, `chat_ended`, and `tool_call` events with utilities.
 - **Extensibility:** A base framework for building advanced workflows triggered by EVI events.
 
 ## Prerequisites
