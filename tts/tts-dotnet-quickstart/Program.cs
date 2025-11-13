@@ -22,7 +22,6 @@ class Program
     
     private static string? _apiKey;
     private static HumeClient? _client;
-    private static string? _outputDir;
 
     static async Task RunExamplesAsync()
     {
@@ -38,12 +37,6 @@ class Program
         }
 
         _client = new HumeClient(_apiKey);
-
-        // Create an output directory in the temporary folder
-        _outputDir = Path.Combine(Path.GetTempPath(), "hume-audio");
-        Directory.CreateDirectory(_outputDir);
-
-        Console.WriteLine($"Results will be written to {_outputDir}");
 
         await Example1Async();
         await Example2Async();
@@ -199,7 +192,7 @@ class Program
     {
         Console.WriteLine("Example 3: Bidirectional streaming...");
 
-        using var streamingTtsClient = new StreamingTtsClient(_apiKey!);
+        using var streamingTtsClient = new StreamingTtsClient(_apiKey!, enableDebugLogging: true);
         await streamingTtsClient.ConnectAsync();
 
         // Use buffered mode for bidirectional streaming to handle irregular chunk arrival timing
@@ -219,11 +212,10 @@ class Program
             await Task.Delay(TimeSpan.FromSeconds(VoiceCreationDelaySeconds));
             
             await streamingTtsClient.SendAsync(new { text = " Goodbye, world." });
+            // Flush to ensure text is processed, then close
+            // The server will send all remaining audio chunks before closing
             await streamingTtsClient.SendFlushAsync();
-            
-            // Give the server time to generate and send all audio chunks before closing
-            // This ensures "Goodbye, world." audio is fully received and played
-            await Task.Delay(TimeSpan.FromSeconds(3));
+            await streamingTtsClient.SendCloseAsync();
         });
 
         // Task 2: Receive and play audio chunks as they arrive
@@ -238,22 +230,15 @@ class Program
             await audioPlayer.StopStreamingAsync();
         });
 
-        // Wait for send task to complete (all text sent, flushed, and delay elapsed)
-        await sendInputTask;
-        
-        // Now close the connection - the receive task will continue to process
-        // any remaining chunks that are already in flight
-        await streamingTtsClient.SendCloseAsync();
-        
-        // Wait for receive task to finish processing all audio chunks
-        await handleMessagesTask;
+        // Wait for both tasks to complete
+        // The send task sends close, and the receive task processes all audio until connection closes
+        await Task.WhenAll(sendInputTask, handleMessagesTask);
 
         Console.WriteLine("Done!");
     }
 
     /// <summary>
     /// Helper method to stream audio chunks from a TTS response to an audio player.
-    /// Handles SDK compatibility by working with both TtsOutput and OneOf types.
     /// </summary>
     private static async Task StreamAudioToPlayerAsync<T>(
         IAsyncEnumerable<T> snippetStream,
@@ -324,14 +309,18 @@ class Program
                 {
                     try
                     {
+                        int chunkCount = 0;
                         foreach (var audioBytes in _audioBuffer.GetConsumingEnumerable(_bufferCts.Token))
                         {
-                            if (_audioProcess?.StandardInput?.BaseStream != null)
+                            if (_audioProcess?.StandardInput?.BaseStream != null && !_audioProcess.HasExited)
                             {
+                                chunkCount++;
+                                Console.WriteLine($"[BufferTask] Writing chunk #{chunkCount} to ffplay ({audioBytes.Length} bytes)");
                                 await _audioProcess.StandardInput.BaseStream.WriteAsync(audioBytes, _bufferCts.Token);
                                 await _audioProcess.StandardInput.BaseStream.FlushAsync(_bufferCts.Token);
                             }
                         }
+                        Console.WriteLine($"[BufferTask] Finished writing all chunks (total: {chunkCount})");
                     }
                     catch (OperationCanceledException)
                     {
@@ -346,18 +335,25 @@ class Program
 
         public Task SendAudioAsync(byte[] audioBytes)
         {
-            if (!_isStreaming) return Task.CompletedTask;
+            if (!_isStreaming)
+            {
+                Console.WriteLine("[AudioPlayer] Warning: Received audio chunk but streaming is stopped");
+                return Task.CompletedTask;
+            }
+
+            if (audioBytes.Length == 0)
+            {
+                return Task.CompletedTask;
+            }
 
             try
             {
                 if (_useBuffering && _audioBuffer != null)
                 {
-                    // Buffered mode: add to queue for background task to process
                     _audioBuffer.Add(audioBytes);
                 }
                 else if (_audioProcess?.HasExited == false)
                 {
-                    // Direct mode: write immediately to ffplay
                     _audioProcess?.StandardInput.BaseStream.Write(audioBytes, 0, audioBytes.Length);
                     _audioProcess?.StandardInput.BaseStream.Flush();
                 }
@@ -379,17 +375,23 @@ class Program
                 // Complete buffered audio if using buffering
                 if (_useBuffering && _audioBuffer != null)
                 {
+                    // Mark buffer as complete - no more chunks will be added
                     _audioBuffer.CompleteAdding();
+                    // Wait for buffer task to finish writing all queued chunks to ffplay
                     if (_bufferTask != null)
                     {
                         await _bufferTask;
                     }
+                    // Give ffplay additional time to play all buffered audio before closing input stream
+                    // This ensures "Goodbye, world." audio chunks are fully played
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                 }
                 
-                // Close ffplay process
+                // Close ffplay process input stream - ffplay will finish playing all buffered audio then exit
                 if (_audioProcess != null && !_audioProcess.HasExited)
                 {
                     _audioProcess.StandardInput.Close();
+                    // Wait for ffplay to finish playing all buffered audio (without -autoexit, it will exit when stream ends)
                     await _audioProcess.WaitForExitAsync();
                 }
             }
@@ -467,15 +469,6 @@ class Program
     private static StreamingAudioPlayer StartAudioPlayer()
     {
         return new StreamingAudioPlayer();
-    }
-
-    private static async Task WriteResultToFile(string base64EncodedAudio, string filename, string outputDir)
-    {
-        var filePath = Path.Combine(outputDir, $"{filename}.wav");
-        // Decode the base64-encoded audio data
-        var audioData = Convert.FromBase64String(base64EncodedAudio);
-        await File.WriteAllBytesAsync(filePath, audioData);
-        Console.WriteLine($"Wrote {filePath}");
     }
 
 }
