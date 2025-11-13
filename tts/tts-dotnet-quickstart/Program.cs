@@ -212,8 +212,6 @@ class Program
             await Task.Delay(TimeSpan.FromSeconds(VoiceCreationDelaySeconds));
             
             await streamingTtsClient.SendAsync(new { text = " Goodbye, world." });
-            // Flush to ensure text is processed, then close
-            // The server will send all remaining audio chunks before closing
             await streamingTtsClient.SendFlushAsync();
             await streamingTtsClient.SendCloseAsync();
         });
@@ -230,8 +228,6 @@ class Program
             await audioPlayer.StopStreamingAsync();
         });
 
-        // Wait for both tasks to complete
-        // The send task sends close, and the receive task processes all audio until connection closes
         await Task.WhenAll(sendInputTask, handleMessagesTask);
 
         Console.WriteLine("Done!");
@@ -315,12 +311,10 @@ class Program
                             if (_audioProcess?.StandardInput?.BaseStream != null && !_audioProcess.HasExited)
                             {
                                 chunkCount++;
-                                Console.WriteLine($"[BufferTask] Writing chunk #{chunkCount} to ffplay ({audioBytes.Length} bytes)");
                                 await _audioProcess.StandardInput.BaseStream.WriteAsync(audioBytes, _bufferCts.Token);
                                 await _audioProcess.StandardInput.BaseStream.FlushAsync(_bufferCts.Token);
                             }
                         }
-                        Console.WriteLine($"[BufferTask] Finished writing all chunks (total: {chunkCount})");
                     }
                     catch (OperationCanceledException)
                     {
@@ -337,7 +331,6 @@ class Program
         {
             if (!_isStreaming)
             {
-                Console.WriteLine("[AudioPlayer] Warning: Received audio chunk but streaming is stopped");
                 return Task.CompletedTask;
             }
 
@@ -375,15 +368,12 @@ class Program
                 // Complete buffered audio if using buffering
                 if (_useBuffering && _audioBuffer != null)
                 {
-                    // Mark buffer as complete - no more chunks will be added
                     _audioBuffer.CompleteAdding();
-                    // Wait for buffer task to finish writing all queued chunks to ffplay
                     if (_bufferTask != null)
                     {
                         await _bufferTask;
                     }
-                    // Give ffplay additional time to play all buffered audio before closing input stream
-                    // This ensures "Goodbye, world." audio chunks are fully played
+
                     await Task.Delay(TimeSpan.FromSeconds(5));
                 }
                 
@@ -391,7 +381,6 @@ class Program
                 if (_audioProcess != null && !_audioProcess.HasExited)
                 {
                     _audioProcess.StandardInput.Close();
-                    // Wait for ffplay to finish playing all buffered audio (without -autoexit, it will exit when stream ends)
                     await _audioProcess.WaitForExitAsync();
                 }
             }
