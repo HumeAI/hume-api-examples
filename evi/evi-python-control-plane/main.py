@@ -19,14 +19,29 @@ import asyncio
 import base64
 import json
 import os
+import traceback
 from dotenv import load_dotenv
 import websockets
 from hume import MicrophoneInterface, Stream
 from hume import HumeClient
 from hume.client import AsyncHumeClient
-from hume.empathic_voice.chat.socket_client import ChatConnectOptions
 from hume.empathic_voice.control_plane.client import AsyncControlPlaneClient
 from hume.empathic_voice.types import SubscribeEvent, UserInput, SessionSettings
+
+
+def load_config() -> tuple[str, str]:
+    """Load and validate environment variables."""
+    load_dotenv()
+
+    api_key = os.getenv("HUME_API_KEY")
+    config_id = os.getenv("HUME_CONFIG_ID")
+
+    if not api_key:
+        raise ValueError("HUME_API_KEY environment variable is required")
+    if not config_id:
+        raise ValueError("HUME_CONFIG_ID environment variable is required")
+
+    return api_key, config_id
 
 
 async def send_control_message(client: AsyncHumeClient, chat_id: str, message) -> None:
@@ -98,8 +113,6 @@ async def observe_chat(api_key: str, chat_id: str, on_message_callback) -> None:
                 raise
             except Exception as e:
                 print(f"[OBSERVER] Error in message receive loop: {e}")
-                import traceback
-
                 traceback.print_exc()
                 raise
     except Exception as e:
@@ -190,12 +203,13 @@ async def control_plane_demo(
     # This demonstrates posting messages to an active Chat without exposing
     # secrets on the client. You can send any message type except `audio_input`.
     print("[CONTROL] Example 2: Sending user input message via control plane")
-    user_input_message = UserInput(
-        text="Hello! This message was sent via the control plane API - say it back to the user."
+    await send_control_message(
+        client,
+        chat_id,
+        UserInput(
+            text="Hello! This message was sent via the control plane API - say it back to the user."
+        ),
     )
-    await send_control_message(client, chat_id, user_input_message)
-
-    # Wait before next example
     await asyncio.sleep(10)
 
     # Example 3: Update session settings via control plane
@@ -203,13 +217,14 @@ async def control_plane_demo(
     # Common use cases include setting supplemental LLM API keys or updating
     # system prompts without exposing secrets on the client.
     print("[CONTROL] Example 3: Updating session settings via control plane")
-    session_settings_message = SessionSettings(
-        system_prompt="You are a helpful assistant. This system prompt was updated via the control plane API.",
-        voice_id="ebba4902-69de-4e01-9846-d8feba5a1a3f",  # TikTok Fashion Influencer
+    await send_control_message(
+        client,
+        chat_id,
+        SessionSettings(
+            system_prompt="You are a helpful assistant. This system prompt was updated via the control plane API.",
+            voice_id="ebba4902-69de-4e01-9846-d8feba5a1a3f",  # TikTok Fashion Influencer
+        ),
     )
-    await send_control_message(client, chat_id, session_settings_message)
-
-    # Let the observer run for a while to demonstrate live monitoring
     await asyncio.sleep(15)
 
     # Cancel the observer task if it was started (in a production app, you'd handle this more gracefully)
@@ -230,15 +245,8 @@ async def main_new_chat() -> None:
     assistant responses. Once the Chat is established and we have the chatId,
     we can use the control plane to send messages and observe the Chat.
     """
-    load_dotenv()
-
-    HUME_API_KEY = os.getenv("HUME_API_KEY")
-    HUME_CONFIG_ID = os.getenv("HUME_CONFIG_ID")
-
-    if not HUME_API_KEY:
-        raise ValueError("HUME_API_KEY environment variable is required")
-
-    client = AsyncHumeClient(api_key=HUME_API_KEY)
+    api_key, config_id = load_config()
+    client = AsyncHumeClient(api_key=api_key)
 
     stream = Stream.new()
     chat_id = None
@@ -255,7 +263,7 @@ async def main_new_chat() -> None:
                 f"[DATA_PLANE] Chat ID: {message.chat_id}, Chat Group ID: {message.chat_group_id}"
             )
             # Start control plane demo once we have the chatId
-            asyncio.create_task(control_plane_demo(client, chat_id, HUME_API_KEY))
+            asyncio.create_task(control_plane_demo(client, chat_id, api_key))
         elif message.type == "user_message" or message.type == "assistant_message":
             print(f"[DATA_PLANE] {message.message.role}: {message.message.content}")
         elif message.type == "audio_output":
@@ -272,15 +280,11 @@ async def main_new_chat() -> None:
     print("[DATA_PLANE] Connecting to EVI Chat (data plane)...")
     print("[DATA_PLANE] Setting allow_connection=True to enable observer connections")
 
-    # Use connect() directly to pass allow_connection parameter (per PR #418)
-    # connect() returns a socket that we can use as an async context manager
-    # and iterate over messages with async for
     async with client.empathic_voice.chat.connect(
-        config_id=HUME_CONFIG_ID,
+        config_id=config_id,
         allow_connection=True,
     ) as socket:
         print("[DATA_PLANE] WebSocket connection opened.")
-
         print("[DATA_PLANE] Starting microphone interface...")
         print(
             "[DATA_PLANE] You can now speak to the assistant. The control plane will demonstrate:"
@@ -290,19 +294,10 @@ async def main_new_chat() -> None:
         print("[DATA_PLANE]   3. Updating session settings")
         print("[DATA_PLANE] Press Ctrl+C to exit.")
 
-        # Handle messages by iterating over the socket
-        # MicrophoneInterface.start() handles audio input/output in parallel
         async def handle_messages():
-            try:
-                async for message in socket:
-                    await on_message(message)
-            except asyncio.CancelledError:
-                raise
-            except Exception as err:
-                print(f"[DATA_PLANE] Error receiving messages: {err}")
-                raise
+            async for message in socket:
+                await on_message(message)
 
-        # Run message handling and microphone interface concurrently
         await asyncio.gather(
             handle_messages(),
             MicrophoneInterface.start(
@@ -311,9 +306,8 @@ async def main_new_chat() -> None:
         )
 
 
-def evi_get_active_chats(client: HumeClient, config_id: str):
-    """List EVI chats and find the first active chat."""
-    # List EVI chats
+def find_active_chat(client: HumeClient, config_id: str):
+    """Find the first active EVI chat for the given config."""
     response = client.empathic_voice.chats.list_chats(
         page_number=0,
         page_size=1,
@@ -326,7 +320,6 @@ def evi_get_active_chats(client: HumeClient, config_id: str):
     for item in response:
         if hasattr(item, "status") and item.status == "ACTIVE":
             return item
-
     return None
 
 
@@ -337,32 +330,21 @@ async def main_existing_chat() -> None:
     the control plane to send messages and observe the chat without establishing a
     data plane connection.
     """
-    load_dotenv()
+    api_key, config_id = load_config()
 
-    HUME_API_KEY = os.getenv("HUME_API_KEY")
-    HUME_CONFIG_ID = os.getenv("HUME_CONFIG_ID")
-
-    if not HUME_API_KEY:
-        raise ValueError("HUME_API_KEY environment variable is required")
-    if not HUME_CONFIG_ID:
-        raise ValueError("HUME_CONFIG_ID environment variable is required")
-
-    # Use synchronous client to find active chats
-    sync_client = HumeClient(api_key=HUME_API_KEY)
-    active_chat = evi_get_active_chats(sync_client, HUME_CONFIG_ID)
+    sync_client = HumeClient(api_key=api_key)
+    active_chat = find_active_chat(sync_client, config_id)
 
     if not active_chat:
         print("[EXISTING] No active chats found")
         return
 
     print(f"[EXISTING] Found active chat with ID: {active_chat.id}")
-    chat_id = active_chat.id
 
-    # Create async client for control plane operations
-    async_client = AsyncHumeClient(api_key=HUME_API_KEY)
-
-    # Run control plane demo without observer (requires allow_connection=true)
-    await control_plane_demo(async_client, chat_id, HUME_API_KEY, enable_observer=False)
+    async_client = AsyncHumeClient(api_key=api_key)
+    await control_plane_demo(
+        async_client, active_chat.id, api_key, enable_observer=False
+    )
 
 
 async def main() -> None:
