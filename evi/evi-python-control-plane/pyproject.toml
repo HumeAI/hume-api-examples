@@ -5,7 +5,7 @@ description = "EVI Python control plane example"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-  "hume[microphone]>=0.13.2",
+  "hume[microphone]>=0.13.4",
   "python-dotenv>=1.0.1",
   "websockets>=12.0",
 ]

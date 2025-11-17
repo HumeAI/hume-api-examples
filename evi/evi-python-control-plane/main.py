@@ -81,12 +81,27 @@ async def observe_chat(api_key: str, chat_id: str, on_message_callback) -> None:
             print(f"[OBSERVER] Connected to Chat {chat_id} via control plane")
 
             # Receive messages: full history first, then live updates
-            async for message in websocket:
-                try:
-                    data = json.loads(message)
-                    await on_message_callback(data)
-                except json.JSONDecodeError:
-                    print(f"[OBSERVER] Failed to parse message: {message}")
+            try:
+                async for message in websocket:
+                    # Uncomment the line below for detailed raw websocket message logging
+                    # print(f"[OBSERVER] Received raw websocket message (length: {len(message)})")
+                    try:
+                        data = json.loads(message)
+                        await on_message_callback(data)
+                    except json.JSONDecodeError:
+                        print(f"[OBSERVER] Failed to parse message: {message}")
+                        print(
+                            f"[OBSERVER] Raw message (first 500 chars): {str(message)[:500]}"
+                        )
+            except asyncio.CancelledError:
+                print(f"[OBSERVER] Message receive loop cancelled")
+                raise
+            except Exception as e:
+                print(f"[OBSERVER] Error in message receive loop: {e}")
+                import traceback
+
+                traceback.print_exc()
+                raise
     except Exception as e:
         print(f"[OBSERVER] Observer connection error: {e}")
         raise
@@ -105,16 +120,34 @@ async def observer_message_handler(message: dict) -> None:
         print(
             f"[OBSERVER] Chat ID: {message.get('chat_id')}, Chat Group ID: {message.get('chat_group_id')}"
         )
+        # Uncomment the line below for full message details
+        # print(f"[OBSERVER] Full message: {json.dumps(message, indent=2)}")
     elif msg_type in ["user_message", "assistant_message"]:
         role = message.get("message", {}).get("role", "unknown").upper()
         content = message.get("message", {}).get("content", "")
         print(f"[OBSERVER] {role}: {content}")
+    elif msg_type == "audio_output":
+        # Audio output messages contain large base64-encoded data
+        # Only print a summary to avoid cluttering the terminal
+        data_length = len(message.get("data", ""))
+        is_final = message.get("is_final_chunk", False)
+        print(f"[OBSERVER] Audio output: {data_length} bytes, final_chunk={is_final}")
+        # Uncomment the line below to see full audio message (very verbose!)
+        # print(f"[OBSERVER] Full message: {json.dumps(message, indent=2)}")
+    elif msg_type in ["user_interruption", "assistant_end"]:
+        # These are expected message types, just acknowledge them silently
+        # Uncomment the line below to see these messages
+        # print(f"[OBSERVER] Received: {msg_type}")
+        pass
     elif msg_type == "error":
         error_code = message.get("code", "unknown")
         error_msg = message.get("message", "unknown error")
         print(f"[OBSERVER] Error ({error_code}): {error_msg}")
+        print(f"[OBSERVER] Full message: {json.dumps(message, indent=2)}")
     else:
-        print(f"[OBSERVER] <{msg_type}>")
+        print(f"[OBSERVER] Unknown message type: <{msg_type}>")
+        # Uncomment the line below for full message details
+        # print(f"[OBSERVER] Full message: {json.dumps(message, indent=2)}")
 
 
 async def control_plane_demo(
@@ -155,7 +188,7 @@ async def control_plane_demo(
     # secrets on the client. You can send any message type except `audio_input`.
     print("[CONTROL] Example 2: Sending user input message via control plane")
     user_input_message = UserInput(
-        text="Hello! This message was sent via the control plane API."
+        text="Hello! This message was sent via the control plane API - say it back to the user."
     )
     await send_control_message(client, chat_id, user_input_message)
 
@@ -230,27 +263,47 @@ async def main_new_chat() -> None:
             )
 
     # Establish the data plane connection (the reference Chat connection)
+    # Set allow_connection=True to enable observer connections via control plane
+    # Use connect() method directly (not connect_with_callbacks) to pass allow_connection parameter
     print("[DATA_PLANE] Connecting to EVI Chat (data plane)...")
-    async with client.empathic_voice.chat.connect_with_callbacks(
-        options=ChatConnectOptions(config_id=HUME_CONFIG_ID),
-        on_open=lambda: print("[DATA_PLANE] WebSocket connection opened."),
-        on_message=on_message,
-        on_close=lambda: print("[DATA_PLANE] WebSocket connection closed."),
-        on_error=lambda err: print(f"[DATA_PLANE] Error: {err}"),
+    print("[DATA_PLANE] Setting allow_connection=True to enable observer connections")
+
+    # Use connect() directly to pass allow_connection parameter (per PR #418)
+    # connect() returns a socket that we can use as an async context manager
+    # and iterate over messages with async for
+    async with client.empathic_voice.chat.connect(
+        config_id=HUME_CONFIG_ID,
+        allow_connection=True,
     ) as socket:
+        print("[DATA_PLANE] WebSocket connection opened.")
+
         print("[DATA_PLANE] Starting microphone interface...")
         print(
             "[DATA_PLANE] You can now speak to the assistant. The control plane will demonstrate:"
         )
-        print("[DATA_PLANE]   1. Sending messages to the active Chat")
-        print("[DATA_PLANE]   2. Updating session settings")
-        print("[DATA_PLANE]   3. Observing the Chat from a separate connection")
+        print("[DATA_PLANE]   1. Observing the Chat from a separate connection")
+        print("[DATA_PLANE]   2. Sending messages to the active Chat")
+        print("[DATA_PLANE]   3. Updating session settings")
         print("[DATA_PLANE] Press Ctrl+C to exit.")
 
-        await asyncio.create_task(
+        # Handle messages by iterating over the socket
+        # MicrophoneInterface.start() handles audio input/output in parallel
+        async def handle_messages():
+            try:
+                async for message in socket:
+                    await on_message(message)
+            except asyncio.CancelledError:
+                raise
+            except Exception as err:
+                print(f"[DATA_PLANE] Error receiving messages: {err}")
+                raise
+
+        # Run message handling and microphone interface concurrently
+        await asyncio.gather(
+            handle_messages(),
             MicrophoneInterface.start(
                 socket, allow_user_interrupt=False, byte_stream=stream
-            )
+            ),
         )
 
 
