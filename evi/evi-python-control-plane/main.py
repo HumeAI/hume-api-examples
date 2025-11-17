@@ -151,37 +151,40 @@ async def observer_message_handler(message: dict) -> None:
 
 
 async def control_plane_demo(
-    client: AsyncHumeClient, chat_id: str, api_key: str
+    client: AsyncHumeClient, chat_id: str, api_key: str, enable_observer: bool = True
 ) -> None:
     """Demonstrate control plane features: observing, sending messages, and updating settings.
 
-    This function showcases three main control plane capabilities:
-    1. Connecting as an observer to monitor the Chat in real-time
+    This function showcases control plane capabilities:
+    1. (Optional) Connecting as an observer to monitor the Chat in real-time
     2. Sending user input messages to an active Chat
     3. Updating session settings (e.g., system prompt, voice) for the current session
-
-    Args:
-        client: AsyncHumeClient instance for control plane operations
-        chat_id: The ID of the active Chat
-        api_key: Hume API key for the observer connection
     """
     # Wait for the Chat to be fully established
     await asyncio.sleep(2)
 
     print("[CONTROL] Starting control plane demonstrations...")
 
-    # Example 1: Connect to the Chat as an observer
-    # This demonstrates attaching a secondary connection to observe, analyze,
-    # or moderate a Chat session in real-time. The observer receives the full
-    # session history on connect, then streams new messages live.
-    # Starting it first ensures we can observe all subsequent control plane actions.
-    print("[CONTROL] Example 1: Connecting as observer to monitor the Chat")
-    observer_task = asyncio.create_task(
-        observe_chat(api_key, chat_id, observer_message_handler)
-    )
+    observer_task = None
+    if enable_observer:
+        # Example 1: Connect to the Chat as an observer
+        # This demonstrates attaching a secondary connection to observe, analyze,
+        # or moderate a Chat session in real-time. The observer receives the full
+        # session history on connect, then streams new messages live.
+        # Starting it first ensures we can observe all subsequent control plane actions.
+        # NOTE: This requires the chat to be started with allow_connection=true
+        print("[CONTROL] Example 1: Connecting as observer to monitor the Chat")
+        observer_task = asyncio.create_task(
+            observe_chat(api_key, chat_id, observer_message_handler)
+        )
 
-    # Give observer time to connect and receive initial history
-    await asyncio.sleep(3)
+        # Give observer time to connect and receive initial history
+        await asyncio.sleep(3)
+    else:
+        print(
+            "[CONTROL] Observer disabled (chat must be started with allow_connection=true)"
+        )
+        await asyncio.sleep(1)
 
     # Example 2: Send a user input message via control plane
     # This demonstrates posting messages to an active Chat without exposing
@@ -209,12 +212,13 @@ async def control_plane_demo(
     # Let the observer run for a while to demonstrate live monitoring
     await asyncio.sleep(15)
 
-    # Cancel the observer task (in a production app, you'd handle this more gracefully)
-    observer_task.cancel()
-    try:
-        await observer_task
-    except asyncio.CancelledError:
-        pass
+    # Cancel the observer task if it was started (in a production app, you'd handle this more gracefully)
+    if observer_task:
+        observer_task.cancel()
+        try:
+            await observer_task
+        except asyncio.CancelledError:
+            pass
 
     print("[CONTROL] Control plane demonstrations completed")
 
@@ -357,8 +361,8 @@ async def main_existing_chat() -> None:
     # Create async client for control plane operations
     async_client = AsyncHumeClient(api_key=HUME_API_KEY)
 
-    # Run control plane demo
-    await control_plane_demo(async_client, chat_id, HUME_API_KEY)
+    # Run control plane demo without observer (requires allow_connection=true)
+    await control_plane_demo(async_client, chat_id, HUME_API_KEY, enable_observer=False)
 
 
 async def main() -> None:
