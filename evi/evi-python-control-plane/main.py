@@ -120,12 +120,12 @@ async def observer_message_handler(message: dict) -> None:
 async def control_plane_demo(
     client: AsyncHumeClient, chat_id: str, api_key: str
 ) -> None:
-    """Demonstrate control plane features: sending messages and observing the Chat.
+    """Demonstrate control plane features: observing, sending messages, and updating settings.
 
     This function showcases three main control plane capabilities:
-    1. Sending user input messages to an active Chat
-    2. Updating session settings (e.g., system prompt, voice) for the current session
-    3. Connecting as an observer to monitor the Chat in real-time
+    1. Connecting as an observer to monitor the Chat in real-time
+    2. Sending user input messages to an active Chat
+    3. Updating session settings (e.g., system prompt, voice) for the current session
 
     Args:
         client: AsyncHumeClient instance for control plane operations
@@ -137,43 +137,44 @@ async def control_plane_demo(
 
     print("[CONTROL] Starting control plane demonstrations...")
 
-    # Example 1: Send a user input message via control plane
+    # Example 1: Connect to the Chat as an observer
+    # This demonstrates attaching a secondary connection to observe, analyze,
+    # or moderate a Chat session in real-time. The observer receives the full
+    # session history on connect, then streams new messages live.
+    # Starting it first ensures we can observe all subsequent control plane actions.
+    print("[CONTROL] Example 1: Connecting as observer to monitor the Chat")
+    observer_task = asyncio.create_task(
+        observe_chat(api_key, chat_id, observer_message_handler)
+    )
+
+    # Give observer time to connect and receive initial history
+    await asyncio.sleep(3)
+
+    # Example 2: Send a user input message via control plane
     # This demonstrates posting messages to an active Chat without exposing
     # secrets on the client. You can send any message type except `audio_input`.
-    print("[CONTROL] Example 1: Sending user input message via control plane")
+    print("[CONTROL] Example 2: Sending user input message via control plane")
     user_input_message = UserInput(
-        text="Hello! This message was sent via the control plane API - say it back to the user."
+        text="Hello! This message was sent via the control plane API."
     )
     await send_control_message(client, chat_id, user_input_message)
 
     # Wait before next example
     await asyncio.sleep(10)
 
-    # Example 2: Update session settings via control plane
+    # Example 3: Update session settings via control plane
     # This demonstrates updating session settings privately from a trusted backend.
     # Common use cases include setting supplemental LLM API keys or updating
     # system prompts without exposing secrets on the client.
-    print("[CONTROL] Example 2: Updating session settings via control plane")
+    print("[CONTROL] Example 3: Updating session settings via control plane")
     session_settings_message = SessionSettings(
         system_prompt="You are a helpful assistant. This system prompt was updated via the control plane API.",
         voice_id="ebba4902-69de-4e01-9846-d8feba5a1a3f",  # TikTok Fashion Influencer
     )
     await send_control_message(client, chat_id, session_settings_message)
 
-    # Wait before starting observer
-    await asyncio.sleep(2)
-
-    # Example 3: Connect to the Chat as an observer
-    # This demonstrates attaching a secondary connection to observe, analyze,
-    # or moderate a Chat session in real-time. The observer receives the full
-    # session history on connect, then streams new messages live.
-    print("[CONTROL] Example 3: Connecting as observer to monitor the Chat")
-    observer_task = asyncio.create_task(
-        observe_chat(api_key, chat_id, observer_message_handler)
-    )
-
     # Let the observer run for a while to demonstrate live monitoring
-    await asyncio.sleep(10)
+    await asyncio.sleep(15)
 
     # Cancel the observer task (in a production app, you'd handle this more gracefully)
     observer_task.cancel()
