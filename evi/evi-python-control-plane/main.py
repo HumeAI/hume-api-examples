@@ -352,12 +352,21 @@ async def main() -> None:
     parser = argparse.ArgumentParser(
         description="EVI Control Plane Example - Control and observe EVI chats"
     )
-    parser.add_argument(
-        "--mode",
-        type=str,
-        choices=["new", "existing"],
-        default="new",
-        help="Mode to run: 'new' creates a new chat with microphone, 'existing' connects to an active chat",
+
+    mode_group = parser.add_mutually_exclusive_group(required=True)
+    mode_group.add_argument(
+        "--new",
+        action="store_const",
+        dest="mode",
+        const="new",
+        help="Create a new chat with microphone",
+    )
+    mode_group.add_argument(
+        "--existing",
+        action="store_const",
+        dest="mode",
+        const="existing",
+        help="Connect to an existing active chat",
     )
 
     args = parser.parse_args()
