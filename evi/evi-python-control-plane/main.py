@@ -253,6 +253,25 @@ async def main_new_chat() -> None:
         )
 
 
+def evi_get_active_chats(client: HumeClient, config_id: str):
+    """List EVI chats and find the first active chat."""
+    # List EVI chats
+    response = client.empathic_voice.chats.list_chats(
+        page_number=0,
+        page_size=1,
+        ascending_order=True,
+        config_id=config_id,  # Filter by config_id
+    )
+
+    # Find the first active chat
+    # If you have multiple active chats for the same config, please change this to adapt
+    for item in response:
+        if hasattr(item, "status") and item.status == "ACTIVE":
+            return item
+
+    return None
+
+
 async def main_existing_chat() -> None:
     """Main function that finds an existing active chat and demonstrates control plane features.
 
@@ -270,9 +289,22 @@ async def main_existing_chat() -> None:
     if not HUME_CONFIG_ID:
         raise ValueError("HUME_CONFIG_ID environment variable is required")
 
-    # TODO: Implement finding and connecting to existing chat
-    print("[EXISTING] Mode: connecting to existing chat")
-    print("[EXISTING] TODO: Implement existing chat connection")
+    # Use synchronous client to find active chats
+    sync_client = HumeClient(api_key=HUME_API_KEY)
+    active_chat = evi_get_active_chats(sync_client, HUME_CONFIG_ID)
+
+    if not active_chat:
+        print("[EXISTING] No active chats found")
+        return
+
+    print(f"[EXISTING] Found active chat with ID: {active_chat.id}")
+    chat_id = active_chat.id
+
+    # Create async client for control plane operations
+    async_client = AsyncHumeClient(api_key=HUME_API_KEY)
+
+    # Run control plane demo
+    await control_plane_demo(async_client, chat_id, HUME_API_KEY)
 
 
 async def main() -> None:
