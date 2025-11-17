@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node -e \"if (!process.env.VITE_HUME_API_KEY) { console.error('Error: VITE_HUME_API_KEY environment variable is required'); process.exit(1); }\" && vite",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
