@@ -47,11 +47,15 @@ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/f
 
    ```json
    {
-     "evi_version": "2",
+     "evi_version": "3",
      "name": "Weather Assistant Config",
+     "voice": {
+      "name": "Male English Actor",
+      "provider": "HUME_AI"
+     },
      "language_model": {
        "model_provider": "ANTHROPIC",
-       "model_resource": "claude-3-7-sonnet-latest"
+       "model_resource": "claude-sonnet-4-5-20250929"
      },
      "tools": [
        {
@@ -64,15 +68,18 @@ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/f
    Sample cURL Request
 
    ```cURL
-   curl -X POST https://api.hume.ai/v0/evi/configs \
+   curl https://api.hume.ai/v0/evi/configs \
       -H "X-Hume-Api-Key: <YOUR_API_KEY>" \
-      -H "Content-Type: application/json" \
-      -d '{
-         "evi_version": "2",
+      --json '{
+         "evi_version": "3",
          "name": "Weather Assistant Config",
+         "voice": {
+            "name": "Male English Actor",
+            "provider": "HUME_AI"
+         },
          "language_model": {
             "model_provider": "ANTHROPIC",
-            "model_resource": "claude-3-7-sonnet-latest"
+            "model_resource": "claude-sonnet-4-5-20250929"
          },
          "tools": [
             {
