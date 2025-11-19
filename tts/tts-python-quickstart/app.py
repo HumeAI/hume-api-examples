@@ -11,7 +11,6 @@ from hume.tts import (
 )
 from hume.empathic_voice.chat.audio.audio_utilities import play_audio_streaming, play_audio
 from dotenv import load_dotenv
-from streaming import StreamingTtsClient
 
 load_dotenv()
 
@@ -120,39 +119,29 @@ async def example2():
 
 
 # Example 3: Bidirectional streaming
-# This example uses the StreamingTtsClient defined in streaming.py to
+# This example uses the SDK's stream_input.connect() method to
 # connect to the /v0/tts/stream/input endpoint.
-#
-# Native support in the Hume Python SDK is coming soon.
 async def example3():
     assert api_key, "HUME_API_KEY not found in environment variables."
-    stream = await StreamingTtsClient.connect(api_key)
-    
-    # Helper functions for flushing and closing the stream
-    def send_flush():
-        asyncio.create_task(stream._send_dict({"flush": True}))
+    async with hume.tts.stream_input.connect(version="1", no_binary=True, strip_headers=True) as stream:
+        async def send_input():
+            print("Sending TTS messages...")
+            await stream.send_publish(PublishTts(text="Hello", voice=PostedUtteranceVoiceWithName(name="Ava Song", provider="HUME_AI")))
+            await stream.send_publish(PublishTts(text=" world."))
+            # The whitespace             ^ is important
+            # Otherwise the model would see "Helloworld." and not "Hello world."
+            await stream.send_publish(PublishTts(flush=True))
+            print('Waiting 8 seconds...')
+            await asyncio.sleep(8)
+            await stream.send_publish(PublishTts(text="Goodbye, world."))
+            await stream.send_publish(PublishTts(flush=True))
+            print("Closing stream...")
+            await stream.send_publish(PublishTts(close=True))
 
-    def send_close():
-        asyncio.create_task(stream._send_dict({"close": True}))
+        async def handle_messages():
+            await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream)
 
-    async def send_input():
-        print("Sending TTS messages...")
-        stream.send(PublishTts(text="Hello"))
-        stream.send(PublishTts(text=" world."))
-        # The whitespace             ^ is important
-        # Otherwise the model would see "Helloworld." and not "Hello world."
-        send_flush()
-        print('Waiting 8 seconds...')
-        await asyncio.sleep(8)
-        stream.send(PublishTts(text="Goodbye, world."))
-        send_flush()
-        print("Closing stream...")
-        send_close()
-    
-    async def handle_messages():
-        await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream)
-    
-    await asyncio.gather(handle_messages(), send_input())
+        await asyncio.gather(handle_messages(), send_input())
 
 async def main():
     await example1()
