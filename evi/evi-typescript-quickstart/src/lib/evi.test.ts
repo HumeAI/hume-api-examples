@@ -50,7 +50,8 @@ describe( "connect to EVI", () =>
       await sleep( 2_000 );
 
       const socket = getSocket();
-      expect( socket?.readyState ).toBe( WebSocket.OPEN );
+      expect( socket?.readyState ).toBe( 1 );
+
     },
     5_000,
   );
