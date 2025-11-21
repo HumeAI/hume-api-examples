@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "dist": "link:/Users/twitchard/dev/hume-typescript-sdk/dist/",
-    "hume": "file:/Users/twitchard/dev/hume-typescript-sdk/hume-v0.13.9.tgz"
+    "dist": "^0.1.2",
+    "hume": "^0.15.6"
   },
   "devDependencies": {
     "@types/node": "^22.15.18",

@@ -33,6 +33,7 @@ Whether you're using Python, TypeScript, Flutter, or Next.js, there's something 
 | [`tts-python-livekit`](/tts/tts-python-livekit/README.md)                                  | Python     | LiveKit         |
 | [`tts-python-quickstart`](/tts/tts-python-quickstart/README.md)                            | Python     |                 |
 | [`tts-typescript-quickstart`](/tts/tts-typescript-quickstart/README.md)                    | TypeScript |                 |
+| [`tts-typescript-lipsync`](/tts/tts-typescript-lipsync/README.md)                          | TypeScript |                 |
 
 ## [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview)
 
