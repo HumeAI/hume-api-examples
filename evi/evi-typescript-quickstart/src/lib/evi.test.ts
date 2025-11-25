@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeAll } from "vitest";
 import { HumeClient } from "hume";
 import type { Hume } from "hume";
 
@@ -33,19 +33,87 @@ Object.defineProperty( globalThis, "document", {
 
 describe( "connect to EVI", () =>
 {
+  let chatId: string;
+  let getSocket: () => any;
+
+  const sessionSettings = {
+    systemPrompt: "You are a helpful assistant",
+    voiceId: "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c",
+    customSessionId: "my-custom-session-id",
+    eventLimit: 100,
+    audio: {
+      encoding: "linear16" as const,
+      sampleRate: 16000,
+      channels: 1,
+    },
+    context: {
+      text: "This is not your first conversation with the user, you'reve talked to them before",
+      type: "persistent" as const,
+    },
+    variables: {
+      userName: "John",
+      userAge: 30,
+      isPremium: true,
+    },
+  };
+
+  beforeAll( async () =>
+  {
+    await import( "../main" );
+
+    const connect = ( globalThis as any ).__connectEVI as ( sessionSettings?: any ) => void;
+    getSocket = ( globalThis as any ).__getEVISocket as () => any;
+
+    try
+    {
+      connect( sessionSettings );
+    } catch ( err )
+    {
+      throw new Error( `connect() threw an error: ${ err instanceof Error ? err.message : String( err ) }` );
+    }
+
+    await sleep( 100 );
+
+    const socket = getSocket();
+    if ( !socket )
+    {
+      throw new Error( "Socket was not created after connect(). This usually means connectEVI() threw an error (check console for details)." );
+    }
+
+    // Wait for socket to open
+    await new Promise<void>( ( resolve, reject ) =>
+    {
+      if ( socket.readyState === WebSocket.OPEN )
+      {
+        resolve();
+        return;
+      }
+
+      socket.on( "open", () =>
+      {
+        resolve();
+      } );
+
+      socket.on( "error", ( err ) =>
+      {
+        reject( err instanceof Error ? err : new Error( String( err ) ) );
+      } );
+
+      socket.on( "close", ( event ) =>
+      {
+        reject( new Error( `Socket closed before opening. Code: ${ ( event as any )?.code }, Reason: ${ ( event as any )?.reason }` ) );
+      } );
+    } );
+
+    chatId = await waitForChatMetadata( getSocket );
+    expect( typeof chatId ).toBe( "string" );
+    expect( chatId.length ).toBeGreaterThan( 0 );
+  } );
+
   it(
     "starts a chat, receives a chatId, and stays alive for 2 seconds",
     async () =>
     {
-      await import( "../main" );
-
-      const connect = ( globalThis as any ).__connectEVI as () => void;
-      const getSocket = ( globalThis as any ).__getEVISocket as () => any;
-
-      connect();
-
-      const chatId = await waitForChatMetadata( getSocket );
-
       expect( typeof chatId ).toBe( "string" );
       expect( chatId.length ).toBeGreaterThan( 0 );
 
@@ -53,7 +121,6 @@ describe( "connect to EVI", () =>
 
       const socket = getSocket();
       expect( socket?.readyState ).toBe( 1 );
-
     },
   );
 
@@ -61,85 +128,6 @@ describe( "connect to EVI", () =>
     "verifies sessionSettings are passed on connect()",
     async () =>
     {
-      await import( "../main" );
-
-      const connect = ( globalThis as any ).__connectEVI as ( sessionSettings?: any ) => void;
-      const disconnect = ( globalThis as any ).__disconnectEVI as () => void;
-      const getSocket = ( globalThis as any ).__getEVISocket as () => any;
-
-      // Disconnect any existing socket from previous tests
-      disconnect();
-      await sleep( 100 ); // Give socket time to fully close
-
-      const sessionSettings = {
-        systemPrompt: "you are a very kind person",
-        voiceId: "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c",
-        customSessionId: "my-custom-session-id",
-        eventLimit: 100,
-        audio: {
-          encoding: "linear16" as const,
-          sampleRate: 16000,
-          channels: 1,
-        },
-        context: {
-          text: "You are a helpful assistant.",
-          type: "persistent" as const,
-        },
-        variables: {
-          userName: "John",
-          userAge: 30,
-          isPremium: true,
-        },
-      };
-
-      try
-      {
-        connect( sessionSettings );
-      } catch ( err )
-      {
-        throw new Error( `connect() threw an error: ${ err instanceof Error ? err.message : String( err ) }` );
-      }
-
-      // Wait a bit for socket to be created
-      await sleep( 100 );
-
-      const socket = getSocket();
-      if ( !socket )
-      {
-        throw new Error( "Socket was not created after connect(). This usually means connectEVI() threw an error (check console for details)." );
-      }
-
-      // Wait for socket to open
-      await new Promise<void>( ( resolve, reject ) =>
-      {
-        if ( socket.readyState === WebSocket.OPEN )
-        {
-          resolve();
-          return;
-        }
-
-        socket.on( "open", () =>
-        {
-          resolve();
-        } );
-
-        socket.on( "error", ( err ) =>
-        {
-          reject( err instanceof Error ? err : new Error( String( err ) ) );
-        } );
-
-        socket.on( "close", ( event ) =>
-        {
-          reject( new Error( `Socket closed before opening. Code: ${ ( event as any )?.code }, Reason: ${ ( event as any )?.reason }` ) );
-        } );
-      } );
-
-      const chatId = await waitForChatMetadata( getSocket );
-      expect( typeof chatId ).toBe( "string" );
-      expect( chatId.length ).toBeGreaterThan( 0 );
-
-      await sleep( 500 );
-
       // List chat events
       const client = new HumeClient( { apiKey: process.env.TEST_HUME_API_KEY! } );
       const page = await client.empathicVoice.chats.listChatEvents( chatId, {
@@ -163,45 +151,44 @@ describe( "connect to EVI", () =>
 
       if ( sessionSettingsEvent?.messageText )
       {
-        const sessionSettings = JSON.parse( sessionSettingsEvent.messageText );
-        expect( sessionSettings.type ).toBe( "session_settings" );
+        const parsedSettings = JSON.parse( sessionSettingsEvent.messageText );
+        expect( parsedSettings.type ).toBe( "session_settings" );
 
         console.log( "  ✓ systemPrompt" );
-        expect( sessionSettings.system_prompt ).toBe( "you are a very kind person" );
+        expect( parsedSettings.system_prompt ).toBe( sessionSettings.systemPrompt );
 
         console.log( "  ✓ voiceId" );
-        expect( sessionSettings.voice_id ).toBe( "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c" );
+        expect( parsedSettings.voice_id ).toBe( sessionSettings.voiceId );
 
         console.log( "  ✓ customSessionId" );
-        expect( sessionSettings.custom_session_id ).toBe( "my-custom-session-id" );
+        expect( parsedSettings.custom_session_id ).toBe( sessionSettings.customSessionId );
 
         console.log( "  ✓ eventLimit" );
-        expect( sessionSettings.event_limit ).toBe( 100 );
+        expect( parsedSettings.event_limit ).toBe( sessionSettings.eventLimit );
 
         console.log( "  ✓ audio.encoding" );
-        expect( sessionSettings.audio ).toBeDefined();
-        expect( sessionSettings.audio.encoding ).toBe( "linear16" );
+        expect( parsedSettings.audio ).toBeDefined();
+        expect( parsedSettings.audio.encoding ).toBe( sessionSettings.audio.encoding );
         console.log( "  ✓ audio.sampleRate" );
-        expect( sessionSettings.audio.sample_rate ).toBe( 16000 );
+        expect( parsedSettings.audio.sample_rate ).toBe( sessionSettings.audio.sampleRate );
         console.log( "  ✓ audio.channels" );
-        expect( sessionSettings.audio.channels ).toBe( 1 );
+        expect( parsedSettings.audio.channels ).toBe( sessionSettings.audio.channels );
 
         console.log( "  ✓ context.text" );
-        expect( sessionSettings.context ).toBeDefined();
-        expect( sessionSettings.context.text ).toBe( "You are a helpful assistant." );
+        expect( parsedSettings.context ).toBeDefined();
+        expect( parsedSettings.context.text ).toBe( sessionSettings.context.text );
         console.log( "  ✓ context.type" );
-        expect( sessionSettings.context.type ).toBe( "persistent" );
+        expect( parsedSettings.context.type ).toBe( sessionSettings.context.type );
 
         console.log( "  ✓ variables.userName" );
-        expect( sessionSettings.variables ).toBeDefined();
-        expect( sessionSettings.variables.userName ).toBe( "John" );
+        expect( parsedSettings.variables ).toBeDefined();
+        // casting to string because all variables are saved as strings on the backend
+        expect( parsedSettings.variables.userName ).toBe( String( sessionSettings.variables.userName ) );
         console.log( "  ✓ variables.userAge" );
-        expect( sessionSettings.variables.userAge ).toBe( "30" );
+        expect( parsedSettings.variables.userAge ).toBe( String( sessionSettings.variables.userAge ) );
         console.log( "  ✓ variables.isPremium" );
-        expect( sessionSettings.variables.isPremium ).toBe( "true" );
+        expect( parsedSettings.variables.isPremium ).toBe( String( sessionSettings.variables.isPremium ) );
       }
-
-      socket.close();
     },
   );
 } );
