@@ -114,7 +114,29 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
         close: handleClose,
       };
 
-      socket = connectEVI( apiKey, handlers, configId );
+      socket = connectEVI( apiKey, handlers, configId, {
+        // You can pass in any of the session settings here. See the documentation for more details: https://dev.hume.ai/reference/speech-to-speech-evi/chat#request.query.session_settings
+        // 
+        // systemPrompt: "you are a very kind person",
+        // voiceId: "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c",
+        // customSessionId: "my-custom-session-id",
+        // eventLimit: 100,
+        // languageModelApiKey: "your-third-party-api-key",
+        // audio: {
+        //   encoding: "linear16",
+        //   sampleRate: 16000,
+        //   channels: 1,
+        // },
+        // context: {
+        //   text: "You are a helpful assistant.",
+        //   type: "persistent", // or "temporary"
+        // },
+        // variables: {
+        //   userName: "John",
+        //   userAge: 30,
+        //   isPremium: true,
+        // },
+      } );
     } catch ( err )
     {
       console.error( "Failed to connect EVI:", err );

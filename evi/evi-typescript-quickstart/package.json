@@ -10,7 +10,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"hume": "0.15.6"
+		"hume": "0.15.7"
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.18",
