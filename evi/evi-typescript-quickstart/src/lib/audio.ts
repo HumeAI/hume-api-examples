@@ -29,10 +29,12 @@ import type { Hume } from "hume";
  */
 export async function startAudioCapture(
   socket: Hume.empathicVoice.chat.ChatSocket,
-  timeSliceMs = 80
+  timeSliceMs = 80,
 ): Promise<MediaRecorder> {
   const mimeTypeResult = getBrowserSupportedMimeType();
-  const mimeType = mimeTypeResult.success ? mimeTypeResult.mimeType : MimeType.WEBM;
+  const mimeType = mimeTypeResult.success
+    ? mimeTypeResult.mimeType
+    : MimeType.WEBM;
 
   const micAudioStream = await getAudioStream();
   ensureSingleValidAudioTrack(micAudioStream);

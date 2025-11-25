@@ -36,7 +36,7 @@ export function connectEVI (
   apiKey: string,
   handlers: Hume.empathicVoice.chat.ChatSocket.EventHandlers,
   configId?: string,
-  sessionSettings?: Hume.empathicVoice.ConnectSessionSettings
+  sessionSettings?: Hume.empathicVoice.ConnectSessionSettings,
 ): Hume.empathicVoice.chat.ChatSocket
 {
   if ( !apiKey )
@@ -47,7 +47,7 @@ export function connectEVI (
   const client = getClient( apiKey );
   const socket = client.empathicVoice.chat.connect( {
     configId,
-    ...( sessionSettings && { sessionSettings } )
+    ...( sessionSettings && { sessionSettings } ),
   } );
 
   socket.on( "open", handlers.open );
