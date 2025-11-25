@@ -14,7 +14,7 @@ import { type Hume } from "hume";
  *          The `score` property is formatted as a string with exactly two decimal places.
  */
 function extractTopThreeEmotions(
-  message: Hume.empathicVoice.UserMessage | Hume.empathicVoice.AssistantMessage
+  message: Hume.empathicVoice.UserMessage | Hume.empathicVoice.AssistantMessage,
 ): { emotion: string; score: string }[] {
   const scores = message.models.prosody?.scores;
   const scoresArray = Object.entries(scores || {});
@@ -37,7 +37,7 @@ function extractTopThreeEmotions(
  */
 export function appendChatMessage(
   container: HTMLElement | null,
-  msg: Hume.empathicVoice.UserMessage | Hume.empathicVoice.AssistantMessage
+  msg: Hume.empathicVoice.UserMessage | Hume.empathicVoice.AssistantMessage,
 ): void {
   if (!container || !msg) return;
 

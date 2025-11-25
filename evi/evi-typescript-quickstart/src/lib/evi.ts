@@ -3,9 +3,11 @@ import type { Hume } from "hume";
 
 let client: HumeClient | null = null;
 
-function getClient(apiKey: string): HumeClient {
-  if (!client) {
-    client = new HumeClient({ apiKey });
+function getClient ( apiKey: string ): HumeClient
+{
+  if ( !client )
+  {
+    client = new HumeClient( { apiKey } );
   }
   return client;
 }
@@ -24,27 +26,34 @@ function getClient(apiKey: string): HumeClient {
  *                 - error:   Invoked on transport or protocol errors.
  *                 - close:   Invoked when the socket is closed.
  * @param configId (Optional) EVI configuration ID to apply; if omitted, default EVI configuration is used.
+ * @param sessionSettings (Optional) Session settings to apply at connection time (e.g., voiceId, audio settings, etc.).
  *
  * @returns The connected ChatSocket instance, ready for sending and receiving audio/text messages.
  *
  * @throws {Error} If `apiKey` is falsy or an empty string.
  */
-export function connectEVI(
+export function connectEVI (
   apiKey: string,
   handlers: Hume.empathicVoice.chat.ChatSocket.EventHandlers,
-  configId?: string
-): Hume.empathicVoice.chat.ChatSocket {
-  if (!apiKey) {
-    throw new Error("VITE_HUME_API_KEY is not set.");
+  configId?: string,
+  sessionSettings?: Hume.empathicVoice.ConnectSessionSettings,
+): Hume.empathicVoice.chat.ChatSocket
+{
+  if ( !apiKey )
+  {
+    throw new Error( "VITE_HUME_API_KEY is not set." );
   }
 
-  const client = getClient(apiKey);
-  const socket = client.empathicVoice.chat.connect({ configId });
+  const client = getClient( apiKey );
+  const socket = client.empathicVoice.chat.connect( {
+    configId,
+    ...( sessionSettings && { sessionSettings } ),
+  } );
 
-  socket.on("open", handlers.open);
-  socket.on("message", handlers.message);
-  socket.on("error", handlers.error);
-  socket.on("close", handlers.close);
+  socket.on( "open", handlers.open );
+  socket.on( "message", handlers.message );
+  socket.on( "error", handlers.error );
+  socket.on( "close", handlers.close );
 
   return socket;
 }
