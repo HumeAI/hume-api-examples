@@ -56,7 +56,6 @@ describe( "connect to EVI", () =>
       expect( socket?.readyState ).toBe( 1 );
 
     },
-    5_000,
   );
 
   it(
@@ -66,7 +65,6 @@ describe( "connect to EVI", () =>
       const apiKey = process.env.TEST_HUME_API_KEY!;
       const configId = process.env.TEST_HUME_CONFIG_ID;
 
-      // Connect directly with systemPrompt session settings
       let socketOpened = false;
       let socketError: Error | null = null;
       let closeEvent: { code?: number; reason?: string; } | null = null;
@@ -111,41 +109,32 @@ describe( "connect to EVI", () =>
         }
       );
 
-      // Wait for socket to open with timeout
+      // Wait for socket to open
       await new Promise<void>( ( resolve, reject ) =>
       {
-        // Check if already open
         if ( socket.readyState === WebSocket.OPEN || socketOpened )
         {
           resolve();
           return;
         }
 
-        const timeout = setTimeout( () =>
-        {
-          reject( new Error( `Socket did not open within 10 seconds. Socket state: ${ socket.readyState }, Error: ${ socketError?.message || "none" }, Close: ${ closeEvent ? `code=${ closeEvent.code }, reason=${ closeEvent.reason }` : "none" }` ) );
-        }, 10_000 );
-
         socket.on( "open", () =>
         {
-          clearTimeout( timeout );
           resolve();
         } );
 
         socket.on( "error", ( err ) =>
         {
-          clearTimeout( timeout );
           reject( err instanceof Error ? err : new Error( String( err ) ) );
         } );
 
         socket.on( "close", ( event ) =>
         {
-          clearTimeout( timeout );
           reject( new Error( `Socket closed before opening. Code: ${ ( event as any )?.code }, Reason: ${ ( event as any )?.reason }` ) );
         } );
       } );
 
-      const chatId = await waitForChatMetadata( () => socket, 10_000 );
+      const chatId = await waitForChatMetadata( () => socket );
       expect( typeof chatId ).toBe( "string" );
       expect( chatId.length ).toBeGreaterThan( 0 );
 
@@ -214,71 +203,45 @@ describe( "connect to EVI", () =>
 
       socket.close();
     },
-    15_000,
   );
 } );
 
 function waitForChatMetadata (
-  getSocket: () => any,
-  timeoutMs: number = 10_000
+  getSocket: () => any
 ): Promise<string>
 {
   return new Promise( ( resolve, reject ) =>
   {
-    let resolved = false;
-    const timeout = setTimeout( () =>
-    {
-      if ( !resolved )
-      {
-        resolved = true;
-        const socket = getSocket();
-        reject( new Error( `Timeout waiting for chat_metadata after ${ timeoutMs }ms. Socket state: ${ socket?.readyState }` ) );
-      }
-    }, timeoutMs );
-
     const attachListeners = () =>
     {
       const socket = getSocket();
 
       if ( !socket )
       {
-        clearTimeout( timeout );
         reject( new Error( "Socket is null" ) );
         return;
       }
 
       const onMessage = ( msg: any ) =>
       {
-        if ( !resolved && msg.type === "chat_metadata" && msg.chatId )
+        if ( msg.type === "chat_metadata" && msg.chatId )
         {
-          resolved = true;
-          clearTimeout( timeout );
           resolve( msg.chatId );
         }
       };
 
       const onError = ( err: any ) =>
       {
-        if ( !resolved )
-        {
-          resolved = true;
-          clearTimeout( timeout );
-          reject(
-            new Error(
-              `${ String( err ) }`,
-            ),
-          );
-        }
+        reject(
+          new Error(
+            `${ String( err ) }`,
+          ),
+        );
       };
 
       const onClose = ( event: any ) =>
       {
-        if ( !resolved )
-        {
-          resolved = true;
-          clearTimeout( timeout );
-          reject( new Error( `Socket closed while waiting for chat_metadata. Code: ${ event?.code }, Reason: ${ event?.reason }, Socket state: ${ socket.readyState }` ) );
-        }
+        reject( new Error( `Socket closed while waiting for chat_metadata. Code: ${ event?.code }, Reason: ${ event?.reason }, Socket state: ${ socket.readyState }` ) );
       };
 
       socket.on( "message", onMessage );
