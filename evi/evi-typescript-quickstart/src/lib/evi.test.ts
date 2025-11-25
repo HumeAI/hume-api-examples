@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { HumeClient } from "hume";
 import type { Hume } from "hume";
-import { connectEVI } from "./evi";
 
 // Mock audio dependencies (handleOpen calls these)
 vi.mock( "../lib/audio", () => ( {
@@ -62,57 +61,58 @@ describe( "connect to EVI", () =>
     "verifies sessionSettings are passed on connect()",
     async () =>
     {
-      const apiKey = process.env.TEST_HUME_API_KEY!;
-      const configId = process.env.TEST_HUME_CONFIG_ID;
+      await import( "../main" );
 
-      let socketOpened = false;
-      let socketError: Error | null = null;
-      let closeEvent: { code?: number; reason?: string; } | null = null;
+      const connect = ( globalThis as any ).__connectEVI as ( sessionSettings?: any ) => void;
+      const disconnect = ( globalThis as any ).__disconnectEVI as () => void;
+      const getSocket = ( globalThis as any ).__getEVISocket as () => any;
 
-      const socket = connectEVI(
-        apiKey,
-        {
-          open: () =>
-          {
-            socketOpened = true;
-          },
-          message: () => { },
-          error: ( err ) =>
-          {
-            socketError = err instanceof Error ? err : new Error( String( err ) );
-          },
-          close: ( event ) =>
-          {
-            closeEvent = { code: ( event as any )?.code, reason: ( event as any )?.reason };
-          },
+      // Disconnect any existing socket from previous tests
+      disconnect();
+      await sleep( 100 ); // Give socket time to fully close
+
+      const sessionSettings = {
+        systemPrompt: "you are a very kind person",
+        voiceId: "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c",
+        customSessionId: "my-custom-session-id",
+        eventLimit: 100,
+        audio: {
+          encoding: "linear16" as const,
+          sampleRate: 16000,
+          channels: 1,
         },
-        configId,
-        {
-          systemPrompt: "you are a very kind person",
-          voiceId: "5bb7de05-c8fe-426a-8fcc-ba4fc4ce9f9c",
-          customSessionId: "my-custom-session-id",
-          eventLimit: 100,
-          audio: {
-            encoding: "linear16",
-            sampleRate: 16000,
-            channels: 1,
-          },
-          context: {
-            text: "You are a helpful assistant.",
-            type: "persistent",
-          },
-          variables: {
-            userName: "John",
-            userAge: 30,
-            isPremium: true,
-          },
-        }
-      );
+        context: {
+          text: "You are a helpful assistant.",
+          type: "persistent" as const,
+        },
+        variables: {
+          userName: "John",
+          userAge: 30,
+          isPremium: true,
+        },
+      };
+
+      try
+      {
+        connect( sessionSettings );
+      } catch ( err )
+      {
+        throw new Error( `connect() threw an error: ${ err instanceof Error ? err.message : String( err ) }` );
+      }
+
+      // Wait a bit for socket to be created
+      await sleep( 100 );
+
+      const socket = getSocket();
+      if ( !socket )
+      {
+        throw new Error( "Socket was not created after connect(). This usually means connectEVI() threw an error (check console for details)." );
+      }
 
       // Wait for socket to open
       await new Promise<void>( ( resolve, reject ) =>
       {
-        if ( socket.readyState === WebSocket.OPEN || socketOpened )
+        if ( socket.readyState === WebSocket.OPEN )
         {
           resolve();
           return;
@@ -134,7 +134,7 @@ describe( "connect to EVI", () =>
         } );
       } );
 
-      const chatId = await waitForChatMetadata( () => socket );
+      const chatId = await waitForChatMetadata( getSocket );
       expect( typeof chatId ).toBe( "string" );
       expect( chatId.length ).toBeGreaterThan( 0 );
 
