@@ -45,7 +45,7 @@ describe("connect to EVI", () => {
       channels: 1,
     },
     context: {
-      text: "This is not your first conversation with the user, you'reve talked to them before",
+      text: "This is not your first conversation with the user, you've talked to them before",
       type: "persistent",
     },
     variables: {
