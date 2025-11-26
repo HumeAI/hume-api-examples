@@ -81,7 +81,7 @@ describe("connect to EVI", () => {
     await sleep(2_000);
 
     const socket = getSocket();
-    expect(socket?.readyState).toBe(WebSocket.OPEN);
+    expect(socket?.readyState).toBe(1); // WebSocket.OPEN = 1
   });
 
   it("verifies sessionSettings are passed on connect()", async () => {
@@ -160,7 +160,8 @@ describe("connect to EVI", () => {
 
 function waitForSocketOpen(socket: any): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (socket.readyState === WebSocket.OPEN) {
+    if (socket.readyState === 1) {
+      // WebSocket.OPEN = 1
       resolve();
       return;
     }
