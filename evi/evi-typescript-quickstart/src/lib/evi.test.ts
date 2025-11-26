@@ -87,12 +87,15 @@ describe("connect to EVI", () => {
   it("verifies sessionSettings are passed on connect()", async () => {
     const events = await fetchChatEvents(chatId);
     const sessionSettingsEvent = events.find(
-      (event) => event.type === "SESSION_SETTINGS",
+      (event) => (event.type as string) === "SESSION_SETTINGS",
     );
 
     expect(sessionSettingsEvent?.messageText).toBeDefined();
+    if (!sessionSettingsEvent?.messageText) {
+      throw new Error("sessionSettingsEvent.messageText is undefined");
+    }
 
-    const parsedSettings = JSON.parse(sessionSettingsEvent!.messageText);
+    const parsedSettings = JSON.parse(sessionSettingsEvent.messageText);
     expect(parsedSettings.type).toBe("session_settings");
 
     // Validate session settings
@@ -221,7 +224,11 @@ function waitForChatMetadata(getSocket: () => any): Promise<string> {
 async function fetchChatEvents(
   chatId: string,
 ): Promise<Hume.empathicVoice.ReturnChatEvent[]> {
-  const client = new HumeClient({ apiKey: process.env.TEST_HUME_API_KEY! });
+  const apiKey = process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
+  if (!apiKey) {
+    throw new Error("TEST_HUME_API_KEY or VITE_HUME_API_KEY must be set");
+  }
+  const client = new HumeClient({ apiKey });
   const page = await client.empathicVoice.chats.listChatEvents(chatId, {
     pageNumber: 0,
     ascendingOrder: true,
