@@ -5,7 +5,7 @@ export default defineConfig({
     "import.meta.env.VITE_HUME_API_KEY": JSON.stringify(
       process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY || "",
     ),
-    "import.meta.env.VITE_HUME_CONFIG_ID": "",
+    "import.meta.env.VITE_HUME_CONFIG_ID": JSON.stringify(""),
   },
   test: {
     environment: "node",

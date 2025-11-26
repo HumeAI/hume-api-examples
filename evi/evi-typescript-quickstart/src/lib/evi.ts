@@ -3,11 +3,9 @@ import type { Hume } from "hume";
 
 let client: HumeClient | null = null;
 
-function getClient ( apiKey: string ): HumeClient
-{
-  if ( !client )
-  {
-    client = new HumeClient( { apiKey } );
+function getClient(apiKey: string): HumeClient {
+  if (!client) {
+    client = new HumeClient({ apiKey });
   }
   return client;
 }
@@ -32,28 +30,26 @@ function getClient ( apiKey: string ): HumeClient
  *
  * @throws {Error} If `apiKey` is falsy or an empty string.
  */
-export function connectEVI (
+export function connectEVI(
   apiKey: string,
   handlers: Hume.empathicVoice.chat.ChatSocket.EventHandlers,
   configId?: string,
   sessionSettings?: Hume.empathicVoice.ConnectSessionSettings,
-): Hume.empathicVoice.chat.ChatSocket
-{
-  if ( !apiKey )
-  {
-    throw new Error( "VITE_HUME_API_KEY is not set." );
+): Hume.empathicVoice.chat.ChatSocket {
+  if (!apiKey) {
+    throw new Error("VITE_HUME_API_KEY is not set.");
   }
 
-  const client = getClient( apiKey );
-  const socket = client.empathicVoice.chat.connect( {
-    configId,
-    ...( sessionSettings && { sessionSettings } ),
-  } );
+  const client = getClient(apiKey);
+  const socket = client.empathicVoice.chat.connect({
+    ...(configId && { configId }),
+    ...(sessionSettings && { sessionSettings }),
+  });
 
-  socket.on( "open", handlers.open );
-  socket.on( "message", handlers.message );
-  socket.on( "error", handlers.error );
-  socket.on( "close", handlers.close );
+  socket.on("open", handlers.open);
+  socket.on("message", handlers.message);
+  socket.on("error", handlers.error);
+  socket.on("close", handlers.close);
 
   return socket;
 }
