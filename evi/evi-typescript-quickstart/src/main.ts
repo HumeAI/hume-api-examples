@@ -5,7 +5,7 @@ import { appendChatMessage, connectEVI, startAudioCapture } from "./lib";
 
 (async () => {
   const apiKey = import.meta.env.VITE_HUME_API_KEY!;
-  const configId = import.meta.env.VITE_HUME_CONFIG_ID || "";
+  const configId = import.meta.env.VITE_HUME_CONFIG_ID || undefined;
 
   // // Uncomment the lines below for Example 1: Voice Switching Mid-Chat
   // // Define two voice IDs to switch between
