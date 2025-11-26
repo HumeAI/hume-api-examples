@@ -22,7 +22,6 @@ class Program
     
     private static string? _apiKey;
     private static HumeClient? _client;
-    private static string? _outputDir;
 
     static async Task RunExamplesAsync()
     {
@@ -38,12 +37,6 @@ class Program
         }
 
         _client = new HumeClient(_apiKey);
-
-        // Create an output directory in the temporary folder
-        _outputDir = Path.Combine(Path.GetTempPath(), "hume-audio");
-        Directory.CreateDirectory(_outputDir);
-
-        Console.WriteLine($"Results will be written to {_outputDir}");
 
         await Example1Async();
         await Example2Async();
@@ -199,7 +192,7 @@ class Program
     {
         Console.WriteLine("Example 3: Bidirectional streaming...");
 
-        using var streamingTtsClient = new StreamingTtsClient(_apiKey!);
+        using var streamingTtsClient = new StreamingTtsClient(_apiKey!, enableDebugLogging: true);
         await streamingTtsClient.ConnectAsync();
 
         // Use buffered mode for bidirectional streaming to handle irregular chunk arrival timing
@@ -242,7 +235,6 @@ class Program
 
     /// <summary>
     /// Helper method to stream audio chunks from a TTS response to an audio player.
-    /// Handles SDK compatibility by working with both TtsOutput and OneOf types.
     /// </summary>
     private static async Task StreamAudioToPlayerAsync<T>(
         IAsyncEnumerable<T> snippetStream,
@@ -313,10 +305,12 @@ class Program
                 {
                     try
                     {
+                        int chunkCount = 0;
                         foreach (var audioBytes in _audioBuffer.GetConsumingEnumerable(_bufferCts.Token))
                         {
-                            if (_audioProcess?.StandardInput?.BaseStream != null)
+                            if (_audioProcess?.StandardInput?.BaseStream != null && !_audioProcess.HasExited)
                             {
+                                chunkCount++;
                                 await _audioProcess.StandardInput.BaseStream.WriteAsync(audioBytes, _bufferCts.Token);
                                 await _audioProcess.StandardInput.BaseStream.FlushAsync(_bufferCts.Token);
                             }
@@ -335,18 +329,24 @@ class Program
 
         public Task SendAudioAsync(byte[] audioBytes)
         {
-            if (!_isStreaming) return Task.CompletedTask;
+            if (!_isStreaming)
+            {
+                return Task.CompletedTask;
+            }
+
+            if (audioBytes.Length == 0)
+            {
+                return Task.CompletedTask;
+            }
 
             try
             {
                 if (_useBuffering && _audioBuffer != null)
                 {
-                    // Buffered mode: add to queue for background task to process
                     _audioBuffer.Add(audioBytes);
                 }
                 else if (_audioProcess?.HasExited == false)
                 {
-                    // Direct mode: write immediately to ffplay
                     _audioProcess?.StandardInput.BaseStream.Write(audioBytes, 0, audioBytes.Length);
                     _audioProcess?.StandardInput.BaseStream.Flush();
                 }
@@ -373,9 +373,11 @@ class Program
                     {
                         await _bufferTask;
                     }
+
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                 }
                 
-                // Close ffplay process
+                // Close ffplay process input stream - ffplay will finish playing all buffered audio then exit
                 if (_audioProcess != null && !_audioProcess.HasExited)
                 {
                     _audioProcess.StandardInput.Close();
@@ -456,15 +458,6 @@ class Program
     private static StreamingAudioPlayer StartAudioPlayer()
     {
         return new StreamingAudioPlayer();
-    }
-
-    private static async Task WriteResultToFile(string base64EncodedAudio, string filename, string outputDir)
-    {
-        var filePath = Path.Combine(outputDir, $"{filename}.wav");
-        // Decode the base64-encoded audio data
-        var audioData = Convert.FromBase64String(base64EncodedAudio);
-        await File.WriteAllBytesAsync(filePath, audioData);
-        Console.WriteLine($"Wrote {filePath}");
     }
 
 }
