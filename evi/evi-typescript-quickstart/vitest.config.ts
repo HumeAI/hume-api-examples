@@ -1,11 +1,13 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig } from 'vitest/config';
 
-export default defineConfig( {
+export default defineConfig({
   define: {
-    "import.meta.env.VITE_HUME_API_KEY": JSON.stringify( process.env.TEST_HUME_API_KEY || "" ),
+    'import.meta.env.VITE_HUME_API_KEY': JSON.stringify(
+      process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY || '',
+    ),
   },
   test: {
-    environment: "node",
-    testTimeout: 5_000,
+    environment: 'node',
+    testTimeout: 20_000,
   },
-} );
+});
