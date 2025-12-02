@@ -8,7 +8,8 @@ using Hume.EmpathicVoice;
 
 Env.Load();
 
-var apiKey = Environment.GetEnvironmentVariable("HUME_API_KEY")!;
+var apiKey = Environment.GetEnvironmentVariable("HUME_API_KEY")
+    ?? throw new InvalidOperationException("HUME_API_KEY environment variable is required. See README.md for setup instructions.");
 var client = new HumeClient(apiKey);
 
 // Create a signal to wait for Chat Metadata
