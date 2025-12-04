@@ -24,7 +24,7 @@ Visit the [API key page](https://platform.hume.ai/settings/keys) on the Hume Pla
 git clone https://github.com/humeai/hume-api-examples
 
 # 2. Navigate to this example project
-cd hume-api-examples/evi/evi-python-controlplane
+cd hume-api-examples/evi/evi-python-control-plane
 
 # 3. Rename .env.example to .env and paste your credentials
 # HUME_API_KEY=your_api_key_here
@@ -38,7 +38,7 @@ uv sync
 # In the Hume playground: https://platform.hume.ai/evi/playground
 # Or via a Phone call using Twilio webhook: https://dev.hume.ai/docs/integrations/twilio
 
-# Then run this to connect to the existing chat:
+# Then run this to connect to the existing chat -- you should see and hear the Control Plane actions from main.py (sending a message, changing the voice) occur shortly after connecting:
 uv run main.py --existing
 
 # 5.2.
