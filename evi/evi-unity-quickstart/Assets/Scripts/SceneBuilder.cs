@@ -53,17 +53,6 @@ public class SceneBuilder : MonoBehaviour
         // Store reference to text for updates
         visualFeedback.instructionText = textMesh;
 
-        // Add transcript display
-        GameObject transcriptObject = new GameObject("TranscriptText");
-        TextMesh transcriptMesh = transcriptObject.AddComponent<TextMesh>();
-        transcriptMesh.text = "";
-        transcriptMesh.fontSize = 16;
-        transcriptMesh.color = Color.white;
-        transcriptMesh.anchor = TextAnchor.MiddleCenter;
-        transcriptObject.transform.position = new Vector3(0, 2.5f, 0);
-        transcriptObject.transform.localScale = new Vector3(0.08f, 0.08f, 0.08f);
-        visualFeedback.transcriptText = transcriptMesh;
-
         // Ensure we have a camera
         Camera mainCamera = Camera.main;
         if (mainCamera == null)
@@ -93,7 +82,6 @@ public class ConversationVisualFeedback : MonoBehaviour
     private Material material;
 
     public TextMesh instructionText;
-    public TextMesh transcriptText;
 
     // State colors
     private readonly Color idleColor = Color.gray;
@@ -110,10 +98,6 @@ public class ConversationVisualFeedback : MonoBehaviour
     // Rotation
     private float baseSpinSpeed = 45f;
 
-    // Transcript display
-    private string lastUserMessage = "";
-    private string lastAssistantMessage = "";
-
     public void Initialize(HumeEVI eviComponent, Renderer renderer)
     {
         evi = eviComponent;
@@ -122,8 +106,6 @@ public class ConversationVisualFeedback : MonoBehaviour
 
         // Subscribe to EVI events
         evi.OnStateChanged += OnStateChanged;
-        evi.OnUserTranscript += OnUserTranscript;
-        evi.OnAssistantMessage += OnAssistantMessage;
     }
 
     void OnDestroy()
@@ -131,8 +113,6 @@ public class ConversationVisualFeedback : MonoBehaviour
         if (evi != null)
         {
             evi.OnStateChanged -= OnStateChanged;
-            evi.OnUserTranscript -= OnUserTranscript;
-            evi.OnAssistantMessage -= OnAssistantMessage;
         }
     }
 
@@ -225,44 +205,6 @@ public class ConversationVisualFeedback : MonoBehaviour
                 instructionText.color = speakingColor;
                 break;
         }
-    }
-
-    private void OnUserTranscript(string transcript)
-    {
-        lastUserMessage = transcript;
-        UpdateTranscriptDisplay();
-    }
-
-    private void OnAssistantMessage(string message)
-    {
-        lastAssistantMessage = message;
-        UpdateTranscriptDisplay();
-    }
-
-    private void UpdateTranscriptDisplay()
-    {
-        if (transcriptText == null) return;
-
-        string display = "";
-
-        if (!string.IsNullOrEmpty(lastUserMessage))
-        {
-            // Truncate long messages
-            string userMsg = lastUserMessage.Length > 80
-                ? lastUserMessage.Substring(0, 77) + "..."
-                : lastUserMessage;
-            display += $"<color=#88ff88>You: {userMsg}</color>\n";
-        }
-
-        if (!string.IsNullOrEmpty(lastAssistantMessage))
-        {
-            string assistantMsg = lastAssistantMessage.Length > 80
-                ? lastAssistantMessage.Substring(0, 77) + "..."
-                : lastAssistantMessage;
-            display += $"<color=#8888ff>EVI: {assistantMsg}</color>";
-        }
-
-        transcriptText.text = display;
     }
 }
 

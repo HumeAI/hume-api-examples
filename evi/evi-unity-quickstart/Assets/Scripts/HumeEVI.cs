@@ -36,8 +36,6 @@ public class HumeEVI : MonoBehaviour
     private const int StreamingClipLength = 48000 * 30; // 30 seconds buffer
 
     // Events for UI updates
-    public event Action<string> OnUserTranscript;
-    public event Action<string> OnAssistantMessage;
     public event Action OnConnectionStateChanged;
     public event Action<ConversationState> OnStateChanged;
 
@@ -219,31 +217,18 @@ public class HumeEVI : MonoBehaviour
         {
             var content = message.Message?.Content ?? "";
             Debug.Log($"Assistant: {content}");
-
-            // Use Unity's main thread for UI updates
-            UnityMainThreadDispatcher.Enqueue(() =>
-            {
-                OnAssistantMessage?.Invoke(content);
-            });
         });
 
         chatApi.UserMessage.Subscribe(message =>
         {
             var content = message.Message?.Content ?? "";
             Debug.Log($"User: {content}");
-
-            UnityMainThreadDispatcher.Enqueue(() =>
-            {
-                OnUserTranscript?.Invoke(content);
-            });
         });
 
         chatApi.AudioOutput.Subscribe(audio =>
         {
             if (!string.IsNullOrEmpty(audio.Data))
             {
-                Debug.Log($"Received audio chunk: {audio.Data.Length} base64 chars");
-
                 UnityMainThreadDispatcher.Enqueue(() =>
                 {
                     ProcessAudioOutput(audio.Data);
