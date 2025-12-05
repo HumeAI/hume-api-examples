@@ -43,7 +43,7 @@ public class SceneBuilder : MonoBehaviour
         // Add instruction text
         GameObject textObject = new GameObject("InstructionText");
         TextMesh textMesh = textObject.AddComponent<TextMesh>();
-        textMesh.text = "Click the cube to start a conversation!";
+        textMesh.text = "Tap to start a conversation!";
         textMesh.fontSize = 20;
         textMesh.color = Color.white;
         textMesh.anchor = TextAnchor.MiddleCenter;
@@ -64,8 +64,19 @@ public class SceneBuilder : MonoBehaviour
         transcriptObject.transform.localScale = new Vector3(0.08f, 0.08f, 0.08f);
         visualFeedback.transcriptText = transcriptMesh;
 
-        Camera.main.transform.position = new Vector3(0, 1, -5);
-        Camera.main.transform.LookAt(cube.transform);
+        // Ensure we have a camera
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            GameObject cameraObj = new GameObject("Main Camera");
+            mainCamera = cameraObj.AddComponent<Camera>();
+            cameraObj.tag = "MainCamera";
+            cameraObj.AddComponent<AudioListener>();
+            Debug.Log("Created Main Camera");
+        }
+
+        mainCamera.transform.position = new Vector3(0, 1, -5);
+        mainCamera.transform.LookAt(cube.transform);
 
         Debug.Log("Conversation Cube created! Click the cube to start a conversation with EVI.");
     }
@@ -134,6 +145,12 @@ public class ConversationVisualFeedback : MonoBehaviour
 
         // Animate color based on state
         AnimateColor();
+
+        // Update instruction text continuously for mic status (only in Listening state)
+        if (currentState == HumeEVI.ConversationState.Listening)
+        {
+            UpdateInstructionText();
+        }
     }
 
     private void AnimateColor()
@@ -184,7 +201,7 @@ public class ConversationVisualFeedback : MonoBehaviour
         switch (currentState)
         {
             case HumeEVI.ConversationState.Idle:
-                instructionText.text = "Click the cube to start a conversation!";
+                instructionText.text = "Tap to start a conversation!";
                 instructionText.color = Color.white;
                 break;
             case HumeEVI.ConversationState.Connecting:
@@ -192,11 +209,19 @@ public class ConversationVisualFeedback : MonoBehaviour
                 instructionText.color = connectingColor;
                 break;
             case HumeEVI.ConversationState.Listening:
-                instructionText.text = "Listening... (Click cube to stop)";
+                // Check if mic is actually active
+                if (evi != null && evi.IsMicrophoneActive)
+                {
+                    instructionText.text = "Listening... (Tap to stop)";
+                }
+                else
+                {
+                    instructionText.text = "Ready (Tap to stop)";
+                }
                 instructionText.color = listeningColor;
                 break;
             case HumeEVI.ConversationState.Speaking:
-                instructionText.text = "EVI is speaking... (Click cube to stop)";
+                instructionText.text = "EVI is speaking... (Tap to stop)";
                 instructionText.color = speakingColor;
                 break;
         }
@@ -242,7 +267,8 @@ public class ConversationVisualFeedback : MonoBehaviour
 }
 
 /// <summary>
-/// Handles click interaction to start/stop EVI conversation.
+/// Handles click/touch interaction to start/stop EVI conversation.
+/// Tap anywhere on screen to toggle conversation.
 /// </summary>
 public class ClickToConverse : MonoBehaviour
 {
@@ -253,9 +279,27 @@ public class ClickToConverse : MonoBehaviour
         evi = GetComponentInParent<HumeEVI>();
     }
 
-    void OnMouseDown()
+    void Update()
     {
-        Debug.Log("Cube clicked!");
+        // Handle touch input (mobile)
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                OnTap();
+            }
+        }
+        // Handle mouse input (editor/desktop)
+        else if (Input.GetMouseButtonDown(0))
+        {
+            OnTap();
+        }
+    }
+
+    private void OnTap()
+    {
+        Debug.Log("Screen tapped!");
         if (evi != null)
         {
             if (evi.IsConversationActive)

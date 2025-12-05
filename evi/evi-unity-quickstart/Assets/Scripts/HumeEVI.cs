@@ -28,9 +28,12 @@ public class HumeEVI : MonoBehaviour
     private const int ChunkDurationMs = 100; // Send audio every 100ms
     private float nextSendTime = 0f;
 
-    // Audio playback queue
-    private Queue<float[]> audioPlaybackQueue = new Queue<float[]>();
+    // Audio playback buffer - concatenate chunks for seamless playback
+    private List<float> audioBuffer = new List<float>();
     private bool isPlayingResponse = false;
+    private int playbackPosition = 0;
+    private AudioClip streamingClip;
+    private const int StreamingClipLength = 48000 * 30; // 30 seconds buffer
 
     // Events for UI updates
     public event Action<string> OnUserTranscript;
@@ -49,13 +52,17 @@ public class HumeEVI : MonoBehaviour
     public bool IsConnected => isConnected;
     public bool IsConversationActive => isConversationActive;
     public bool IsSpeaking => isSpeaking;
+    // IsMicrophoneActive indicates if we're actually capturing and sending audio
+    public bool IsMicrophoneActive => isRecording && isConnected && !IsPlayingAudio;
+    // IsPlayingAudio is true when audio is playing or buffered (used for turn-taking)
+    public bool IsPlayingAudio => isPlayingResponse || audioBuffer.Count > playbackPosition;
     public ConversationState CurrentState
     {
         get
         {
             if (!isConversationActive) return ConversationState.Idle;
             if (!isConnected) return ConversationState.Connecting;
-            if (isSpeaking) return ConversationState.Speaking;
+            if (IsPlayingAudio) return ConversationState.Speaking;
             return ConversationState.Listening;
         }
     }
@@ -67,17 +74,23 @@ public class HumeEVI : MonoBehaviour
 
     void Update()
     {
-        // Stream microphone audio while recording
-        if (isRecording && isConnected && Time.time >= nextSendTime)
+        // Stream microphone audio while recording, but NOT while audio is playing (turn-taking)
+        if (isRecording && isConnected && !IsPlayingAudio && Time.time >= nextSendTime)
         {
             SendMicrophoneAudio();
             nextSendTime = Time.time + (ChunkDurationMs / 1000f);
         }
 
-        // Process audio playback queue
-        if (!isPlayingResponse && audioPlaybackQueue.Count > 0)
+        // Start playback if we have buffered audio and not already playing
+        if (!isPlayingResponse && audioBuffer.Count > playbackPosition)
         {
-            PlayNextAudioChunk();
+            StartStreamingPlayback();
+        }
+
+        // Check if playback has finished
+        if (isPlayingResponse && audioSource != null && !audioSource.isPlaying)
+        {
+            OnPlaybackFinished();
         }
     }
 
@@ -154,7 +167,8 @@ public class HumeEVI : MonoBehaviour
         isConnected = false;
         isConversationActive = false;
         isSpeaking = false;
-        audioPlaybackQueue.Clear();
+        audioBuffer.Clear();
+        playbackPosition = 0;
 
         OnStateChanged?.Invoke(ConversationState.Idle);
         OnConnectionStateChanged?.Invoke();
@@ -248,7 +262,7 @@ public class HumeEVI : MonoBehaviour
             UnityMainThreadDispatcher.Enqueue(() =>
             {
                 isSpeaking = false;
-                OnStateChanged?.Invoke(ConversationState.Listening);
+                // State change will be triggered when audio playback actually finishes
             });
         });
     }
@@ -264,7 +278,8 @@ public class HumeEVI : MonoBehaviour
 
             if (audioData != null && audioData.Length > 0)
             {
-                audioPlaybackQueue.Enqueue(audioData);
+                // Append to buffer for seamless playback
+                audioBuffer.AddRange(audioData);
 
                 if (!isSpeaking)
                 {
@@ -279,39 +294,50 @@ public class HumeEVI : MonoBehaviour
         }
     }
 
-    private void PlayNextAudioChunk()
+    private void StartStreamingPlayback()
     {
-        if (audioPlaybackQueue.Count == 0)
+        if (audioBuffer.Count <= playbackPosition)
         {
-            isPlayingResponse = false;
             return;
         }
 
-        float[] audioData = audioPlaybackQueue.Dequeue();
+        // Get all available audio from current position
+        int samplesToPlay = audioBuffer.Count - playbackPosition;
+        float[] audioData = new float[samplesToPlay];
+        audioBuffer.CopyTo(playbackPosition, audioData, 0, samplesToPlay);
+        playbackPosition = audioBuffer.Count;
 
-        // Determine sample rate and channels from the audio (default to EVI standard)
-        int sampleRate = SampleRate;
-        int channels = Channels;
-
-        AudioClip clip = AudioClip.Create("EVIResponse", audioData.Length / channels, channels, sampleRate, false);
+        // Create and play clip
+        AudioClip clip = AudioClip.Create("EVIResponse", samplesToPlay / Channels, Channels, SampleRate, false);
         clip.SetData(audioData, 0);
 
         audioSource.clip = clip;
         audioSource.Play();
         isPlayingResponse = true;
-
-        // Schedule check for when playback completes
-        StartCoroutine(WaitForPlaybackComplete(clip.length));
     }
 
-    private System.Collections.IEnumerator WaitForPlaybackComplete(float duration)
+    private void OnPlaybackFinished()
     {
-        yield return new WaitForSeconds(duration);
-        isPlayingResponse = false;
-
-        // Check if there's more audio to play
-        if (audioPlaybackQueue.Count == 0 && !isSpeaking)
+        // Check if more audio arrived while we were playing
+        if (audioBuffer.Count > playbackPosition)
         {
+            // More audio available, play it
+            StartStreamingPlayback();
+        }
+        else
+        {
+            // No more audio, we're done
+            isPlayingResponse = false;
+
+            // Reset for next response
+            audioBuffer.Clear();
+            playbackPosition = 0;
+
+            // Reset mic position to avoid sending stale audio captured during playback
+            if (microphoneDevice != null && isRecording)
+            {
+                lastMicPosition = Microphone.GetPosition(microphoneDevice);
+            }
             OnStateChanged?.Invoke(ConversationState.Listening);
         }
     }
@@ -332,8 +358,25 @@ public class HumeEVI : MonoBehaviour
         // Start recording with a looping buffer
         microphoneClip = Microphone.Start(microphoneDevice, true, 1, SampleRate);
 
-        // Wait for microphone to start
-        while (Microphone.GetPosition(microphoneDevice) <= 0) { }
+        if (microphoneClip == null)
+        {
+            Debug.LogError("Failed to start microphone - Microphone.Start returned null");
+            return;
+        }
+
+        // Wait for microphone to start (with timeout)
+        int timeout = 100;
+        while (Microphone.GetPosition(microphoneDevice) <= 0 && timeout > 0)
+        {
+            timeout--;
+            System.Threading.Thread.Sleep(10);
+        }
+
+        if (timeout <= 0)
+        {
+            Debug.LogError("Microphone failed to start recording (timeout)");
+            return;
+        }
 
         isRecording = true;
         lastMicPosition = 0;
