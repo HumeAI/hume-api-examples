@@ -63,7 +63,10 @@ describe('TTS Stream Input', () => {
     const streamAfterWait = getStream();
     expect(streamAfterWait).toBe(stream); // Same instance
 
+    // Verify the stream is connected (readyState 1 = OPEN)
+    // If the connection failed (e.g., 401), readyState will be 3 (CLOSED)
     if ('readyState' in stream && typeof stream.readyState === 'number') {
+      // WebSocket states: 0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED
       expect(stream.readyState).toBe(1); // WebSocket.OPEN = 1
     }
   });
@@ -101,7 +104,7 @@ describe('TTS Stream Input', () => {
 
 function waitForStreamOpen(getStream: () => any): Promise<void> {
   return new Promise((resolve, reject) => {
-    const maxAttempts = 50;
+    const maxAttempts = 100; // Increased timeout for connection
     let attempts = 0;
 
     const checkStream = () => {
@@ -109,13 +112,42 @@ function waitForStreamOpen(getStream: () => any): Promise<void> {
       const stream = getStream();
 
       if (stream) {
-        // Stream exists, resolve
-        resolve();
-        return;
+        // Check if stream is actually open (readyState 1)
+        if ('readyState' in stream && typeof stream.readyState === 'number') {
+          if (stream.readyState === 1) {
+            // OPEN - connection successful
+            resolve();
+            return;
+          }
+          if (stream.readyState === 3) {
+            // CLOSED - connection failed
+            reject(
+              new Error(
+                'Stream connection failed (readyState=CLOSED). ' +
+                  'The stream was created but closed immediately, likely due to authentication failure.',
+              ),
+            );
+            return;
+          }
+          // CONNECTING (0) or CLOSING (2) - wait a bit more
+        } else {
+          // Stream exists but readyState not available
+          // Wait a bit more to ensure it's actually ready
+          if (attempts > 10) {
+            // After 1 second, assume it's ready if readyState isn't available
+            resolve();
+            return;
+          }
+        }
       }
 
       if (attempts >= maxAttempts) {
-        reject(new Error('Stream was not created within timeout'));
+        reject(
+          new Error(
+            `Stream was not opened within timeout (${maxAttempts * 100}ms). ` +
+              'Stream exists but readyState never became OPEN (1).',
+          ),
+        );
         return;
       }
 
