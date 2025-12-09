@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
-import { HumeClient } from "hume";
+import { HumeClient, fetchAccessToken } from "hume";
 import type { Hume } from "hume";
+import { config } from "dotenv";
+import { resolve } from "path";
+
+// Load .env file for local testing
+config({ path: resolve(process.cwd(), ".env") });
 
 // Mock audio dependencies (handleOpen calls these)
 vi.mock("../lib/audio", () => ({
@@ -30,7 +35,7 @@ Object.defineProperty(globalThis, "document", {
   configurable: true,
 });
 
-describe("connect to EVI", () => {
+describe("connect to EVI with API key", () => {
   let chatId: string;
   let getSocket: () => any;
 
@@ -155,6 +160,82 @@ describe("connect to EVI", () => {
     expect(parsedSettings.variables.isPremium).toBe(
       String(sessionSettings.variables.isPremium),
     );
+  });
+});
+
+describe("connect to EVI with Access Token", () => {
+  let chatId: string;
+  let getSocket: () => any;
+  let socket: any = null;
+
+  beforeAll(async () => {
+    // Use TEST_HUME_API_KEY for CI, VITE_HUME_API_KEY for local
+    const apiKey =
+      process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
+    // Use TEST_HUME_SECRET_KEY for CI, VITE_HUME_SECRET_KEY for local
+    const secretKey =
+      process.env.TEST_HUME_SECRET_KEY || process.env.VITE_HUME_SECRET_KEY;
+    if (!apiKey || !apiKey.trim()) {
+      throw new Error(
+        "API key is required. Set TEST_HUME_API_KEY (CI) or VITE_HUME_API_KEY (local).",
+      );
+    }
+    if (!secretKey || !secretKey.trim()) {
+      throw new Error(
+        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or VITE_HUME_SECRET_KEY (local).",
+      );
+    }
+
+    try {
+      let accessToken: string;
+      try {
+        accessToken = await fetchAccessToken({
+          apiKey: apiKey,
+          secretKey: secretKey,
+        });
+      } catch (fetchError) {
+        throw new Error(
+          `Failed to fetch access token. This usually means your API key and secret key don't match or are invalid. ` +
+            `Original error: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
+        );
+      }
+
+      const humeWithAccessToken = new HumeClient({
+        accessToken: accessToken,
+      });
+
+      socket = humeWithAccessToken.empathicVoice.chat.connect();
+
+      getSocket = () => socket;
+
+      if (!socket) {
+        throw new Error("Socket was not created");
+      }
+
+      await waitForSocketOpen(socket);
+      chatId = await waitForChatMetadata(getSocket);
+      expect(chatId).toBeTruthy();
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const errorDetails =
+        error instanceof Error && "cause" in error
+          ? ` Cause: ${JSON.stringify(error.cause)}`
+          : "";
+      throw new Error(
+        `Failed to fetch access token or connect: ${errorMessage}${errorDetails}. ` +
+          `API Key present: ${!!apiKey && apiKey.trim().length > 0}, Secret Key present: ${!!secretKey && secretKey.trim().length > 0}`,
+      );
+    }
+  });
+
+  it("starts a chat, receives a chatId, and stays alive for 2 seconds", async () => {
+    expect(chatId).toBeTruthy();
+
+    await sleep(2_000);
+
+    const socket = getSocket();
+    expect(socket?.readyState).toBe(1); // WebSocket.OPEN = 1
   });
 });
 
