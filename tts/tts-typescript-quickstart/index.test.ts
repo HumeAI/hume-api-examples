@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { fetchAccessToken, HumeClient } from 'hume';
 
 // Mock audio dependencies
 vi.mock('./audio_player', () => ({
@@ -30,7 +31,7 @@ vi.mock('hume', async () => {
   };
 });
 
-describe('TTS Stream Input', () => {
+describe('TTS Stream Input with API key', () => {
   let getStream: () => any;
 
   beforeAll(async () => {
@@ -99,6 +100,73 @@ describe('TTS Stream Input', () => {
     expect(firstChunk.type).toBe('audio');
     expect(firstChunk.audio).toBeDefined();
     expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
+  });
+});
+
+describe('TTS Stream Input with Access Token', () => {
+  let getStream: () => any;
+  let accessTokenStream: any = null;
+
+  beforeAll(async () => {
+    // Use TEST_HUME_API_KEY for CI, VITE_HUME_API_KEY for local
+    const apiKey =
+      process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
+    // Use TEST_HUME_SECRET_KEY for CI, VITE_HUME_SECRET_KEY for local
+    const secretKey =
+      process.env.TEST_HUME_SECRET_KEY || process.env.VITE_HUME_SECRET_KEY;
+    if (!apiKey) {
+      throw new Error(
+        'API key is required. Set TEST_HUME_API_KEY (CI) or VITE_HUME_API_KEY (local).',
+      );
+    }
+    if (!secretKey) {
+      throw new Error(
+        'Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or VITE_HUME_SECRET_KEY (local).',
+      );
+    }
+
+    const accessToken = await fetchAccessToken({
+      apiKey: apiKey,
+      secretKey: secretKey,
+    });
+
+    const humeWithAccessToken = new HumeClient({
+      accessToken: accessToken,
+    });
+
+    const stream = await humeWithAccessToken.tts.streamInput.connect({
+      accessToken: accessToken,
+      noBinary: true,
+      instantMode: true,
+      stripHeaders: true,
+    });
+
+    accessTokenStream = stream;
+    getStream = () => accessTokenStream;
+
+    await waitForStreamOpen(getStream);
+  });
+
+  it('creates a stream and connects successfully with access token', async () => {
+    const stream = getStream();
+    expect(stream).toBeTruthy();
+    expect(stream.sendPublish).toBeDefined();
+    expect(typeof stream.sendPublish).toBe('function');
+    expect(stream.on).toBeDefined();
+    expect(typeof stream.on).toBe('function');
+
+    await sleep(1_000);
+
+    // Verify the stream is still connected (not just defined)
+    const streamAfterWait = getStream();
+    expect(streamAfterWait).toBe(stream); // Same instance
+
+    // Verify the stream is connected (readyState 1 = OPEN)
+    // If the connection failed (e.g., 401), readyState will be 3 (CLOSED)
+    if ('readyState' in stream && typeof stream.readyState === 'number') {
+      // WebSocket states: 0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED
+      expect(stream.readyState).toBe(1); // WebSocket.OPEN = 1
+    }
   });
 });
 
