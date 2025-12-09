@@ -1,16 +1,10 @@
 import { HumeClient, createSilenceFiller } from 'hume';
-import dotenv from 'dotenv';
 import { startAudioPlayer } from './audio_player';
 
-dotenv.config();
-
-const apiKey = process.env.TEST_HUME_API_KEY || process.env.HUME_API_KEY;
-if (!apiKey) {
-  throw new Error('HUME_API_KEY or must be set');
-}
+const apiKey = import.meta.env.VITE_HUME_API_KEY!;
 
 const hume = new HumeClient({
-  apiKey: apiKey!,
+  apiKey: apiKey,
 });
 
 /** Example 1: Using a pre-existing voice.
@@ -160,7 +154,7 @@ let example3Stream: Awaited<
 
 const example3 = async () => {
   const stream = await hume.tts.streamInput.connect({
-    apiKey: apiKey!,
+    apiKey: apiKey,
     noBinary: true,
     instantMode: true,
     stripHeaders: true,
