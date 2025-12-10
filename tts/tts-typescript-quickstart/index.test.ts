@@ -78,7 +78,35 @@ describe('TTS JSON Stream', () => {
     humeClient = new HumeClient({ apiKey });
   });
 
-  it('generates JSON stream w/ Octave 1', async () => {
+  it('connects w/ access token, generates JSON stream', async () => {
+    const accessToken = await fetchAccessToken({
+      apiKey: apiKey,
+      secretKey: secretKey,
+    });
+
+    const humeWithAccessToken = new HumeClient({
+      accessToken: accessToken,
+    });
+
+    const stream = await humeWithAccessToken.tts.synthesizeJsonStreaming({
+      ...example1RequestParams,
+    });
+
+    const audioChunks: any[] = [];
+    for await (const chunk of stream) {
+      if (chunk.type === 'audio') {
+        audioChunks.push(chunk);
+      }
+    }
+
+    expect(audioChunks.length).toBeGreaterThan(0);
+    const firstChunk = audioChunks[0];
+    expect(firstChunk.type).toBe('audio');
+    expect(firstChunk.audio).toBeDefined();
+    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
+  });
+
+  it('connects w/ API key, generates JSON stream w/ Octave 1', async () => {
     const stream = await humeClient.tts.synthesizeJsonStreaming({
       ...example1RequestParams,
       version: '1',
@@ -98,7 +126,7 @@ describe('TTS JSON Stream', () => {
     expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
   });
 
-  it('generates JSON stream w/ Octave 2 w/ timestamps, receives timestamps', async () => {
+  it('connects w/ API key, generates JSON stream w/ Octave 2 w/ timestamps, receives timestamps', async () => {
     const stream = await humeClient.tts.synthesizeJsonStreaming({
       ...example1RequestParams,
       includeTimestampTypes: ['word', 'phoneme'],
