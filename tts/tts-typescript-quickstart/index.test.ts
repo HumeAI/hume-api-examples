@@ -1,6 +1,30 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { fetchAccessToken, HumeClient } from 'hume';
 
+let apiKey: string;
+let secretKey: string;
+
+beforeAll(() => {
+  const envApiKey =
+    process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
+  const envSecretKey =
+    process.env.TEST_HUME_SECRET_KEY || process.env.VITE_HUME_SECRET_KEY;
+
+  if (!envApiKey) {
+    throw new Error(
+      'API key is required. Set TEST_HUME_API_KEY (CI) or VITE_HUME_API_KEY (local).',
+    );
+  }
+  if (!envSecretKey) {
+    throw new Error(
+      'Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or VITE_HUME_SECRET_KEY (local).',
+    );
+  }
+
+  apiKey = envApiKey;
+  secretKey = envSecretKey;
+});
+
 // Mock audio dependencies
 vi.mock('./audio_player', () => ({
   startAudioPlayer: vi.fn(() => ({
@@ -29,6 +53,135 @@ vi.mock('hume', async () => {
       ),
     ),
   };
+});
+
+describe('TTS JSON Stream', () => {
+  let example1: () => Promise<void>;
+  let example1RequestParams: any;
+  let humeClient: HumeClient;
+
+  beforeAll(async () => {
+    await import('./index');
+    example1 = (globalThis as any).__example1 as () => Promise<void>;
+    example1RequestParams = (globalThis as any).__example1RequestParams;
+
+    if (!example1) {
+      throw new Error('Example 1 was not exported');
+    }
+
+    if (!example1RequestParams) {
+      throw new Error('example1RequestParams was not exported');
+    }
+
+    expect(typeof example1).toBe('function');
+
+    humeClient = new HumeClient({ apiKey });
+  });
+
+  it('connects w/ access token, generates JSON stream', async () => {
+    const accessToken = await fetchAccessToken({
+      apiKey: apiKey,
+      secretKey: secretKey,
+    });
+
+    const humeWithAccessToken = new HumeClient({
+      accessToken: accessToken,
+    });
+
+    const stream = await humeWithAccessToken.tts.synthesizeJsonStreaming({
+      ...example1RequestParams,
+    });
+
+    const audioChunks: any[] = [];
+    for await (const chunk of stream) {
+      if (chunk.type === 'audio') {
+        audioChunks.push(chunk);
+      }
+    }
+
+    expect(audioChunks.length).toBeGreaterThan(0);
+    const firstChunk = audioChunks[0];
+    expect(firstChunk.type).toBe('audio');
+    expect(firstChunk.audio).toBeDefined();
+    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
+  });
+
+  it('connects w/ API key, generates JSON stream w/ Octave 1', async () => {
+    const stream = await humeClient.tts.synthesizeJsonStreaming({
+      ...example1RequestParams,
+      version: '1',
+    });
+
+    const audioChunks: any[] = [];
+    for await (const chunk of stream) {
+      if (chunk.type === 'audio') {
+        audioChunks.push(chunk);
+      }
+    }
+
+    expect(audioChunks.length).toBeGreaterThan(0);
+    const firstChunk = audioChunks[0];
+    expect(firstChunk.type).toBe('audio');
+    expect(firstChunk.audio).toBeDefined();
+    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
+  });
+
+  it('connects w/ API key, generates JSON stream w/ Octave 2 w/ timestamps, receives timestamps', async () => {
+    const stream = await humeClient.tts.synthesizeJsonStreaming({
+      ...example1RequestParams,
+      includeTimestampTypes: ['word', 'phoneme'],
+      version: '2',
+    });
+
+    const audioChunks: any[] = [];
+    const timestampChunks: any[] = [];
+
+    for await (const chunk of stream) {
+      if (chunk.type === 'audio') {
+        audioChunks.push(chunk);
+      }
+      if (chunk.type === 'timestamp') {
+        timestampChunks.push(chunk);
+      }
+    }
+
+    expect(audioChunks.length).toBeGreaterThan(0);
+    expect(audioChunks[0].audio).toBeDefined();
+    expect(typeof audioChunks[0].audio).toBe('string'); // base64 encoded audio
+    expect(audioChunks[0].requestId).toBeDefined();
+    expect(audioChunks[0].generationId).toBeDefined();
+    expect(audioChunks[0].snippetId).toBeDefined();
+    expect(audioChunks[0].text).toBeDefined();
+    expect(audioChunks[0].chunkIndex).toBeDefined();
+    expect(audioChunks[0].audioFormat).toBeDefined();
+    expect(audioChunks[0].isLastChunk).toBeDefined();
+    expect(audioChunks[0].utteranceIndex).toBeDefined();
+
+    expect(timestampChunks.length).toBeGreaterThan(0);
+    expect(timestampChunks[0].requestId).toBeDefined();
+    expect(timestampChunks[0].generationId).toBeDefined();
+    expect(timestampChunks[0].snippetId).toBeDefined();
+    expect(timestampChunks[0].timestamp).toBeDefined();
+    expect(timestampChunks[0].timestamp.type).toBeDefined();
+    expect(timestampChunks[0].timestamp.text).toBeDefined();
+    expect(timestampChunks[0].timestamp.time).toBeDefined();
+    expect(timestampChunks[0].timestamp.time.begin).toBeDefined();
+    expect(timestampChunks[0].timestamp.time.end).toBeDefined();
+
+    // at least 1 word timestamp
+    expect(
+      timestampChunks.find((chunk) => {
+        return chunk.timestamp.type === 'word';
+      }),
+    ).toBeDefined();
+
+    // at least 1 phoneme timestamp
+    expect(
+      timestampChunks.find((chunk) => {
+        return chunk.timestamp.type === 'phoneme';
+      }),
+    ).toBeDefined();
+  });
 });
 
 describe('TTS Stream Input with API key', () => {
@@ -108,23 +261,6 @@ describe('TTS Stream Input with Access Token', () => {
   let accessTokenStream: any = null;
 
   beforeAll(async () => {
-    // Use TEST_HUME_API_KEY for CI, VITE_HUME_API_KEY for local
-    const apiKey =
-      process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
-    // Use TEST_HUME_SECRET_KEY for CI, VITE_HUME_SECRET_KEY for local
-    const secretKey =
-      process.env.TEST_HUME_SECRET_KEY || process.env.VITE_HUME_SECRET_KEY;
-    if (!apiKey) {
-      throw new Error(
-        'API key is required. Set TEST_HUME_API_KEY (CI) or VITE_HUME_API_KEY (local).',
-      );
-    }
-    if (!secretKey) {
-      throw new Error(
-        'Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or VITE_HUME_SECRET_KEY (local).',
-      );
-    }
-
     const accessToken = await fetchAccessToken({
       apiKey: apiKey,
       secretKey: secretKey,
