@@ -98,17 +98,61 @@ describe('TTS JSON Stream', () => {
     expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
   });
 
-  it('generates JSON stream with Octave 2', async () => {
+  it('generates JSON stream with Octave 2 with timestamps, receives timestamps', async () => {
     const stream = await humeClient.tts.synthesizeJsonStreaming({
       ...example1RequestParams,
+      includeTimestampTypes: ['word', 'phoneme'],
       version: '2',
     });
 
     const audioChunks: any[] = [];
+    const timestampChunks: any[] = [];
+    const allChunks: any[] = [];
+    const timestampsFromSnippets: any[] = [];
+
     for await (const chunk of stream) {
+      // Create a copy of the chunk with truncated audio if present
+      const loggedChunk: any = { ...chunk };
+      if (
+        chunk.type === 'audio' &&
+        'audio' in chunk &&
+        typeof chunk.audio === 'string'
+      ) {
+        loggedChunk.audio = `${chunk.audio.substring(0, 50)}... (truncated, length: ${chunk.audio.length})`;
+      }
+
+      // Check for timestamps in snippet property (for audio chunks)
+      if (chunk.type === 'audio' && 'snippet' in chunk && chunk.snippet) {
+        const snippet = (chunk as any).snippet;
+        if (snippet.timestamps && Array.isArray(snippet.timestamps)) {
+          timestampsFromSnippets.push(...snippet.timestamps);
+          // Log snippet without audio to see timestamps
+          const snippetCopy = { ...snippet };
+          delete snippetCopy.audio; // Remove audio from snippet for cleaner logging
+          loggedChunk.snippet = snippetCopy;
+        }
+      }
+
+      allChunks.push(loggedChunk);
+
       if (chunk.type === 'audio') {
         audioChunks.push(chunk);
       }
+      if (chunk.type === 'timestamp') {
+        timestampChunks.push(chunk);
+      }
+    }
+
+    console.log('All chunks received:', JSON.stringify(allChunks, null, 2));
+    console.log(
+      `Total chunks: ${allChunks.length}, Audio chunks: ${audioChunks.length}, Timestamp chunks: ${timestampChunks.length}, Timestamps from snippets: ${timestampsFromSnippets.length}`,
+    );
+
+    if (timestampsFromSnippets.length > 0) {
+      console.log(
+        'Timestamps found in snippet.timestamps:',
+        JSON.stringify(timestampsFromSnippets, null, 2),
+      );
     }
 
     expect(audioChunks.length).toBeGreaterThan(0);
