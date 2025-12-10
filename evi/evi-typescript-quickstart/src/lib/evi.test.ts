@@ -161,6 +161,47 @@ describe("connect to EVI with API key", () => {
       String(sessionSettings.variables.isPremium),
     );
   });
+
+  it("verifies sessionSettings can be updated after connect() as a message", async () => {
+    const updatedSessionSettings = {
+      systemPrompt:
+        "You are a helpful test assistant with updated system prompt",
+    };
+
+    const socket = getSocket();
+    if (!socket) {
+      throw new Error("Socket is not available");
+    }
+
+    socket.sendSessionSettings(updatedSessionSettings);
+
+    await sleep(1_000);
+
+    const events = await fetchChatEvents(chatId);
+    const sessionSettingsEvents = events.filter(
+      (event) => (event.type as string) === "SESSION_SETTINGS",
+    );
+
+    // Should have at least 2 SESSION_SETTINGS events (initial + updated)
+    expect(sessionSettingsEvents.length).toBeGreaterThanOrEqual(2);
+
+    // Get the most recent SESSION_SETTINGS event (the updated one)
+    const updatedSessionSettingsEvent =
+      sessionSettingsEvents[sessionSettingsEvents.length - 1];
+
+    expect(updatedSessionSettingsEvent?.messageText).toBeDefined();
+    if (!updatedSessionSettingsEvent?.messageText) {
+      throw new Error("updatedSessionSettingsEvent.messageText is undefined");
+    }
+
+    const parsedSettings = JSON.parse(updatedSessionSettingsEvent.messageText);
+    expect(parsedSettings.type).toBe("session_settings");
+
+    expect(parsedSettings.system_prompt).toBe(
+      updatedSessionSettings.systemPrompt,
+    );
+    console.log("  ✓ Updated systemPrompt received");
+  });
 });
 
 describe("connect to EVI with Access Token", () => {
