@@ -1,21 +1,28 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { fetchAccessToken, HumeClient } from 'hume';
 
+let apiKey: string;
+let secretKey: string;
+
 beforeAll(() => {
-  const apiKey = process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
-  const secretKey =
+  const envApiKey =
+    process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
+  const envSecretKey =
     process.env.TEST_HUME_SECRET_KEY || process.env.VITE_HUME_SECRET_KEY;
 
-  if (!apiKey) {
+  if (!envApiKey) {
     throw new Error(
       'API key is required. Set TEST_HUME_API_KEY (CI) or VITE_HUME_API_KEY (local).',
     );
   }
-  if (!secretKey) {
+  if (!envSecretKey) {
     throw new Error(
       'Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or VITE_HUME_SECRET_KEY (local).',
     );
   }
+
+  apiKey = envApiKey;
+  secretKey = envSecretKey;
 });
 
 // Mock audio dependencies
@@ -125,11 +132,6 @@ describe('TTS Stream Input with Access Token', () => {
   let accessTokenStream: any = null;
 
   beforeAll(async () => {
-    const apiKey =
-      process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
-    const secretKey =
-      process.env.TEST_HUME_SECRET_KEY || process.env.VITE_HUME_SECRET_KEY;
-
     const accessToken = await fetchAccessToken({
       apiKey: apiKey,
       secretKey: secretKey,
@@ -257,8 +259,6 @@ describe('Example 1: synthesizeJsonStreaming with version parameter', () => {
     expect(typeof example1).toBe('function');
 
     // Create a test hume client instance
-    const apiKey =
-      process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
     humeClient = new HumeClient({ apiKey });
   });
 
