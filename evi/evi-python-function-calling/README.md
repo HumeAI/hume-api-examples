@@ -144,7 +144,7 @@ It does not currently support Windows.
          -H "X-Hume-Api-Key: <YOUR_HUME_API_KEY>" \
          -H "Content-Type: application/json" \
          -d '{
-       "evi_version": "2",
+       "evi_version": "3",
        "name": "Weather Assistant Config",
        "voice": {
          "provider": "HUME_AI",
@@ -152,7 +152,7 @@ It does not currently support Windows.
        },
        "language_model": {
          "model_provider": "ANTHROPIC",
-         "model_resource": "claude-3-5-sonnet-20240620",
+         "model_resource": "claude-haiku-4-5-20251001",
          "temperature": 1
        },
        "tools": [
