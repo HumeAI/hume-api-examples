@@ -1,6 +1,23 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { fetchAccessToken, HumeClient } from 'hume';
 
+beforeAll(() => {
+  const apiKey = process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
+  const secretKey =
+    process.env.TEST_HUME_SECRET_KEY || process.env.VITE_HUME_SECRET_KEY;
+
+  if (!apiKey) {
+    throw new Error(
+      'API key is required. Set TEST_HUME_API_KEY (CI) or VITE_HUME_API_KEY (local).',
+    );
+  }
+  if (!secretKey) {
+    throw new Error(
+      'Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or VITE_HUME_SECRET_KEY (local).',
+    );
+  }
+});
+
 // Mock audio dependencies
 vi.mock('./audio_player', () => ({
   startAudioPlayer: vi.fn(() => ({
@@ -108,22 +125,10 @@ describe('TTS Stream Input with Access Token', () => {
   let accessTokenStream: any = null;
 
   beforeAll(async () => {
-    // Use TEST_HUME_API_KEY for CI, VITE_HUME_API_KEY for local
     const apiKey =
       process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
-    // Use TEST_HUME_SECRET_KEY for CI, VITE_HUME_SECRET_KEY for local
     const secretKey =
       process.env.TEST_HUME_SECRET_KEY || process.env.VITE_HUME_SECRET_KEY;
-    if (!apiKey) {
-      throw new Error(
-        'API key is required. Set TEST_HUME_API_KEY (CI) or VITE_HUME_API_KEY (local).',
-      );
-    }
-    if (!secretKey) {
-      throw new Error(
-        'Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or VITE_HUME_SECRET_KEY (local).',
-      );
-    }
 
     const accessToken = await fetchAccessToken({
       apiKey: apiKey,
@@ -228,3 +233,78 @@ function waitForStreamOpen(getStream: () => any): Promise<void> {
 
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+describe('Example 1: synthesizeJsonStreaming with version parameter', () => {
+  let example1: () => Promise<void>;
+  let example1RequestParams: any;
+  let humeClient: HumeClient;
+
+  beforeAll(async () => {
+    // Import the module to get the exported example1 and example1RequestParams
+    await import('./index');
+    example1 = (globalThis as any).__example1 as () => Promise<void>;
+    example1RequestParams = (globalThis as any).__example1RequestParams;
+
+    if (!example1) {
+      throw new Error('Example 1 was not exported');
+    }
+
+    if (!example1RequestParams) {
+      throw new Error('example1RequestParams was not exported');
+    }
+
+    // Verify example1 is a function
+    expect(typeof example1).toBe('function');
+
+    // Create a test hume client instance
+    const apiKey =
+      process.env.TEST_HUME_API_KEY || process.env.VITE_HUME_API_KEY;
+    humeClient = new HumeClient({ apiKey });
+  });
+
+  it('calls synthesizeJsonStreaming with version 1', async () => {
+    // Use example1RequestParams and add version 1
+    const stream = await humeClient.tts.synthesizeJsonStreaming({
+      ...example1RequestParams,
+      version: '1',
+    });
+
+    // Collect received audio chunks
+    const audioChunks: any[] = [];
+    for await (const chunk of stream) {
+      if (chunk.type === 'audio') {
+        audioChunks.push(chunk);
+      }
+    }
+
+    // Verify we received audio chunks
+    expect(audioChunks.length).toBeGreaterThan(0);
+    const firstChunk = audioChunks[0];
+    expect(firstChunk.type).toBe('audio');
+    expect(firstChunk.audio).toBeDefined();
+    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
+  });
+
+  it('calls synthesizeJsonStreaming with version 2', async () => {
+    // Use example1RequestParams and add version 2
+    const stream = await humeClient.tts.synthesizeJsonStreaming({
+      ...example1RequestParams,
+      version: '2',
+    });
+
+    // Collect received audio chunks
+    const audioChunks: any[] = [];
+    for await (const chunk of stream) {
+      if (chunk.type === 'audio') {
+        audioChunks.push(chunk);
+      }
+    }
+
+    // Verify we received audio chunks
+    expect(audioChunks.length).toBeGreaterThan(0);
+    const firstChunk = audioChunks[0];
+    expect(firstChunk.type).toBe('audio');
+    expect(firstChunk.audio).toBeDefined();
+    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
+  });
+});

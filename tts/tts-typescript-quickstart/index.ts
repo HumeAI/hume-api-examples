@@ -13,19 +13,21 @@ const hume = new HumeClient({
  * Hume's Voice Library, or specify `provider: 'CUSTOM_VOICE'` to use a voice that
  * you created previously via the Hume Platform or the API.
  * */
-const example1 = async () => {
-  const utterance = {
-    text: 'Dogs became domesticated between 23,000 and 30,000 years ago.',
-    voice: { name: 'Ava Song', provider: 'HUME_AI' as const },
-  };
+const utterance = {
+  text: 'Dogs became domesticated between 23,000 and 30,000 years ago.',
+  voice: { name: 'Ava Song', provider: 'HUME_AI' as const },
+};
 
-  const stream = await hume.tts.synthesizeJsonStreaming({
-    utterances: [utterance],
-    // With `stripHeaders: true`, only the first audio chunk will contain
-    // headers in container formats (wav, mp3). This allows you to start a
-    // single audio player and stream all audio chunks to it without artifacts.
-    stripHeaders: true,
-  });
+const example1RequestParams = {
+  utterances: [utterance],
+  // With `stripHeaders: true`, only the first audio chunk will contain
+  // headers in container formats (wav, mp3). This allows you to start a
+  // single audio player and stream all audio chunks to it without artifacts.
+  stripHeaders: true,
+};
+
+const example1 = async () => {
+  const stream = await hume.tts.synthesizeJsonStreaming(example1RequestParams);
 
   const audioPlayer = startAudioPlayer();
   console.log('Example 1: Synthesizing audio using a pre-existing voice...');
@@ -211,6 +213,8 @@ if (
     process.env.NODE_ENV === 'test' ||
     process.env.VITE_TEST)
 ) {
+  (globalThis as any).__example1 = example1;
+  (globalThis as any).__example1RequestParams = example1RequestParams;
   (globalThis as any).__example3 = example3;
   (globalThis as any).__getExample3Stream = () => example3Stream;
 }
