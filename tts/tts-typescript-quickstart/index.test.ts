@@ -55,6 +55,70 @@ vi.mock('hume', async () => {
   };
 });
 
+describe('TTS JSON Stream', () => {
+  let example1: () => Promise<void>;
+  let example1RequestParams: any;
+  let humeClient: HumeClient;
+
+  beforeAll(async () => {
+    await import('./index');
+    example1 = (globalThis as any).__example1 as () => Promise<void>;
+    example1RequestParams = (globalThis as any).__example1RequestParams;
+
+    if (!example1) {
+      throw new Error('Example 1 was not exported');
+    }
+
+    if (!example1RequestParams) {
+      throw new Error('example1RequestParams was not exported');
+    }
+
+    expect(typeof example1).toBe('function');
+
+    humeClient = new HumeClient({ apiKey });
+  });
+
+  it('generates JSON stream with Octave 1', async () => {
+    const stream = await humeClient.tts.synthesizeJsonStreaming({
+      ...example1RequestParams,
+      version: '1',
+    });
+
+    const audioChunks: any[] = [];
+    for await (const chunk of stream) {
+      if (chunk.type === 'audio') {
+        audioChunks.push(chunk);
+      }
+    }
+
+    expect(audioChunks.length).toBeGreaterThan(0);
+    const firstChunk = audioChunks[0];
+    expect(firstChunk.type).toBe('audio');
+    expect(firstChunk.audio).toBeDefined();
+    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
+  });
+
+  it('generates JSON stream with Octave 2', async () => {
+    const stream = await humeClient.tts.synthesizeJsonStreaming({
+      ...example1RequestParams,
+      version: '2',
+    });
+
+    const audioChunks: any[] = [];
+    for await (const chunk of stream) {
+      if (chunk.type === 'audio') {
+        audioChunks.push(chunk);
+      }
+    }
+
+    expect(audioChunks.length).toBeGreaterThan(0);
+    const firstChunk = audioChunks[0];
+    expect(firstChunk.type).toBe('audio');
+    expect(firstChunk.audio).toBeDefined();
+    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
+  });
+});
+
 describe('TTS Stream Input with API key', () => {
   let getStream: () => any;
 
@@ -235,76 +299,3 @@ function waitForStreamOpen(getStream: () => any): Promise<void> {
 
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
-
-describe('Example 1: synthesizeJsonStreaming with version parameter', () => {
-  let example1: () => Promise<void>;
-  let example1RequestParams: any;
-  let humeClient: HumeClient;
-
-  beforeAll(async () => {
-    // Import the module to get the exported example1 and example1RequestParams
-    await import('./index');
-    example1 = (globalThis as any).__example1 as () => Promise<void>;
-    example1RequestParams = (globalThis as any).__example1RequestParams;
-
-    if (!example1) {
-      throw new Error('Example 1 was not exported');
-    }
-
-    if (!example1RequestParams) {
-      throw new Error('example1RequestParams was not exported');
-    }
-
-    // Verify example1 is a function
-    expect(typeof example1).toBe('function');
-
-    // Create a test hume client instance
-    humeClient = new HumeClient({ apiKey });
-  });
-
-  it('calls synthesizeJsonStreaming with version 1', async () => {
-    // Use example1RequestParams and add version 1
-    const stream = await humeClient.tts.synthesizeJsonStreaming({
-      ...example1RequestParams,
-      version: '1',
-    });
-
-    // Collect received audio chunks
-    const audioChunks: any[] = [];
-    for await (const chunk of stream) {
-      if (chunk.type === 'audio') {
-        audioChunks.push(chunk);
-      }
-    }
-
-    // Verify we received audio chunks
-    expect(audioChunks.length).toBeGreaterThan(0);
-    const firstChunk = audioChunks[0];
-    expect(firstChunk.type).toBe('audio');
-    expect(firstChunk.audio).toBeDefined();
-    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
-  });
-
-  it('calls synthesizeJsonStreaming with version 2', async () => {
-    // Use example1RequestParams and add version 2
-    const stream = await humeClient.tts.synthesizeJsonStreaming({
-      ...example1RequestParams,
-      version: '2',
-    });
-
-    // Collect received audio chunks
-    const audioChunks: any[] = [];
-    for await (const chunk of stream) {
-      if (chunk.type === 'audio') {
-        audioChunks.push(chunk);
-      }
-    }
-
-    // Verify we received audio chunks
-    expect(audioChunks.length).toBeGreaterThan(0);
-    const firstChunk = audioChunks[0];
-    expect(firstChunk.type).toBe('audio');
-    expect(firstChunk.audio).toBeDefined();
-    expect(typeof firstChunk.audio).toBe('string'); // base64 encoded audio
-  });
-});
