@@ -31,7 +31,6 @@ hume = AsyncHumeClient(api_key=api_key)
 # Hume's Voice Library, or specify `provider: 'CUSTOM_VOICE'` to use a voice that
 # you created previously via the Hume Platform or the API.
 
-# Define utterance and request params at module level for testing
 utterance = PostedUtterance(
     text="Dogs became domesticated between 23,000 and 30,000 years ago.",
     voice=PostedUtteranceVoiceWithName(name="Ava Song", provider="HUME_AI"),

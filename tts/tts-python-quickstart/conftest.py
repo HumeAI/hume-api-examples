@@ -24,12 +24,3 @@ def pytest_collection_modifyitems(config, items):
             # Modify the nodeid to show description prominently
             # Format: file::function_name [description]
             item._nodeid = f"{item.nodeid} [{docstring_first_line}]"
-
-
-def pytest_report_teststatus(report, config):
-    """
-    Customize test status reporting to show descriptions in a cleaner format.
-    """
-    # This hook allows us to customize how test status is reported
-    # The nodeid modification in pytest_collection_modifyitems handles the display
-    pass
