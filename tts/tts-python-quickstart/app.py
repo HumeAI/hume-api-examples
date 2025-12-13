@@ -18,9 +18,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize the Hume client
-api_key = os.getenv("HUME_API_KEY")
+api_key = os.getenv("TEST_HUME_API_KEY") or os.getenv("HUME_API_KEY")
 if not api_key:
-    raise EnvironmentError("HUME_API_KEY not found in environment variables.")
+    raise EnvironmentError("HUME_API_KEY or TEST_HUME_API_KEY not found in environment variables.")
 
 hume = AsyncHumeClient(api_key=api_key)
 
@@ -133,7 +133,7 @@ async def example2():
 # This example uses the SDK's stream_input.connect() method to
 # connect to the /v0/tts/stream/input endpoint.
 async def example3():
-    assert api_key, "HUME_API_KEY not found in environment variables."
+    assert api_key, "HUME_API_KEY or TEST_HUME_API_KEY not found in environment variables."
     async with hume.tts.stream_input.connect(version="1", no_binary=True, strip_headers=True) as stream:
 
         async def send_input():
