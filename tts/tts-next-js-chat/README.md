@@ -16,7 +16,7 @@ This project demonstrates how to build a basic streaming conversational interfac
 In addition to demonstrating how to implement TTS streaming for real-time use cases, this project also demonstrates how to:
 
 1. Consume Hume TTS APIs in the browser without exposing your Hume API key (via Next.js backend).
-2. How to fetch voices from Hume's [Voice Library](https://platform.hume.ai/tts/voice-library), as well as your own `Custom Voices`, to be listed in your UI.
+2. How to fetch voices from Hume's [Voice Library](https://app.hume.ai/voices), as well as your own `Custom Voices`, to be listed in your UI.
 
 ## Instructions
 

@@ -263,7 +263,7 @@ class TTSModel: ObservableObject {
       text: text,
       voice: .postedUtteranceVoiceWithId(
         PostedUtteranceVoiceWithId(
-          // Replace with your own custom voice ID (`.custom`) or existing voice from the [Voice Library](https://platform.hume.ai/tts/voice-library) (`.humeAi`)
+          // Replace with your own custom voice ID (`.custom`) or existing voice from the [Voice Library](https://app.hume.ai/voices) (`.humeAi`)
           id: "7f633ac4-8181-4e0d-99e1-11a4ef033691",
           provider: .humeAi))
     )

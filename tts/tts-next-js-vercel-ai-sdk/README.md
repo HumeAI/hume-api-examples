@@ -9,7 +9,7 @@
 
 This example showcases how to use the [Vercel AI SDK](https://ai-sdk.dev/) to implement [Hume’s Expressive TTS](https://dev.hume.ai/docs/text-to-speech-tts/overview) in a [Next.js](https://nextjs.org/docs) application. The UI consists of a straightforward form—enter text, add acting instructions, choose a voice—and a scrollable gallery of native HTML audio players for each generated clip.
 
-Additionally, this project showcases how to utilize Next.js [Server Actions](https://nextjs.org/docs/13/app/api-reference/functions/server-actions) to securely invoke Hume's TTS API, ensuring that your HUME_API_KEY remains on the server and is not exposed to the browser. It also demonstrates fetching voices from Hume's Hume's [Voice Library](https://platform.hume.ai/tts/voice-library) to populate the UI, using Hume's [TypeScript SDK](https://github.com/HumeAI/hume-typescript-sdk).
+Additionally, this project showcases how to utilize Next.js [Server Actions](https://nextjs.org/docs/13/app/api-reference/functions/server-actions) to securely invoke Hume's TTS API, ensuring that your HUME_API_KEY remains on the server and is not exposed to the browser. It also demonstrates fetching voices from Hume's Hume's [Voice Library](https://app.hume.ai/voices) to populate the UI, using Hume's [TypeScript SDK](https://github.com/HumeAI/hume-typescript-sdk).
 
 ## Instructions
 
