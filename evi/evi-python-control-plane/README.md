@@ -17,7 +17,7 @@ This example uses Hume's [Python SDK](https://github.com/HumeAI/hume-python-sdk)
 
 ## Quickstart
 
-Visit the [API key page](https://app.hume.ai/keys) on the Hume Platform to retrieve your API key, then [create a configuration](https://platform.hume.ai/evi/configs) and copy its config ID.
+Visit the [API key page](https://app.hume.ai/keys) on the Hume Platform to retrieve your API key, then [create a configuration](https://app.hume.ai/evi/configs) and copy its config ID.
 
 ```shell
 # 1. Clone the examples repo
@@ -35,7 +35,7 @@ uv sync
 
 # 5.1.
 # Start an EVI chat elsewhere:
-# In the Hume playground: https://platform.hume.ai/evi/playground
+# In the Hume playground: https://app.hume.ai/evi/playground
 # Or via a Phone call using Twilio webhook: https://dev.hume.ai/docs/integrations/twilio
 
 # Then run this to connect to the existing chat -- you should see and hear the Control Plane actions from main.py (sending a message, changing the voice) occur shortly after connecting:

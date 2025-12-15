@@ -28,7 +28,7 @@ When you run the script, it will:
 2. Set up an [ngrok](https://ngrok.com/) account and add a auth token via terminal:
    `ngrok config add-authtoken YOUR_NGROK_TOKEN`
 3. Set up a [Twilio](https://www.twilio.com/) phone number ("Buy a number")
-4. In Hume AI dashboard, go to [Tools](https://platform.hume.ai/evi/tools) and create a new tool called `supportAssistant`. Enter the following JSON under Parameters:
+4. In Hume AI dashboard, go to [Tools](https://app.hume.ai/evi/tools) and create a new tool called `supportAssistant`. Enter the following JSON under Parameters:
 
 ```
 {
@@ -43,7 +43,7 @@ When you run the script, it will:
 }
 ```
 
-5. In Hume AI dashboard, [create a new config](https://platform.hume.ai/evi/configs) and add the tool from step 4 to that config. Now change the system prompt to the following (note how we're introducing the `{{name}}` variable in the prompt):
+5. In Hume AI dashboard, [create a new config](https://app.hume.ai/evi/configs) and add the tool from step 4 to that config. Now change the system prompt to the following (note how we're introducing the `{{name}}` variable in the prompt):
 
 ```
 You are "Support Agent," the AI voice agent for Hume AI,
