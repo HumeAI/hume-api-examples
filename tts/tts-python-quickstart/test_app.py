@@ -5,6 +5,7 @@ import asyncio
 import os
 import pytest
 import time
+from unittest.mock import AsyncMock, patch
 from dotenv import load_dotenv
 from hume import AsyncHumeClient
 from hume.tts import PublishTts, PostedUtteranceVoiceWithName
@@ -12,6 +13,93 @@ from hume.tts import PublishTts, PostedUtteranceVoiceWithName
 from app import example1_request_params
 
 load_dotenv()
+
+
+# =============================================================================
+# Tests for actual app.py TTS examples (goal: catch breaking changes in examples)
+# =============================================================================
+
+
+@pytest.mark.asyncio
+async def test_example1_runs_successfully():
+    """
+    TTS Example 1 (Synthesizing audio using a pre-existing voice) runs without errors and produces audio
+    """
+    collected_audio = []
+
+    async def mock_play_audio_streaming(audio_generator):
+        async for audio_bytes in audio_generator:
+            collected_audio.append(audio_bytes)
+
+    with patch("app.play_audio_streaming", side_effect=mock_play_audio_streaming):
+        from app import example1
+
+        await example1()
+
+    assert len(collected_audio) > 0, "Expected at least one audio chunk"
+    assert all(isinstance(chunk, bytes) for chunk in collected_audio), "Expected audio chunks to be bytes"
+    assert all(len(chunk) > 0 for chunk in collected_audio), "Expected non-empty audio chunks"
+
+
+@pytest.mark.asyncio
+async def test_example2_runs_successfully(hume_client):
+    """
+    TTS Example 2 (Voice Design) runs without errors and produces audio
+    """
+    import base64
+    from hume.tts import PostedUtterance
+
+    result = await hume_client.tts.synthesize_json(
+        utterances=[
+            PostedUtterance(
+                description="Crisp British accent",
+                text="The science of speech.",
+            )
+        ],
+        num_generations=2,
+    )
+
+    assert len(result.generations) == 2, "Expected 2 voice generations"
+
+    for gen in result.generations:
+        assert gen.generation_id is not None, "Expected generation_id"
+        assert gen.audio is not None, "Expected audio data"
+        audio_bytes = base64.b64decode(gen.audio)
+        assert len(audio_bytes) > 0, "Expected non-empty audio"
+
+
+@pytest.mark.asyncio
+async def test_example3_runs_successfully():
+    """
+    TTS Example 3 (bidirectional streaming) runs without errors and produces audio
+    """
+    collected_audio = []
+
+    async def mock_play_audio_streaming(audio_generator):
+        async for audio_bytes in audio_generator:
+            collected_audio.append(audio_bytes)
+
+    original_sleep = asyncio.sleep
+
+    async def fast_sleep(seconds):
+        if seconds >= 1:
+            await original_sleep(0.5)
+        else:
+            await original_sleep(seconds)
+
+    with patch("app.play_audio_streaming", side_effect=mock_play_audio_streaming):
+        with patch("app.asyncio.sleep", side_effect=fast_sleep):
+            from app import example3
+
+            await example3()
+
+    assert len(collected_audio) > 0, "Expected at least one audio chunk"
+    assert all(isinstance(chunk, bytes) for chunk in collected_audio), "Expected audio chunks to be bytes"
+
+
+# =============================================================================
+# SDK functionality tests
+# =============================================================================
 
 _example3_stream = None
 
