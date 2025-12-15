@@ -43,7 +43,7 @@ HUME_CONFIG_ID=your_config_id_here  # Optional
 
 To get your API key:
 1. Log into the [Hume AI Platform](https://platform.hume.ai/)
-2. Visit the [API keys page](https://platform.hume.ai/settings/keys)
+2. Visit the [API keys page](https://app.hume.ai/keys)
 3. See the [documentation](https://dev.hume.ai/docs/introduction/api-key) for detailed instructions
 
 ## Usage

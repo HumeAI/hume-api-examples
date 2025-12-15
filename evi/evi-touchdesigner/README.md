@@ -11,7 +11,7 @@ This project demonstrates a sample implementation of Hume AI's [Empathic Voice I
 - `HumeTDDemo.toe` is a sample project using `HumeTD.tox`
 
 ## Setup Instructions
-Acquire your API key from [platform.hume.ai](https://platform.hume.ai/settings/keys). Follow the instructions in the [Hume documentation](https://dev.hume.ai/docs/introduction/api-key).
+Acquire your API key from [platform.hume.ai](https://app.hume.ai/keys). Follow the instructions in the [Hume documentation](https://dev.hume.ai/docs/introduction/api-key).
 
 ## Running the HumeTD demo
 1. Open `HumeTDDemo.toe`

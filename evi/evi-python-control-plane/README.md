@@ -17,7 +17,7 @@ This example uses Hume's [Python SDK](https://github.com/HumeAI/hume-python-sdk)
 
 ## Quickstart
 
-Visit the [API key page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API key, then [create a configuration](https://platform.hume.ai/evi/configs) and copy its config ID.
+Visit the [API key page](https://app.hume.ai/keys) on the Hume Platform to retrieve your API key, then [create a configuration](https://platform.hume.ai/evi/configs) and copy its config ID.
 
 ```shell
 # 1. Clone the examples repo

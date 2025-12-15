@@ -24,7 +24,7 @@ When you run the script, it will:
 
 # Setup
 
-1. Rename `.env.example` to `.env` and paste your [Hume API key](https://platform.hume.ai/settings/keys) there
+1. Rename `.env.example` to `.env` and paste your [Hume API key](https://app.hume.ai/keys) there
 2. Set up an [ngrok](https://ngrok.com/) account and add a auth token via terminal:
    `ngrok config add-authtoken YOUR_NGROK_TOKEN`
 3. Set up a [Twilio](https://www.twilio.com/) phone number ("Buy a number")

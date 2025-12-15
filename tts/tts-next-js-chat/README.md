@@ -41,7 +41,7 @@ bun install
 
 ### Set up your API keys:
 
-This project requires API keys for Hume, Anthropic, and Groq. Retrieve them from the [Hume AI platform](https://platform.hume.ai/settings/keys), [Anthropic](https://www.anthropic.com/api), and [Groq](https://groq.com/), then place them in a `.env.local` file:
+This project requires API keys for Hume, Anthropic, and Groq. Retrieve them from the [Hume AI platform](https://app.hume.ai/keys), [Anthropic](https://www.anthropic.com/api), and [Groq](https://groq.com/), then place them in a `.env.local` file:
 
 ```shell
 echo "HUME_API_KEY=your_hume_api_key" > .env.local

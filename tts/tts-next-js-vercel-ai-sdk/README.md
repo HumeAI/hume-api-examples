@@ -34,7 +34,7 @@ bun install
 
 ### Set up your API keys:
 
-This project requires a Hume API key. Obtain your API key from the [Hume AI platform](https://platform.hume.ai/settings/keys) and then specify it in your `.env.local` file:
+This project requires a Hume API key. Obtain your API key from the [Hume AI platform](https://app.hume.ai/keys) and then specify it in your `.env.local` file:
 
 ```shell
 echo "HUME_API_KEY=your_hume_api_key" > .env.local
