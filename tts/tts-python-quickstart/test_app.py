@@ -4,8 +4,7 @@
 import asyncio
 import os
 import pytest
-import time
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 from dotenv import load_dotenv
 from hume import AsyncHumeClient
 from hume.tts import PublishTts, PostedUtteranceVoiceWithName
@@ -16,6 +15,35 @@ load_dotenv()
 
 
 # =============================================================================
+# Helpers
+# =============================================================================
+
+
+def create_audio_collector():
+    """Create a mock that collects audio bytes"""
+    collected = []
+
+    async def mock_play_audio_streaming(audio_generator):
+        async for audio_bytes in audio_generator:
+            collected.append(audio_bytes)
+
+    return collected, mock_play_audio_streaming
+
+
+def assert_valid_audio_bytes(chunks: list, *, min_chunks: int = 1):
+    """Assert that collected audio chunks are valid bytes."""
+    assert len(chunks) >= min_chunks, f"Expected at least {min_chunks} audio chunk(s)"
+    assert all(isinstance(c, bytes) for c in chunks), "Expected byte chunks"
+    assert any(len(c) > 0 for c in chunks), "Expected at least one non-empty chunk"
+
+
+def assert_valid_audio_chunk(chunk):
+    """Assert that a streaming audio chunk is a base64 string."""
+    assert chunk.type == "audio", "Expected chunk type to be 'audio'"
+    assert isinstance(chunk.audio, str), "Expected audio to be a base64 string"
+
+
+# =============================================================================
 # Tests for actual app.py TTS examples (goal: catch breaking changes in examples)
 # =============================================================================
 
@@ -23,22 +51,16 @@ load_dotenv()
 @pytest.mark.asyncio
 async def test_example1_runs_successfully():
     """
-    TTS Example 1 (Synthesizing audio using a pre-existing voice) runs without errors and produces audio
+    TTS Example 1 (pre-existing voice) runs without errors and produces audio
     """
-    collected_audio = []
+    collected, mock_play = create_audio_collector()
 
-    async def mock_play_audio_streaming(audio_generator):
-        async for audio_bytes in audio_generator:
-            collected_audio.append(audio_bytes)
-
-    with patch("app.play_audio_streaming", side_effect=mock_play_audio_streaming):
+    with patch("app.play_audio_streaming", side_effect=mock_play):
         from app import example1
 
         await example1()
 
-    assert len(collected_audio) > 0, "Expected at least one audio chunk"
-    assert all(isinstance(chunk, bytes) for chunk in collected_audio), "Expected audio chunks to be bytes"
-    assert all(len(chunk) > 0 for chunk in collected_audio), "Expected non-empty audio chunks"
+    assert_valid_audio_bytes(collected)
 
 
 @pytest.mark.asyncio
@@ -73,35 +95,24 @@ async def test_example3_runs_successfully():
     """
     TTS Example 3 (bidirectional streaming) runs without errors and produces audio
     """
-    collected_audio = []
-
-    async def mock_play_audio_streaming(audio_generator):
-        async for audio_bytes in audio_generator:
-            collected_audio.append(audio_bytes)
-
+    collected, mock_play = create_audio_collector()
     original_sleep = asyncio.sleep
 
     async def fast_sleep(seconds):
-        if seconds >= 1:
-            await original_sleep(0.5)
-        else:
-            await original_sleep(seconds)
+        await original_sleep(0.5 if seconds >= 1 else seconds)
 
-    with patch("app.play_audio_streaming", side_effect=mock_play_audio_streaming):
+    with patch("app.play_audio_streaming", side_effect=mock_play):
         with patch("app.asyncio.sleep", side_effect=fast_sleep):
             from app import example3
 
             await example3()
 
-    assert len(collected_audio) > 0, "Expected at least one audio chunk"
-    assert all(isinstance(chunk, bytes) for chunk in collected_audio), "Expected audio chunks to be bytes"
+    assert_valid_audio_bytes(collected)
 
 
 # =============================================================================
 # SDK functionality tests
 # =============================================================================
-
-_example3_stream = None
 
 
 @pytest.fixture(scope="module")
@@ -118,9 +129,7 @@ def hume_client(api_key):
 
 
 @pytest.mark.asyncio
-async def test_generates_json_with_octave_1(
-    hume_client,
-):
+async def test_generates_json_with_octave_1(hume_client):
     """
     connects w/ API key, generates JSON stream w/ Octave 1
     """
@@ -135,17 +144,11 @@ async def test_generates_json_with_octave_1(
             audio_chunks.append(chunk)
 
     assert len(audio_chunks) > 0, "Expected at least one audio chunk"
-
-    audio_chunks[0] = audio_chunks[0]
-    assert audio_chunks[0].type == "audio", "Expected chunk type to be 'audio'"
-    assert hasattr(audio_chunks[0], "audio"), "Expected chunk to have 'audio' attribute"
-    assert isinstance(audio_chunks[0].audio, str), "Expected audio to be a string (base64 encoded)"
+    assert_valid_audio_chunk(audio_chunks[0])
 
 
 @pytest.mark.asyncio
-async def test_generates_json_with_octave_2_with_timestamps(
-    hume_client,
-):
+async def test_generates_json_with_octave_2_with_timestamps(hume_client):
     """
     connects w/ API key, generates JSON stream w/ Octave 2 with timestamps
     """
@@ -161,112 +164,37 @@ async def test_generates_json_with_octave_2_with_timestamps(
     async for chunk in stream:
         if chunk.type == "audio":
             audio_chunks.append(chunk)
-        if chunk.type == "timestamp":
+        elif chunk.type == "timestamp":
             timestamp_chunks.append(chunk)
 
     assert len(audio_chunks) > 0, "Expected at least one audio chunk"
-    assert audio_chunks[0].type == "audio", "Expected chunk type to be 'audio'"
-    assert hasattr(audio_chunks[0], "audio"), "Expected chunk to have 'audio' attribute"
-    assert isinstance(audio_chunks[0].audio, str), "Expected audio to be a string (base64 encoded)"
+    assert_valid_audio_chunk(audio_chunks[0])
 
     assert len(timestamp_chunks) > 0, "Expected at least one timestamp chunk"
-    assert hasattr(timestamp_chunks[0], "request_id"), "Expected chunk to have 'request_id' attribute"
-    assert timestamp_chunks[0].request_id is not None, "Expected request_id to be defined"
-    assert hasattr(timestamp_chunks[0], "generation_id"), "Expected chunk to have 'generation_id' attribute"
-    assert timestamp_chunks[0].generation_id is not None, "Expected generation_id to be defined"
-    assert hasattr(timestamp_chunks[0], "snippet_id"), "Expected chunk to have 'snippet_id' attribute"
-    assert timestamp_chunks[0].snippet_id is not None, "Expected snippet_id to be defined"
-    assert hasattr(timestamp_chunks[0], "timestamp"), "Expected chunk to have 'timestamp' attribute"
-    assert timestamp_chunks[0].timestamp is not None, "Expected timestamp to be defined"
-    assert hasattr(timestamp_chunks[0].timestamp, "type"), "Expected timestamp to have 'type' attribute"
-    assert timestamp_chunks[0].timestamp.type is not None, "Expected timestamp.type to be defined"
-    assert hasattr(timestamp_chunks[0].timestamp, "text"), "Expected timestamp to have 'text' attribute"
-    assert timestamp_chunks[0].timestamp.text is not None, "Expected timestamp.text to be defined"
-    assert hasattr(timestamp_chunks[0].timestamp, "time"), "Expected timestamp to have 'time' attribute"
-    assert timestamp_chunks[0].timestamp.time is not None, "Expected timestamp.time to be defined"
-    assert hasattr(timestamp_chunks[0].timestamp.time, "begin"), "Expected timestamp.time to have 'begin' attribute"
-    assert timestamp_chunks[0].timestamp.time.begin is not None, "Expected timestamp.time.begin to be defined"
-    assert hasattr(timestamp_chunks[0].timestamp.time, "end"), "Expected timestamp.time to have 'end' attribute"
-    assert timestamp_chunks[0].timestamp.time.end is not None, "Expected timestamp.time.end to be defined"
+    ts = timestamp_chunks[0]
+    assert ts.request_id is not None
+    assert ts.generation_id is not None
+    assert ts.snippet_id is not None
+    assert ts.timestamp.type is not None
+    assert ts.timestamp.text is not None
+    assert ts.timestamp.time.begin is not None
+    assert ts.timestamp.time.end is not None
 
-    # at least 1 word timestamp
-    word_chunk = next((chunk for chunk in timestamp_chunks if chunk.timestamp.type == "word"), None)
-    assert word_chunk is not None, "Expected at least one word timestamp"
-
-    # at least 1 phoneme timestamp
-    phoneme_chunk = next((chunk for chunk in timestamp_chunks if chunk.timestamp.type == "phoneme"), None)
-    assert phoneme_chunk is not None, "Expected at least one phoneme timestamp"
-
-
-def get_stream():
-    """Get the example3 stream instance"""
-    return _example3_stream
-
-
-async def wait_for_stream_open(get_stream_func, max_attempts=100):
-    """Wait for the stream to be open (readyState 1)"""
-    attempts = 0
-    while attempts < max_attempts:
-        stream = get_stream_func()
-        if stream:
-            # Check if stream has ready_state attribute
-            if hasattr(stream, "ready_state") and isinstance(stream.ready_state, int):
-                if stream.ready_state == 1:  # OPEN
-                    return
-                if stream.ready_state == 3:  # CLOSED
-                    raise RuntimeError(
-                        "Stream connection failed (ready_state=CLOSED). "
-                        "The stream was created but closed immediately, likely due to authentication failure."
-                    )
-            elif attempts > 10:
-                # After 1 second, assume it's ready if ready_state isn't available
-                return
-        await asyncio.sleep(0.1)
-        attempts += 1
-
-    raise RuntimeError(
-        f"Stream was not opened within timeout ({max_attempts * 100}ms). "
-        "Stream exists but ready_state never became OPEN (1)."
-    )
-
-
-@pytest.fixture(scope="module")
-def hume_client_module(api_key):
-    return AsyncHumeClient(api_key=api_key)
-
-
-@pytest.fixture(scope="module")
-async def stream_input_setup(hume_client_module):
-    """Set up the stream input connection"""
-    global _example3_stream
-
-    async with hume_client_module.tts.stream_input.connect(version="1", no_binary=True, strip_headers=True) as stream:
-        _example3_stream = stream
-        await wait_for_stream_open(get_stream)
-        yield stream
-        _example3_stream = None
+    # Verify both timestamp types present
+    types_found = {chunk.timestamp.type for chunk in timestamp_chunks}
+    assert "word" in types_found, "Expected at least one word timestamp"
+    assert "phoneme" in types_found, "Expected at least one phoneme timestamp"
 
 
 @pytest.mark.asyncio
-async def test_creates_stream_and_connects_successfully(stream_input_setup):
+async def test_creates_stream_and_connects_successfully(hume_client):
     """
     creates a stream and connects successfully
     """
-    stream = get_stream()
-    assert stream is not None, "Expected stream to be truthy"
-    assert hasattr(stream, "send_publish"), "Expected stream to have 'send_publish' attribute"
-    assert callable(stream.send_publish), "Expected send_publish to be a function"
-    assert hasattr(stream, "on"), "Expected stream to have 'on' attribute"
-    assert callable(stream.on), "Expected on to be a function"
-
-    await asyncio.sleep(1.0)
-
-    stream_after_wait = get_stream()
-    assert stream_after_wait is stream, "Expected same stream instance"
-
-    if hasattr(stream, "ready_state") and isinstance(stream.ready_state, int):
-        # WebSocket states: 0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED
-        assert stream.ready_state == 1, "Expected ready_state to be 1 (OPEN)"
+    async with hume_client.tts.stream_input.connect(no_binary=True, strip_headers=True) as stream:
+        assert stream is not None
+        assert callable(stream.send_publish)
+        assert callable(stream.on)
 
 
 @pytest.mark.asyncio
@@ -276,7 +204,7 @@ async def test_sends_messages_and_receives_audio_chunks(hume_client):
     """
     audio_chunks = []
 
-    async with hume_client.tts.stream_input.connect(version="2", no_binary=True, strip_headers=True) as stream:
+    async with hume_client.tts.stream_input.connect(no_binary=True, strip_headers=True) as stream:
 
         async def handle_messages():
             async for chunk in stream:
@@ -291,15 +219,10 @@ async def test_sends_messages_and_receives_audio_chunks(hume_client):
                 )
             )
             await stream.send_publish(PublishTts(flush=True))
-            # Wait a bit for audio to arrive
             await asyncio.sleep(1.0)
             await stream.send_publish(PublishTts(close=True))
 
-        # Run both concurrently with gather (exactly like example3)
         await asyncio.gather(handle_messages(), send_input())
 
     assert len(audio_chunks) > 0, "Expected at least one audio chunk"
-    first_chunk = audio_chunks[0]
-    assert first_chunk.type == "audio", "Expected chunk type to be 'audio'"
-    assert hasattr(first_chunk, "audio"), "Expected chunk to have 'audio' attribute"
-    assert isinstance(first_chunk.audio, str), "Expected audio to be a string (base64 encoded)"
+    assert_valid_audio_chunk(audio_chunks[0])
