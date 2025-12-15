@@ -1,6 +1,7 @@
 # run tests locally with:
 # uv run pytest test_app.py -v
 
+import asyncio
 import os
 import pytest
 from dotenv import load_dotenv
@@ -9,6 +10,8 @@ from hume import AsyncHumeClient
 from app import example1_request_params
 
 load_dotenv()
+
+_example3_stream = None
 
 
 @pytest.fixture(scope="module")
@@ -103,3 +106,74 @@ async def test_generates_json_with_octave_2_with_timestamps(
     # at least 1 phoneme timestamp
     phoneme_chunk = next((chunk for chunk in timestamp_chunks if chunk.timestamp.type == "phoneme"), None)
     assert phoneme_chunk is not None, "Expected at least one phoneme timestamp"
+
+
+def get_stream():
+    """Get the example3 stream instance"""
+    return _example3_stream
+
+
+async def wait_for_stream_open(get_stream_func, max_attempts=100):
+    """Wait for the stream to be open (readyState 1)"""
+    attempts = 0
+    while attempts < max_attempts:
+        stream = get_stream_func()
+        if stream:
+            # Check if stream has ready_state attribute
+            if hasattr(stream, "ready_state") and isinstance(stream.ready_state, int):
+                if stream.ready_state == 1:  # OPEN
+                    return
+                if stream.ready_state == 3:  # CLOSED
+                    raise RuntimeError(
+                        "Stream connection failed (ready_state=CLOSED). "
+                        "The stream was created but closed immediately, likely due to authentication failure."
+                    )
+            elif attempts > 10:
+                # After 1 second, assume it's ready if ready_state isn't available
+                return
+        await asyncio.sleep(0.1)
+        attempts += 1
+
+    raise RuntimeError(
+        f"Stream was not opened within timeout ({max_attempts * 100}ms). "
+        "Stream exists but ready_state never became OPEN (1)."
+    )
+
+
+@pytest.fixture(scope="module")
+def hume_client_module(api_key):
+    return AsyncHumeClient(api_key=api_key)
+
+
+@pytest.fixture(scope="module")
+async def stream_input_setup(hume_client_module):
+    """Set up the stream input connection"""
+    global _example3_stream
+
+    async with hume_client_module.tts.stream_input.connect(version="1", no_binary=True, strip_headers=True) as stream:
+        _example3_stream = stream
+        await wait_for_stream_open(get_stream)
+        yield stream
+        _example3_stream = None
+
+
+@pytest.mark.asyncio
+async def test_creates_stream_and_connects_successfully(stream_input_setup):
+    """
+    creates a stream and connects successfully
+    """
+    stream = get_stream()
+    assert stream is not None, "Expected stream to be truthy"
+    assert hasattr(stream, "send_publish"), "Expected stream to have 'send_publish' attribute"
+    assert callable(stream.send_publish), "Expected send_publish to be a function"
+    assert hasattr(stream, "on"), "Expected stream to have 'on' attribute"
+    assert callable(stream.on), "Expected on to be a function"
+
+    await asyncio.sleep(1.0)
+
+    stream_after_wait = get_stream()
+    assert stream_after_wait is stream, "Expected same stream instance"
+
+    if hasattr(stream, "ready_state") and isinstance(stream.ready_state, int):
+        # WebSocket states: 0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED
+        assert stream.ready_state == 1, "Expected ready_state to be 1 (OPEN)"
