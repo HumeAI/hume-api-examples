@@ -35,7 +35,7 @@ This project uses `ai.hume.unity`, a Unity package, hosted on [OpenUPM](https://
 
 3. Set up your API key:
 
-   You must authenticate to use the Hume TTS API. Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+   You must authenticate to use the Hume TTS API. Your API key can be retrieved from the [Hume AI platform](https://app.hume.ai/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
 
    In the Unity scene:
    - Select the `SceneLauncher` GameObject in the Hierarchy

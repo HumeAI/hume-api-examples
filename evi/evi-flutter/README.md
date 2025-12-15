@@ -28,7 +28,7 @@ This project features a sample implementation of Hume's [Empathic Voice Interfac
 
 4. Set up your API key:
 
-   You must authenticate to use the EVI API. Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+   You must authenticate to use the EVI API. Your API key can be retrieved from the [Hume AI platform](https://app.hume.ai/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
 
    This example uses [flutter_dotenv](https://pub.dev/packages/flutter_dotenv). Place your API key in a `.env` file at the root of your project.
 

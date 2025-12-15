@@ -58,7 +58,7 @@ class EVIChatModel: ObservableObject {
       return
     }
 
-    // Get a config id from https://platform.hume.ai/evi/configs
+    // Get a config id from https://app.hume.ai/evi/configs
     // let options = ChatConnectOptions(configId: "<#config id#>")
     let options = ChatConnectOptions()
     let sessionSettings = SessionSettings(

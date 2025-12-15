@@ -20,7 +20,7 @@ It does not currently support Windows. Windows developers can use our [Python Ra
 
 ## Quickstart
 
-Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API keys. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key). Then, follow the steps below:
+Visit the [API keys page](https://app.hume.ai/keys) on the Hume Platform to retrieve your API keys. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key). Then, follow the steps below:
 
 ```shell
 # 1. Clone the examples repo

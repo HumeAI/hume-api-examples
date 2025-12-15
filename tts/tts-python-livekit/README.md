@@ -21,7 +21,7 @@ TTS plugin](https://docs.livekit.io/agents/integrations/tts/hume/) in two distin
 
 You’ll need accounts and credentials for:
 
-- **Hume AI**: https://platform.hume.ai
+- **Hume AI**: https://app.hume.ai
 - **LiveKit**: https://livekit.com
 
 If using the Agent Session workflow you will additionally need accounts and credentials for:

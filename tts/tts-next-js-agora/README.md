@@ -21,7 +21,7 @@ This example demonstrates how to build a real-time voice conversation applicatio
 
 ## Quickstart
 
-Visit the [Hume Platform](https://platform.hume.ai/settings/keys) and [Agora Console](https://console.agora.io/) to retrieve your API keys.
+Visit the [Hume Platform](https://app.hume.ai/keys) and [Agora Console](https://console.agora.io/) to retrieve your API keys.
 
 ```bash
 # 1. Install dependencies

@@ -68,7 +68,7 @@ The `hume` package contains Hume's Python SDK, including the functionality for E
 pip install hume
 ```
 
-To get your API credentials, log into the Hume Platform and visit the [API keys page](https://platform.hume.ai/settings/keys).
+To get your API credentials, log into the Hume Platform and visit the [API keys page](https://app.hume.ai/keys).
 
 Implement your credentials by editing the provided placeholder `.env.example` file:
 1. Rename the file to `.env`

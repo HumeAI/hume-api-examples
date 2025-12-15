@@ -27,7 +27,7 @@ This project serves as an example implementation of our Expression Measurement (
 
 3. Set up your API key:
 
-    You must authenticate to use the Hume Expression Measurement API. Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+    You must authenticate to use the Hume Expression Measurement API. Your API key can be retrieved from the [Hume AI platform](https://app.hume.ai/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
 
     This example uses [dotenv](https://www.npmjs.com/package/dotenv). Place your API key in a `.env` file at the root of your project.
 

@@ -23,7 +23,7 @@ EVI is an emotionally intelligent voice AI that understands and responds to huma
 
 2. Set up your API key:
 
-    Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+    Your API key can be retrieved from the [Hume AI platform](https://app.hume.ai/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
 
     Create a `.env` file in this folder with your API key:
 
