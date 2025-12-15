@@ -4,8 +4,10 @@
 import asyncio
 import os
 import pytest
+import time
 from dotenv import load_dotenv
 from hume import AsyncHumeClient
+from hume.tts import PublishTts, PostedUtteranceVoiceWithName
 
 from app import example1_request_params
 
@@ -177,3 +179,39 @@ async def test_creates_stream_and_connects_successfully(stream_input_setup):
     if hasattr(stream, "ready_state") and isinstance(stream.ready_state, int):
         # WebSocket states: 0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED
         assert stream.ready_state == 1, "Expected ready_state to be 1 (OPEN)"
+
+
+@pytest.mark.asyncio
+async def test_sends_messages_and_receives_audio_chunks(hume_client):
+    """
+    sends messages and receives audio chunks
+    """
+    audio_chunks = []
+
+    async with hume_client.tts.stream_input.connect(version="2", no_binary=True, strip_headers=True) as stream:
+
+        async def handle_messages():
+            async for chunk in stream:
+                if chunk.type == "audio":
+                    audio_chunks.append(chunk)
+
+        async def send_input():
+            await stream.send_publish(
+                PublishTts(
+                    text="Hello",
+                    voice=PostedUtteranceVoiceWithName(name="Ava Song", provider="HUME_AI"),
+                )
+            )
+            await stream.send_publish(PublishTts(flush=True))
+            # Wait a bit for audio to arrive
+            await asyncio.sleep(1.0)
+            await stream.send_publish(PublishTts(close=True))
+
+        # Run both concurrently with gather (exactly like example3)
+        await asyncio.gather(handle_messages(), send_input())
+
+    assert len(audio_chunks) > 0, "Expected at least one audio chunk"
+    first_chunk = audio_chunks[0]
+    assert first_chunk.type == "audio", "Expected chunk type to be 'audio'"
+    assert hasattr(first_chunk, "audio"), "Expected chunk to have 'audio' attribute"
+    assert isinstance(first_chunk.audio, str), "Expected audio to be a string (base64 encoded)"
