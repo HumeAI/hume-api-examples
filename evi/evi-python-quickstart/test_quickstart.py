@@ -36,7 +36,7 @@ def hume_client_sync(api_key):
 
 
 @pytest.mark.asyncio
-async def test_connect_to_evi_receives_chat_id_and_stays_alive(hume_client):
+async def test_connect_to_evi(hume_client):
     """
     connects w/ API key, starts a chat, receives a chatId, stays alive for 2 seconds
     """
@@ -81,7 +81,7 @@ async def test_connect_to_evi_receives_chat_id_and_stays_alive(hume_client):
 
 
 @pytest.mark.asyncio
-async def test_session_settings_are_passed_on_connect(hume_client, hume_client_sync):
+async def test_session_settings_on_connect(hume_client, hume_client_sync):
     """
     connects w/ API key, verifies sessionSettings are passed on connect()
     """
