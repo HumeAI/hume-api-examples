@@ -7,7 +7,7 @@ import os
 import pytest
 from dotenv import load_dotenv
 from hume import AsyncHumeClient, HumeClient
-from hume.empathic_voice.types import ConnectSessionSettings
+from hume.empathic_voice.types import ConnectSessionSettings, SessionSettings
 
 load_dotenv()
 
@@ -146,3 +146,67 @@ async def test_session_settings_on_connect(hume_client, hume_client_sync):
     assert parsed_settings["variables"]["userName"] == "John"
     assert parsed_settings["variables"]["userAge"] == "30.0"
     assert parsed_settings["variables"]["isPremium"] == "True"
+
+
+@pytest.mark.asyncio
+async def test_session_settings_upd_after_connect(hume_client, hume_client_sync):
+    """
+    connects w/ API key, verifies sessionSettings can be updated after connect()
+    """
+    chat_id = None
+
+    async with hume_client.empathic_voice.chat.connect() as socket:
+
+        async def handle_messages():
+            nonlocal chat_id
+            try:
+                async for message in socket:
+                    if message.type == "chat_metadata":
+                        chat_id = message.chat_id
+            except asyncio.CancelledError:
+                pass
+
+        message_task = asyncio.create_task(handle_messages())
+
+        # Wait for chat_metadata with chatId (timeout after 10 seconds)
+        for _ in range(100):
+            if chat_id is not None:
+                break
+            await asyncio.sleep(0.1)
+
+        assert chat_id is not None, "Expected chat_id from chat_metadata"
+
+        # Send updated session settings
+        updated_settings = SessionSettings(system_prompt="You are a helpful test assistant with updated system prompt")
+        await socket.send_publish(updated_settings)
+
+        # Wait for the update to be processed
+        await asyncio.sleep(1)
+
+        # Clean up
+        message_task.cancel()
+        try:
+            await message_task
+        except asyncio.CancelledError:
+            pass
+
+    # Fetch chat events and verify session settings
+    events = list(
+        hume_client_sync.empathic_voice.chats.list_chat_events(
+            chat_id,
+            page_number=0,
+            ascending_order=True,
+        )
+    )
+
+    session_settings_events = [e for e in events if e.type == "SESSION_SETTINGS"]
+
+    assert len(session_settings_events) >= 1, "Expected at least 1 SESSION_SETTINGS event"
+
+    updated_event = session_settings_events[-1]
+
+    assert updated_event.message_text is not None, "Expected message_text"
+
+    parsed_settings = json.loads(updated_event.message_text)
+    assert parsed_settings["type"] == "session_settings"
+    assert parsed_settings["system_prompt"] == "You are a helpful test assistant with updated system prompt"
