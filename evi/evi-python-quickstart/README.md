@@ -30,11 +30,11 @@ cd hume-api-examples/evi/evi-python-quickstart
 
 # 3a. With the `uv` package manager (recommended)
 uv sync
-uv run python
+uv run quickstart.py
 
 # 3b. Or, use pip
 pip install python-dotenv
-pip install hume[microphone]
+pip install "hume[microphone]>=0.13.5"
 
 # 4. Copy the .env.example file to .env
 cp .env.example .env
