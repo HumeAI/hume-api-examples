@@ -38,8 +38,8 @@ class Program
 
         _client = new HumeClient(_apiKey);
 
-        await Example1Async();
-        await Example2Async();
+        // await Example1Async();
+        // await Example2Async();
         await Example3Async();
 
         Console.WriteLine("Done");
@@ -195,8 +195,10 @@ class Program
         using var streamingTtsClient = new StreamingTtsClient(_apiKey!, enableDebugLogging: true);
         await streamingTtsClient.ConnectAsync();
 
-        // Use buffered mode for bidirectional streaming to handle irregular chunk arrival timing
-        using var audioPlayer = new StreamingAudioPlayer(usePcmFormat: true, useBuffering: true);
+        // Use silence filler mode for bidirectional streaming to handle gaps between utterances.
+        // The silence filler continuously outputs audio to ffplay, filling gaps with silence
+        // to maintain stream continuity (similar to TypeScript's createSilenceFiller).
+        using var audioPlayer = new StreamingAudioPlayer(usePcmFormat: true, useSilenceFiller: true);
         await audioPlayer.StartStreamingAsync();
 
         // Task 1: Send text input to the TTS service
@@ -213,6 +215,7 @@ class Program
             
             await streamingTtsClient.SendAsync(new { text = " Goodbye, world." });
             await streamingTtsClient.SendFlushAsync();
+
             await streamingTtsClient.SendCloseAsync();
         });
 
@@ -263,11 +266,21 @@ class Program
         private bool _isStreaming = false;
         private readonly bool _usePcmFormat;
         private readonly bool _useBuffering;
+        private readonly bool _useSilenceFiller;
         
         // Buffering support for bidirectional streaming scenarios
         private BlockingCollection<byte[]>? _audioBuffer;
         private CancellationTokenSource? _bufferCts;
         private Task? _bufferTask;
+        
+        // Silence filler support - continuously outputs audio or silence to ffplay
+        private CancellationTokenSource? _silenceFillerCts;
+        private Task? _silenceFillerTask;
+        private ConcurrentQueue<byte[]>? _silenceFillerQueue;
+        private const int SampleRate = 48000;
+        private const int BytesPerSample = 2; // 16-bit audio
+        private const int SilenceChunkMs = 20; // Send silence every 20ms
+        private static readonly byte[] SilenceChunk = new byte[SampleRate * BytesPerSample * SilenceChunkMs / 1000];
 
         /// <summary>
         /// Creates a new StreamingAudioPlayer.
@@ -281,15 +294,27 @@ class Program
         /// by a background task. This is useful for bidirectional streaming where chunks may
         /// arrive with irregular timing. If false, audio is written directly to ffplay (default).
         /// </param>
-        public StreamingAudioPlayer(bool usePcmFormat = false, bool useBuffering = false)
+        /// <param name="useSilenceFiller">
+        /// If true, enables silence filler mode for PCM streaming. This continuously outputs
+        /// audio to ffplay, filling gaps with silence to maintain stream continuity.
+        /// Essential for bidirectional streaming with gaps between utterances.
+        /// </param>
+        public StreamingAudioPlayer(bool usePcmFormat = false, bool useBuffering = false, bool useSilenceFiller = false)
         {
             _usePcmFormat = usePcmFormat;
             _useBuffering = useBuffering;
+            _useSilenceFiller = useSilenceFiller;
             
-            if (_useBuffering)
+            if (_useBuffering && !_useSilenceFiller)
             {
                 _audioBuffer = new BlockingCollection<byte[]>();
                 _bufferCts = new CancellationTokenSource();
+            }
+            
+            if (_useSilenceFiller)
+            {
+                _silenceFillerQueue = new ConcurrentQueue<byte[]>();
+                _silenceFillerCts = new CancellationTokenSource();
             }
         }
 
@@ -298,8 +323,44 @@ class Program
             _isStreaming = true;
             StartAudioProcess();
             
-            // Start buffer draining task if buffering is enabled
-            if (_useBuffering && _audioBuffer != null && _bufferCts != null && _audioProcess != null)
+            // Start silence filler task if enabled - continuously outputs audio or silence
+            if (_useSilenceFiller && _silenceFillerQueue != null && _silenceFillerCts != null && _audioProcess != null)
+            {
+                _silenceFillerTask = Task.Run(async () =>
+                {
+                    try
+                    {
+                        var silenceInterval = TimeSpan.FromMilliseconds(SilenceChunkMs);
+                        while (!_silenceFillerCts.Token.IsCancellationRequested && _audioProcess?.HasExited == false)
+                        {
+                            // Try to get audio data from the queue
+                            if (_silenceFillerQueue.TryDequeue(out var audioBytes))
+                            {
+                                // Write actual audio
+                                await _audioProcess.StandardInput.BaseStream.WriteAsync(audioBytes, _silenceFillerCts.Token);
+                                await _audioProcess.StandardInput.BaseStream.FlushAsync(_silenceFillerCts.Token);
+                            }
+                            else
+                            {
+                                // No audio available, write silence to maintain stream continuity
+                                await _audioProcess.StandardInput.BaseStream.WriteAsync(SilenceChunk, _silenceFillerCts.Token);
+                                await _audioProcess.StandardInput.BaseStream.FlushAsync(_silenceFillerCts.Token);
+                                await Task.Delay(silenceInterval, _silenceFillerCts.Token);
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Expected when stopping
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Silence filler error: {ex.Message}");
+                    }
+                });
+            }
+            // Start buffer draining task if buffering is enabled (legacy mode)
+            else if (_useBuffering && _audioBuffer != null && _bufferCts != null && _audioProcess != null)
             {
                 _bufferTask = Task.Run(async () =>
                 {
@@ -341,7 +402,12 @@ class Program
 
             try
             {
-                if (_useBuffering && _audioBuffer != null)
+                if (_useSilenceFiller && _silenceFillerQueue != null)
+                {
+                    // Queue audio for the silence filler to process
+                    _silenceFillerQueue.Enqueue(audioBytes);
+                }
+                else if (_useBuffering && _audioBuffer != null)
                 {
                     _audioBuffer.Add(audioBytes);
                 }
@@ -365,8 +431,25 @@ class Program
 
             try
             {
-                // Complete buffered audio if using buffering
-                if (_useBuffering && _audioBuffer != null)
+                // Stop silence filler if enabled
+                if (_useSilenceFiller && _silenceFillerCts != null)
+                {
+                    // Wait a bit for any remaining queued audio to be processed
+                    while (_silenceFillerQueue?.Count > 0)
+                    {
+                        await Task.Delay(50);
+                    }
+                    // Give ffplay time to play any remaining buffered audio
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    
+                    _silenceFillerCts.Cancel();
+                    if (_silenceFillerTask != null)
+                    {
+                        try { await _silenceFillerTask; } catch (OperationCanceledException) { }
+                    }
+                }
+                // Complete buffered audio if using buffering (legacy mode)
+                else if (_useBuffering && _audioBuffer != null)
                 {
                     _audioBuffer.CompleteAdding();
                     if (_bufferTask != null)
@@ -437,8 +520,9 @@ class Program
         {
             try
             {
-                // Cancel buffering operations
+                // Cancel buffering/silence filler operations
                 _bufferCts?.Cancel();
+                _silenceFillerCts?.Cancel();
                 
                 // Kill ffplay process if still running
                 if (_audioProcess != null && !_audioProcess.HasExited)
@@ -450,6 +534,7 @@ class Program
                 _audioProcess?.Dispose();
                 _audioBuffer?.Dispose();
                 _bufferCts?.Dispose();
+                _silenceFillerCts?.Dispose();
             }
             catch { }
         }
