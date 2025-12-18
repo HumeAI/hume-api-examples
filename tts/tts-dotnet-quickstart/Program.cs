@@ -325,14 +325,6 @@ class Program
 
         public async Task EndStreamAsync()
         {
-            // Wait for queued audio to be processed
-            while (_audioQueue.Count > 0)
-            {
-                await Task.Delay(50);
-            }
-            // Give time for final audio to play
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            
             _cts.Cancel();
             try { await _fillerTask; } catch (OperationCanceledException) { }
         }
