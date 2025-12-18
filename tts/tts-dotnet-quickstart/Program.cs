@@ -38,8 +38,8 @@ class Program
 
         _client = new HumeClient(_apiKey);
 
-        // await Example1Async();
-        // await Example2Async();
+        await Example1Async();
+        await Example2Async();
         await Example3Async();
 
         Console.WriteLine("Done");
