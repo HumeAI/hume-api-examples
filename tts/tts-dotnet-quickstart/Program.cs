@@ -197,7 +197,7 @@ class Program
 
         // Use silence filler mode for bidirectional streaming to handle gaps between utterances.
         // The silence filler continuously outputs audio to ffplay, filling gaps with silence
-        // to maintain stream continuity (similar to TypeScript's createSilenceFiller).
+        // to maintain stream continuity
         using var audioPlayer = new StreamingAudioPlayer(usePcmFormat: true, useSilenceFiller: true);
         await audioPlayer.StartStreamingAsync();
 
