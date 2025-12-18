@@ -1,0 +1,18 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+
+# macOS
+.DS_Store
+
+# Environment
+.env
+
+# Allow sample audio
+!sample_input.pcm

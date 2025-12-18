@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS Timestamps Test</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        textarea {
+            width: 100%;
+            max-width: 600px;
+            height: 150px;
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 14px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        #canvas-container {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            display: inline-block;
+        }
+        #status {
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>TTS Timestamps Test</h1>
+    <textarea id="text-input" placeholder="Enter text to synthesize...">The rain in Spain stays mainly on the plain.</textarea>
+    <br>
+    <button id="synthesize-btn">Synthesize</button>
+    <div id="status"></div>
+    <div id="canvas-container"></div>
+    <script type="module" src="./index.tsx"></script>
+</body>
+</html>

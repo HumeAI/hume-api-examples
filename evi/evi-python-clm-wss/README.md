@@ -47,7 +47,7 @@ Note the Ngrok URL where it says `Forwarding`. It should appear something like t
 
 ### 3. Create an EVI configuration that specifies the socket
 
-In Hume's web portal, visit the Configurations in the left navigation bar, or you can access it directly at https://platform.hume.ai/evi/configs.
+In Hume's web portal, visit the Configurations in the left navigation bar, or you can access it directly at https://app.hume.ai/evi/configs.
 
 Create a new voice configuration, give it a name and optionally a system prompt, and then use the following dropdown to specify `Custom language model` and specify the `wss` address of your socket as given by Ngrok in the previous step.
 

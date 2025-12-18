@@ -1,0 +1,18 @@
+[project]
+name = "evi-python-twilio"
+version = "0.1.0"
+description = "EVI + Twilio example using Hume AI"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "flask",
+  "flask-sock",
+  "python-dotenv",
+  "hume==0.13.3",
+  "pydub",
+  "numpy",
+  "scipy",
+  "audioop-lts; python_version >= '3.13'",
+]
+
+

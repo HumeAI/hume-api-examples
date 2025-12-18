@@ -1,12 +1,23 @@
 import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
-import { getChatTranscript, validateHmacSignature, validateTimestamp } from './util';
-import { WebhookEvent } from "hume/serialization/resources/empathicVoice/types/WebhookEvent";
+import { HumeClient, serialization as HumeSerialization } from 'hume';
+import { 
+  fetchWeatherTool, 
+  getChatTranscript, 
+  validateHmacSignature, 
+  validateTimestamp 
+} from './util';
+
+const { WebhookEvent } = HumeSerialization.empathicVoice;
 
 dotenv.config();
 
 const app = express();
 const PORT = 5000;
+
+const hume = new HumeClient({
+  apiKey: process.env.HUME_API_KEY!,
+});
 
 app.post(
   '/hume-webhook', 
@@ -28,7 +39,7 @@ app.post(
     let event;
     try {
       // Validate and parse using WebhookEvent
-      event = WebhookEvent.parseOrThrow(JSON.parse(req.body));
+      event = WebhookEvent.parseOrThrow(JSON.parse(payloadStr));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       console.error("Failed to parse and validate the webhook event:", errorMessage);
@@ -49,6 +60,13 @@ app.post(
           // Fetch Chat events, construct a Chat transcript, and write transcript to a file
           await getChatTranscript(event.chatId);
           // Add additional chat_ended processing logic here
+          break;
+
+        case 'tool_call':
+          console.info("Processing tool_call event:", event);
+          // Handle the specific tool call for fetching the current weather
+          await fetchWeatherTool(hume, event.chatId, event.toolCallMessage);
+          // Add additional tool_call processing logic here
           break;
 
         default:

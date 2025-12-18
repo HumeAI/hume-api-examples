@@ -1,5 +1,5 @@
 import { HumeClient } from 'hume';
-import { ReturnChatEvent } from 'hume/api/resources/empathicVoice';
+import { type Hume } from 'hume';
 import path from 'path';
 import fs from 'fs/promises';
 import * as crypto from 'crypto';
@@ -32,11 +32,11 @@ function getHumeApiKey(): string {
  * @returns A promise that resolves to an array of chat events.
  * @throws If the HUME_API_KEY environment variable is not set.
  */
-async function fetchAllChatEvents(chatId: string): Promise<ReturnChatEvent[]> {
+async function fetchAllChatEvents(chatId: string): Promise<Hume.empathicVoice.ReturnChatEvent[]> {
   const apiKey = getHumeApiKey();
 
   const client = new HumeClient({ apiKey });
-  const allChatEvents: ReturnChatEvent[] = [];
+  const allChatEvents: Hume.empathicVoice.ReturnChatEvent[] = [];
 
   // Retrieve an async iterator over all chat events
   const chatEventsIterator = await client.empathicVoice.chats.listChatEvents(chatId);
@@ -58,7 +58,7 @@ async function fetchAllChatEvents(chatId: string): Promise<ReturnChatEvent[]> {
  * @param chatEvents An array of chat events to parse.
  * @returns A formatted transcript string.
  */
-function generateTranscript(chatEvents: ReturnChatEvent[]): string {
+function generateTranscript(chatEvents: Hume.empathicVoice.ReturnChatEvent[]): string {
   // Filter events for user and assistant messages
   const relevantChatEvents = chatEvents.filter(
     (chatEvent) => chatEvent.type === 'USER_MESSAGE' || chatEvent.type === 'AGENT_MESSAGE',
@@ -175,4 +175,95 @@ export function validateTimestamp(headers: IncomingHttpHeaders): void {
   }
 
   console.info('Timestamp validation successful!');
+}
+
+/**
+ * Function which consumes the geocode and weather APIs to get the current weather in a specified city
+ *
+ * @param parameters object (stringified JSON) which includes the city (location) and temperature format (fahrenheit' or 'celsius')
+ * @returns the current temperature in the specified city in the specified format
+ */
+export const fetchWeather = async (parameters: string): Promise<string> => {
+  const args = JSON.parse(parameters) as {
+    location: string;
+    format: "fahrenheit" | "celsius";
+  };
+
+  // fetch latitude and longitude coordinates of location
+  const locationURL: string = `https://geocode.maps.co/search?q=${args.location}&api_key=${process.env.GEOCODING_API_KEY}`;
+  const locationResponse = await fetch(locationURL, { method: "GET" });
+  const locationJson = (await locationResponse.json()) as {
+    lat: string;
+    lon: string;
+  }[];
+  const { lat, lon } = locationJson[0];
+
+  // fetch point metadata for location
+  const pointMetadataURL: string = `https://api.weather.gov/points/${parseFloat(lat).toFixed(3)},${parseFloat(lon).toFixed(3)}`;
+  const pointMetadataResponse = await fetch(pointMetadataURL, {
+    method: "GET",
+  });
+  const pointMetadataJson = (await pointMetadataResponse.json()) as {
+    properties: {
+      gridId: string;
+      gridX: number;
+      gridY: number;
+    };
+  };
+  const { gridId, gridX, gridY } = pointMetadataJson.properties;
+
+  // fetch current weather
+  const currentWeatherURL: string = `https://api.weather.gov/gridpoints/${gridId}/${gridX},${gridY}/forecast`;
+  const currentWeatherResponse = await fetch(currentWeatherURL, {
+    method: "GET",
+  });
+  const currentWeatherJson = (await currentWeatherResponse.json()) as {
+    properties: {
+      periods: Array<{
+        temperature: number;
+        temperatureUnit: string;
+      }>;
+    };
+  };
+
+  // parse weather from current weather response and format (e.g., '70F')
+  const { temperature } = currentWeatherJson.properties.periods[0];
+  const unit = args.format === "fahrenheit" ? "F" : "C";
+  const currentWeather = `${temperature}${unit}`;
+  return currentWeather;
+};
+
+
+/**
+ * Function which invokes the get_current_weather tool and sends the result back to the chat via the control plane
+ *
+ * @param hume The HumeClient instance
+ * @param chatId The ID of the chat
+ * @param toolCallMessage The tool call message
+ * @returns void
+ */
+export const fetchWeatherTool = async (
+  hume: HumeClient, 
+  chatId: string, 
+  toolCallMessage: { name: string, toolCallId: string, parameters: string }
+): Promise<void> => {
+  const { name, toolCallId, parameters } = toolCallMessage;
+  if (name !== "get_current_weather") return;
+
+  try {
+    const currentWeather = await fetchWeather(parameters);
+    await hume.empathicVoice.controlPlane.send(chatId, {
+      type: "tool_response",
+      toolCallId,
+      content: currentWeather,
+    });
+  } catch (error) {
+    console.error("Error fetching weather:", error);
+    await hume.empathicVoice.controlPlane.send(chatId, {
+      type: "tool_error",
+      toolCallId,
+      content: "Error fetching weather",
+      error: "WeatherFetchError",
+    });
+  }
 }

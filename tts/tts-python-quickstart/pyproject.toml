@@ -5,7 +5,19 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-  "aiofiles>=24.1.0",
-  "hume>=0.8.1",
+  "hume[microphone]>=0.13.5",
   "python-dotenv>=1.0.1",
+  "pytest>=8.0.0",
+  "pytest-asyncio>=0.23.0",
 ]
+
+[tool.black]
+line-length = 120
+
+[tool.pytest.ini_options]
+addopts = "-v --tb=short"
+testpaths = ["."]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"

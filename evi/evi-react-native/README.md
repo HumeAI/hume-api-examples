@@ -58,6 +58,19 @@ Run the dev server:
   npm run android
   ```
 
+### Running on your device
+
+1. Make sure you've set up your [iOS device in Developer Mode](https://docs.expo.dev/get-started/set-up-your-environment/?platform=ios&device=physical&mode=development-build&buildEnv=local) and installed the corresponding simulator in XCode.
+
+2. Open `app.json` and edit the `ios.bundleIdentifier` value to be unique.
+
+3. After running the "Install and build" step above, open `ios/EVIExample.xcworkspace` in XCode, select a development team in the Signing & Capabilities editor, and ensure the Signing Certificate is automatically set.
+
+4. Run the dev server
+    ```shell
+    npm run ios:device
+    ```
+
 ## 📝 Notes
 * **Echo cancellation**. Echo cancellation is important for a good user experience using EVI. Without echo cancellation, EVI will detect its own speech as user interruptions, and will cut itself off and become incoherent. 
   * Echo cancellation doesn't seem to work using the iOS simulator when forwarding audio from the host.

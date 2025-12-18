@@ -6,9 +6,8 @@ from dotenv import load_dotenv
 from typing import Union
 import httpx
 from hume.client import AsyncHumeClient
-from hume.empathic_voice.chat.socket_client import ChatConnectOptions, ChatWebsocketConnection
-from hume.empathic_voice.chat.types import SubscribeEvent
-from hume.empathic_voice import UserInput, ToolCallMessage, ToolErrorMessage, ToolResponseMessage
+from hume.empathic_voice.chat.socket_client import ChatConnectOptions, AsyncChatSocketClient
+from hume.empathic_voice import SubscribeEvent, UserInput, ToolCallMessage, ToolErrorMessage, ToolResponseMessage
 from hume.core.api_error import ApiError
 from hume import MicrophoneInterface, Stream
 from utils import print_prompt, extract_top_n_emotions, print_emotion_scores
@@ -21,7 +20,7 @@ class WebSocketHandler:
         self.socket = None
         self.byte_strs = Stream.new()
 
-    def set_socket(self, socket: ChatWebsocketConnection):
+    def set_socket(self, socket: AsyncChatSocketClient):
         """Set the socket.
         
         This method assigns the provided asynchronous WebSocket connection
@@ -29,7 +28,7 @@ class WebSocketHandler:
         establishing a connection using the client's connect method.
 
         Args:
-            socket (ChatWebsocketConnection): EVI asynchronous WebSocket returned by the client's connect method.
+            socket (AsyncChatSocketClient): EVI asynchronous WebSocket returned by the client's connect method.
         """
         self.socket = socket
 
@@ -275,7 +274,7 @@ async def fetch_weather(location: str, format: str) -> str:
         forecast = json.dumps(periods, indent=2)
         return forecast
 
-async def sending_handler(socket: ChatWebsocketConnection):
+async def sending_handler(socket: AsyncChatSocketClient):
     """Handle sending a message over the socket.
 
     This method waits 3 seconds and sends a UserInput message, which takes a `text` parameter as input.
@@ -284,7 +283,7 @@ async def sending_handler(socket: ChatWebsocketConnection):
     See the full list of messages to send [here](https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat#send).
 
     Args:
-        socket (ChatWebsocketConnection): The WebSocket connection used to send messages.
+        socket (AsyncChatSocketClient): The WebSocket connection used to send messages.
     """
     # Wait 3 seconds before executing the rest of the method
     await asyncio.sleep(3)

@@ -1,169 +1,171 @@
-from contextlib import contextmanager
-import os
-import time
 import asyncio
 import base64
-import tempfile
-from pathlib import Path
-from typing import Generator, Protocol
+import os
+import time
 from hume import AsyncHumeClient
 from hume.tts import (
-    FormatPcm,
-    PostedContextWithGenerationId,
     PostedUtterance,
     PostedUtteranceVoiceWithName,
+    PostedContextWithGenerationId,
+    PublishTts,
 )
-
-import aiofiles
-
+from hume.empathic_voice.chat.audio.audio_utilities import (
+    play_audio_streaming,
+    play_audio,
+)
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Initialize the Hume client using your API key and the test environment URL.
-api_key = os.getenv("HUME_API_KEY")
+# Initialize the Hume client
+api_key = os.getenv("TEST_HUME_API_KEY") or os.getenv("HUME_API_KEY")
 if not api_key:
-    raise EnvironmentError("HUME_API_KEY not found in environment variables.")
+    raise EnvironmentError("HUME_API_KEY or TEST_HUME_API_KEY not found in environment variables.")
 
 hume = AsyncHumeClient(api_key=api_key)
 
-# Create an output directory in the temporary folder.
-timestamp = int(time.time() * 1000)  # similar to Date.now() in JavaScript
-output_dir = Path(tempfile.gettempdir()) / f"hume-audio-{timestamp}"
+
+# Example 1: Using a pre-existing voice.
+#
+# Use this method if you want to synthesize speech with a high-quality voice from
+# Hume's Voice Library, or specify `provider: 'CUSTOM_VOICE'` to use a voice that
+# you created previously via the Hume Platform or the API.
+
+utterance = PostedUtterance(
+    text="Dogs became domesticated between 23,000 and 30,000 years ago.",
+    voice=PostedUtteranceVoiceWithName(name="Ava Song", provider="HUME_AI"),
+)
+
+example1_request_params = {
+    "utterances": [utterance],
+    "strip_headers": True,
+}
 
 
-async def write_result_to_file(base64_encoded_audio: str, filename: str) -> None:
-    """
-    Writes the base64-decoded audio from a generation to a .wav file.
-    """
-    file_path = output_dir / f"{filename}.wav"
-    # Decode the base64-encoded audio data (similar to Buffer.from(..., "base64"))
-    audio_data = base64.b64decode(base64_encoded_audio)
-    async with aiofiles.open(file_path, "wb") as f:
-        await f.write(audio_data)
-    print("Wrote", file_path)
+async def example1():
+    print("Example 1: Synthesizing audio using a pre-existing voice...")
+
+    stream = hume.tts.synthesize_json_streaming(**example1_request_params)
+
+    await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream if chunk.type == "audio")
 
 
-async def main() -> None:
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    print("Results will be written to", output_dir)
-
-    # Synthesizing speech with a new voice
-    speech1 = await hume.tts.synthesize_json(
+# Example 2: Voice Design.
+#
+# This method demonstrates how you can create a custom voice via the API.
+# First, synthesize speech by specifying a `description` prompt and characteristic
+# sample text. Specify the generation_id of the resulting audio in a subsequent
+# call to create a voice. Then, future calls to tts endpoints can specify the
+# voice by name or generation_id.
+async def example2():
+    result1 = await hume.tts.synthesize_json(
         utterances=[
             PostedUtterance(
-                description="A refined, British aristocrat",
-                text="Take an arrow from the quiver.",
-            )
-        ]
-    )
-    await write_result_to_file(speech1.generations[0].audio, "speech1_0")
-
-    name = f"aristocrat-{int(time.time())}"
-    # Naming the voice and saving it to your voice library
-    # for later use
-    generation_id = speech1.generations[0].generation_id
-    await hume.tts.voices.create(
-        name=name, generation_id=generation_id
-    )
-
-    # Continuing previously-generated speech
-    speech2 = await hume.tts.synthesize_json(
-        utterances=[
-            PostedUtterance(
-                # Using a voice from your voice library
-                voice=PostedUtteranceVoiceWithName(name=name),
-                text="Now take a bow.",
+                description="Crisp, upper-class British accent with impeccably articulated consonants and perfectly placed vowels. Authoritative and theatrical, as if giving a lecture.",
+                text="The science of speech. That's my profession; also my hobby. Happy is the man who can make a living by his hobby!",
             )
         ],
-        # Providing previous context to maintain consistency.
-        # This should cause "bow" to rhyme with "toe" and not "cow".
-        context=PostedContextWithGenerationId(generation_id=generation_id),
         num_generations=2,
     )
 
-    await write_result_to_file(speech2.generations[0].audio, "speech2_0")
-    await write_result_to_file(speech2.generations[1].audio, "speech2_1")
+    print("Example 2: Synthesizing voice options for voice creation...")
+    sample_number = 1
 
-    # Acting instructions: modulating the speech from a previously-generated voice
-    speech3 = await hume.tts.synthesize_json(
+    for generation in result1.generations:
+        print(f"Playing option {sample_number}...")
+        audio_data = base64.b64decode(generation.audio)
+
+        await play_audio(audio_data)
+        sample_number += 1
+
+    # Prompt user to select which voice they prefer
+    print("\nWhich voice did you prefer?")
+    print("1. First voice (generation ID:", result1.generations[0].generation_id, ")")
+    print("2. Second voice (generation ID:", result1.generations[1].generation_id, ")")
+
+    # For automated testing, select option 1
+    try:
+        user_choice = input("Enter your choice (1 or 2): ").strip()
+    except EOFError:
+        # If no input available (like in automated testing), default to option 1
+        user_choice = "1"
+        print("No input available, selecting option 1")
+
+    selected_index = int(user_choice) - 1
+
+    if selected_index not in [0, 1]:
+        raise ValueError("Invalid choice. Please select 1 or 2.")
+
+    selected_generation_id = result1.generations[selected_index].generation_id
+    print(f"Selected voice option {selected_index + 1} (generation ID: {selected_generation_id})")
+
+    # Save the selected voice
+    voice_name = f"higgins-{int(time.time() * 1000)}"
+    await hume.tts.voices.create(
+        name=voice_name,
+        generation_id=selected_generation_id,
+    )
+
+    print(f"Created voice: {voice_name}")
+    print("\nContinuing speech with the selected voice...")
+
+    stream = hume.tts.synthesize_json_streaming(
         utterances=[
             PostedUtterance(
-                voice=PostedUtteranceVoiceWithName(name=name),
-                description="Murmured softly, with a heavy dose of sarcasm and contempt",
-                text="Does he even know how to use that thing?",
+                voice=PostedUtteranceVoiceWithName(name=voice_name),
+                text="YOU can spot an Irishman or a Yorkshireman by his brogue. I can place any man within six miles. I can place him within two miles in London. Sometimes within two streets.",
+                description="Bragging about his abilities",
             )
         ],
         context=PostedContextWithGenerationId(
-            generation_id=speech2.generations[0].generation_id
+            # This demonstrates the "continuation" feature. You can specify the
+            # generationId of previous speech that the speech in this request is
+            # meant to follow, to make it sound natural when the speech is played
+            generation_id=selected_generation_id
         ),
-        num_generations=1,
+        strip_headers=True,
     )
-    await write_result_to_file(speech3.generations[0].audio, "speech3_0")
 
-    # Audio player setup for streaming playback
-    # This is only needed for the streaming example below
-    class AudioPlayer(Protocol):
-        def send_audio(self, audio_bytes: bytes) -> None:
-            pass
-        def close(self) -> None:
-            pass
+    await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream if chunk.type == "audio")
 
-    class PyaudioPlayer(AudioPlayer):
-        def __init__(self, stream):
-            self.stream = stream
 
-        def send_audio(self, audio_bytes: bytes) -> None:
-            self.stream.write(audio_bytes)
+# Example 3: Bidirectional streaming
+# This example uses the SDK's stream_input.connect() method to
+# connect to the /v0/tts/stream/input endpoint.
+async def example3():
+    assert api_key, "HUME_API_KEY or TEST_HUME_API_KEY not found in environment variables."
+    async with hume.tts.stream_input.connect(version="1", no_binary=True, strip_headers=True) as stream:
 
-        def close(self):
-            self.stream.stop_stream()
-            self.stream.close()
-
-    class DummyAudioPlayer(AudioPlayer):
-        def send_audio(self, audio_bytes: bytes) -> None:
-            print("Skipping playing back audio chunk...")
-
-        def close(self) -> None:
-            pass
-
-    @contextmanager
-    def get_audio_player() -> Generator[AudioPlayer]:
-        try:
-            import pyaudio
-            audio = pyaudio.PyAudio()
-            stream = audio.open(
-                format=audio.get_format_from_width(2),
-                channels=1,
-                rate=48000,
-                output=True,
+        async def send_input():
+            print("Sending TTS messages...")
+            await stream.send_publish(
+                PublishTts(
+                    text="Hello",
+                    voice=PostedUtteranceVoiceWithName(name="Ava Song", provider="HUME_AI"),
+                )
             )
-            yield PyaudioPlayer(stream)
-        except ImportError:
-            print("Skipping audio playback. Install pyaudio to enable playback.")
-            yield DummyAudioPlayer()
+            await stream.send_publish(PublishTts(text=" world."))
+            # The whitespace             ^ is important
+            # Otherwise the model would see "Helloworld." and not "Hello world."
+            await stream.send_publish(PublishTts(flush=True))
+            print("Waiting 8 seconds...")
+            await asyncio.sleep(8)
+            await stream.send_publish(PublishTts(text="Goodbye, world."))
+            await stream.send_publish(PublishTts(flush=True))
+            print("Closing stream...")
+            await stream.send_publish(PublishTts(close=True))
 
-    # Streaming example with audio playback
-    print("Streaming audio...")
-    with get_audio_player() as player:
-        async for snippet in hume.tts.synthesize_json_streaming(
-            context=PostedContextWithGenerationId(
-                generation_id=speech3.generations[0].generation_id,
-            ),
-            utterances=[
-                PostedUtterance(text="He's drawn the bow..."),
-                PostedUtterance(text="he's fired the arrow..."),
-                PostedUtterance(text="I can't believe it! A perfect bullseye!")
-            ],
-            # Uncomment to reduce latency to < 500ms, at a 10% higher cost
-            # instant_mode=True,
-            format=FormatPcm(type="pcm"),
-        ):
-            player.send_audio(base64.b64decode(snippet.audio))
+        async def handle_messages():
+            await play_audio_streaming(base64.b64decode(chunk.audio) async for chunk in stream)
+
+        await asyncio.gather(handle_messages(), send_input())
+
+
+async def main():
+    await example1()
+    await example2()
+    await example3()
 
 
 if __name__ == "__main__":
-    print("Starting...")
     asyncio.run(main())
-    print("Done")

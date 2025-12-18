@@ -26,10 +26,14 @@ Whether you're using Python, TypeScript, Flutter, or Next.js, there's something 
 
 ## [Text-to-Speech (TTS)](https://dev.hume.ai/docs/text-to-speech-tts/overview)
 
-| Name                                                                                    | Language   | Framework       |
-| --------------------------------------------------------------------------------------- | ---------- | --------------- |
-| [`tts-python-quickstart`](/tts/tts-python-quickstart/README.md)                         | Python     |                 |
-| [`tts-typescript-quickstart`](/tts/tts-typescript-quickstart/README.md)                 | TypeScript |                 |
+| Name                                                                                       | Language   | Framework       |
+| ------------------------------------------------------------------------------------------ | ---------- | --------------- |
+| [`tts-next-js-chat`](/tts/tts-next-js-chat/README.md)                                      | TypeScript | Next.js         |
+| [`tts-next-js-vercel-ai-sdk`](/tts/tts-next-js-vercel-ai-sdk/README.md)                    | TypeScript | Next.js         |
+| [`tts-python-livekit`](/tts/tts-python-livekit/README.md)                                  | Python     | LiveKit         |
+| [`tts-python-quickstart`](/tts/tts-python-quickstart/README.md)                            | Python     |                 |
+| [`tts-typescript-quickstart`](/tts/tts-typescript-quickstart/README.md)                    | TypeScript |                 |
+| [`tts-typescript-lipsync`](/tts/tts-typescript-lipsync/README.md)                          | TypeScript |                 |
 
 ## [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview)
 
@@ -40,6 +44,7 @@ Whether you're using Python, TypeScript, Flutter, or Next.js, there's something 
 | [`evi-next-js-pages-router-quickstart`](/evi/evi-next-js-pages-router-quickstart/README.md)| TypeScript | Next.js         |
 | [`evi-next-js-function-calling`](/evi/evi-next-js-function-calling/README.md)              | TypeScript | Next.js         |
 | [`evi-prompting-examples`](/evi/evi-prompting-examples/README.md)                          |            |                 |
+| [`evi-proxy`](/evi/evi-proxy/README.md)                                                    |            |                 |
 | [`evi-python-chat-history`](/evi/evi-python-chat-history/README.md)                        | Python     |                 |
 | [`evi-python-clm-sse`](/evi/evi-python-clm-sse/README.md)                                  | Python     |                 |
 | [`evi-python-clm-wss`](/evi/evi-python-clm-wss/README.md)                                  | Python     |                 |
@@ -67,7 +72,7 @@ Whether you're using Python, TypeScript, Flutter, or Next.js, there's something 
 
 ## Authentication & Setup
 
- You must authenticate to use the Hume API. Your API key can be retrieved from the [Hume AI platform](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+ You must authenticate to use the Hume API. Your API key can be retrieved from the [Hume AI platform](https://app.hume.ai/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
 
  Each example project includes a `README.md` file with step-by-step instructions on:
  - Setting your API key (usually via environment variables)

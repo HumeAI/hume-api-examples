@@ -6,6 +6,8 @@
   </p>
 </div>
 
+![preview.png](preview.png)
+
 ## Overview
 
 This project features a sample implementation of Hume's [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) using Hume's [Typescript SDK](https://github.com/HumeAI/hume-typescript-sdk). It demonstrates how to authenticate, connect to, and display output from EVI in a frontend web application.
@@ -70,3 +72,11 @@ This implementation of Hume's Empathic User Interface (EVI) is minimal, using de
 2. Upon clicking `Start`, you will be prompted for permissions to use your microphone. Grant the permission to the application to continue.
 3. Once permission is granted, you can begin speaking with the interface. The transcript of the conversation will be displayed on the webpage in realtime.
 4. Click `Stop` when finished speaking with the interface to stop audio capture and to disconnect the Web Socket.
+
+## Example 1: Switching Voice Mid-Chat
+
+Starting September 2025, Hume allows switching voiceId (and many other [Session Settings](https://dev.hume.ai/reference/speech-to-speech-evi/chat#send.SessionSettings)) mid-chat.
+
+To see it in action, uncomment the code under "Example 1: Voice Switching Mid - Chat" in `src/main.ts` and `index.html`.
+
+Click the `Switch Voice` button to switch between different voice IDs defined in `main.ts` while preserving the context of the conversation.

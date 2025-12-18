@@ -47,11 +47,15 @@ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/f
 
    ```json
    {
-     "evi_version": "2",
+     "evi_version": "3",
      "name": "Weather Assistant Config",
+     "voice": {
+      "name": "Male English Actor",
+      "provider": "HUME_AI"
+     },
      "language_model": {
        "model_provider": "ANTHROPIC",
-       "model_resource": "claude-3-7-sonnet-latest"
+       "model_resource": "claude-sonnet-4-5-20250929"
      },
      "tools": [
        {
@@ -64,15 +68,18 @@ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/f
    Sample cURL Request
 
    ```cURL
-   curl -X POST https://api.hume.ai/v0/evi/configs \
+   curl https://api.hume.ai/v0/evi/configs \
       -H "X-Hume-Api-Key: <YOUR_API_KEY>" \
-      -H "Content-Type: application/json" \
-      -d '{
-         "evi_version": "2",
+      --json '{
+         "evi_version": "3",
          "name": "Weather Assistant Config",
+         "voice": {
+            "name": "Male English Actor",
+            "provider": "HUME_AI"
+         },
          "language_model": {
             "model_provider": "ANTHROPIC",
-            "model_resource": "claude-3-7-sonnet-latest"
+            "model_resource": "claude-sonnet-4-5-20250929"
          },
          "tools": [
             {
@@ -99,7 +106,7 @@ See the [Tool Use guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/f
 
 3. Set up your API key and Secret key:
 
-   In order to make an authenticated connection we will first need to generate an access token. Doing so will require your API key and Secret key. These keys can be obtained by logging into the Hume AI Platform and visiting the [API keys page](https://platform.hume.ai/settings/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
+   In order to make an authenticated connection we will first need to generate an access token. Doing so will require your API key and Secret key. These keys can be obtained by logging into the Hume AI Platform and visiting the [API keys page](https://app.hume.ai/keys). For detailed instructions, see our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
 
    Place your `HUME_API_KEY` and `HUME_SECRET_KEY` in a `.env` file at the root of your project.
 

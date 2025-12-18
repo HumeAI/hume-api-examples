@@ -1,0 +1,15 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/.venv/lib/python3.13/site-packages"
+  ],
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticMode": "workspace",
+  "python.languageServer": "Pylance",
+  "isort.interpreter": [
+    "${workspaceFolder}/.venv/bin/python"
+  ],
+  "python.terminal.activateEnvironment": true
+}

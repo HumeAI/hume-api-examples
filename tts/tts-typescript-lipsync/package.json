@@ -1,0 +1,23 @@
+{
+  "name": "tts-typescript-timestamps",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "dist": "^0.1.2",
+    "hume": "^0.15.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

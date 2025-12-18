@@ -5,6 +5,7 @@ import Messages from "./Messages";
 import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { ComponentRef, useRef } from "react";
+import { setLlmKeyForChat } from '@/app/actions/set-llm-key';
 
 export default function ClientComponent({
   accessToken,
@@ -21,9 +22,7 @@ export default function ClientComponent({
       }
     >
       <VoiceProvider
-        // configId="YOUR_CONFIG_ID"
-        auth={{ type: "accessToken", value: accessToken }}
-        onMessage={() => {
+        onMessage={async (msg) => {
           if (timeout.current) {
             window.clearTimeout(timeout.current);
           }
@@ -38,11 +37,16 @@ export default function ClientComponent({
               });
             }
           }, 200);
+
+          // Securely set your own API key server-side for supplemental LLM (if applicable)
+          if (msg.type === "chat_metadata" && msg.chatId) {
+            await setLlmKeyForChat(msg.chatId);
+          }
         }}
       >
         <Messages ref={ref} />
         <Controls />
-        <StartCall />
+        <StartCall accessToken={accessToken} />
       </VoiceProvider>
     </div>
   );

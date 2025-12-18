@@ -18,107 +18,66 @@ The Hume Python SDK supports Python versions `3.9`, `3.10`, and `3.11` on macOS 
 
 It does not currently support Windows. Windows developers can use our [Python Raw API Example](/evi/python/evi-python-raw-api/README.md) to work directly with the [EVI WebSocket API](https://dev.hume.ai/reference/empathic-voice-interface-evi/chat/chat).
 
-## Setup Instructions
+## Quickstart
 
-1. Clone this examples repository:
+Visit the [API keys page](https://app.hume.ai/keys) on the Hume Platform to retrieve your API keys. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key). Then, follow the steps below:
 
-   ```shell
-   git clone https://github.com/humeai/hume-api-examples
-   cd hume-api-examples/evi/evi-python-quickstart
-   ```
+```shell
+# 1. Clone the examples repo
+git clone https://github.com/humeai/hume-api-examples
+# 2. Navigate to this example project
+cd hume-api-examples/evi/evi-python-quickstart
 
-2. Set up a virtual environment (Optional):
+# 3a. With the `uv` package manager (recommended)
+uv sync
+uv run quickstart.py
 
-   It's recommended to isolate dependencies in a virtual environment. Choose one of the following methods:
+# 3b. Or, use pip
+pip install python-dotenv
+pip install "hume[microphone]>=0.13.5"
 
-   - **Using `conda`** (requires [Miniconda](https://docs.anaconda.com/miniconda/) or [Anaconda](https://www.anaconda.com/)):
+# 4. Copy the .env.example file to .env
+cp .env.example .env
+# Open the file and add your Hume API Key
+```
+   
+## System dependencies
 
-     ```bash
-     conda create --name evi-env python=3.11
-     conda activate evi-env
-     ```
+### macOS
 
-   - **Using built-in `venv`** (available with Python 3.3+):
+To ensure audio playback functionality, you will need to install `ffmpeg`, a powerful multimedia framework that handles audio and video processing.
 
-     ```bash
-     python -m venv evi-env
-     source evi-env/bin/activate
-     ```
+One of the most common ways to install `ffmpeg` on macOS is by using [Homebrew](https://brew.sh/). Homebrew is a popular package manager for macOS that simplifies the installation of software by automating the process of downloading, compiling, and setting up packages.
 
-   After activating the environment, proceed with installing dependencies.
+To install `ffmpeg` using Homebrew, follow these steps:
 
-3. Set up environment variables:
+1. Install Homebrew onto your system according to the instructions on the [Homebrew website](https://brew.sh/).
 
-   This project uses `python-dotenv` to load your API credentials securely from a `.env` file.
-
-   1. Install the package:
-
-      ```bash
-      pip install python-dotenv
-      ```
-
-   2. Copy the `.env.example` file to use as a template:
-
-      ```shell
-      cp .env.example .env
-      ```
-
-   3. Place your API keys inside:
-
-      - Visit the [API keys page](https://platform.hume.ai/settings/keys) on the Hume Platform to retrieve your API keys. See our documentation on [getting your api keys](https://dev.hume.ai/docs/introduction/api-key).
-      - Upon doing so, the `.env` file becomes a persistent local store of your API key, Secret key, and EVI config ID. The `.gitignore` file contains local env file paths so that they are not committed to GitHub.
-
-   4. Create an EVI configuration and place its config ID inside:
-
-      - See our [configuration guide](https://dev.hume.ai/docs/empathic-voice-interface-evi/configuration/build-a-configuration).
-
-   (Note: `.env` is a hidden file so on Mac you would need to hit `COMMAND-SHIFT .` to make it viewable in the finder).
-
-4. Install the required packages and system dependencies:
-
-   The `hume` package contains Hume's Python SDK, including the asynchronous WebSocket infrastructure for using EVI. To install it, run:
-
+2. Once Homebrew is installed, you can install `ffmpeg` with:
    ```bash
-   pip install "hume[microphone]"
+   brew install ffmpeg
    ```
 
-   For audio playback and processing, additional system-level dependencies are required. Below are download instructions for each supported operating system:
+If you prefer not to use Homebrew, you can download a pre-built `ffmpeg` binary directly from the [FFmpeg website](https://ffmpeg.org/download.html) or use other package managers like [MacPorts](https://www.macports.org/).
 
-   #### macOS
+### Linux
 
-   To ensure audio playback functionality, you will need to install `ffmpeg`, a powerful multimedia framework that handles audio and video processing.
+On Linux systems, you will need to install a few additional packages to support audio input/output and playback:
 
-   One of the most common ways to install `ffmpeg` on macOS is by using [Homebrew](https://brew.sh/). Homebrew is a popular package manager for macOS that simplifies the installation of software by automating the process of downloading, compiling, and setting up packages.
+- `libasound2-dev`: This package contains development files for the ALSA (Advanced Linux Sound Architecture) sound system.
+- `libportaudio2`: PortAudio is a cross-platform audio I/O library that is essential for handling audio streams.
+- `ffmpeg`: Required for processing audio and video files.
 
-   To install `ffmpeg` using Homebrew, follow these steps:
+To install these dependencies, use the following commands:
 
-   1. Install Homebrew onto your system according to the instructions on the [Homebrew website](https://brew.sh/).
+```bash
+sudo apt-get --yes update
+sudo apt-get --yes install libasound2-dev libportaudio2 ffmpeg
+```
 
-   2. Once Homebrew is installed, you can install `ffmpeg` with:
-      ```bash
-      brew install ffmpeg
-      ```
+### Windows
 
-   If you prefer not to use Homebrew, you can download a pre-built `ffmpeg` binary directly from the [FFmpeg website](https://ffmpeg.org/download.html) or use other package managers like [MacPorts](https://www.macports.org/).
-
-   #### Linux
-
-   On Linux systems, you will need to install a few additional packages to support audio input/output and playback:
-
-   - `libasound2-dev`: This package contains development files for the ALSA (Advanced Linux Sound Architecture) sound system.
-   - `libportaudio2`: PortAudio is a cross-platform audio I/O library that is essential for handling audio streams.
-   - `ffmpeg`: Required for processing audio and video files.
-
-   To install these dependencies, use the following commands:
-
-   ```bash
-   sudo apt-get --yes update
-   sudo apt-get --yes install libasound2-dev libportaudio2 ffmpeg
-   ```
-
-   #### Windows
-
-   Not yet supported.
+Not yet supported.
 
 ## Run the project
 

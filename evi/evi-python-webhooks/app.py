@@ -1,12 +1,16 @@
+import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
+from starlette.responses import JSONResponse
+from hume.client import AsyncHumeClient
+from hume.empathic_voice.control_plane.client import AsyncControlPlaneClient
 from hume.empathic_voice.types import (
     WebhookEvent,
     WebhookEventChatStarted,
-    WebhookEventChatEnded
+    WebhookEventChatEnded,
+    WebhookEventToolCall
 )
-from starlette.responses import JSONResponse
-from utils import get_chat_transcript, validate_headers
+from utils import fetch_weather_tool, get_chat_transcript, validate_headers
 import uvicorn
 
 # load environment variables
@@ -14,6 +18,10 @@ load_dotenv()
 
 # FastAPI app instance
 app = FastAPI()
+
+# Instantiate the Hume clients
+client = AsyncHumeClient(api_key=os.getenv("HUME_API_KEY"))
+control_plane_client = AsyncControlPlaneClient(client_wrapper=client._client_wrapper)
 
 @app.post("/hume-webhook")
 async def hume_webhook_handler(request: Request, event: WebhookEvent):
@@ -35,19 +43,25 @@ async def hume_webhook_handler(request: Request, event: WebhookEvent):
         raise HTTPException(status_code=401, detail=str(e))
 
     if isinstance(event, WebhookEventChatStarted):
-        # Process chat_started event
         print(f"Processing chat_started event: {event.dict()}")
 
         # Add additional chat_started processing logic here as needed
 
     elif isinstance(event, WebhookEventChatEnded):
-        # Process chat_ended event
         print(f"Processing chat_ended event: {event.dict()}")
 
         # Fetch Chat events, construct a Chat transcript, and write transcript to a file
-        await get_chat_transcript(event.chat_id)
+        await get_chat_transcript(client, event.chat_id)
 
         # Add additional chat_ended processing logic here as needed
+    
+    elif isinstance(event, WebhookEventToolCall):
+        print(f"Processing tool_call event: {event.dict()}")
+
+        # Handle the specific tool call for fetching the current weather
+        await fetch_weather_tool(control_plane_client, event.chat_id, event.tool_call_message)
+
+        # Add additional tool_call processing logic here as needed
 
 # Run the Uvicorn server
 if __name__ == "__main__":

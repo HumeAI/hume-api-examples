@@ -1,0 +1,30 @@
+# Python internals
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.so
+*.dylib
+
+#  Virtual-environment directories
+.venv/
+venv/
+env/
+
+#  Secrets & local config
+.env
+
+#  Build / packaging artefacts
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+#  Logs & runtime files
+*.log
+logs/
+
+#  OS-specific noise
+.DS_Store
+Thumbs.db

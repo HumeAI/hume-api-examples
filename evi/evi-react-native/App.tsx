@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   LayoutAnimation,
 } from "react-native";
-import { useEvent } from 'expo'
 
 // We use Hume's low-level typescript SDK for this example.
 // The React SDK (@humeai/voice-react) does not support React Native.
@@ -22,6 +21,7 @@ import { HumeClient, type Hume } from "hume";
 // The provided native module is a good starting place, but you should
 // modify it to fit the audio recording needs of your specific app.
 import NativeAudio, { AudioEventPayload } from "./modules/audio";
+import VoiceIsolationModePrompt from "./VoiceIsolationModePrompt";
 
 // Represents a chat message in the chat display.
 interface ChatEntry {
@@ -55,6 +55,8 @@ const App = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [chatEntries, setChatEntries] = useState<ChatEntry[]>([]);
+  const [showVoiceIsolationPrompt, setShowVoiceIsolationPrompt] = useState(false);
+  const [currentMicMode, setCurrentMicMode] = useState("Standard");
   const humeRef = useRef<HumeClient | null>(null);
   const addChatEntry = (entry: ChatEntry) => {
     setChatEntries((prev) => [...prev, entry]);
@@ -85,9 +87,22 @@ const App = () => {
     await startClient();
     const hume = humeRef.current!;
     try {
-      await NativeAudio.getPermissions();
+      const hasPermission = await NativeAudio.getPermissions();
+      if (!hasPermission) {
+        console.error("Microphone permission denied");
+        return;
+      }
     } catch (error) {
       console.error("Failed to get permissions:", error);
+      return;
+    }
+
+    const micMode = await NativeAudio.getMicrophoneMode();
+    setCurrentMicMode(micMode);
+
+    if (micMode !== "N/A" && micMode !== "Voice Isolation") {
+      setShowVoiceIsolationPrompt(true);
+      return
     }
 
     const chatSocket = hume.empathicVoice.chat.connect({
@@ -137,50 +152,42 @@ const App = () => {
   };
 
   const handleDisconnect = async () => {
+    if (chatSocketRef.current) {
+      chatSocketRef.current.close();
+      chatSocketRef.current = null;
+    }
     try {
       await NativeAudio.stopRecording();
-      await NativeAudio.stopPlayback();
     } catch (error) {
       console.error("Error while stopping recording", error);
     }
-    if (chatSocketRef.current) {
-      chatSocketRef.current.close();
-    }
+
+    await NativeAudio.stopPlayback();
   };
 
   useEffect(() => {
     if (isConnected) {
-      handleConnect().catch((error) => {
-        console.error("Error while connecting:", error);
-      });
+      handleConnect()
     } else {
-      handleDisconnect().catch((error) => {
-        console.error("Error while disconnecting:", error);
-      });
+      handleDisconnect()
     }
     const onUnmount = () => {
-      NativeAudio.stopRecording().catch((error: any) => {
-        console.error("Error while stopping recording", error);
-      });
-      if (
-        chatSocketRef.current &&
-        chatSocketRef.current.readyState === WebSocket.OPEN
-      ) {
-        chatSocketRef.current?.close();
+      if (chatSocketRef.current) {
+        chatSocketRef.current.close();
+        chatSocketRef.current = null;
       }
+
+      NativeAudio.stopRecording();
+      NativeAudio.stopPlayback();
     };
     return onUnmount;
   }, [isConnected]);
 
   useEffect(() => {
     if (isMuted) {
-      NativeAudio.mute().catch((error) => {
-        console.error("Error while muting", error);
-      });
+      NativeAudio.mute();
     } else {
-      NativeAudio.unmute().catch((error) => {
-        console.error("Error while unmuting", error);
-      });
+      NativeAudio.unmute();
     }
   }, [isMuted]);
 
@@ -241,6 +248,7 @@ const App = () => {
       case "tool_call":
       case "tool_error":
       case "tool_response":
+      case "assistant_prosody":
         console.log(`Received unhandled message type: ${message.type}`);
         break;
       default:
@@ -284,6 +292,12 @@ const App = () => {
           />
         </View>
       </SafeAreaView>
+
+      <VoiceIsolationModePrompt
+        isVisible={showVoiceIsolationPrompt}
+        currentMode={currentMicMode}
+        onDismiss={() => setShowVoiceIsolationPrompt(false)}
+      />
     </View>
   );
 };

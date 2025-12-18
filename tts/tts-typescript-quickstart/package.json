@@ -1,22 +1,30 @@
 {
   "name": "tts-typescript-quickstart",
+  "private": true,
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "npm run build && npm run start"
+    "dev": "vite-node index.ts",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "format": "prettier --write \"**/*.{ts,tsx}\""
   },
-  "author": "",
-  "license": "ISC",
-  "description": "<div align=\"center\">   <img src=\"https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png\">   <h1>Text-to-Speech | TypeScript Quickstart</h1>   <p>     <strong>Jumpstart your development with Hume's OCTAVE TTS API!</strong>   </p> </div>",
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "hume": "^0.10.1"
+    "@types/ws": "^8.18.1",
+    "hume": "^0.15.9",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
-    "typescript": "^5.8.3"
+    "prettier": "^3.6.2",
+    "typescript": "^5.8.3",
+    "vite": "^5.1.4",
+    "vite-node": "^3.2.4",
+    "vitest": "^3.2.4"
   },
-  "keywords": []
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.17.1+sha512.17c560fca4867ae9473a3899ad84a88334914f379be46d455cbf92e5cf4b39d34985d452d2583baf19967fa76cb5c17bc9e245529d0b98745721aa7200ecaf7a"
 }
