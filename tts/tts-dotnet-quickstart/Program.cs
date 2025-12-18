@@ -330,7 +330,10 @@ class Program
                 {
                     try
                     {
-                        var silenceInterval = TimeSpan.FromMilliseconds(SilenceChunkMs);
+                        var lastAudioTime = DateTime.UtcNow;
+                        var silenceThreshold = TimeSpan.FromMilliseconds(100); // Only fill silence after 100ms gap
+                        var pollInterval = TimeSpan.FromMilliseconds(5); // Check for new audio frequently
+                        
                         while (!_silenceFillerCts.Token.IsCancellationRequested && _audioProcess?.HasExited == false)
                         {
                             // Try to get audio data from the queue
@@ -339,13 +342,18 @@ class Program
                                 // Write actual audio
                                 await _audioProcess.StandardInput.BaseStream.WriteAsync(audioBytes, _silenceFillerCts.Token);
                                 await _audioProcess.StandardInput.BaseStream.FlushAsync(_silenceFillerCts.Token);
+                                lastAudioTime = DateTime.UtcNow;
                             }
                             else
                             {
-                                // No audio available, write silence to maintain stream continuity
-                                await _audioProcess.StandardInput.BaseStream.WriteAsync(SilenceChunk, _silenceFillerCts.Token);
-                                await _audioProcess.StandardInput.BaseStream.FlushAsync(_silenceFillerCts.Token);
-                                await Task.Delay(silenceInterval, _silenceFillerCts.Token);
+                                // Only write silence if there's been a significant gap (no audio for 100ms+)
+                                var timeSinceLastAudio = DateTime.UtcNow - lastAudioTime;
+                                if (timeSinceLastAudio >= silenceThreshold)
+                                {
+                                    await _audioProcess.StandardInput.BaseStream.WriteAsync(SilenceChunk, _silenceFillerCts.Token);
+                                    await _audioProcess.StandardInput.BaseStream.FlushAsync(_silenceFillerCts.Token);
+                                }
+                                await Task.Delay(pollInterval, _silenceFillerCts.Token);
                             }
                         }
                     }
