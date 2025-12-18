@@ -192,7 +192,7 @@ class Program
     {
         Console.WriteLine("Example 3: Bidirectional streaming...");
 
-        using var streamingTtsClient = new StreamingTtsClient(_apiKey!, enableDebugLogging: true);
+        using var streamingTtsClient = new StreamingTtsClient(_apiKey!);
         await streamingTtsClient.ConnectAsync();
 
         // Use silence filler mode for bidirectional streaming to handle gaps between utterances.
