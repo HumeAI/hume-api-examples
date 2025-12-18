@@ -67,8 +67,8 @@ class Program
             Provider = new VoiceProvider(Hume.Tts.VoiceProvider.Values.HumeAi)
         };
 
-        using var streamingPlayer = StartAudioPlayer();
-        await streamingPlayer.StartStreamingAsync();
+        using var player = StartAudioPlayer();
+        await player.StartAsync();
 
         var ttsRequest = new PostedTts
         {
@@ -82,8 +82,8 @@ class Program
             StripHeaders = true,
         };
 
-        await StreamAudioToPlayerAsync(_client!.Tts.SynthesizeJsonStreamingAsync(ttsRequest), streamingPlayer);
-        await streamingPlayer.StopStreamingAsync();
+        await StreamAudioToPlayerAsync(_client!.Tts.SynthesizeJsonStreamingAsync(ttsRequest), player);
+        await player.StopAsync();
         Console.WriteLine("Done!");
     }
 
@@ -115,17 +115,17 @@ class Program
 
         Console.WriteLine("Example 2: Synthesizing voice options for voice creation...");
         using var audioPlayer = StartAudioPlayer();
-        await audioPlayer.StartStreamingAsync();
+        await audioPlayer.StartAsync();
 
         int sampleNumber = 1;
         var generationsList = result1.Generations.ToList();
         foreach (var generation in generationsList)
         {
-            await audioPlayer.SendAudioAsync(Convert.FromBase64String(generation.Audio));
+            audioPlayer.WriteAudio(Convert.FromBase64String(generation.Audio));
             Console.WriteLine($"Playing option {sampleNumber}...");
             sampleNumber++;
         }
-        await audioPlayer.StopStreamingAsync();
+        await audioPlayer.StopAsync();
 
         // Prompt user to select which voice they prefer
         Console.WriteLine("\nWhich voice did you prefer?");
@@ -155,8 +155,8 @@ class Program
 
         Console.WriteLine($"Continuing speech with the selected voice: {voiceName}");
 
-        using var streamingPlayer2 = StartAudioPlayer();
-        await streamingPlayer2.StartStreamingAsync();
+        using var player2 = StartAudioPlayer();
+        await player2.StartAsync();
 
         var continuationRequest = new PostedTts
         {
@@ -176,8 +176,8 @@ class Program
             StripHeaders = true,
         };
 
-        await StreamAudioToPlayerAsync(_client!.Tts.SynthesizeJsonStreamingAsync(continuationRequest), streamingPlayer2);
-        await streamingPlayer2.StopStreamingAsync();
+        await StreamAudioToPlayerAsync(_client!.Tts.SynthesizeJsonStreamingAsync(continuationRequest), player2);
+        await player2.StopAsync();
         Console.WriteLine("Done!");
     }
 
@@ -195,11 +195,12 @@ class Program
         using var streamingTtsClient = new StreamingTtsClient(_apiKey!);
         await streamingTtsClient.ConnectAsync();
 
-        // Use silence filler mode for bidirectional streaming to handle gaps between utterances.
-        // The silence filler continuously outputs audio to ffplay, filling gaps with silence
-        // to maintain stream continuity
-        using var audioPlayer = new StreamingAudioPlayer(usePcmFormat: true, useSilenceFiller: true);
-        await audioPlayer.StartStreamingAsync();
+        // Start audio player for raw PCM playback
+        using var player = StartAudioPlayer(usePcmFormat: true);
+        await player.StartAsync();
+
+        // Use silence filler to handle gaps between utterances (like TypeScript's createSilenceFiller)
+        using var silenceFiller = new SilenceFiller(player.Stdin!);
 
         // Task 1: Send text input to the TTS service
         var sendInputTask = Task.Run(async () =>
@@ -211,9 +212,10 @@ class Program
             await streamingTtsClient.SendFlushAsync();
             
             // Simulate a delay before continuing the conversation
+            Console.WriteLine("Waiting 8 seconds...");
             await Task.Delay(TimeSpan.FromSeconds(VoiceCreationDelaySeconds));
             
-            await streamingTtsClient.SendAsync(new { text = " Goodbye, world." });
+            await streamingTtsClient.SendAsync(new { text = "Goodbye, world." });
             await streamingTtsClient.SendFlushAsync();
 
             await streamingTtsClient.SendCloseAsync();
@@ -226,9 +228,10 @@ class Program
             await foreach (var chunk in streamingTtsClient.ReceiveAudioChunksAsync())
             {
                 var audioBytes = Convert.FromBase64String(chunk.Audio);
-                await audioPlayer.SendAudioAsync(audioBytes);
+                silenceFiller.WriteAudio(audioBytes);
             }
-            await audioPlayer.StopStreamingAsync();
+            await silenceFiller.EndStreamAsync();
+            await player.StopAsync();
         });
 
         await Task.WhenAll(sendInputTask, handleMessagesTask);
@@ -250,37 +253,105 @@ class Program
             var snippetValue = (snippet as dynamic)?.Value;
             if (snippetValue is SnippetAudioChunk audio)
             {
-                await player.SendAudioAsync(Convert.FromBase64String(audio.Audio));
+                player.WriteAudio(Convert.FromBase64String(audio.Audio));
             }
+        }
+    }
+
+    /// <summary>
+    /// Fills gaps in audio streams with silence to maintain continuous playback.
+    /// </summary>
+    public class SilenceFiller : IDisposable
+    {
+        private readonly Stream _outputStream;
+        private readonly ConcurrentQueue<byte[]> _audioQueue = new();
+        private readonly CancellationTokenSource _cts = new();
+        private readonly Task _fillerTask;
+        
+        private const int SampleRate = 48000;
+        private const int BytesPerSample = 2; // 16-bit audio
+        private const int SilenceChunkMs = 20;
+        private static readonly byte[] SilenceChunk = new byte[SampleRate * BytesPerSample * SilenceChunkMs / 1000];
+
+        public SilenceFiller(Stream outputStream)
+        {
+            _outputStream = outputStream;
+            _fillerTask = Task.Run(RunFillerLoop);
+        }
+
+        private async Task RunFillerLoop()
+        {
+            var lastAudioTime = DateTime.UtcNow;
+            var silenceThreshold = TimeSpan.FromMilliseconds(100);
+            var pollInterval = TimeSpan.FromMilliseconds(5);
+            
+            try
+            {
+                while (!_cts.Token.IsCancellationRequested)
+                {
+                    if (_audioQueue.TryDequeue(out var audioBytes))
+                    {
+                        await _outputStream.WriteAsync(audioBytes, _cts.Token);
+                        await _outputStream.FlushAsync(_cts.Token);
+                        lastAudioTime = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        // Only fill silence after a gap (prevents glitches between rapid chunks)
+                        var timeSinceLastAudio = DateTime.UtcNow - lastAudioTime;
+                        if (timeSinceLastAudio >= silenceThreshold)
+                        {
+                            await _outputStream.WriteAsync(SilenceChunk, _cts.Token);
+                            await _outputStream.FlushAsync(_cts.Token);
+                        }
+                        await Task.Delay(pollInterval, _cts.Token);
+                    }
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"SilenceFiller error: {ex.Message}");
+            }
+        }
+
+        public void WriteAudio(byte[] audioBytes)
+        {
+            if (audioBytes.Length > 0)
+            {
+                _audioQueue.Enqueue(audioBytes);
+            }
+        }
+
+        public async Task EndStreamAsync()
+        {
+            // Wait for queued audio to be processed
+            while (_audioQueue.Count > 0)
+            {
+                await Task.Delay(50);
+            }
+            // Give time for final audio to play
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            
+            _cts.Cancel();
+            try { await _fillerTask; } catch (OperationCanceledException) { }
+        }
+
+        public void Dispose()
+        {
+            _cts.Cancel();
+            _cts.Dispose();
         }
     }
 
     /// <summary>
     /// Real-time streaming audio player using ffplay.
     /// Pipes audio data to ffplay process for immediate playback without writing to disk.
-    /// Supports optional buffering for scenarios with variable chunk arrival timing.
     /// </summary>
     public class StreamingAudioPlayer : IDisposable
     {
         private Process? _audioProcess;
-        private bool _isStreaming = false;
         private readonly bool _usePcmFormat;
-        private readonly bool _useBuffering;
-        private readonly bool _useSilenceFiller;
-        
-        // Buffering support for bidirectional streaming scenarios
-        private BlockingCollection<byte[]>? _audioBuffer;
-        private CancellationTokenSource? _bufferCts;
-        private Task? _bufferTask;
-        
-        // Silence filler support - continuously outputs audio or silence to ffplay
-        private CancellationTokenSource? _silenceFillerCts;
-        private Task? _silenceFillerTask;
-        private ConcurrentQueue<byte[]>? _silenceFillerQueue;
-        private const int SampleRate = 48000;
-        private const int BytesPerSample = 2; // 16-bit audio
-        private const int SilenceChunkMs = 20; // Send silence every 20ms
-        private static readonly byte[] SilenceChunk = new byte[SampleRate * BytesPerSample * SilenceChunkMs / 1000];
 
         /// <summary>
         /// Creates a new StreamingAudioPlayer.
@@ -289,186 +360,42 @@ class Program
         /// If true, configures ffplay for raw PCM audio (48kHz, 16-bit signed little-endian).
         /// If false, uses auto-detection for container formats like WAV or MP3 (default).
         /// </param>
-        /// <param name="useBuffering">
-        /// If true, enables buffered mode where audio chunks are queued and played continuously
-        /// by a background task. This is useful for bidirectional streaming where chunks may
-        /// arrive with irregular timing. If false, audio is written directly to ffplay (default).
-        /// </param>
-        /// <param name="useSilenceFiller">
-        /// If true, enables silence filler mode for PCM streaming. This continuously outputs
-        /// audio to ffplay, filling gaps with silence to maintain stream continuity.
-        /// Essential for bidirectional streaming with gaps between utterances.
-        /// </param>
-        public StreamingAudioPlayer(bool usePcmFormat = false, bool useBuffering = false, bool useSilenceFiller = false)
+        public StreamingAudioPlayer(bool usePcmFormat = false)
         {
             _usePcmFormat = usePcmFormat;
-            _useBuffering = useBuffering;
-            _useSilenceFiller = useSilenceFiller;
-            
-            if (_useBuffering && !_useSilenceFiller)
-            {
-                _audioBuffer = new BlockingCollection<byte[]>();
-                _bufferCts = new CancellationTokenSource();
-            }
-            
-            if (_useSilenceFiller)
-            {
-                _silenceFillerQueue = new ConcurrentQueue<byte[]>();
-                _silenceFillerCts = new CancellationTokenSource();
-            }
         }
 
-        public Task StartStreamingAsync()
+        /// <summary>
+        /// Gets the input stream for writing audio data directly to ffplay.
+        /// </summary>
+        public Stream? Stdin => _audioProcess?.StandardInput?.BaseStream;
+
+        public Task StartAsync()
         {
-            _isStreaming = true;
             StartAudioProcess();
-            
-            // Start silence filler task if enabled - continuously outputs audio or silence
-            if (_useSilenceFiller && _silenceFillerQueue != null && _silenceFillerCts != null && _audioProcess != null)
-            {
-                _silenceFillerTask = Task.Run(async () =>
-                {
-                    try
-                    {
-                        var lastAudioTime = DateTime.UtcNow;
-                        var silenceThreshold = TimeSpan.FromMilliseconds(100); // Only fill silence after 100ms gap
-                        var pollInterval = TimeSpan.FromMilliseconds(5); // Check for new audio frequently
-                        
-                        while (!_silenceFillerCts.Token.IsCancellationRequested && _audioProcess?.HasExited == false)
-                        {
-                            // Try to get audio data from the queue
-                            if (_silenceFillerQueue.TryDequeue(out var audioBytes))
-                            {
-                                // Write actual audio
-                                await _audioProcess.StandardInput.BaseStream.WriteAsync(audioBytes, _silenceFillerCts.Token);
-                                await _audioProcess.StandardInput.BaseStream.FlushAsync(_silenceFillerCts.Token);
-                                lastAudioTime = DateTime.UtcNow;
-                            }
-                            else
-                            {
-                                // Only write silence if there's been a significant gap (no audio for 100ms+)
-                                var timeSinceLastAudio = DateTime.UtcNow - lastAudioTime;
-                                if (timeSinceLastAudio >= silenceThreshold)
-                                {
-                                    await _audioProcess.StandardInput.BaseStream.WriteAsync(SilenceChunk, _silenceFillerCts.Token);
-                                    await _audioProcess.StandardInput.BaseStream.FlushAsync(_silenceFillerCts.Token);
-                                }
-                                await Task.Delay(pollInterval, _silenceFillerCts.Token);
-                            }
-                        }
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // Expected when stopping
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Silence filler error: {ex.Message}");
-                    }
-                });
-            }
-            // Start buffer draining task if buffering is enabled (legacy mode)
-            else if (_useBuffering && _audioBuffer != null && _bufferCts != null && _audioProcess != null)
-            {
-                _bufferTask = Task.Run(async () =>
-                {
-                    try
-                    {
-                        int chunkCount = 0;
-                        foreach (var audioBytes in _audioBuffer.GetConsumingEnumerable(_bufferCts.Token))
-                        {
-                            if (_audioProcess?.StandardInput?.BaseStream != null && !_audioProcess.HasExited)
-                            {
-                                chunkCount++;
-                                await _audioProcess.StandardInput.BaseStream.WriteAsync(audioBytes, _bufferCts.Token);
-                                await _audioProcess.StandardInput.BaseStream.FlushAsync(_bufferCts.Token);
-                            }
-                        }
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // Expected when stopping
-                    }
-                });
-            }
-            
             Console.WriteLine("Streaming audio player started...");
             return Task.CompletedTask;
         }
 
-        public Task SendAudioAsync(byte[] audioBytes)
+        public void WriteAudio(byte[] audioBytes)
         {
-            if (!_isStreaming)
-            {
-                return Task.CompletedTask;
-            }
-
-            if (audioBytes.Length == 0)
-            {
-                return Task.CompletedTask;
-            }
-
+            if (audioBytes.Length == 0 || _audioProcess?.HasExited != false) return;
+            
             try
             {
-                if (_useSilenceFiller && _silenceFillerQueue != null)
-                {
-                    // Queue audio for the silence filler to process
-                    _silenceFillerQueue.Enqueue(audioBytes);
-                }
-                else if (_useBuffering && _audioBuffer != null)
-                {
-                    _audioBuffer.Add(audioBytes);
-                }
-                else if (_audioProcess?.HasExited == false)
-                {
-                    _audioProcess?.StandardInput.BaseStream.Write(audioBytes, 0, audioBytes.Length);
-                    _audioProcess?.StandardInput.BaseStream.Flush();
-                }
+                _audioProcess.StandardInput.BaseStream.Write(audioBytes, 0, audioBytes.Length);
+                _audioProcess.StandardInput.BaseStream.Flush();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error sending audio chunk: {ex.Message}");
+                Console.WriteLine($"Error writing audio: {ex.Message}");
             }
-
-            return Task.CompletedTask;
         }
 
-        public async Task StopStreamingAsync()
+        public async Task StopAsync()
         {
-            _isStreaming = false;
-
             try
             {
-                // Stop silence filler if enabled
-                if (_useSilenceFiller && _silenceFillerCts != null)
-                {
-                    // Wait a bit for any remaining queued audio to be processed
-                    while (_silenceFillerQueue?.Count > 0)
-                    {
-                        await Task.Delay(50);
-                    }
-                    // Give ffplay time to play any remaining buffered audio
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                    
-                    _silenceFillerCts.Cancel();
-                    if (_silenceFillerTask != null)
-                    {
-                        try { await _silenceFillerTask; } catch (OperationCanceledException) { }
-                    }
-                }
-                // Complete buffered audio if using buffering (legacy mode)
-                else if (_useBuffering && _audioBuffer != null)
-                {
-                    _audioBuffer.CompleteAdding();
-                    if (_bufferTask != null)
-                    {
-                        await _bufferTask;
-                    }
-
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                }
-                
-                // Close ffplay process input stream - ffplay will finish playing all buffered audio then exit
                 if (_audioProcess != null && !_audioProcess.HasExited)
                 {
                     _audioProcess.StandardInput.Close();
@@ -477,80 +404,59 @@ class Program
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error stopping audio process: {ex.Message}");
+                Console.WriteLine($"Error stopping audio: {ex.Message}");
             }
-
             Console.WriteLine("Streaming audio player stopped.");
         }
 
         private void StartAudioProcess()
         {
-            try
+            var arguments = _usePcmFormat
+                ? "-f s16le -ar 48000 -fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 -i - -nodisp -autoexit"
+                : "-nodisp -autoexit -infbuf -i -";
+
+            var startInfo = new ProcessStartInfo
             {
-                // PCM format requires explicit format specification, WAV/MP3 can auto-detect
-                var arguments = _usePcmFormat
-                    ? "-f s16le -ar 48000 -fflags nobuffer -flags low_delay -probesize 32 -analyzeduration 0 -i - -nodisp -autoexit"
-                    : "-nodisp -autoexit -infbuf -i -";
+                FileName = "ffplay",
+                Arguments = arguments,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardInput = true,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
+            };
 
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = "ffplay",
-                    Arguments = arguments,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardInput = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true
-                };
-
-                _audioProcess = Process.Start(startInfo);
-
-                if (_audioProcess == null)
-                {
-                    throw new InvalidOperationException("Failed to start ffplay process");
-                }
-
-                _audioProcess.ErrorDataReceived += (sender, e) =>
-                {
-                    if (!string.IsNullOrEmpty(e.Data))
-                        Console.WriteLine($"ffplay: {e.Data}");
-                };
-                _audioProcess.BeginErrorReadLine();
-            }
-            catch (Exception ex)
+            _audioProcess = Process.Start(startInfo);
+            if (_audioProcess == null)
             {
-                Console.WriteLine($"Failed to start ffplay: {ex.Message}");
-                Console.WriteLine("Please install ffmpeg to enable streaming audio playback.");
+                throw new InvalidOperationException("Failed to start ffplay process");
             }
+
+            _audioProcess.ErrorDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                    Console.WriteLine($"ffplay: {e.Data}");
+            };
+            _audioProcess.BeginErrorReadLine();
         }
 
         public void Dispose()
         {
             try
             {
-                // Cancel buffering/silence filler operations
-                _bufferCts?.Cancel();
-                _silenceFillerCts?.Cancel();
-                
-                // Kill ffplay process if still running
                 if (_audioProcess != null && !_audioProcess.HasExited)
                 {
                     _audioProcess.Kill();
                 }
-                
-                // Dispose resources
                 _audioProcess?.Dispose();
-                _audioBuffer?.Dispose();
-                _bufferCts?.Dispose();
-                _silenceFillerCts?.Dispose();
             }
             catch { }
         }
     }
 
-    private static StreamingAudioPlayer StartAudioPlayer()
+    private static StreamingAudioPlayer StartAudioPlayer(bool usePcmFormat = false)
     {
-        return new StreamingAudioPlayer();
+        return new StreamingAudioPlayer(usePcmFormat);
     }
 
 }
