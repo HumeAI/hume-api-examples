@@ -54,8 +54,8 @@ importers:
         specifier: ^9.22.5
         version: 9.22.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       remeda:
-        specifier: ^2.0.9
-        version: 2.21.2
+        specifier: ^2.32.0
+        version: 2.32.0
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -1843,8 +1843,8 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
-  remeda@2.21.2:
-    resolution: {integrity: sha512-wdhkMDou8HRpD7RnxKJ/FHJWEGXRH7jV/pb0NsdLLSoBo+G9RjtxcY41hVhogLfEMkThk6aySKjs+Yd6PnpzBA==}
+  remeda@2.32.0:
+    resolution: {integrity: sha512-BZx9DsT4FAgXDTOdgJIc5eY6ECIXMwtlSPQoPglF20ycSWigttDDe88AozEsPPT4OWk5NujroGSBC1phw5uU+w==}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -2090,6 +2090,10 @@ packages:
 
   type-fest@4.39.1:
     resolution: {integrity: sha512-uW9qzd66uyHYxwyVBYiwS4Oi0qZyUqwjU+Oevr6ZogYiXt99EOYtwvzMSLw1c3lYo2HzJsep/NB23iEVEgjG/w==}
+    engines: {node: '>=16'}
+
+  type-fest@4.41.0:
+    resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
 
   typed-array-buffer@1.0.3:
@@ -4148,9 +4152,9 @@ snapshots:
       gopd: 1.2.0
       set-function-name: 2.0.2
 
-  remeda@2.21.2:
+  remeda@2.32.0:
     dependencies:
-      type-fest: 4.39.1
+      type-fest: 4.41.0
 
   resolve-from@4.0.0: {}
 
@@ -4455,6 +4459,8 @@ snapshots:
       prelude-ls: 1.2.1
 
   type-fest@4.39.1: {}
+
+  type-fest@4.41.0: {}
 
   typed-array-buffer@1.0.3:
     dependencies:
