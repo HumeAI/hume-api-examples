@@ -12,8 +12,8 @@ importers:
         specifier: ^16.4.5
         version: 16.5.0
       hume:
-        specifier: ^0.15.2
-        version: 0.15.2
+        specifier: ^0.15.9
+        version: 0.15.9
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -279,8 +279,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.2:
-    resolution: {integrity: sha512-n7L78Md3n0ED2wQ/u9TqEY2gbD93SmKzX7nOL9vmqSLDtwYDZwT2mqNXoKiuACLgZ5J2VFU8W0RvsqNvQTyoJg==}
+  hume@0.15.9:
+    resolution: {integrity: sha512-6a90/USLYPV857xcjEfdGgXiT7nfzCqUUZkNn4X3uhQSI42gZKDuulRi7oVXXEgXsS49iCCoCTPKO+acGpLfzA==}
     engines: {node: '>=18.0.0'}
 
   nanoid@3.3.11:
@@ -344,8 +344,8 @@ packages:
       terser:
         optional: true
 
-  ws@8.18.2:
-    resolution: {integrity: sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==}
+  ws@8.18.3:
+    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -356,8 +356,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  zod@3.25.17:
-    resolution: {integrity: sha512-8hQzQ/kMOIFbwOgPrm9Sf9rtFHpFUMy4HvN0yEB0spw14aYi0uT5xG5CE2DB9cd51GWNsz+DNO7se1kztHMKnw==}
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
 
@@ -523,11 +523,11 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.2:
+  hume@0.15.9:
     dependencies:
       uuid: 9.0.1
-      ws: 8.18.2
-      zod: 3.25.17
+      ws: 8.18.3
+      zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -582,6 +582,6 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  ws@8.18.2: {}
+  ws@8.18.3: {}
 
-  zod@3.25.17: {}
+  zod@3.25.76: {}
