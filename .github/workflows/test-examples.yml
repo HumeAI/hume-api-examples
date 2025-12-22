@@ -36,7 +36,7 @@ jobs:
             tts_py:
               - 'examples/tts/tts-python-quickstart/**'
 
-  test--typescript-quickstart:
+  test-typescript-quickstart:
     needs: detect-changes
     if: needs.detect-changes.outputs.evi_ts_changed == 'false'
     runs-on: ubuntu-latest
@@ -93,6 +93,41 @@ jobs:
           TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
           TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
         run: pnpm run test
+
+  test-evi-python-quickstart:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.evi_py_changed == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Bootstrap poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install system dependencies for audio
+        run: |
+          sudo apt-get --yes update
+          sudo apt-get --yes install libportaudio2
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Run tests in evi-python-quickstart
+        working-directory: evi/evi-python-quickstart
+        run: uv run pytest test_app.py -v
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
 
   test-tts-python-quickstart:
     needs: detect-changes
