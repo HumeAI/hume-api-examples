@@ -29,7 +29,7 @@
     "server-only": "^0.0.1",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "ts-pattern": "^5.1.2"
+    "ts-pattern": "^5.9.0"
   },
   "devDependencies": {
     "@types/node": "^25",
