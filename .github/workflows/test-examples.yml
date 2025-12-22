@@ -3,7 +3,6 @@ name: test-examples
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  push:
 
 permissions:
   contents: read
