@@ -15,7 +15,14 @@ updates:
 
   # check for updated versions of npm dependencies on a daily basis
   - package-ecosystem: 'npm'
-    directory: '/'
+    directories:
+    - "/evi/evi-typescript-*"
+    - "/evi/evi-python-*"
+    - "/evi/evi-next-*"
+    - "/evi/evi-vue-*"
+    - "/tts/tts-typescript-*"
+    - "/tts/tts-python-*"
+    - "/tts/tts-next-*"
     schedule:
       interval: 'daily'
       time: '06:00'
