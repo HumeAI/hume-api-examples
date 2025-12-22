@@ -23,11 +23,11 @@ jobs:
       - name: Approve PR
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ secrets.HUME_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr review --approve "$PR_URL"
 
       - name: Enable auto-merge for Dependabot PRs
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ secrets.HUME_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr merge --auto --squash "$PR_URL"
