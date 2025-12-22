@@ -35,7 +35,7 @@ jobs:
             tts_py:
               - 'examples/tts/tts-python-quickstart/**'
 
-  test-typescript-quickstart:
+  test-evi-typescript-quickstart:
     needs: detect-changes
     if: needs.detect-changes.outputs.evi_ts_changed == 'true'
     runs-on: ubuntu-latest
