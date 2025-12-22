@@ -1,0 +1,91 @@
+name: test-examples
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      evi_changed: ${{ steps.filter.outputs.evi }}
+      tts_changed: ${{ steps.filter.outputs.tts }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed folders
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            evi:
+              - 'examples/evi/evi-typescript-quickstart/**'
+            tts:
+              - 'examples/tts/tts-typescript-quickstart/**'
+
+  test-evi:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.evi_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install deps (EVI quickstart)
+        working-directory: ./examples/evi/evi-typescript-quickstart
+        run: pnpm install --frozen-lockfile
+
+      - name: Run example evi-typescript-quickstart
+        working-directory: ./examples/evi/evi-typescript-quickstart
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+          TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
+        run: pnpm run test
+
+  test-tts:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.tts_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install deps (TTS quickstart)
+        working-directory: ./examples/tts/tts-typescript-quickstart
+        run: pnpm install --frozen-lockfile
+
+      - name: Run example tts-typescript-quickstart
+        working-directory: ./examples/tts/tts-typescript-quickstart
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+          TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
+        run: pnpm run test
