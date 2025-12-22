@@ -125,7 +125,7 @@ jobs:
 
       - name: Run tests in evi-python-quickstart
         working-directory: evi/evi-python-quickstart
-        run: uv run pytest test_app.py -v
+        run: uv run pytest test_quickstart.py -v
         env:
           TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
 
