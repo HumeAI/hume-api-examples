@@ -36,8 +36,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.1(next@14.2.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       hume:
-        specifier: 0.15.3
-        version: 0.15.3
+        specifier: 0.15.9
+        version: 0.15.9
       lucide-react:
         specifier: ^0.394.0
         version: 0.394.0(react@18.3.1)
@@ -1188,10 +1188,9 @@ packages:
   hume@0.14.1:
     resolution: {integrity: sha512-ko2nD/3aiBRNVcQynPdZPOahQDQJSnT6ALqa5z5yunoWyGCCqMuRzOsr5RU180MQ4sWhyYVw4h0cHPPUCYoIBQ==}
 
-  hume@0.15.3:
-    resolution: {integrity: sha512-DhCzZ12Xaa7NqfakGs8H9/0u+Q5KEKykV91BioBeUxEVf+OyqS1qDEenDxZTsqNGP3TtXKiG+c6tqe5esTqCIw==}
+  hume@0.15.9:
+    resolution: {integrity: sha512-6a90/USLYPV857xcjEfdGgXiT7nfzCqUUZkNn4X3uhQSI42gZKDuulRi7oVXXEgXsS49iCCoCTPKO+acGpLfzA==}
     engines: {node: '>=18.0.0'}
-    deprecated: Do not use, improperly authorized client
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -2018,8 +2017,8 @@ packages:
     resolution: {integrity: sha512-si7QWI6zUMq56bESFvagtmzMdGOtoxfR+Sez11Mobfc7tm+VkUckk9bW2UeffTGVUbOksxmSw0AA2gs8g71NCQ==}
     engines: {node: '>=12'}
 
-  ws@8.18.1:
-    resolution: {integrity: sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==}
+  ws@8.18.3:
+    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -2041,6 +2040,9 @@ packages:
 
   zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
 
@@ -3254,24 +3256,24 @@ snapshots:
 
   hume@0.14.1:
     dependencies:
-      isomorphic-ws: 5.0.0(ws@8.18.1)
+      isomorphic-ws: 5.0.0(ws@8.18.3)
       node-fetch: 2.7.0
       qs: 6.14.0
       readable-stream: 4.7.0
       url-join: 4.0.1
       uuid: 9.0.1
-      ws: 8.18.1
+      ws: 8.18.3
       zod: 3.24.2
     transitivePeerDependencies:
       - bufferutil
       - encoding
       - utf-8-validate
 
-  hume@0.15.3:
+  hume@0.15.9:
     dependencies:
       uuid: 9.0.1
-      ws: 8.18.1
-      zod: 3.24.2
+      ws: 8.18.3
+      zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -3412,9 +3414,9 @@ snapshots:
 
   isexe@2.0.0: {}
 
-  isomorphic-ws@5.0.0(ws@8.18.1):
+  isomorphic-ws@5.0.0(ws@8.18.3):
     dependencies:
-      ws: 8.18.1
+      ws: 8.18.3
 
   iterator.prototype@1.1.5:
     dependencies:
@@ -4216,10 +4218,12 @@ snapshots:
       string-width: 5.1.2
       strip-ansi: 7.1.0
 
-  ws@8.18.1: {}
+  ws@8.18.3: {}
 
   yaml@2.7.1: {}
 
   yocto-queue@0.1.0: {}
 
   zod@3.24.2: {}
+
+  zod@3.25.76: {}
