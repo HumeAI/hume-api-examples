@@ -66,8 +66,8 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.18)
       ts-pattern:
-        specifier: ^5.1.2
-        version: 5.2.0
+        specifier: ^5.9.0
+        version: 5.9.0
     devDependencies:
       '@types/node':
         specifier: ^25
@@ -1753,8 +1753,8 @@ packages:
     peerDependencies:
       typescript: '>=4.2.0'
 
-  ts-pattern@5.2.0:
-    resolution: {integrity: sha512-aGaSpOlDcns7ZoeG/OMftWyQG1KqPVhgplhJxNCvyIXqWrumM5uIoOSarw/hmmi/T1PnuQ/uD8NaFHvLpHicDg==}
+  ts-pattern@5.9.0:
+    resolution: {integrity: sha512-6s5V71mX8qBUmlgbrfL33xDUwO0fq48rxAu2LBE11WBeGdpCPOsXksQbZJHvHwhrd3QjUusd3mAOM5Gg0mFBLg==}
 
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
@@ -3688,7 +3688,7 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  ts-pattern@5.2.0: {}
+  ts-pattern@5.9.0: {}
 
   tsconfig-paths@3.15.0:
     dependencies:
