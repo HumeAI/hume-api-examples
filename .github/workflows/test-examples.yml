@@ -1,0 +1,164 @@
+name: test-examples
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      evi_ts_changed: ${{ steps.filter.outputs.evi_ts }}
+      evi_py_changed: ${{ steps.filter.outputs.evi_py }}
+      tts_ts_changed: ${{ steps.filter.outputs.tts_ts }}
+      tts_py_changed: ${{ steps.filter.outputs.tts_py }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed folders
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            evi_ts:
+              - 'examples/evi/evi-typescript-quickstart/**'
+            evi_py:
+              - 'examples/evi/evi-python-quickstart/**'
+            tts_ts:
+              - 'examples/tts/tts-typescript-quickstart/**'
+            tts_py:
+              - 'examples/tts/tts-python-quickstart/**'
+
+  test-evi-typescript-quickstart:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.evi_ts_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
+      - name: Install deps (EVI quickstart)
+        working-directory: evi/evi-typescript-quickstart
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests in evi-typescript-quickstart
+        working-directory: evi/evi-typescript-quickstart
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+          TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
+        run: pnpm run test
+
+  test-tts-typescript-quickstart:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.tts_ts_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
+      - name: Install deps (TTS quickstart)
+        working-directory: tts/tts-typescript-quickstart
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests in tts-typescript-quickstart
+        working-directory: tts/tts-typescript-quickstart
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+          TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
+        run: pnpm run test
+
+  test-evi-python-quickstart:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.evi_py_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Bootstrap poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install system dependencies for audio
+        run: |
+          sudo apt-get --yes update
+          sudo apt-get --yes install libportaudio2
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Run tests in evi-python-quickstart
+        working-directory: evi/evi-python-quickstart
+        run: uv run pytest test_quickstart.py -v
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+
+  test-tts-python-quickstart:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.tts_py_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Bootstrap poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install system dependencies for audio
+        run: |
+          sudo apt-get --yes update
+          sudo apt-get --yes install libportaudio2
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Run tests in tts-python-quickstart
+        working-directory: tts/tts-python-quickstart
+        run: uv run pytest test_app.py -v
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
