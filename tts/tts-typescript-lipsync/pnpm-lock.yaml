@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       hume:
-        specifier: ^0.15.6
-        version: 0.15.6
+        specifier: ^0.15.9
+        version: 0.15.9
     devDependencies:
       '@types/node':
         specifier: ^22.15.18
@@ -299,8 +299,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.6:
-    resolution: {integrity: sha512-dO2F+z/6OzW8MyHJlAySuCKsqTJk1krViSEcdlGTd5M/TwFvvoN8QdvTv90HFL2GYUXgUXCquKgRpO0GjVrHFA==}
+  hume@0.15.9:
+    resolution: {integrity: sha512-6a90/USLYPV857xcjEfdGgXiT7nfzCqUUZkNn4X3uhQSI42gZKDuulRi7oVXXEgXsS49iCCoCTPKO+acGpLfzA==}
     engines: {node: '>=18.0.0'}
 
   nanoid@3.3.11:
@@ -573,7 +573,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.6:
+  hume@0.15.9:
     dependencies:
       uuid: 9.0.1
       ws: 8.18.3
