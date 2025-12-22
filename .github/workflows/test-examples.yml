@@ -32,7 +32,7 @@ jobs:
 
   test-evi:
     needs: detect-changes
-    if: needs.detect-changes.outputs.evi_changed == 'true'
+    if: needs.detect-changes.outputs.evi_changed == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -62,7 +62,7 @@ jobs:
 
   test-tts:
     needs: detect-changes
-    if: needs.detect-changes.outputs.tts_changed == 'true'
+    if: needs.detect-changes.outputs.tts_changed == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
