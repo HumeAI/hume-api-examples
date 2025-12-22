@@ -49,11 +49,11 @@ jobs:
           version: 10.20.0
 
       - name: Install deps (EVI quickstart)
-        working-directory: ./examples/evi/evi-typescript-quickstart
+        working-directory: evi/evi-typescript-quickstart
         run: pnpm install --frozen-lockfile
 
       - name: Run example evi-typescript-quickstart
-        working-directory: ./examples/evi/evi-typescript-quickstart
+        working-directory: evi/evi-typescript-quickstart
         env:
           TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
           TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
@@ -78,11 +78,11 @@ jobs:
           version: 10.20.0
 
       - name: Install deps (TTS quickstart)
-        working-directory: ./examples/tts/tts-typescript-quickstart
+        working-directory: tts/tts-typescript-quickstart
         run: pnpm install --frozen-lockfile
 
       - name: Run example tts-typescript-quickstart
-        working-directory: ./examples/tts/tts-typescript-quickstart
+        working-directory: tts/tts-typescript-quickstart
         env:
           TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
           TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
