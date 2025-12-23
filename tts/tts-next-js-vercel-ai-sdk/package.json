@@ -14,7 +14,7 @@
     "hume": "^0.15.9",
     "next": "15.3.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "typescript": "^5",
