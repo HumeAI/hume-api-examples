@@ -20,7 +20,7 @@
     "prettier": "^3.6.2",
     "typescript": "^5.8.3",
     "vite": "^5.1.4",
-    "vite-node": "^3.2.4",
+    "vite-node": "^5.2.0",
     "vitest": "^4.0.16"
   },
   "engines": {
