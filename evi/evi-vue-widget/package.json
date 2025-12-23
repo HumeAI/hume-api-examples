@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@humeai/voice-embed": "0.1.5-beta.1",
+    "@humeai/voice-embed": "0.2.11",
     "vue": "^3.4.21"
   },
   "devDependencies": {
