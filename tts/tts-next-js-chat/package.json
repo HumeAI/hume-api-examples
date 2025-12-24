@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^3.0.0",
+    "@ai-sdk/anthropic": "^3.0.1",
     "@ai-sdk/groq": "^3.0.1",
     "@ai-sdk/react": "^3.0.3",
     "@heroicons/react": "^2.2.0",
