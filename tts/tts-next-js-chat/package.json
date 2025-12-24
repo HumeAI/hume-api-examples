@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.0",
-    "@ai-sdk/groq": "^3.0.0",
+    "@ai-sdk/groq": "^3.0.1",
     "@ai-sdk/react": "^1.2.9",
     "@heroicons/react": "^2.2.0",
     "ai": "^6.0.3",
