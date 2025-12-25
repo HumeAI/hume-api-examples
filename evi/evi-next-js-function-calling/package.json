@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/node": "^25",
     "@types/react": "^19",
-    "@types/react-dom": "^18",
+    "@types/react-dom": "^19",
     "eslint": "^9.39.2",
     "eslint-config-next": "16.1.1",
     "postcss": "^8",
