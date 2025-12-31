@@ -54,8 +54,8 @@ importers:
         specifier: ^9.22.5
         version: 9.22.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       remeda:
-        specifier: ^2.32.1
-        version: 2.32.1
+        specifier: ^2.32.2
+        version: 2.32.2
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -1724,8 +1724,8 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
-  remeda@2.32.1:
-    resolution: {integrity: sha512-8BFAPi5G5CsfSRDjglKJ2c7VYS5ac+lBaX4rnt61gDgmr1RDBTRZR1M4RXVJoQ7fT7UuelaBIciyUFxvWETpWA==}
+  remeda@2.32.2:
+    resolution: {integrity: sha512-hoxrSvrhAg6Me7ZfHLWYXMvXPMMWijNtbdZNnC3+GnQWavCBXZ8pS4AOumOi3K/preQf34ZO/J5Z5N/JNfx3gw==}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -3800,7 +3800,7 @@ snapshots:
       gopd: 1.2.0
       set-function-name: 2.0.2
 
-  remeda@2.32.1:
+  remeda@2.32.2:
     dependencies:
       type-fest: 4.41.0
 
