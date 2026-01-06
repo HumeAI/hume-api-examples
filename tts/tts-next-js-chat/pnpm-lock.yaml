@@ -21,8 +21,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.3)
       ai:
-        specifier: ^6.0.7
-        version: 6.0.7(zod@4.2.1)
+        specifier: ^6.0.12
+        version: 6.0.12(zod@4.2.1)
       hume:
         specifier: ^0.15.9
         version: 0.15.9
