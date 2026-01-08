@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94563f6debdc94dee9028bafe4a53c19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  humeApiKey: 'cY7Yjq84riLl3HcGcRQos0h5HkAFF8cYLlBb1uOGKuYbCNpm '
+  humeApiKey: 'YOUR_HUME_API_KEY_HERE'
 --- !u!4 &1760434263
 Transform:
   m_ObjectHideFlags: 0

@@ -414,9 +414,9 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription:
-  locationUsageDescription:
-  microphoneUsageDescription: This app uses the microphone to have voice conversations with Hume EVI.
+  cameraUsageDescription: 
+  locationUsageDescription: 
+  microphoneUsageDescription: 
   bluetoothUsageDescription: 
   macOSTargetOSVersion: 11.0
   switchNMETAOverride: 
