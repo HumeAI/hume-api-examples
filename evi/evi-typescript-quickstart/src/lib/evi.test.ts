@@ -15,16 +15,17 @@ vi.mock("../lib/audio", () => ({
 }));
 
 // Mock WebAudioPlayer (to define AudioContext)
+// Using class mock for vitest 4.x compatibility (vi.fn() can't be used with `new`)
 vi.mock("hume", async () => {
   const actual = await vi.importActual<any>("hume");
   return {
     ...actual,
-    EVIWebAudioPlayer: vi.fn(() => ({
-      init: vi.fn(() => Promise.resolve()),
-      stop: vi.fn(),
-      enqueue: vi.fn(),
-      dispose: vi.fn(),
-    })),
+    EVIWebAudioPlayer: class MockEVIWebAudioPlayer {
+      init = vi.fn(() => Promise.resolve());
+      stop = vi.fn();
+      enqueue = vi.fn();
+      dispose = vi.fn();
+    },
   };
 });
 
