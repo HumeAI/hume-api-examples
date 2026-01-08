@@ -3,6 +3,7 @@ name: test-examples
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -37,7 +38,7 @@ jobs:
 
   test-evi-typescript-quickstart:
     needs: detect-changes
-    if: needs.detect-changes.outputs.evi_ts_changed == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -66,7 +67,7 @@ jobs:
 
   test-tts-typescript-quickstart:
     needs: detect-changes
-    if: needs.detect-changes.outputs.tts_ts_changed == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_ts_changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -95,7 +96,7 @@ jobs:
 
   test-evi-python-quickstart:
     needs: detect-changes
-    if: needs.detect-changes.outputs.evi_py_changed == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -130,7 +131,7 @@ jobs:
 
   test-tts-python-quickstart:
     needs: detect-changes
-    if: needs.detect-changes.outputs.tts_py_changed == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_py_changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
