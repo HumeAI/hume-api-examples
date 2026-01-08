@@ -49,13 +49,15 @@ public class HumeEVI : MonoBehaviour
     public bool IsConnected => isConnected;
     public bool IsConversationActive => isConversationActive;
     public bool IsSpeaking => isSpeaking;
+    // IsPlayingAudio is true when audio is playing or queued (used for turn-taking)
+    public bool IsPlayingAudio => isPlayingResponse || audioPlaybackQueue.Count > 0;
     public ConversationState CurrentState
     {
         get
         {
             if (!isConversationActive) return ConversationState.Idle;
             if (!isConnected) return ConversationState.Connecting;
-            if (isSpeaking) return ConversationState.Speaking;
+            if (IsPlayingAudio) return ConversationState.Speaking;
             return ConversationState.Listening;
         }
     }
@@ -67,8 +69,8 @@ public class HumeEVI : MonoBehaviour
 
     void Update()
     {
-        // Stream microphone audio while recording
-        if (isRecording && isConnected && Time.time >= nextSendTime)
+        // Stream microphone audio while recording, but NOT while audio is playing (turn-taking)
+        if (isRecording && isConnected && !IsPlayingAudio && Time.time >= nextSendTime)
         {
             SendMicrophoneAudio();
             nextSendTime = Time.time + (ChunkDurationMs / 1000f);
@@ -289,11 +291,32 @@ public class HumeEVI : MonoBehaviour
 
         float[] audioData = audioPlaybackQueue.Dequeue();
 
+        // Validate audio data
+        if (audioData == null || audioData.Length == 0)
+        {
+            Debug.LogWarning("Skipping empty audio chunk");
+            return;
+        }
+
         // Determine sample rate and channels from the audio (default to EVI standard)
         int sampleRate = SampleRate;
         int channels = Channels;
 
-        AudioClip clip = AudioClip.Create("EVIResponse", audioData.Length / channels, channels, sampleRate, false);
+        // Ensure audio data length is valid for the channel count
+        if (audioData.Length % channels != 0)
+        {
+            Debug.LogWarning($"Audio data length {audioData.Length} is not divisible by channel count {channels}");
+            return;
+        }
+
+        int sampleCount = audioData.Length / channels;
+        if (sampleCount <= 0)
+        {
+            Debug.LogWarning("Invalid sample count");
+            return;
+        }
+
+        AudioClip clip = AudioClip.Create("EVIResponse", sampleCount, channels, sampleRate, false);
         clip.SetData(audioData, 0);
 
         audioSource.clip = clip;
