@@ -8,21 +8,11 @@
 
 ## Overview
 
-This Unity project demonstrates how to integrate [Hume AI](https://hume.ai)'s [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) into Unity applications. EVI is a conversational AI that understands and responds to emotional cues in speech.
+This Unity project implements a expressive AI cube that you can talk to with your voice.
+
+It demonstrates how to integrate [Hume AI](https://hume.ai)'s [Empathic Voice Interface (EVI)](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview) into Unity applications. EVI is a conversational AI that understands and responds to emotional cues in speech.
 
 This project uses `ai.hume.unity`, a Unity package, hosted on [OpenUPM](https://openupm.com/packages/ai.hume.unity/), that wraps the Hume [.NET SDK](https://github.com/humeai/hume-dotnet-sdk).
-
-## Features
-
-- **Real-time voice conversation** with EVI
-- **Microphone capture** and audio streaming
-- **WAV audio playback** of EVI responses
-- **Visual feedback** showing conversation state:
-  - Gray (Idle) - Click to start
-  - Yellow (Connecting) - Establishing connection
-  - Green pulsing (Listening) - EVI is listening to you
-  - Blue pulsing (Speaking) - EVI is responding
-- **Live transcript display** showing your speech and EVI's responses
 
 ## Prerequisites
 
@@ -81,42 +71,6 @@ This project uses `ai.hume.unity`, a Unity package, hosted on [OpenUPM](https://
 4. EVI will respond - the cube will pulse blue while speaking
 5. Click the cube again to end the conversation
 
-### Visual States
-
-| State | Cube Color | Meaning |
-|-------|------------|---------|
-| Idle | Gray | Ready to start conversation |
-| Connecting | Yellow | Establishing WebSocket connection |
-| Listening | Green (pulsing) | EVI is listening to your voice |
-| Speaking | Blue (pulsing, faster spin) | EVI is responding |
-
-## Audio Format
-
-- **Input (microphone)**: 48kHz, 16-bit, mono PCM
-- **Output (EVI responses)**: WAV format (headers automatically parsed)
-
 ## Troubleshooting
 
-### No audio input
-- Check that your microphone is connected and working
-- Verify microphone permissions are granted
-- Check Unity Console for "No microphone detected!" error
-
-### Connection errors
-- Verify your API key is correct
-- Check internet connection
-- Look for error messages in Unity Console
-
-### No audio output
-- Ensure AudioSource component is properly configured
-- Check Unity audio settings
-- Verify WAV parsing in Console logs
-
-## Next Steps
-
-- Customize the visual feedback colors and animations
-- Add UI elements to display full conversation history
-- Integrate EVI into your existing Unity projects
-- Explore EVI configuration options for different personas
-
-For more advanced usage, see the [Hume EVI Documentation](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview).
+For more advanced usage, see the [Hume EVI Documentation](https://dev.hume.ai/docs/empathic-voice-interface-evi/overview). Also refer to the source code [Hume .NET SDK](https://github.com/HumeAI/hume-dotnet-sdk) repository to see method names.
