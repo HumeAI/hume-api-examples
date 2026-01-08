@@ -176,7 +176,7 @@ describe("connect to EVI with API key", () => {
 
     socket.sendSessionSettings(updatedSessionSettings);
 
-    await sleep(1_000);
+    await sleep(2_000);
 
     const events = await fetchChatEvents(chatId);
     const sessionSettingsEvents = events.filter(
