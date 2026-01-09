@@ -15,8 +15,8 @@ importers:
         specifier: ^3.0.4
         version: 3.0.4(zod@4.2.1)
       '@ai-sdk/react':
-        specifier: ^3.0.21
-        version: 3.0.21(react@19.2.3)(zod@4.2.1)
+        specifier: ^3.0.24
+        version: 3.0.24(react@19.2.3)(zod@4.2.1)
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.3)
@@ -103,8 +103,8 @@ packages:
     resolution: {integrity: sha512-HrEmNt/BH/hkQ7zpi2o6N3k1ZR1QTb7z85WYhYygiTxOQuaml4CMtHCWRbric5WPU+RNsYI7r1EpyVQMKO1pYw==}
     engines: {node: '>=18'}
 
-  '@ai-sdk/react@3.0.21':
-    resolution: {integrity: sha512-fFFXJBXKtKgJwj7ajObXFCONUTcmCO+nEgd5JiFqoyfMb4xTSbTwn+8snhG+smcAwSJ7YwzZePwRYkse5CyPzg==}
+  '@ai-sdk/react@3.0.24':
+    resolution: {integrity: sha512-aQUA8MJEaIPEHMhL2cpKMccik/vFLGTe7L4b/fvhnyv6F/rh8KQUs42aV8pgc1tfZCKGolNa557dJDdXhcY1cQ==}
     engines: {node: '>=18'}
     peerDependencies:
       react: ^18 || ~19.0.1 || ~19.1.2 || ^19.2.1
@@ -2142,10 +2142,10 @@ snapshots:
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@3.0.21(react@19.2.3)(zod@4.2.1)':
+  '@ai-sdk/react@3.0.24(react@19.2.3)(zod@4.2.1)':
     dependencies:
       '@ai-sdk/provider-utils': 4.0.4(zod@4.2.1)
-      ai: 6.0.21(zod@4.2.1)
+      ai: 6.0.23(zod@4.2.1)
       react: 19.2.3
       swr: 2.3.8(react@19.2.3)
       throttleit: 2.1.0
