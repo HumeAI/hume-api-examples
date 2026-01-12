@@ -2,9 +2,11 @@
 // dotnet test tts-csharp-quickstart.tests.csproj
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DotNetEnv;
 using Hume;
+using Hume.Tts;
 using Xunit;
 
 namespace TtsCsharpQuickstart.Tests;
@@ -57,7 +59,24 @@ public class TtsJsonStreamTests : IClassFixture<TtsTestFixture>
         Assert.NotNull(_fixture.HumeClient);
     }
 
-    // TODO: Implement test
+    [Fact]
+    public async Task GeneratesJsonStream_WithOctave1()
+    {
+        var audioChunks = new List<SnippetAudioChunk>();
+
+        await foreach (var chunk in _fixture.HumeClient!.Tts.SynthesizeJsonStreamingAsync(Program.Example1RequestParams))
+        {
+            var chunkValue = (chunk as dynamic)?.Value;
+            if (chunkValue is SnippetAudioChunk audio)
+            {
+                audioChunks.Add(audio);
+            }
+        }
+
+        Assert.True(audioChunks.Count > 0, "Should receive at least one audio chunk");
+        Assert.NotNull(audioChunks[0].Audio);
+        Assert.IsType<string>(audioChunks[0].Audio); // base64 encoded audio
+    }
 }
 
 [Collection("TtsTests")]
