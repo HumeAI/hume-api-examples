@@ -1,5 +1,5 @@
-// To run tests, run:
-// dotnet test tts-csharp-quickstart.tests.csproj
+// To run tests:
+// dotnet test tts-csharp-quickstart.tests.csproj --logger "console;verbosity=detailed"
 
 using System;
 using System.Collections.Generic;
@@ -52,19 +52,26 @@ public class TtsJsonStreamTests : IClassFixture<TtsTestFixture>
         _fixture = fixture;
     }
 
-    [Fact]
+    [Fact(DisplayName = "test fixture has API key")]
     public void TestFixture_HasApiKey()
     {
         Assert.False(string.IsNullOrEmpty(_fixture.ApiKey), "API key loaded");
         Assert.NotNull(_fixture.HumeClient);
     }
 
-    [Fact]
+    [Fact(DisplayName = "connects w/ API key, generates JSON stream w/ Octave 1")]
     public async Task GeneratesJsonStream_WithOctave1()
     {
+        var request = new PostedTts
+        {
+            Utterances = Program.Example1RequestParams.Utterances,
+            StripHeaders = Program.Example1RequestParams.StripHeaders,
+            Version = OctaveVersion.One,
+        };
+
         var audioChunks = new List<SnippetAudioChunk>();
 
-        await foreach (var chunk in _fixture.HumeClient!.Tts.SynthesizeJsonStreamingAsync(Program.Example1RequestParams))
+        await foreach (var chunk in _fixture.HumeClient!.Tts.SynthesizeJsonStreamingAsync(request))
         {
             var chunkValue = (chunk as dynamic)?.Value;
             if (chunkValue is SnippetAudioChunk audio)
