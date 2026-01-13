@@ -21,8 +21,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.3)
       ai:
-        specifier: ^6.0.28
-        version: 6.0.28(zod@4.3.5)
+        specifier: ^6.0.31
+        version: 6.0.31(zod@4.3.5)
       hume:
         specifier: ^0.15.10
         version: 0.15.10
@@ -77,12 +77,6 @@ packages:
 
   '@ai-sdk/anthropic@3.0.12':
     resolution: {integrity: sha512-1ygMQ2acJ9k+CPRuDiywtkuQwSdsZwAISgbRIayE3PF/Ct2b80c4iGS1CbycYMx+yswPyBMOuPTqebh9vvwMMg==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/gateway@3.0.11':
-    resolution: {integrity: sha512-gLrgNXA95wdo/zAlA0miX/SJEYKSYCHg+e0Y/uQeABLScZAMjPw3jWaeANta/Db1T4xfi8cBvY3nnV8Pa27z+w==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -777,12 +771,6 @@ packages:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-
-  ai@6.0.28:
-    resolution: {integrity: sha512-TshF7p7Vhg8Ty8MMijiUKB3k334GTqgD7eK5XQzaxAcrc4JXuZClRrS0nhxrbs0LOtCVbqYTRLb7qJ7VG2djnQ==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
 
   ai@6.0.31:
     resolution: {integrity: sha512-aAn62jsDueAK7oiY4jeqJcA4zFctDqVHGyEaUDaWxEXzz4kbMdoByfYlYZhO1V3nhkeVoI8qNyFfiZusAubQLQ==}
@@ -2130,13 +2118,6 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.5(zod@4.3.5)
       zod: 4.3.5
 
-  '@ai-sdk/gateway@3.0.11(zod@4.3.5)':
-    dependencies:
-      '@ai-sdk/provider': 3.0.2
-      '@ai-sdk/provider-utils': 4.0.4(zod@4.3.5)
-      '@vercel/oidc': 3.1.0
-      zod: 4.3.5
-
   '@ai-sdk/gateway@3.0.13(zod@4.3.5)':
     dependencies:
       '@ai-sdk/provider': 3.0.2
@@ -2783,14 +2764,6 @@ snapshots:
       acorn: 8.15.0
 
   acorn@8.15.0: {}
-
-  ai@6.0.28(zod@4.3.5):
-    dependencies:
-      '@ai-sdk/gateway': 3.0.11(zod@4.3.5)
-      '@ai-sdk/provider': 3.0.2
-      '@ai-sdk/provider-utils': 4.0.4(zod@4.3.5)
-      '@opentelemetry/api': 1.9.0
-      zod: 4.3.5
 
   ai@6.0.31(zod@4.3.5):
     dependencies:
