@@ -17,11 +17,32 @@ class Program
 {
     // Constants
     private const string HumeApiKey = "HUME_API_KEY";
-    private const string DefaultVoiceName = "Ava Song";
+    public const string DefaultVoiceName = "Ava Song";
+    public const string Example1Text = "Dogs became domesticated between 23,000 and 30,000 years ago.";
     private const int VoiceCreationDelaySeconds = 8;
     
     private static string? _apiKey;
     private static HumeClient? _client;
+
+    public static PostedTts Example1RequestParams => new PostedTts
+    {
+        Utterances = new List<PostedUtterance>
+        {
+            new PostedUtterance
+            {
+                Text = Example1Text,
+                Voice = new PostedUtteranceVoiceWithName
+                {
+                    Name = DefaultVoiceName,
+                    Provider = new VoiceProvider(VoiceProvider.Values.HumeAi)
+                }
+            }
+        },
+        // With `stripHeaders: true`, only the first audio chunk will contain
+        // headers in container formats (wav, mp3). This allows you to start a
+        // single audio player and stream all audio chunks to it without artifacts.
+        StripHeaders = true,
+    };
 
     static async Task RunExamplesAsync()
     {
@@ -61,28 +82,10 @@ class Program
     {
         Console.WriteLine("Example 1: Synthesizing audio using a pre-existing voice...");
 
-        var voice = new PostedUtteranceVoiceWithName
-        {
-            Name = DefaultVoiceName,
-            Provider = new VoiceProvider(Hume.Tts.VoiceProvider.Values.HumeAi)
-        };
-
         using var player = StartAudioPlayer();
         await player.StartAsync();
 
-        var ttsRequest = new PostedTts
-        {
-            Utterances = new List<PostedUtterance>
-            {
-                new PostedUtterance { Text = "Dogs became domesticated between 23,000 and 30,000 years ago.", Voice = voice },
-            },
-            // With `stripHeaders: true`, only the first audio chunk will contain
-            // headers in container formats (wav, mp3). This allows you to start a
-            // single audio player and stream all audio chunks to it without artifacts.
-            StripHeaders = true,
-        };
-
-        await StreamAudioToPlayerAsync(_client!.Tts.SynthesizeJsonStreamingAsync(ttsRequest), player);
+        await StreamAudioToPlayerAsync(_client!.Tts.SynthesizeJsonStreamingAsync(Example1RequestParams), player);
         await player.StopAsync();
         Console.WriteLine("Done!");
     }
