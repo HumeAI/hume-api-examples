@@ -166,6 +166,43 @@ public class TtsStreamInputTests : IClassFixture<TtsTestFixture>
         await streamingClient.SendFlushAsync();
         await streamingClient.SendCloseAsync();
     }
+
+    [Fact(DisplayName = "StreamingTtsClient: sends messages and receives audio chunks")]
+    public async Task SendsMessagesAndReceivesAudioChunks()
+    {
+        var audioChunks = new List<SnippetAudioChunk>();
+
+        using var streamingClient = new TtsCsharpQuickstart.StreamingTtsClient(_fixture.ApiKey);
+        await streamingClient.ConnectAsync();
+
+        // Task 1: Receive audio chunks
+        var handleMessagesTask = Task.Run(async () =>
+        {
+            await foreach (var chunk in streamingClient.ReceiveAudioChunksAsync())
+            {
+                audioChunks.Add(chunk);
+            }
+        });
+
+        // Task 2: Send input messages
+        var sendInputTask = Task.Run(async () =>
+        {
+            await streamingClient.SendAsync(new
+            {
+                text = "Hello",
+                voice = new { name = Program.DefaultVoiceName, provider = "HUME_AI" }
+            });
+            await streamingClient.SendFlushAsync();
+            await Task.Delay(1000);
+            await streamingClient.SendCloseAsync();
+        });
+
+        await Task.WhenAll(handleMessagesTask, sendInputTask);
+
+        Assert.True(audioChunks.Count > 0, "Expected at least one audio chunk");
+        Assert.NotNull(audioChunks[0].Audio);
+        Assert.IsType<string>(audioChunks[0].Audio); // base64 encoded audio
+    }
 }
 
 [CollectionDefinition("TtsTests")]
