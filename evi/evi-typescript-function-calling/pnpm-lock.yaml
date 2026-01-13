@@ -12,8 +12,8 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       hume:
-        specifier: ^0.15.9
-        version: 0.15.9
+        specifier: ^0.15.10
+        version: 0.15.10
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -331,8 +331,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.9:
-    resolution: {integrity: sha512-6a90/USLYPV857xcjEfdGgXiT7nfzCqUUZkNn4X3uhQSI42gZKDuulRi7oVXXEgXsS49iCCoCTPKO+acGpLfzA==}
+  hume@0.15.10:
+    resolution: {integrity: sha512-KMaMxbxKOm8YrHlmSdqxtxLD2h2HiBxSbYTtn8zt8LUcoJRORNsdwZuqWff5ZDePm9Uxi9Uigy0Q+CHRp1LX7A==}
     engines: {node: '>=18.0.0'}
 
   nanoid@3.3.11:
@@ -413,8 +413,8 @@ packages:
       yaml:
         optional: true
 
-  ws@8.18.3:
-    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+  ws@8.19.0:
+    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -623,10 +623,10 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.9:
+  hume@0.15.10:
     dependencies:
       uuid: 9.0.1
-      ws: 8.18.3
+      ws: 8.19.0
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -697,6 +697,6 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  ws@8.18.3: {}
+  ws@8.19.0: {}
 
   zod@3.25.76: {}
