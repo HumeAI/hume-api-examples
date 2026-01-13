@@ -12,8 +12,8 @@ importers:
         specifier: ^3.0.12
         version: 3.0.12(zod@4.3.5)
       '@ai-sdk/groq':
-        specifier: ^3.0.4
-        version: 3.0.4(zod@4.3.5)
+        specifier: ^3.0.5
+        version: 3.0.5(zod@4.3.5)
       '@ai-sdk/react':
         specifier: ^3.0.33
         version: 3.0.33(react@19.2.3)(zod@4.3.5)
@@ -87,14 +87,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/groq@3.0.4':
-    resolution: {integrity: sha512-xhqeUZ9DclSZntfIAsIDsMzk2QpeWA9NMAdyrfP3Lbu+Nqccv1fWPoy9SaYwRwdluUUvc45gl9GtMDnWUbO0oA==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/provider-utils@4.0.4':
-    resolution: {integrity: sha512-VxhX0B/dWGbpNHxrKCWUAJKXIXV015J4e7qYjdIU9lLWeptk0KMLGcqkB4wFxff5Njqur8dt8wRi1MN9lZtDqg==}
+  '@ai-sdk/groq@3.0.5':
+    resolution: {integrity: sha512-WzfdNrICZ2Lpj3j5VDzv7p7HB8g6U66k1jo7k3RExVa+EJvZXerJH0Ch8XIFLHs62nTnh951wRg29gpSn3ufxA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -2125,17 +2119,10 @@ snapshots:
       '@vercel/oidc': 3.1.0
       zod: 4.3.5
 
-  '@ai-sdk/groq@3.0.4(zod@4.3.5)':
+  '@ai-sdk/groq@3.0.5(zod@4.3.5)':
     dependencies:
       '@ai-sdk/provider': 3.0.2
-      '@ai-sdk/provider-utils': 4.0.4(zod@4.3.5)
-      zod: 4.3.5
-
-  '@ai-sdk/provider-utils@4.0.4(zod@4.3.5)':
-    dependencies:
-      '@ai-sdk/provider': 3.0.2
-      '@standard-schema/spec': 1.1.0
-      eventsource-parser: 3.0.6
+      '@ai-sdk/provider-utils': 4.0.5(zod@4.3.5)
       zod: 4.3.5
 
   '@ai-sdk/provider-utils@4.0.5(zod@4.3.5)':
