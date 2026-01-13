@@ -151,7 +151,21 @@ public class TtsStreamInputTests : IClassFixture<TtsTestFixture>
         _fixture = fixture;
     }
 
-    // TODO: Implement test
+    [Fact(DisplayName = "StreamingTtsClient: creates a bidirectional stream and connects successfully")]
+    public async Task CreatesStreamAndConnectsSuccessfully()
+    {
+        using var streamingClient = new TtsCsharpQuickstart.StreamingTtsClient(_fixture.ApiKey);
+        
+        await streamingClient.ConnectAsync();
+        
+        // Verify the client is created and connected
+        Assert.NotNull(streamingClient);
+        
+        // Verify we can send messages (this would throw if not connected)
+        await streamingClient.SendAsync(new { text = "Hello" });
+        await streamingClient.SendFlushAsync();
+        await streamingClient.SendCloseAsync();
+    }
 }
 
 [CollectionDefinition("TtsTests")]
