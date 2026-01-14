@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       hume:
-        specifier: 0.15.10
-        version: 0.15.10
+        specifier: 0.15.11
+        version: 0.15.11
     devDependencies:
       '@types/node':
         specifier: ^25.0.8
@@ -402,8 +402,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.10:
-    resolution: {integrity: sha512-KMaMxbxKOm8YrHlmSdqxtxLD2h2HiBxSbYTtn8zt8LUcoJRORNsdwZuqWff5ZDePm9Uxi9Uigy0Q+CHRp1LX7A==}
+  hume@0.15.11:
+    resolution: {integrity: sha512-hYPo6AYIPDlVW4a9zITLcL49NS/Mfwb2iXk+KPesyj1Uy7XspBP51RcUOK1PPlGA/anJ6vFVJcKE3QHxWbIniQ==}
     engines: {node: '>=18.0.0'}
 
   magic-string@0.30.21:
@@ -836,7 +836,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.10:
+  hume@0.15.11:
     dependencies:
       uuid: 9.0.1
       ws: 8.19.0
