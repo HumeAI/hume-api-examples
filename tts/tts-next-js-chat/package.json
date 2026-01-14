@@ -11,7 +11,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.12",
     "@ai-sdk/groq": "^3.0.5",
-    "@ai-sdk/react": "^3.0.33",
+    "@ai-sdk/react": "^3.0.35",
     "@heroicons/react": "^2.2.0",
     "ai": "^6.0.31",
     "hume": "^0.15.10",
