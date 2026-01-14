@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "dotenv": "^17.2.3",
-    "hume": "^0.15.10"
+    "hume": "^0.15.11"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
