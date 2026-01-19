@@ -12,8 +12,8 @@ importers:
         specifier: ^3.0.14
         version: 3.0.14(zod@4.3.5)
       '@ai-sdk/groq':
-        specifier: ^3.0.10
-        version: 3.0.10(zod@4.3.5)
+        specifier: ^3.0.11
+        version: 3.0.11(zod@4.3.5)
       '@ai-sdk/react':
         specifier: ^3.0.40
         version: 3.0.40(react@19.2.3)(zod@4.3.5)
@@ -93,8 +93,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/groq@3.0.10':
-    resolution: {integrity: sha512-kwIsEoDyKaHGv6p/vYUQBJixiSB/tuHFigsxU8HGKXoP9C/ERckyfs5ze/oVmj/amtC99K8T5DmbHubltOhMqg==}
+  '@ai-sdk/groq@3.0.11':
+    resolution: {integrity: sha512-2FqRCSq5dhMSkVPydSYhYGK3bcvKQKHauCGBo+VYDZgZXVlYY+5qdGuNvlaf6XcycdB3LmHizISQ2Tj/lP57wQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -2154,7 +2154,7 @@ snapshots:
       '@vercel/oidc': 3.1.0
       zod: 4.3.5
 
-  '@ai-sdk/groq@3.0.10(zod@4.3.5)':
+  '@ai-sdk/groq@3.0.11(zod@4.3.5)':
     dependencies:
       '@ai-sdk/provider': 3.0.4
       '@ai-sdk/provider-utils': 4.0.8(zod@4.3.5)
