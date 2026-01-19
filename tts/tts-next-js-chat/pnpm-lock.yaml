@@ -21,8 +21,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.3)
       ai:
-        specifier: ^6.0.36
-        version: 6.0.36(zod@4.3.5)
+        specifier: ^6.0.40
+        version: 6.0.40(zod@4.3.5)
       hume:
         specifier: ^0.15.11
         version: 0.15.11
@@ -77,12 +77,6 @@ packages:
 
   '@ai-sdk/anthropic@3.0.15':
     resolution: {integrity: sha512-FCNy6pABPe5Qb1VPbdLLIi/XkQN2g/fKUcl1GcXxIU3Ofr+vOND8cyZfH20cMODR523FSGfwswJoJic8skr8qg==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/gateway@3.0.15':
-    resolution: {integrity: sha512-OsWcXMfkF9U38YhU7926rYt4IAtJuZlnM1e8STN8hHb4qbiTaORBSXcFaJuOEZ1kYOf3DqqP7CxbmM543ePzIg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -788,8 +782,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@6.0.36:
-    resolution: {integrity: sha512-nkg3BWvce/4HrTWWRjAKRWjfo4eTFTUchH79GtHelpRZtrBmLfuRFhdX7SamAaFId+mBXB2rr/PJmiXQAp5+8A==}
+  ai@6.0.38:
+    resolution: {integrity: sha512-X8AaZFrdsPO1RNCAQLsaWfmE/SL9zgsiIZN3XqEHs3jIZ7ycR5aQZRg5XpNtbLWJxKXzK2b1ZXLx13AFOjksSg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -2140,13 +2134,6 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.8(zod@4.3.5)
       zod: 4.3.5
 
-  '@ai-sdk/gateway@3.0.15(zod@4.3.5)':
-    dependencies:
-      '@ai-sdk/provider': 3.0.3
-      '@ai-sdk/provider-utils': 4.0.7(zod@4.3.5)
-      '@vercel/oidc': 3.1.0
-      zod: 4.3.5
-
   '@ai-sdk/gateway@3.0.16(zod@4.3.5)':
     dependencies:
       '@ai-sdk/provider': 3.0.4
@@ -2803,11 +2790,11 @@ snapshots:
 
   acorn@8.15.0: {}
 
-  ai@6.0.36(zod@4.3.5):
+  ai@6.0.38(zod@4.3.5):
     dependencies:
-      '@ai-sdk/gateway': 3.0.15(zod@4.3.5)
-      '@ai-sdk/provider': 3.0.3
-      '@ai-sdk/provider-utils': 4.0.7(zod@4.3.5)
+      '@ai-sdk/gateway': 3.0.16(zod@4.3.5)
+      '@ai-sdk/provider': 3.0.4
+      '@ai-sdk/provider-utils': 4.0.8(zod@4.3.5)
       '@opentelemetry/api': 1.9.0
       zod: 4.3.5
 
