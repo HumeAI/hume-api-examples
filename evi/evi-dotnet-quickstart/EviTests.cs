@@ -139,6 +139,8 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         Assert.NotNull(chatId);
         Assert.False(string.IsNullOrEmpty(chatId), "Expected chat_id from chat_metadata");
 
+        await Task.Delay(500);
+
         await chatApi.DisposeAsync();
 
         await Task.Delay(2000);
@@ -158,9 +160,19 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
             events.Add(evt);
         }
 
+        // Debug: Print event types to help diagnose
+        var eventTypes = events.Select(e => e.Type).ToList();
+        if (events.Count == 0 || !eventTypes.Contains("SESSION_SETTINGS"))
+        {
+            var eventTypesStr = string.Join(", ", eventTypes);
+            Assert.True(false, 
+                $"Expected SESSION_SETTINGS event but found none. Event types found: {eventTypesStr}. Total events: {events.Count}");
+        }
+
         var sessionSettingsEvent = events.FirstOrDefault(e => e.Type == "SESSION_SETTINGS");
 
-        Assert.NotNull(sessionSettingsEvent);
+        Assert.NotNull(sessionSettingsEvent, 
+            $"Expected SESSION_SETTINGS event. Found event types: {string.Join(", ", eventTypes)}");
         Assert.NotNull(sessionSettingsEvent.MessageText);
         
         var parsedSettings = JsonSerializer.Deserialize<JsonElement>(sessionSettingsEvent.MessageText);
