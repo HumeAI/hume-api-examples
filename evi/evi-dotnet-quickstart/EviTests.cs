@@ -161,18 +161,16 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         }
 
         // Debug: Print event types to help diagnose
-        var eventTypes = events.Select(e => e.Type).ToList();
-        if (events.Count == 0 || !eventTypes.Contains("SESSION_SETTINGS"))
+        var eventTypes = events.Select(e => e.Type.ToString()).ToList();
+        var sessionSettingsEvent = events.FirstOrDefault(e => (string)e.Type == "SESSION_SETTINGS");
+        
+        if (sessionSettingsEvent == null)
         {
             var eventTypesStr = string.Join(", ", eventTypes);
-            Assert.True(false, 
+            Assert.Fail(
                 $"Expected SESSION_SETTINGS event but found none. Event types found: {eventTypesStr}. Total events: {events.Count}");
         }
 
-        var sessionSettingsEvent = events.FirstOrDefault(e => e.Type == "SESSION_SETTINGS");
-
-        Assert.NotNull(sessionSettingsEvent, 
-            $"Expected SESSION_SETTINGS event. Found event types: {string.Join(", ", eventTypes)}");
         Assert.NotNull(sessionSettingsEvent.MessageText);
         
         var parsedSettings = JsonSerializer.Deserialize<JsonElement>(sessionSettingsEvent.MessageText);
@@ -243,7 +241,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
             events.Add(evt);
         }
 
-        var sessionSettingsEvents = events.Where(e => e.Type == "SESSION_SETTINGS").ToList();
+        var sessionSettingsEvents = events.Where(e => (string)e.Type == "SESSION_SETTINGS").ToList();
 
         Assert.True(sessionSettingsEvents.Count >= 1, 
             $"Expected at least 1 SESSION_SETTINGS event. Found event types: {string.Join(", ", events.Select(e => e.Type))}");
