@@ -97,9 +97,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         await chatApi.DisposeAsync();
     }
 
-    // This doesn't work yet due to Fern bug - will uncomment when fixed
-
-    /*[Fact(DisplayName = "connects w/ API key, verifies sessionSettings are passed on connect()")]
+    [Fact(DisplayName = "connects w/ API key, verifies sessionSettings are passed on connect()")]
     public async Task Connects_VerifiesSessionSettingsOnConnect()
     {
         var sessionSettings = new ConnectSessionSettings
@@ -159,14 +157,10 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         {
             events.Add(evt);
         }
-        
-        await foreach (var evt in pager)
-        {
-            events.Add(evt);
-        }
 
         var sessionSettingsEvent = events.FirstOrDefault(e => e.Type == "SESSION_SETTINGS");
 
+        Assert.NotNull(sessionSettingsEvent);
         Assert.NotNull(sessionSettingsEvent.MessageText);
         
         var parsedSettings = JsonSerializer.Deserialize<JsonElement>(sessionSettingsEvent.MessageText);
@@ -180,7 +174,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         Assert.Equal("John", variables.GetProperty("userName").GetString());
         Assert.Equal("30.0", variables.GetProperty("userAge").GetString());
         Assert.Equal("True", variables.GetProperty("isPremium").GetString());
-    }*/
+    }
 
     [Fact(DisplayName = "connects w/ API key, verifies sessionSettings can be updated after connect()")]
     public async Task Connects_VerifiesSessionSettingsUpdatedAfterConnect()
