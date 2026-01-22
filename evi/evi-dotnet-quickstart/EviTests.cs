@@ -105,7 +105,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
     {
         var sessionSettings = new ConnectSessionSettings
         {
-            SystemPrompt = "You are a helpful assistant that verifies sessionSettings are passed on connect()"
+            SystemPrompt = "You are a helpful assistant that verifies sessionSettings are passed on connect()",
             Variables = new Dictionary<string, OneOf<string, double, bool>>
             {
                 { "userName", OneOf<string, double, bool>.FromT0("John") },
