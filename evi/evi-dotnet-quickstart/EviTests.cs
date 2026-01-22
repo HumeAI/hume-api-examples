@@ -250,7 +250,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
             events.Add(evt);
         }
 
-        var sessionSettingsEvents = events.Where(e => e.Type == "SESSION_SETTINGS").ToList();
+        var sessionSettingsEvents = events.Where(e => (string)e.Type == "SESSION_SETTINGS").ToList();
 
         Assert.True(sessionSettingsEvents.Count >= 1,
             $"Expected at least 1 SESSION_SETTINGS event. Found event types: {string.Join(", ", events.Select(e => e.Type))}");
