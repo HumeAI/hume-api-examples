@@ -11,6 +11,7 @@ using Hume;
 using Hume.EmpathicVoice;
 using OneOf;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace EviCsharpQuickstart.Tests;
 
@@ -49,10 +50,12 @@ public class EviTestFixture : IAsyncLifetime
 public class EviConnectionTests : IClassFixture<EviTestFixture>
 {
     private readonly EviTestFixture _fixture;
+    private readonly ITestOutputHelper _output;
 
-    public EviConnectionTests(EviTestFixture fixture)
+    public EviConnectionTests(EviTestFixture fixture, ITestOutputHelper output)
     {
         _fixture = fixture;
+        _output = output;
     }
 
     [Fact(DisplayName = "test fixture has API key")]
@@ -102,7 +105,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
     {
         var sessionSettings = new ConnectSessionSettings
         {
-            SystemPrompt = "You are a helpful assistant that verifies sessionSettings are passed on connect()",
+            SystemPrompt = "You are a helpful assistant that verifies sessionSettings are passed on connect()"
             // Variables = new Dictionary<string, OneOf<string, double, bool>>
             // {
             //     { "userName", OneOf<string, double, bool>.FromT0("John") },
@@ -138,9 +141,9 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         Assert.NotNull(chatId);
         Assert.False(string.IsNullOrEmpty(chatId), "Expected chat_id from chat_metadata");
 
-        await Task.Delay(500);
+        // await Task.Delay(500);
 
-        await chatApi.DisposeAsync();
+        // await chatApi.DisposeAsync();
 
         await Task.Delay(2000);
 
@@ -159,22 +162,28 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
             events.Add(evt);
         }
 
-        // Debug: Print event types to help diagnose
-        var eventTypes = events.Select(e => e.Type).ToList();
-        if (events.Count == 0 || !eventTypes.Contains("SESSION_SETTINGS"))
+        // Debug output (uses ITestOutputHelper to show in CI logs)
+        var apiKeyPreview = _fixture.ApiKey?.Length > 8 ? _fixture.ApiKey[..8] + "..." : _fixture.ApiKey;
+        _output.WriteLine($"🎾 API Key: {apiKeyPreview}");
+        _output.WriteLine($"🎾 Chat ID: {chatId}");
+        
+        var eventTypes = events.Select(e => e.Type.ToString()).ToList();
+        _output.WriteLine($"🎾 All events ({events.Count}): {string.Join(", ", eventTypes)}");
+        
+        var sessionSettingsEvent = events.FirstOrDefault(e => e.Type.ToString() == "SESSION_SETTINGS");
+        _output.WriteLine($"🎾 sessionSettingsEvent: {(sessionSettingsEvent != null ? sessionSettingsEvent.MessageText : "null")}");
+
+        if (sessionSettingsEvent == null)
         {
             var eventTypesStr = string.Join(", ", eventTypes);
-            Assert.True(false,
+            Assert.Fail(
                 $"Expected SESSION_SETTINGS event but found none. Event types found: {eventTypesStr}. Total events: {events.Count}");
+            return;
         }
 
-        var sessionSettingsEvent = events.FirstOrDefault(e => e.Type == "SESSION_SETTINGS");
-
-        Assert.NotNull(sessionSettingsEvent,
-            $"Expected SESSION_SETTINGS event. Found event types: {string.Join(", ", eventTypes)}");
         Assert.NotNull(sessionSettingsEvent.MessageText);
 
-        var parsedSettings = JsonSerializer.Deserialize<JsonElement>(sessionSettingsEvent.MessageText);
+        var parsedSettings = JsonSerializer.Deserialize<JsonElement>(sessionSettingsEvent.MessageText!);
 
         Assert.Equal("session_settings", parsedSettings.GetProperty("type").GetString());
 
