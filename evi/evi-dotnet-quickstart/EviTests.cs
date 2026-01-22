@@ -106,12 +106,12 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         var sessionSettings = new ConnectSessionSettings
         {
             SystemPrompt = "You are a helpful assistant that verifies sessionSettings are passed on connect()"
-            // Variables = new Dictionary<string, OneOf<string, double, bool>>
-            // {
-            //     { "userName", OneOf<string, double, bool>.FromT0("John") },
-            //     { "userAge", OneOf<string, double, bool>.FromT1(30.0) },
-            //     { "isPremium", OneOf<string, double, bool>.FromT2(true) }
-            // }
+            Variables = new Dictionary<string, OneOf<string, double, bool>>
+            {
+                { "userName", OneOf<string, double, bool>.FromT0("John") },
+                { "userAge", OneOf<string, double, bool>.FromT1(30.0) },
+                { "isPremium", OneOf<string, double, bool>.FromT2(true) }
+            }
         };
 
         string? chatId = null;
@@ -143,7 +143,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
 
         // await Task.Delay(500);
 
-        // await chatApi.DisposeAsync();
+        await chatApi.DisposeAsync();
 
         await Task.Delay(2000);
 
@@ -189,10 +189,10 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
 
         Assert.Equal("You are a helpful assistant that verifies sessionSettings are passed on connect()", parsedSettings.GetProperty("system_prompt").GetString());
 
-        // var variables = parsedSettings.GetProperty("variables");
-        // Assert.Equal("John", variables.GetProperty("userName").GetString());
-        // Assert.Equal("30.0", variables.GetProperty("userAge").GetString());
-        // Assert.Equal("True", variables.GetProperty("isPremium").GetString());
+        var variables = parsedSettings.GetProperty("variables");
+        Assert.Equal("John", variables.GetProperty("userName").GetString());
+        Assert.Equal("30.0", variables.GetProperty("userAge").GetString());
+        Assert.Equal("True", variables.GetProperty("isPremium").GetString());
     }
 
     [Fact(DisplayName = "connects w/ API key, verifies sessionSettings can be updated after connect()")]
