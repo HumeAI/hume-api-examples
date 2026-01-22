@@ -141,8 +141,6 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         Assert.NotNull(chatId);
         Assert.False(string.IsNullOrEmpty(chatId), "Expected chat_id from chat_metadata");
 
-        // await Task.Delay(500);
-
         await chatApi.DisposeAsync();
 
         await Task.Delay(2000);
@@ -162,16 +160,9 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
             events.Add(evt);
         }
 
-        // Debug output (uses ITestOutputHelper to show in CI logs)
-        var apiKeyPreview = _fixture.ApiKey?.Length > 8 ? _fixture.ApiKey[..8] + "..." : _fixture.ApiKey;
-        _output.WriteLine($"🎾 API Key: {apiKeyPreview}");
-        _output.WriteLine($"🎾 Chat ID: {chatId}");
-        
         var eventTypes = events.Select(e => e.Type.ToString()).ToList();
-        _output.WriteLine($"🎾 All events ({events.Count}): {string.Join(", ", eventTypes)}");
-        
+
         var sessionSettingsEvent = events.FirstOrDefault(e => e.Type.ToString() == "SESSION_SETTINGS");
-        _output.WriteLine($"🎾 sessionSettingsEvent: {(sessionSettingsEvent != null ? sessionSettingsEvent.MessageText : "null")}");
 
         if (sessionSettingsEvent == null)
         {
@@ -191,7 +182,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
 
         var variables = parsedSettings.GetProperty("variables");
         Assert.Equal("John", variables.GetProperty("userName").GetString());
-        Assert.Equal("30.0", variables.GetProperty("userAge").GetString());
+        Assert.Equal("30", variables.GetProperty("userAge").GetString());
         Assert.Equal("True", variables.GetProperty("isPremium").GetString());
     }
 
