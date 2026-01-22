@@ -183,7 +183,7 @@ public class EviConnectionTests : IClassFixture<EviTestFixture>
         var variables = parsedSettings.GetProperty("variables");
         Assert.Equal("John", variables.GetProperty("userName").GetString());
         Assert.Equal("30", variables.GetProperty("userAge").GetString());
-        Assert.Equal("True", variables.GetProperty("isPremium").GetString());
+        Assert.Equal("true", variables.GetProperty("isPremium").GetString());
     }
 
     [Fact(DisplayName = "connects w/ API key, verifies sessionSettings can be updated after connect()")]
