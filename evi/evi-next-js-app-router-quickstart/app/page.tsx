@@ -1,9 +1,5 @@
-import dynamic from "next/dynamic";
 import { fetchAccessToken } from "hume";
-
-const Chat = dynamic(() => import("@/components/Chat"), {
-  ssr: false,
-});
+import ChatLoader from "@/components/ChatLoader";
 
 export default async function Page() {
   if (!process.env.HUME_API_KEY) {
@@ -19,7 +15,7 @@ export default async function Page() {
 
   return (
     <div className={"grow flex flex-col"}>
-      <Chat accessToken={accessToken} />
+      <ChatLoader accessToken={accessToken} />
     </div>
   );
 }
