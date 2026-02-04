@@ -2,12 +2,28 @@ import { ConnectOptions, useVoice } from "@humeai/voice-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Phone } from "lucide-react";
+import type { Hume } from "hume";
 
-export default function StartCall({ accessToken }: { accessToken: string }) {
+type StartCallProps = (
+  | { accessToken: string; apiKey?: never }
+  | { apiKey: string; accessToken?: never }
+) & {
+  sessionSettings?: Hume.empathicVoice.SessionSettings;
+};
+
+export default function StartCall({
+  accessToken,
+  apiKey,
+  sessionSettings,
+}: StartCallProps) {
   const { status, connect } = useVoice();
 
   const EVI_CONNECT_OPTIONS: ConnectOptions = {
-    auth: { type: "accessToken", value: accessToken },
+    auth:
+      apiKey != null
+        ? { type: "apiKey", value: apiKey }
+        : { type: "accessToken", value: accessToken! },
+    ...(sessionSettings != null && { sessionSettings }),
     // configId: "<YOUR_CONFIG_ID>"
   };
 

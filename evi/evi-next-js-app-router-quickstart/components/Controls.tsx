@@ -6,9 +6,29 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Toggle } from "./ui/toggle";
 import MicFFT from "./MicFFT";
 import { cn } from "@/utils";
+import { useEffect } from "react";
+import { trackVoiceStatus } from "@/utils/e2e-hooks";
+
+const E2E_ENABLED =
+  process.env.NEXT_PUBLIC_ENABLE_E2E_HOOKS &&
+  process.env.NEXT_PUBLIC_ENABLE_E2E_HOOKS !== "false";
 
 export default function Controls() {
-  const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();
+  const { disconnect, status, isMuted, unmute, mute, micFft, sendSessionSettings } =
+    useVoice();
+
+  useEffect(() => {
+    trackVoiceStatus(status.value);
+  }, [status.value]);
+
+  useEffect(() => {
+    if (E2E_ENABLED && typeof window !== "undefined") {
+      (window as Window & { __sendSessionSettings?: typeof sendSessionSettings }).__sendSessionSettings = sendSessionSettings;
+      return () => {
+        delete (window as Window & { __sendSessionSettings?: unknown }).__sendSessionSettings;
+      };
+    }
+  }, [sendSessionSettings]);
 
   return (
     <div
