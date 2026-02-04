@@ -3,11 +3,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Phone } from "lucide-react";
 
-export default function StartCall({ accessToken }: { accessToken: string }) {
+type StartCallProps =
+  | { accessToken: string; apiKey?: never }
+  | { apiKey: string; accessToken?: never };
+
+export default function StartCall({ accessToken, apiKey }: StartCallProps) {
   const { status, connect } = useVoice();
 
   const EVI_CONNECT_OPTIONS: ConnectOptions = {
-    auth: { type: "accessToken", value: accessToken },
+    auth:
+      apiKey != null
+        ? { type: "apiKey", value: apiKey }
+        : { type: "accessToken", value: accessToken! },
     // configId: "<YOUR_CONFIG_ID>"
   };
 

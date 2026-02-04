@@ -5,13 +5,14 @@ import Messages from "./Messages";
 import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { ComponentRef, useRef } from "react";
-import { setLlmKeyForChat } from '@/app/actions/set-llm-key';
+import { setLlmKeyForChat } from "@/app/actions/set-llm-key";
+import { recordVoiceEvent } from "@/utils/e2e-hooks";
 
-export default function ClientComponent({
-  accessToken,
-}: {
-  accessToken: string;
-}) {
+type ChatProps =
+  | { accessToken: string; apiKey?: never }
+  | { apiKey: string; accessToken?: never };
+
+export default function ClientComponent({ accessToken, apiKey }: ChatProps) {
   const timeout = useRef<number | null>(null);
   const ref = useRef<ComponentRef<typeof Messages> | null>(null);
 
@@ -23,6 +24,7 @@ export default function ClientComponent({
     >
       <VoiceProvider
         onMessage={async (msg) => {
+          recordVoiceEvent(msg);
           if (timeout.current) {
             window.clearTimeout(timeout.current);
           }
@@ -46,7 +48,11 @@ export default function ClientComponent({
       >
         <Messages ref={ref} />
         <Controls />
-        <StartCall accessToken={accessToken} />
+        <StartCall
+          {...(apiKey != null
+            ? { apiKey }
+            : { accessToken: accessToken! })}
+        />
       </VoiceProvider>
     </div>
   );

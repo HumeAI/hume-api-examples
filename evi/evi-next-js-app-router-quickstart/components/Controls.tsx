@@ -6,9 +6,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Toggle } from "./ui/toggle";
 import MicFFT from "./MicFFT";
 import { cn } from "@/utils";
+import { useEffect } from "react";
+import { trackVoiceStatus } from "@/utils/e2e-hooks";
 
 export default function Controls() {
   const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();
+  useEffect(() => {
+    trackVoiceStatus(status.value);
+  }, [status.value]);
 
   return (
     <div

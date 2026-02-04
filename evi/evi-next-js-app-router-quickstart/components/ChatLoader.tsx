@@ -6,6 +6,14 @@ const Chat = dynamic(() => import("@/components/Chat"), {
   ssr: false,
 });
 
-export default function ChatLoader({ accessToken }: { accessToken: string }) {
-  return <Chat accessToken={accessToken} />;
+type ChatLoaderProps =
+  | { accessToken: string; apiKey?: never }
+  | { apiKey: string; accessToken?: never };
+
+export default function ChatLoader({ accessToken, apiKey }: ChatLoaderProps) {
+  return (
+    <Chat
+      {...(apiKey != null ? { apiKey } : { accessToken: accessToken! })}
+    />
+  );
 }
