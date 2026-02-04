@@ -7,12 +7,20 @@ import StartCall from "./StartCall";
 import { ComponentRef, useRef } from "react";
 import { setLlmKeyForChat } from "@/app/actions/set-llm-key";
 import { recordVoiceEvent } from "@/utils/e2e-hooks";
+import type { Hume } from "hume";
 
-type ChatProps =
+type ChatProps = (
   | { accessToken: string; apiKey?: never }
-  | { apiKey: string; accessToken?: never };
+  | { apiKey: string; accessToken?: never }
+) & {
+  sessionSettings?: Hume.empathicVoice.SessionSettings;
+};
 
-export default function ClientComponent({ accessToken, apiKey }: ChatProps) {
+export default function ClientComponent({
+  accessToken,
+  apiKey,
+  sessionSettings,
+}: ChatProps) {
   const timeout = useRef<number | null>(null);
   const ref = useRef<ComponentRef<typeof Messages> | null>(null);
 
@@ -52,6 +60,7 @@ export default function ClientComponent({ accessToken, apiKey }: ChatProps) {
           {...(apiKey != null
             ? { apiKey }
             : { accessToken: accessToken! })}
+          sessionSettings={sessionSettings}
         />
       </VoiceProvider>
     </div>

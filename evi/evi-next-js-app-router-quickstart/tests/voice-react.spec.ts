@@ -1,4 +1,7 @@
 import { test, expect, Page } from "@playwright/test";
+import { HumeClient } from "hume";
+import type { Hume } from "hume";
+import { E2E_SESSION_SETTINGS } from "../utils/session-settings";
 
 const apiKey = process.env.TEST_HUME_API_KEY || process.env.HUME_API_KEY;
 const secretKey =
@@ -58,6 +61,103 @@ test.describe("connect to EVI with Access Token", () => {
     const status = await page.evaluate(() => (window as any).__voiceStatus);
     expect(status).toBe("connected");
   });
+
+  // Session settings are sent via @humeai/voice-react on connect; we verify they appear in
+  // chat events using the hume SDK (listChatEvents), like evi-typescript-quickstart.
+  test("verifies sessionSettings are passed on connect()", async ({
+    page,
+    context,
+  }) => {
+    if (!secretKey || !secretKey.trim()) {
+      throw new Error(
+        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or HUME_SECRET_KEY (local)."
+      );
+    }
+
+    await context.grantPermissions(["microphone"], {
+      origin: "http://localhost:3000",
+    });
+
+    await page.goto("/session-settings", { waitUntil: "networkidle" });
+
+    await page.getByRole("button", { name: "Start Call" }).click();
+
+    const chatId = await waitForChatMetadataFromPage(page);
+    expect(chatId).toBeTruthy();
+
+    // Give the backend time to persist session settings (React SDK may send them after connect).
+    await page.waitForTimeout(3_000);
+
+    const events = await fetchChatEvents(chatId);
+    const sessionSettingsEvent = events.find(
+      (event) => (event.type as string) === "SESSION_SETTINGS"
+    );
+
+    expect(sessionSettingsEvent?.messageText).toBeDefined();
+    if (!sessionSettingsEvent?.messageText) {
+      throw new Error("sessionSettingsEvent.messageText is undefined");
+    }
+
+    const parsedSettings = JSON.parse(sessionSettingsEvent.messageText);
+    expect(parsedSettings.type).toBe("session_settings");
+
+    const sessionSettings = E2E_SESSION_SETTINGS as unknown as {
+      systemPrompt: string;
+      voiceId: string;
+      customSessionId: string;
+      eventLimit: number;
+      audio: { encoding: string; sampleRate: number; channels: number };
+      context: { text: string; type: string };
+      variables: {
+        userName: string | number;
+        userAge: string | number;
+        isPremium: boolean;
+      };
+    };
+
+    const expectations = [
+      // { key: "system_prompt", value: sessionSettings.systemPrompt },
+      { key: "voice_id", value: sessionSettings.voiceId },
+      { key: "custom_session_id", value: sessionSettings.customSessionId },
+      { key: "event_limit", value: sessionSettings.eventLimit },
+    ];
+
+    for (const { key, value } of expectations) {
+      if (!(key in parsedSettings)) {
+        throw new Error(
+          `SESSION_SETTINGS event missing "${key}". Keys received: ${Object.keys(
+            parsedSettings
+          ).join(", ")}`
+        );
+      }
+      expect(parsedSettings[key]).toBe(value);
+    }
+
+    // Validate audio settings
+    expect(parsedSettings.audio).toBeDefined();
+    expect(parsedSettings.audio.encoding).toBe(sessionSettings.audio.encoding);
+    expect(parsedSettings.audio.sample_rate).toBe(
+      sessionSettings.audio.sampleRate
+    );
+    expect(parsedSettings.audio.channels).toBe(sessionSettings.audio.channels);
+
+    // Validate context settings
+    expect(parsedSettings.context).toBeDefined();
+    expect(parsedSettings.context.text).toBe(sessionSettings.context.text);
+    expect(parsedSettings.context.type).toBe(sessionSettings.context.type);
+
+    // Validate variables (all saved as strings on the backend)
+    expect(parsedSettings.variables).toBeDefined();
+    expect(parsedSettings.variables.userName).toBe(
+      String(sessionSettings.variables.userName)
+    );
+    expect(parsedSettings.variables.userAge).toBe(
+      String(sessionSettings.variables.userAge)
+    );
+    expect(parsedSettings.variables.isPremium).toBe(
+      String(sessionSettings.variables.isPremium)
+    );
+  });
 });
 
 async function waitForChatMetadataFromPage(page: Page, timeoutMs = 30_000) {
@@ -76,4 +176,24 @@ async function waitForChatMetadataFromPage(page: Page, timeoutMs = 30_000) {
     throw new Error("chat_metadata event was not received");
   }
   return chatId;
+}
+
+async function fetchChatEvents(
+  chatId: string
+): Promise<Hume.empathicVoice.ReturnChatEvent[]> {
+  const key = process.env.TEST_HUME_API_KEY || process.env.HUME_API_KEY;
+  if (!key?.trim()) {
+    throw new Error("TEST_HUME_API_KEY or HUME_API_KEY must be set");
+  }
+  const client = new HumeClient({ apiKey: key });
+  const page = await client.empathicVoice.chats.listChatEvents(chatId, {
+    pageNumber: 0,
+    ascendingOrder: true,
+  });
+
+  const events: Hume.empathicVoice.ReturnChatEvent[] = [];
+  for await (const event of page) {
+    events.push(event);
+  }
+  return events;
 }
