@@ -39,16 +39,13 @@ export default function ClientComponent({
 
           timeout.current = window.setTimeout(() => {
             if (ref.current) {
-              const scrollHeight = ref.current.scrollHeight;
-
               ref.current.scrollTo({
-                top: scrollHeight,
+                top: ref.current.scrollHeight,
                 behavior: "smooth",
               });
             }
           }, 200);
 
-          // Securely set your own API key server-side for supplemental LLM (if applicable)
           if (msg.type === "chat_metadata" && msg.chatId) {
             await setLlmKeyForChat(msg.chatId);
           }

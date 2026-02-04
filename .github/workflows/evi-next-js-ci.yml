@@ -1,0 +1,117 @@
+name: test-examples EVI Next.js
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app_router: ${{ steps.filter.outputs.app_router }}
+      function_calling: ${{ steps.filter.outputs.function_calling }}
+      pages_router: ${{ steps.filter.outputs.pages_router }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed folders
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app_router:
+              - 'evi/evi-next-js-app-router-quickstart/**'
+            function_calling:
+              - 'evi/evi-next-js-function-calling/**'
+            pages_router:
+              - 'evi/evi-next-js-pages-router-quickstart/**'
+
+  evi-next-js-app-router-quickstart:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.app_router == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: evi/evi-next-js-app-router-quickstart/package-lock.json
+
+      - name: Install dependencies
+        working-directory: evi/evi-next-js-app-router-quickstart
+        run: npm ci
+
+      - name: Build
+        working-directory: evi/evi-next-js-app-router-quickstart
+        run: npm run build
+
+      - name: Install Playwright browsers
+        working-directory: evi/evi-next-js-app-router-quickstart
+        run: npx playwright install --with-deps chromium
+
+      - name: Run tests
+        working-directory: evi/evi-next-js-app-router-quickstart
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+          TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
+          HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+          HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
+        run: npm run test
+
+  evi-next-js-function-calling:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.function_calling == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: evi/evi-next-js-function-calling/package-lock.json
+
+      - name: Install dependencies
+        working-directory: evi/evi-next-js-function-calling
+        run: npm ci
+
+      - name: Build
+        working-directory: evi/evi-next-js-function-calling
+        run: npm run build
+
+  evi-next-js-pages-router-quickstart:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.pages_router == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: evi/evi-next-js-pages-router-quickstart/package-lock.json
+
+      - name: Install dependencies
+        working-directory: evi/evi-next-js-pages-router-quickstart
+        run: npm ci
+
+      - name: Build
+        working-directory: evi/evi-next-js-pages-router-quickstart
+        run: npm run build

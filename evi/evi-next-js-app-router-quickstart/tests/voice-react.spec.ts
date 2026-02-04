@@ -76,8 +76,6 @@ test.describe("connect to EVI with Access Token", () => {
     expect(status).toBe("connected");
   });
 
-  // Session settings are sent via @humeai/voice-react on connect; we verify they appear in
-  // chat events using the hume SDK (listChatEvents), like evi-typescript-quickstart.
   test("verifies sessionSettings are passed on connect()", async ({
     page,
     context,
@@ -99,7 +97,6 @@ test.describe("connect to EVI with Access Token", () => {
     const chatId = await waitForChatMetadataFromPage(page);
     expect(chatId).toBeTruthy();
 
-    // Give the backend time to persist session settings (React SDK may send them after connect).
     await page.waitForTimeout(3_000);
 
     const events = await fetchChatEvents(chatId);
@@ -133,7 +130,6 @@ test.describe("connect to EVI with Access Token", () => {
       expect(parsedSettings[key]).toBe(value);
     }
 
-    // Validate audio settings
     expect(parsedSettings.audio).toBeDefined();
     expect(parsedSettings.audio.encoding).toBe(sessionSettings.audio.encoding);
     expect(parsedSettings.audio.sample_rate).toBe(
@@ -141,12 +137,10 @@ test.describe("connect to EVI with Access Token", () => {
     );
     expect(parsedSettings.audio.channels).toBe(sessionSettings.audio.channels);
 
-    // Validate context settings
     expect(parsedSettings.context).toBeDefined();
     expect(parsedSettings.context.text).toBe(sessionSettings.context.text);
     expect(parsedSettings.context.type).toBe(sessionSettings.context.type);
 
-    // Validate variables (all saved as strings on the backend)
     expect(parsedSettings.variables).toBeDefined();
     expect(parsedSettings.variables.userName).toBe(
       String(sessionSettings.variables.userName)
