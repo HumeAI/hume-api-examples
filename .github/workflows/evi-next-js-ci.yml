@@ -74,6 +74,9 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.function_calling == 'true'
     runs-on: ubuntu-latest
+    env:
+      HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+      HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -97,6 +100,9 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.pages_router == 'true'
     runs-on: ubuntu-latest
+    env:
+      HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+      HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
