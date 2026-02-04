@@ -113,7 +113,7 @@ test.describe("connect to EVI with Access Token", () => {
     expect(parsedSettings.type).toBe("session_settings");
 
     const expectations = [
-      // { key: "system_prompt", value: sessionSettings.systemPrompt },
+      { key: "system_prompt", value: sessionSettings.systemPrompt },
       { key: "voice_id", value: sessionSettings.voiceId },
       { key: "custom_session_id", value: sessionSettings.customSessionId },
       { key: "event_limit", value: sessionSettings.eventLimit },
