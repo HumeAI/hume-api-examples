@@ -13,6 +13,20 @@ if (!apiKey || !apiKey.trim()) {
   );
 }
 
+const sessionSettings = E2E_SESSION_SETTINGS as unknown as {
+  systemPrompt: string;
+  voiceId: string;
+  customSessionId: string;
+  eventLimit: number;
+  audio: { encoding: string; sampleRate: number; channels: number };
+  context: { text: string; type: string };
+  variables: {
+    userName: string | number;
+    userAge: string | number;
+    isPremium: boolean;
+  };
+};
+
 test.describe("connect to EVI with API key", () => {
   test("starts a chat, receives a chatId, and stays alive for 2 seconds", async ({
     page,
@@ -101,20 +115,6 @@ test.describe("connect to EVI with Access Token", () => {
     const parsedSettings = JSON.parse(sessionSettingsEvent.messageText);
     expect(parsedSettings.type).toBe("session_settings");
 
-    const sessionSettings = E2E_SESSION_SETTINGS as unknown as {
-      systemPrompt: string;
-      voiceId: string;
-      customSessionId: string;
-      eventLimit: number;
-      audio: { encoding: string; sampleRate: number; channels: number };
-      context: { text: string; type: string };
-      variables: {
-        userName: string | number;
-        userAge: string | number;
-        isPremium: boolean;
-      };
-    };
-
     const expectations = [
       // { key: "system_prompt", value: sessionSettings.systemPrompt },
       { key: "voice_id", value: sessionSettings.voiceId },
@@ -156,6 +156,66 @@ test.describe("connect to EVI with Access Token", () => {
     );
     expect(parsedSettings.variables.isPremium).toBe(
       String(sessionSettings.variables.isPremium)
+    );
+  });
+
+  test("verifies sessionSettings can be updated after connect() as a message", async ({
+    page,
+    context,
+  }) => {
+    if (!secretKey || !secretKey.trim()) {
+      throw new Error(
+        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or HUME_SECRET_KEY (local)."
+      );
+    }
+
+    await context.grantPermissions(["microphone"], {
+      origin: "http://localhost:3000",
+    });
+
+    await page.goto("/session-settings", { waitUntil: "networkidle" });
+
+    await page.getByRole("button", { name: "Start Call" }).click();
+
+    const chatId = await waitForChatMetadataFromPage(page);
+    expect(chatId).toBeTruthy();
+
+    await page.waitForTimeout(2_000);
+
+    const updatedSessionSettings = {
+      systemPrompt:
+        "You are a helpful test assistant with updated system prompt",
+    };
+
+    await page.evaluate((payload) => {
+      const send = (window as any).__sendSessionSettings;
+      if (typeof send !== "function") {
+        throw new Error("__sendSessionSettings not available");
+      }
+      send(payload);
+    }, updatedSessionSettings);
+
+    await page.waitForTimeout(2_000);
+
+    const events = await fetchChatEvents(chatId);
+    const sessionSettingsEvents = events.filter(
+      (event) => (event.type as string) === "SESSION_SETTINGS"
+    );
+
+    expect(sessionSettingsEvents.length).toBeGreaterThanOrEqual(2);
+
+    const updatedSessionSettingsEvent =
+      sessionSettingsEvents[sessionSettingsEvents.length - 1];
+
+    expect(updatedSessionSettingsEvent?.messageText).toBeDefined();
+    if (!updatedSessionSettingsEvent?.messageText) {
+      throw new Error("updatedSessionSettingsEvent.messageText is undefined");
+    }
+
+    const parsedSettings = JSON.parse(updatedSessionSettingsEvent.messageText);
+    expect(parsedSettings.type).toBe("session_settings");
+    expect(parsedSettings.system_prompt).toBe(
+      updatedSessionSettings.systemPrompt
     );
   });
 });

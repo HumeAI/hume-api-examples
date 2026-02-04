@@ -6,6 +6,7 @@ declare global {
   interface Window {
     __voiceEvents?: unknown[];
     __voiceStatus?: string;
+    __sendSessionSettings?: (settings: Record<string, unknown>) => void;
   }
 }
 
