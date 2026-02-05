@@ -13,11 +13,11 @@
   },
   "dependencies": {
     "@humeai/voice-react": "^0.1.22",
-    "hume": "^0.15.12",
+    "hume": "^0.11.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
   "overrides": {
-    "hume": "^0.15.12"
+    "hume": "^0.11.0"
   }
 }

@@ -33,8 +33,6 @@ jobs:
       evi_react_native: ${{ steps.filter.outputs.evi_react_native }}
       evi_ts_chat_history: ${{ steps.filter.outputs.evi_ts_chat_history }}
       evi_ts_function_calling: ${{ steps.filter.outputs.evi_ts_function_calling }}
-      evi_ts_proxy_app: ${{ steps.filter.outputs.evi_ts_proxy_app }}
-      evi_ts_proxy_web: ${{ steps.filter.outputs.evi_ts_proxy_web }}
       evi_ts_quickstart: ${{ steps.filter.outputs.evi_ts_quickstart }}
       evi_ts_webhooks: ${{ steps.filter.outputs.evi_ts_webhooks }}
       evi_vue_widget: ${{ steps.filter.outputs.evi_vue_widget }}
@@ -87,10 +85,6 @@ jobs:
               - 'evi/evi-typescript-chat-history/**'
             evi_ts_function_calling:
               - 'evi/evi-typescript-function-calling/**'
-            evi_ts_proxy_app:
-              - 'evi/evi-typescript-proxy/app/**'
-            evi_ts_proxy_web:
-              - 'evi/evi-typescript-proxy/web/**'
             evi_ts_quickstart:
               - 'evi/evi-typescript-quickstart/**'
             evi_ts_webhooks:
@@ -727,52 +721,6 @@ jobs:
       - name: Build
         working-directory: evi/evi-typescript-function-calling
         run: pnpm run build
-
-  evi-typescript-proxy-app:
-    needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_proxy_app == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: evi/evi-typescript-proxy/app/package-lock.json
-
-      - name: Install dependencies
-        working-directory: evi/evi-typescript-proxy/app
-        run: npm ci
-
-      - name: Typecheck
-        working-directory: evi/evi-typescript-proxy/app
-        run: npm run typecheck
-
-  evi-typescript-proxy-web:
-    needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_proxy_web == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: evi/evi-typescript-proxy/web/package-lock.json
-
-      - name: Install dependencies
-        working-directory: evi/evi-typescript-proxy/web
-        run: npm ci
-
-      - name: Build
-        working-directory: evi/evi-typescript-proxy/web
-        run: npm run build
 
   evi-typescript-webhooks:
     needs: detect-changes
