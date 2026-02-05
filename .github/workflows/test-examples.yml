@@ -487,15 +487,15 @@ jobs:
 
       - name: Restore
         working-directory: evi/evi-dotnet-quickstart
-        run: dotnet restore
+        run: dotnet restore evi-csharp-quickstart.tests.csproj
 
       - name: Build
         working-directory: evi/evi-dotnet-quickstart
-        run: dotnet build --no-restore -c Release
+        run: dotnet build evi-csharp-quickstart.tests.csproj --no-restore -c Release
 
       - name: Run tests
         working-directory: evi/evi-dotnet-quickstart
-        run: dotnet test --no-build -c Release -v normal
+        run: dotnet test evi-csharp-quickstart.tests.csproj --no-build -c Release -v normal
 
   tts-dotnet-quickstart:
     needs: detect-changes
@@ -512,15 +512,15 @@ jobs:
 
       - name: Restore
         working-directory: tts/tts-dotnet-quickstart
-        run: dotnet restore
+        run: dotnet restore tts-csharp-quickstart.tests.csproj
 
       - name: Build
         working-directory: tts/tts-dotnet-quickstart
-        run: dotnet build --no-restore -c Release
+        run: dotnet build tts-csharp-quickstart.tests.csproj --no-restore -c Release
 
       - name: Run tests
         working-directory: tts/tts-dotnet-quickstart
-        run: dotnet test --no-build -c Release -v normal
+        run: dotnet test tts-csharp-quickstart.tests.csproj --no-build -c Release -v normal
 
   evi-next-js-app-router-quickstart:
     needs: detect-changes
