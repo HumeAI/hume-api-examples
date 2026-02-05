@@ -13,7 +13,7 @@
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
     "expo": "~54.0.33",
-    "expo-build-properties": "~0.14.8",
+    "expo-build-properties": "~1.0.10",
     "expo-router": "^5.1.4",
     "expo-status-bar": "~2.0.0",
     "hume": "0.15.12",
