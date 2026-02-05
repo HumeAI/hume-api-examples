@@ -1,14 +1,17 @@
 "use client";
+import type { ReturnVoice } from "hume/api/resources/tts";
+
+interface Props {
+  voices: ReturnVoice[];
+  selectedVoice: ReturnVoice | null;
+  onSelect(v: ReturnVoice): void;
+}
 
 export default function VoiceSelector({
   voices,
   selectedVoice,
   onSelect,
-}: {
-  voices: any[];
-  selectedVoice: any;
-  onSelect: (v: any) => void;
-}) {
+}: Props) {
   if (!voices.length) {
     return (
       <p className="px-3 py-1 text-sm space-y-1 text-gray-500">No voices</p>
