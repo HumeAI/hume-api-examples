@@ -201,14 +201,14 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "hume"
-version = "0.13.4"
+version = "0.13.6"
 description = "A Python SDK for Hume AI"
 optional = false
 python-versions = "<4,>=3.9"
 groups = ["main"]
 files = [
-    {file = "hume-0.13.4-py3-none-any.whl", hash = "sha256:52f6c2aa0208905d0fc73b5424b453c40313ce8b6dbcab4a5250a37ee4fbca2d"},
-    {file = "hume-0.13.4.tar.gz", hash = "sha256:83c27eb138568c1aff17771fc04e6359e83e0640f13a76bd0ff9d6d7f35cc798"},
+    {file = "hume-0.13.6-py3-none-any.whl", hash = "sha256:0aa601f2132800a1ea810be05817019c7be839c9ea7a4e80483e90c8d84d005c"},
+    {file = "hume-0.13.6.tar.gz", hash = "sha256:6a35086ca1622d410ffa04dcb7c4fd942bf83cb66f7ac8cc730be8609900460a"},
 ]
 
 [package.dependencies]
@@ -549,4 +549,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "de99b41a61562847d320e5514992364c1b16329d2b6dc880113744971f181a08"
+content-hash = "a7a8d805a25fc68de033807650a90a68cfc1cd5348b4fa6ef2cf0a63140fdd66"
