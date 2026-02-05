@@ -24,7 +24,7 @@
     "react": "^19",
     "react-dom": "^19",
     "react-virtualized": "^9.22.5",
-    "remeda": "^2.33.4",
+    "remeda": "^2.33.5",
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7"
   },
