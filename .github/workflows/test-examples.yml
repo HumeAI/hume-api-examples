@@ -6,6 +6,9 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
+  schedule:
+    # Run tests for all packages that have tests daily
+    - cron: '0 12 * * *'
 
 permissions:
   contents: read
@@ -112,7 +115,7 @@ jobs:
 
   test-evi-typescript-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.evi_ts_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -145,7 +148,7 @@ jobs:
 
   test-tts-typescript-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_ts_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.tts_ts_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -178,7 +181,7 @@ jobs:
 
   test-evi-python-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.evi_py_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -213,7 +216,7 @@ jobs:
 
   test-tts-python-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_py_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.tts_py_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -471,7 +474,7 @@ jobs:
 
   evi-dotnet-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_dotnet_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.evi_dotnet_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -496,7 +499,7 @@ jobs:
 
   tts-dotnet-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_dotnet_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.tts_dotnet_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -521,7 +524,7 @@ jobs:
 
   evi-next-js-app-router-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_app_router == 'true'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.evi_app_router == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
