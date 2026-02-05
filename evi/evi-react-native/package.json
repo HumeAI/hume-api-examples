@@ -19,7 +19,7 @@
     "hume": "0.13.4",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-native": "0.79.5",
+    "react-native": "0.83.1",
     "react-native-web": "~0.20.0",
     "stream-browserify": "^3.0.0"
   },
