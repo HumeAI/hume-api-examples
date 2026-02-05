@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^17.2.3",
-    "hume": "^0.15.11"
+    "hume": "^0.15.12"
   },
   "devDependencies": {
     "@types/node": "^25.0.9",

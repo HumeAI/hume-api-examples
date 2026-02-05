@@ -1,21 +1,19 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
-import type { ReturnVoice, VoiceProvider } from "hume/api/resources/tts";
 
-interface VoiceSettings {
+const Ctx = createContext<{
   instant: boolean;
-  setInstant(v: boolean): void;
-  voice: ReturnVoice | null;
-  setVoice(v: ReturnVoice | null): void;
-  voiceProvider: VoiceProvider;
-  setVoiceProvider(p: VoiceProvider): void;
-}
-const Ctx = createContext<VoiceSettings | null>(null);
+  setInstant: (v: boolean) => void;
+  voice: any;
+  setVoice: (v: any) => void;
+  voiceProvider: string;
+  setVoiceProvider: (p: string) => void;
+} | null>(null);
 
 export function VoiceSettingsProvider({ children }: { children: ReactNode }) {
   const [instant, setInstant] = useState(true);
-  const [voice, setVoice] = useState<ReturnVoice | null>(null);
-  const [voiceProvider, setVoiceProvider] = useState<VoiceProvider>("HUME_AI");
+  const [voice, setVoice] = useState<any>(null);
+  const [voiceProvider, setVoiceProvider] = useState("HUME_AI");
   return (
     <Ctx.Provider
       value={{
