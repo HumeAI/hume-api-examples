@@ -4,6 +4,7 @@ __pycache__/
 .DS_Store
 .env
 node_modules/
+.pnpm-store/
 dist/
 .vscode/
 .mypy_cache/
