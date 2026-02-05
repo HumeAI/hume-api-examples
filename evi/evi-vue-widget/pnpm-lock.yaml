@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@humeai/voice-embed':
-        specifier: 0.2.11
-        version: 0.2.11
+        specifier: ^0.2.13
+        version: 0.2.13
       vue:
         specifier: ^3.5.27
         version: 3.5.27(typescript@5.9.3)
@@ -203,8 +203,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@humeai/voice-embed@0.2.11':
-    resolution: {integrity: sha512-INhjIvy22IBt/lsCU7UaMJ4e8DRgIUq9ZGyBofDmEq1hYIyJGU9Aun/DbgW7GGZFebNB/gLaz//AfvNkiJkRjg==}
+  '@humeai/voice-embed@0.2.13':
+    resolution: {integrity: sha512-pC5zVgBkaTIE1QY6mkLmQ+33P1lAosqSsCNhiFKgDKHa3KQt0SlpvqzAslqPQnHqDeNp5F27/YUgKRcg9bvdbw==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -420,8 +420,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.9:
-    resolution: {integrity: sha512-6a90/USLYPV857xcjEfdGgXiT7nfzCqUUZkNn4X3uhQSI42gZKDuulRi7oVXXEgXsS49iCCoCTPKO+acGpLfzA==}
+  hume@0.15.12:
+    resolution: {integrity: sha512-0pB6PPDBEFkuZXFn6fHHZRBJGYyCdsczuFanBjAbVo8B3lZ6702WioQP8CcDBIVp84hAgviyTO29ZKru9GEwOw==}
     engines: {node: '>=18.0.0'}
 
   magic-string@0.30.21:
@@ -636,9 +636,9 @@ snapshots:
   '@esbuild/win32-x64@0.27.2':
     optional: true
 
-  '@humeai/voice-embed@0.2.11':
+  '@humeai/voice-embed@0.2.13':
     dependencies:
-      hume: 0.15.9
+      hume: 0.15.12
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -851,7 +851,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.9:
+  hume@0.15.12:
     dependencies:
       uuid: 9.0.1
       ws: 8.18.3
