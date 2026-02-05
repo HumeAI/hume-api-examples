@@ -11,7 +11,7 @@
     "android": "expo run:android"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~5.0.4",
+    "@expo/metro-runtime": "~6.1.2",
     "expo": "~54.0.33",
     "expo-build-properties": "~1.0.10",
     "expo-router": "^6.0.23",
