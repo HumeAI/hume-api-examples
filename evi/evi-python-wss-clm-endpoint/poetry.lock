@@ -376,20 +376,20 @@ files = [
 
 [[package]]
 name = "constructs"
-version = "10.3.0"
+version = "10.4.5"
 description = "A programming model for software-defined state"
 optional = false
-python-versions = "~=3.7"
+python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "constructs-10.3.0-py3-none-any.whl", hash = "sha256:2972f514837565ff5b09171cfba50c0159dfa75ee86a42921ea8c86f2941b3d2"},
-    {file = "constructs-10.3.0.tar.gz", hash = "sha256:518551135ec236f9cc6b86500f4fbbe83b803ccdc6c2cb7684e0b7c4d234e7b1"},
+    {file = "constructs-10.4.5-py3-none-any.whl", hash = "sha256:e63d6675ba2e8a9076db8df1d4c7af78efdb96182ba28abe938384ba321e4b81"},
+    {file = "constructs-10.4.5.tar.gz", hash = "sha256:efa0f9e4fe65bd334bad719d00e0c8d9e3e4c6d873da8e874e67517a029c190b"},
 ]
 
 [package.dependencies]
-jsii = ">=1.90.0,<2.0.0"
+jsii = ">=1.125.0,<2.0.0"
 publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
+typeguard = "2.13.3"
 
 [[package]]
 name = "dnspython"
@@ -775,24 +775,24 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "jsii"
-version = "1.101.0"
+version = "1.126.0"
 description = "Python client for jsii runtime"
 optional = false
-python-versions = "~=3.8"
+python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "jsii-1.101.0-py3-none-any.whl", hash = "sha256:b78b87f8316560040ad0b9dca1682d73b6532a33acf4ecf56185d1ae5edb54fa"},
-    {file = "jsii-1.101.0.tar.gz", hash = "sha256:043c4d3d0d09af3c7265747f4da9c95770232477f75c846640df4c63d01b19cb"},
+    {file = "jsii-1.126.0-py3-none-any.whl", hash = "sha256:0bb3d5423fd62a499f9ce83e98668b48424ac6ef39472bff90cdf4650aa41b41"},
+    {file = "jsii-1.126.0.tar.gz", hash = "sha256:5e4739843aab3af25472490a05a271cf7d53f01a6d46167ab0f1f2cff3a8df95"},
 ]
 
 [package.dependencies]
-attrs = ">=21.2,<24.0"
-cattrs = ">=1.8,<23.3"
-importlib-resources = ">=5.2.0"
+attrs = ">=21.2,<26.0"
+cattrs = ">=1.8,<25.4"
+importlib_resources = ">=5.2.0"
 publication = ">=0.0.3"
 python-dateutil = "*"
-typeguard = ">=2.13.3,<2.14.0"
-typing-extensions = ">=3.8,<5.0"
+typeguard = "2.13.3"
+typing_extensions = ">=3.8,<5.0"
 
 [[package]]
 name = "markdown-it-py"
