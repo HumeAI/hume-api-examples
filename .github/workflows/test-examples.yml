@@ -194,7 +194,7 @@ jobs:
 
       - name: Bootstrap poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.8.5
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install system dependencies for audio
@@ -229,7 +229,7 @@ jobs:
 
       - name: Bootstrap poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.8.5
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install system dependencies for audio
@@ -264,7 +264,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.8.5
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
@@ -403,7 +403,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.8.5
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
@@ -429,7 +429,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.8.5
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
