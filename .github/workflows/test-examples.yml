@@ -558,6 +558,47 @@ jobs:
           HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
         run: npm run test
 
+  # Notifies Slack when the daily (cron) test run finishes. Add repo secret SLACK_WEBHOOK_URL (Incoming Webhook URL).
+  notify-slack-cron:
+    needs:
+      - test-evi-typescript-quickstart
+      - test-tts-typescript-quickstart
+      - test-evi-python-quickstart
+      - test-tts-python-quickstart
+      - evi-dotnet-quickstart
+      - tts-dotnet-quickstart
+      - evi-next-js-app-router-quickstart
+    if: github.event_name == 'schedule' && always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          EVI_TS: ${{ needs.test-evi-typescript-quickstart.result }}
+          TTS_TS: ${{ needs.test-tts-typescript-quickstart.result }}
+          EVI_PY: ${{ needs.test-evi-python-quickstart.result }}
+          TTS_PY: ${{ needs.test-tts-python-quickstart.result }}
+          EVI_DOTNET: ${{ needs.evi-dotnet-quickstart.result }}
+          TTS_DOTNET: ${{ needs.tts-dotnet-quickstart.result }}
+          EVI_APP: ${{ needs.evi-next-js-app-router-quickstart.result }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set, skipping Slack notification"
+            exit 0
+          fi
+          status() { [ "$1" = "success" ] && echo "✅ $1" || echo "❌ $1"; }
+          text="*Daily tests (cron) finished*
+          • evi-typescript-quickstart: $(status "$EVI_TS")
+          • tts-typescript-quickstart: $(status "$TTS_TS")
+          • evi-python-quickstart: $(status "$EVI_PY")
+          • tts-python-quickstart: $(status "$TTS_PY")
+          • evi-dotnet-quickstart: $(status "$EVI_DOTNET")
+          • tts-dotnet-quickstart: $(status "$TTS_DOTNET")
+          • evi-next-js-app-router-quickstart: $(status "$EVI_APP")
+          <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+          payload=$(jq -n --arg text "$(echo "$text" | sed 's/^[[:space:]]*//')" '{text: $text}')
+          curl -sSf -X POST -H "Content-Type: application/json" --data "$payload" "$SLACK_WEBHOOK_URL"
+
   evi-next-js-function-calling:
     needs: detect-changes
     if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_function_calling == 'true'
