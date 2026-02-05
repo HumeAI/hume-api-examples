@@ -456,7 +456,7 @@ jobs:
       - name: Install system dependencies for audio
         run: |
           sudo apt-get --yes update
-          sudo apt-get --yes install libportaudio2
+          sudo apt-get --yes install libportaudio2 libasound2-dev
 
       - name: Install uv
         run: |
