@@ -39,7 +39,6 @@ jobs:
       evi_ts_webhooks: ${{ steps.filter.outputs.evi_ts_webhooks }}
       evi_vue_widget: ${{ steps.filter.outputs.evi_vue_widget }}
       tts_next_agora: ${{ steps.filter.outputs.tts_next_agora }}
-      tts_next_chat: ${{ steps.filter.outputs.tts_next_chat }}
       tts_next_vercel_ai_sdk: ${{ steps.filter.outputs.tts_next_vercel_ai_sdk }}
       tts_ts_lipsync: ${{ steps.filter.outputs.tts_ts_lipsync }}
       tts_ts_quickstart: ${{ steps.filter.outputs.tts_ts_quickstart }}
@@ -100,8 +99,6 @@ jobs:
               - 'evi/evi-vue-widget/**'
             tts_next_agora:
               - 'tts/tts-next-js-agora/**'
-            tts_next_chat:
-              - 'tts/tts-next-js-chat/**'
             tts_next_vercel_ai_sdk:
               - 'tts/tts-next-js-vercel-ai-sdk/**'
             tts_ts_lipsync:
@@ -847,32 +844,6 @@ jobs:
       - name: Build
         working-directory: tts/tts-next-js-agora
         run: npm run build
-
-  tts-next-js-chat:
-    needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_next_chat == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
-
-      - name: Install dependencies
-        working-directory: tts/tts-next-js-chat
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        working-directory: tts/tts-next-js-chat
-        run: pnpm run build
 
   tts-next-js-vercel-ai-sdk:
     needs: detect-changes

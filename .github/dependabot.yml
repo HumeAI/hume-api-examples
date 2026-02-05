@@ -28,7 +28,6 @@ updates:
       - '/evi/evi-typescript-webhooks'
       - '/evi/evi-vue-widget'
       - '/tts/tts-next-js-agora'
-      - '/tts/tts-next-js-chat'
       - '/tts/tts-next-js-vercel-ai-sdk'
       - '/tts/tts-typescript-lipsync'
       - '/tts/tts-typescript-quickstart'
