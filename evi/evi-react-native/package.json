@@ -24,7 +24,7 @@
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
+    "@babel/core": "^7.29.0",
     "@types/react": "~19.0.10",
     "eslint": "^9.39.2",
     "eslint-config-expo": "~9.2.0",
