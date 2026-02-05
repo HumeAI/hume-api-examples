@@ -14,7 +14,7 @@
     "hume": "^0.15.12"
   },
   "devDependencies": {
-    "@types/node": "^25.0.9",
+    "@types/node": "^25.2.1",
     "dotenv": "^17.2.4",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
