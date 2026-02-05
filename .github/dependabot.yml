@@ -16,13 +16,22 @@ updates:
   # check for updated versions of npm dependencies on a daily basis
   - package-ecosystem: 'npm'
     directories:
-    - "/evi/evi-typescript-*"
-    - "/evi/evi-python-*"
-    - "/evi/evi-next-*"
-    - "/evi/evi-vue-*"
-    - "/tts/tts-typescript-*"
-    - "/tts/tts-python-*"
-    - "/tts/tts-next-*"
+      - '/evi/evi-next-js-app-router-quickstart'
+      - '/evi/evi-next-js-function-calling'
+      - '/evi/evi-next-js-pages-router-quickstart'
+      - '/evi/evi-react-native'
+      - '/evi/evi-typescript-chat-history'
+      - '/evi/evi-typescript-function-calling'
+      - '/evi/evi-typescript-proxy/app'
+      - '/evi/evi-typescript-proxy/web'
+      - '/evi/evi-typescript-quickstart'
+      - '/evi/evi-typescript-webhooks'
+      - '/evi/evi-vue-widget'
+      - '/tts/tts-next-js-agora'
+      - '/tts/tts-next-js-chat'
+      - '/tts/tts-next-js-vercel-ai-sdk'
+      - '/tts/tts-typescript-lipsync'
+      - '/tts/tts-typescript-quickstart'
     schedule:
       interval: 'daily'
       time: '06:00'
@@ -31,3 +40,24 @@ updates:
       prefix: '[npm] '
     open-pull-requests-limit: 20
     versioning-strategy: 'increase'
+
+  # check for updated versions of pip dependencies on a daily basis
+  - package-ecosystem: 'pip'
+    directories:
+      - '/evi/evi-python-chat-history'
+      - '/evi/evi-python-clm-sse'
+      - '/evi/evi-python-clm-wss'
+      - '/evi/evi-python-control-plane'
+      - '/evi/evi-python-phone-calling-proxy-server'
+      - '/evi/evi-python-quickstart'
+      - '/evi/evi-python-webhooks'
+      - '/evi/evi-python-wss-clm-endpoint'
+      - '/tts/tts-python-livekit'
+      - '/tts/tts-python-quickstart'
+    schedule:
+      interval: 'daily'
+      time: '06:00'
+      timezone: 'America/New_York'
+    commit-message:
+      prefix: '[pip] '
+    open-pull-requests-limit: 20

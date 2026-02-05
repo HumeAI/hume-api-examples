@@ -14,13 +14,32 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      evi_ts_changed: ${{ steps.filter.outputs.evi_ts }}
-      evi_py_changed: ${{ steps.filter.outputs.evi_py }}
-      tts_ts_changed: ${{ steps.filter.outputs.tts_ts }}
-      tts_py_changed: ${{ steps.filter.outputs.tts_py }}
+      evi_py_quickstart: ${{ steps.filter.outputs.evi_py_quickstart }}
+      evi_py_chat_history: ${{ steps.filter.outputs.evi_py_chat_history }}
+      evi_py_clm_sse: ${{ steps.filter.outputs.evi_py_clm_sse }}
+      evi_py_clm_wss: ${{ steps.filter.outputs.evi_py_clm_wss }}
+      evi_py_control_plane: ${{ steps.filter.outputs.evi_py_control_plane }}
+      evi_py_phone_calling: ${{ steps.filter.outputs.evi_py_phone_calling }}
+      evi_py_webhooks: ${{ steps.filter.outputs.evi_py_webhooks }}
+      evi_py_wss_clm_endpoint: ${{ steps.filter.outputs.evi_py_wss_clm_endpoint }}
+      tts_py_livekit: ${{ steps.filter.outputs.tts_py_livekit }}
+      tts_py_quickstart: ${{ steps.filter.outputs.tts_py_quickstart }}
       evi_app_router: ${{ steps.filter.outputs.evi_app_router }}
       evi_function_calling: ${{ steps.filter.outputs.evi_function_calling }}
       evi_pages_router: ${{ steps.filter.outputs.evi_pages_router }}
+      evi_react_native: ${{ steps.filter.outputs.evi_react_native }}
+      evi_ts_chat_history: ${{ steps.filter.outputs.evi_ts_chat_history }}
+      evi_ts_function_calling: ${{ steps.filter.outputs.evi_ts_function_calling }}
+      evi_ts_proxy_app: ${{ steps.filter.outputs.evi_ts_proxy_app }}
+      evi_ts_proxy_web: ${{ steps.filter.outputs.evi_ts_proxy_web }}
+      evi_ts_quickstart: ${{ steps.filter.outputs.evi_ts_quickstart }}
+      evi_ts_webhooks: ${{ steps.filter.outputs.evi_ts_webhooks }}
+      evi_vue_widget: ${{ steps.filter.outputs.evi_vue_widget }}
+      tts_next_agora: ${{ steps.filter.outputs.tts_next_agora }}
+      tts_next_chat: ${{ steps.filter.outputs.tts_next_chat }}
+      tts_next_vercel_ai_sdk: ${{ steps.filter.outputs.tts_next_vercel_ai_sdk }}
+      tts_ts_lipsync: ${{ steps.filter.outputs.tts_ts_lipsync }}
+      tts_ts_quickstart: ${{ steps.filter.outputs.tts_ts_quickstart }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -32,24 +51,62 @@ jobs:
         uses: dorny/paths-filter@v3
         with:
           filters: |
-            evi_ts:
-              - 'examples/evi/evi-typescript-quickstart/**'
-            evi_py:
-              - 'examples/evi/evi-python-quickstart/**'
-            tts_ts:
-              - 'examples/tts/tts-typescript-quickstart/**'
-            tts_py:
-              - 'examples/tts/tts-python-quickstart/**'
+            evi_py_quickstart:
+              - 'evi/evi-python-quickstart/**'
+            evi_py_chat_history:
+              - 'evi/evi-python-chat-history/**'
+            evi_py_clm_sse:
+              - 'evi/evi-python-clm-sse/**'
+            evi_py_clm_wss:
+              - 'evi/evi-python-clm-wss/**'
+            evi_py_control_plane:
+              - 'evi/evi-python-control-plane/**'
+            evi_py_phone_calling:
+              - 'evi/evi-python-phone-calling-proxy-server/**'
+            evi_py_webhooks:
+              - 'evi/evi-python-webhooks/**'
+            evi_py_wss_clm_endpoint:
+              - 'evi/evi-python-wss-clm-endpoint/**'
+            tts_py_livekit:
+              - 'tts/tts-python-livekit/**'
+            tts_py_quickstart:
+              - 'tts/tts-python-quickstart/**'
             evi_app_router:
               - 'evi/evi-next-js-app-router-quickstart/**'
             evi_function_calling:
               - 'evi/evi-next-js-function-calling/**'
             evi_pages_router:
               - 'evi/evi-next-js-pages-router-quickstart/**'
+            evi_react_native:
+              - 'evi/evi-react-native/**'
+            evi_ts_chat_history:
+              - 'evi/evi-typescript-chat-history/**'
+            evi_ts_function_calling:
+              - 'evi/evi-typescript-function-calling/**'
+            evi_ts_proxy_app:
+              - 'evi/evi-typescript-proxy/app/**'
+            evi_ts_proxy_web:
+              - 'evi/evi-typescript-proxy/web/**'
+            evi_ts_quickstart:
+              - 'evi/evi-typescript-quickstart/**'
+            evi_ts_webhooks:
+              - 'evi/evi-typescript-webhooks/**'
+            evi_vue_widget:
+              - 'evi/evi-vue-widget/**'
+            tts_next_agora:
+              - 'tts/tts-next-js-agora/**'
+            tts_next_chat:
+              - 'tts/tts-next-js-chat/**'
+            tts_next_vercel_ai_sdk:
+              - 'tts/tts-next-js-vercel-ai-sdk/**'
+            tts_ts_lipsync:
+              - 'tts/tts-typescript-lipsync/**'
+            tts_ts_quickstart:
+              - 'tts/tts-typescript-quickstart/**'
 
   test-evi-typescript-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_changed == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -78,7 +135,7 @@ jobs:
 
   test-tts-typescript-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_ts_changed == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_ts_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -107,7 +164,7 @@ jobs:
 
   test-evi-python-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_changed == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -142,7 +199,7 @@ jobs:
 
   test-tts-python-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_py_changed == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_py_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -174,6 +231,229 @@ jobs:
         run: uv run pytest test_app.py -v
         env:
           TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+
+  evi-python-chat-history:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_chat_history == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        working-directory: evi/evi-python-chat-history
+        run: poetry install --no-interaction --no-root
+
+      - name: Verify
+        working-directory: evi/evi-python-chat-history
+        run: poetry run python -c "print('OK')"
+
+  evi-python-clm-sse:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_clm_sse == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: evi/evi-python-clm-sse
+        run: uv sync
+
+      - name: Verify
+        working-directory: evi/evi-python-clm-sse
+        run: uv run python -c "print('OK')"
+
+  evi-python-clm-wss:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_clm_wss == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: evi/evi-python-clm-wss
+        run: uv sync
+
+      - name: Verify
+        working-directory: evi/evi-python-clm-wss
+        run: uv run python -c "print('OK')"
+
+  evi-python-control-plane:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_control_plane == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies for audio
+        run: |
+          sudo apt-get --yes update
+          sudo apt-get --yes install libportaudio2
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: evi/evi-python-control-plane
+        run: uv sync
+
+      - name: Verify
+        working-directory: evi/evi-python-control-plane
+        run: uv run python -c "print('OK')"
+
+  evi-python-phone-calling-proxy-server:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_phone_calling == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: evi/evi-python-phone-calling-proxy-server
+        run: uv sync
+
+      - name: Verify
+        working-directory: evi/evi-python-phone-calling-proxy-server
+        run: uv run python -c "print('OK')"
+
+  evi-python-webhooks:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_webhooks == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        working-directory: evi/evi-python-webhooks
+        run: poetry install --no-interaction --no-root
+
+      - name: Verify
+        working-directory: evi/evi-python-webhooks
+        run: poetry run python -c "print('OK')"
+
+  evi-python-wss-clm-endpoint:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_wss_clm_endpoint == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        working-directory: evi/evi-python-wss-clm-endpoint
+        run: poetry install --no-interaction --no-root
+
+      - name: Verify
+        working-directory: evi/evi-python-wss-clm-endpoint
+        run: poetry run python -c "print('OK')"
+
+  tts-python-livekit:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_py_livekit == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies for audio
+        run: |
+          sudo apt-get --yes update
+          sudo apt-get --yes install libportaudio2
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: tts/tts-python-livekit
+        run: uv sync
+
+      - name: Verify
+        working-directory: tts/tts-python-livekit
+        run: uv run python -c "print('OK')"
 
   evi-next-js-app-router-quickstart:
     needs: detect-changes
@@ -262,3 +542,261 @@ jobs:
       - name: Build
         working-directory: evi/evi-next-js-pages-router-quickstart
         run: npm run build
+
+  evi-react-native:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_react_native == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: evi/evi-react-native/package-lock.json
+
+      - name: Install dependencies
+        working-directory: evi/evi-react-native
+        run: npm ci
+
+      - name: Lint
+        working-directory: evi/evi-react-native
+        run: npm run lint
+
+  evi-typescript-chat-history:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_chat_history == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: evi/evi-typescript-chat-history
+        run: npm install
+
+      - name: Build
+        working-directory: evi/evi-typescript-chat-history
+        run: npm run build
+
+  evi-typescript-function-calling:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_function_calling == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
+      - name: Install dependencies
+        working-directory: evi/evi-typescript-function-calling
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: evi/evi-typescript-function-calling
+        run: pnpm run build
+
+  evi-typescript-proxy-app:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_proxy_app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: evi/evi-typescript-proxy/app/package-lock.json
+
+      - name: Install dependencies
+        working-directory: evi/evi-typescript-proxy/app
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: evi/evi-typescript-proxy/app
+        run: npm run typecheck
+
+  evi-typescript-proxy-web:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_proxy_web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: evi/evi-typescript-proxy/web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: evi/evi-typescript-proxy/web
+        run: npm ci
+
+      - name: Build
+        working-directory: evi/evi-typescript-proxy/web
+        run: npm run build
+
+  evi-typescript-webhooks:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_webhooks == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
+      - name: Install dependencies
+        working-directory: evi/evi-typescript-webhooks
+        run: pnpm install --frozen-lockfile
+
+  evi-vue-widget:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_vue_widget == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
+      - name: Install dependencies
+        working-directory: evi/evi-vue-widget
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: evi/evi-vue-widget
+        run: pnpm run build
+
+  tts-next-js-agora:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_next_agora == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: tts/tts-next-js-agora/package-lock.json
+
+      - name: Install dependencies
+        working-directory: tts/tts-next-js-agora
+        run: npm ci
+
+      - name: Build
+        working-directory: tts/tts-next-js-agora
+        run: npm run build
+
+  tts-next-js-chat:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_next_chat == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
+      - name: Install dependencies
+        working-directory: tts/tts-next-js-chat
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: tts/tts-next-js-chat
+        run: pnpm run build
+
+  tts-next-js-vercel-ai-sdk:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_next_vercel_ai_sdk == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        working-directory: tts/tts-next-js-vercel-ai-sdk
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        working-directory: tts/tts-next-js-vercel-ai-sdk
+        run: bun run build
+
+  tts-typescript-lipsync:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_ts_lipsync == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
+      - name: Install dependencies
+        working-directory: tts/tts-typescript-lipsync
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: tts/tts-typescript-lipsync
+        run: pnpm run build
