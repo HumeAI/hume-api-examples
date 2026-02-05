@@ -568,7 +568,7 @@ jobs:
       - evi-dotnet-quickstart
       - tts-dotnet-quickstart
       - evi-next-js-app-router-quickstart
-    if: github.event_name == 'schedule' && always()
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && always()
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack
