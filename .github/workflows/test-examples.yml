@@ -40,6 +40,8 @@ jobs:
       tts_next_vercel_ai_sdk: ${{ steps.filter.outputs.tts_next_vercel_ai_sdk }}
       tts_ts_lipsync: ${{ steps.filter.outputs.tts_ts_lipsync }}
       tts_ts_quickstart: ${{ steps.filter.outputs.tts_ts_quickstart }}
+      evi_dotnet_quickstart: ${{ steps.filter.outputs.evi_dotnet_quickstart }}
+      tts_dotnet_quickstart: ${{ steps.filter.outputs.tts_dotnet_quickstart }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -103,6 +105,10 @@ jobs:
               - 'tts/tts-typescript-lipsync/**'
             tts_ts_quickstart:
               - 'tts/tts-typescript-quickstart/**'
+            evi_dotnet_quickstart:
+              - 'evi/evi-dotnet-quickstart/**'
+            tts_dotnet_quickstart:
+              - 'tts/tts-dotnet-quickstart/**'
 
   test-evi-typescript-quickstart:
     needs: detect-changes
@@ -125,6 +131,10 @@ jobs:
       - name: Install deps (EVI quickstart)
         working-directory: evi/evi-typescript-quickstart
         run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: evi/evi-typescript-quickstart
+        run: pnpm run build
 
       - name: Run tests in evi-typescript-quickstart
         working-directory: evi/evi-typescript-quickstart
@@ -154,6 +164,10 @@ jobs:
       - name: Install deps (TTS quickstart)
         working-directory: tts/tts-typescript-quickstart
         run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: tts/tts-typescript-quickstart
+        run: pnpm run build
 
       - name: Run tests in tts-typescript-quickstart
         working-directory: tts/tts-typescript-quickstart
@@ -454,6 +468,56 @@ jobs:
       - name: Verify
         working-directory: tts/tts-python-livekit
         run: uv run python -c "print('OK')"
+
+  evi-dotnet-quickstart:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_dotnet_quickstart == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        working-directory: evi/evi-dotnet-quickstart
+        run: dotnet restore
+
+      - name: Build
+        working-directory: evi/evi-dotnet-quickstart
+        run: dotnet build --no-restore -c Release
+
+      - name: Run tests
+        working-directory: evi/evi-dotnet-quickstart
+        run: dotnet test --no-build -c Release -v normal
+
+  tts-dotnet-quickstart:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_dotnet_quickstart == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        working-directory: tts/tts-dotnet-quickstart
+        run: dotnet restore
+
+      - name: Build
+        working-directory: tts/tts-dotnet-quickstart
+        run: dotnet build --no-restore -c Release
+
+      - name: Run tests
+        working-directory: tts/tts-dotnet-quickstart
+        run: dotnet test --no-build -c Release -v normal
 
   evi-next-js-app-router-quickstart:
     needs: detect-changes
