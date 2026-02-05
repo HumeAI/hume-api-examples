@@ -568,7 +568,8 @@ jobs:
       - evi-dotnet-quickstart
       - tts-dotnet-quickstart
       - evi-next-js-app-router-quickstart
-    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && always()
+    # always() ensures we run even when one of the test jobs failed, so we can post the result to Slack
+    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack
@@ -583,7 +584,9 @@ jobs:
           EVI_APP: ${{ needs.evi-next-js-app-router-quickstart.result }}
         run: |
           if [ -z "$SLACK_WEBHOOK_URL" ]; then
-            echo "SLACK_WEBHOOK_URL not set, skipping Slack notification"
+            echo "::warning::SLACK_WEBHOOK_URL secret is not set. Add it in repo Settings → Secrets and variables → Actions to get Slack notifications."
+            echo "## Slack notification skipped" >> $GITHUB_STEP_SUMMARY
+            echo "Add the **SLACK_WEBHOOK_URL** repository secret (Settings → Secrets and variables → Actions) to enable Slack notifications." >> $GITHUB_STEP_SUMMARY
             exit 0
           fi
           status() { [ "$1" = "success" ] && echo "✅ $1" || echo "❌ $1"; }
@@ -597,7 +600,14 @@ jobs:
           • evi-next-js-app-router-quickstart: $(status "$EVI_APP")
           <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
           payload=$(jq -n --arg text "$(echo "$text" | sed 's/^[[:space:]]*//')" '{text: $text}')
-          curl -sSf -X POST -H "Content-Type: application/json" --data "$payload" "$SLACK_WEBHOOK_URL"
+          res=$(curl -sS -w "%{http_code}" -o /tmp/slack_resp -X POST -H "Content-Type: application/json" --data "$payload" "$SLACK_WEBHOOK_URL") || true
+          if [ "$res" = "200" ]; then
+            echo "Slack notification sent successfully."
+            echo "## Slack notification sent" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "::warning::Slack webhook returned HTTP $res. Check the webhook URL and channel."
+            echo "## Slack notification failed (HTTP $res)" >> $GITHUB_STEP_SUMMARY
+          fi
 
   evi-next-js-function-calling:
     needs: detect-changes
