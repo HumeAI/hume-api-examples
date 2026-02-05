@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import type { ReturnVoice } from "hume/api/resources/tts";
+import type { Hume } from "hume";
 import { AudioClipCard } from "@/components/AudioClipCard";
 import type { Clip } from "@/types/clip";
 
 interface AudioGalleryProps {
   clips: Clip[];
-  voices: ReturnVoice[];
+  voices: Hume.tts.ReturnVoice[];
 }
 
 export function AudioGallery({ clips, voices }: AudioGalleryProps) {

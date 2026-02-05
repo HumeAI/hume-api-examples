@@ -29,12 +29,12 @@ export async function tts(formData: FormData): Promise<{
     throw new Error("No audio returned");
   }
 
-  const { uint8Array, mimeType } = result.audio;
+  const { uint8Array, mediaType } = result.audio;
   return {
     voice,
     text,
     instructions,
     uint8Array,
-    mimeType,
+    mimeType: mediaType,
   };
 }
