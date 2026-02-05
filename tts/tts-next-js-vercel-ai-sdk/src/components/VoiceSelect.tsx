@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import type { ReturnVoice } from "hume/api/resources/tts";
+import type { Hume } from "hume";
 
 interface VoiceSelectProps {
-  voices: ReturnVoice[];
+  voices: Hume.tts.ReturnVoice[];
   selectedVoiceId: string;
   onChange: (newId: string) => void;
 }

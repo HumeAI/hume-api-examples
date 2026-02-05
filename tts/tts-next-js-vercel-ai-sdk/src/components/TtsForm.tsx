@@ -1,12 +1,12 @@
 "use client";
 
 import React, { FormEvent } from "react";
-import type { ReturnVoice } from "hume/api/resources/tts";
+import type { Hume } from "hume";
 import { TextAreaField } from "@/components/TextAreaField";
 import { VoiceSelect } from "@/components/VoiceSelect";
 
 interface TtsFormProps {
-  voices: ReturnVoice[];
+  voices: Hume.tts.ReturnVoice[];
   selectedVoiceId: string;
   onVoiceChange: (id: string) => void;
   onGenerate: (formData: FormData) => Promise<void>;
@@ -33,7 +33,7 @@ export function TtsForm({
       className="space-y-6 bg-white p-6 rounded-lg shadow-lg md:col-span-3"
     >
       <VoiceSelect
-        voices={voices.map(({ id, name }) => ({ id, name }))}
+        voices={voices}
         selectedVoiceId={selectedVoiceId}
         onChange={onVoiceChange}
       />

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { listVoices } from "@/actions/list-voices";
-import type { ReturnVoice } from "hume/api/resources/tts";
+import type { Hume } from "hume";
 
 export function useVoices(defaultId: string) {
-  const [voices, setVoices] = useState<ReturnVoice[]>([]);
+  const [voices, setVoices] = useState<Hume.tts.ReturnVoice[]>([]);
   const [selectedVoiceId, setSelectedVoiceId] = useState<string>(defaultId);
 
   useEffect(() => {

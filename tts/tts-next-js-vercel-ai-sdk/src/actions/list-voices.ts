@@ -1,20 +1,19 @@
 "use server";
 
-import { HumeClient } from "hume";
-import { VoiceProvider, type ReturnVoice } from "hume/api/resources/tts";
+import { HumeClient, Hume } from "hume";
 
 const hume = new HumeClient({
   apiKey: process.env.HUME_API_KEY!,
 });
 
-export async function listVoices(): Promise<ReturnVoice[]> {
+export async function listVoices(): Promise<Hume.tts.ReturnVoice[]> {
   const response = await hume.tts.voices.list({
     pageNumber: 0,
     pageSize: 100,
-    provider: VoiceProvider.HumeAi,
+    provider: Hume.tts.VoiceProvider.HumeAi,
   });
 
-  const voices: ReturnVoice[] = [];
+  const voices: Hume.tts.ReturnVoice[] = [];
   for await (const v of response) voices.push(v);
 
   return voices;
