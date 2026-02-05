@@ -16,7 +16,7 @@
     "@types/react-virtualized": "^9.22.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.27.0",
+    "framer-motion": "^12.33.0",
     "geist": "^1.5.1",
     "hume": "^0.15.12",
     "lucide-react": "^0.562.0",
