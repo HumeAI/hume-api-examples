@@ -20,7 +20,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.83.1",
-    "react-native-web": "~0.20.0",
+    "react-native-web": "~0.21.2",
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
