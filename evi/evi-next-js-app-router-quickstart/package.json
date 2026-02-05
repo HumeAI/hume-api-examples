@@ -35,7 +35,7 @@
     "@types/react-virtualized": "^9.22.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.2.4",
     "eslint": "^9.39.2",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4.1.18",
