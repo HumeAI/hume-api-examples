@@ -486,6 +486,9 @@ jobs:
 
       - name: Run tests
         working-directory: evi/evi-dotnet-quickstart
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+          HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
         run: dotnet test evi-csharp-quickstart.tests.csproj --no-build -c Release -v normal
 
   tts-dotnet-quickstart:
@@ -511,6 +514,9 @@ jobs:
 
       - name: Run tests
         working-directory: tts/tts-dotnet-quickstart
+        env:
+          TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
+          HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
         run: dotnet test tts-csharp-quickstart.tests.csproj --no-build -c Release -v normal
 
   evi-next-js-app-router-quickstart:
