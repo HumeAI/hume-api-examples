@@ -11,7 +11,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "hume": "^0.15.12"
+    "hume": "^0.15.13"
   },
   "devDependencies": {
     "@types/node": "^25.2.2",
