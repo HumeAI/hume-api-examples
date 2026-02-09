@@ -8,14 +8,15 @@
     "start": "tsc && node dist/index.js",
     "build": "tsc",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
-    "format": "prettier --write 'src/**/*.{ts,tsx}'"
+    "format": "prettier --write 'src/**/*.{ts,tsx}'",
+    "test": "tsc && node --test dist/index.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "hume": "^0.15.9"
+    "hume": "^0.15.13"
   },
   "devDependencies": {
     "@types/node": "^20.8.7",
