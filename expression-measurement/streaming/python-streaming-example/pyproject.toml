@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Simple Hume streaming example using language model"
 requires-python = ">=3.9"
 dependencies = [
-    "hume",
+    "hume==0.13.6",
     "python-dotenv",
 ]
 

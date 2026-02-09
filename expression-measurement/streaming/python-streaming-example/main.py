@@ -64,9 +64,7 @@ async def streaming_example() -> None:
     print("Hume Language Emotion Streaming Example")
     print("-" * 60)
     
-    async with client.expression_measurement.stream.connect(
-        options={"config": config},
-    ) as socket:
+    async with client.expression_measurement.stream.connect() as socket:
         print("\nEnter text and press Enter to analyze emotions")
         
         while True:
@@ -79,7 +77,7 @@ async def streaming_example() -> None:
                 if not text.strip():
                     continue
                 
-                response = await socket.send_text(text=text)
+                response = await socket.send_text(text=text, config=config)
                 
                 if (not response or not isinstance(response, StreamModelPredictions)):
                     print("Error: Invalid response from server")
