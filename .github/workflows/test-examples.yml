@@ -42,6 +42,7 @@ jobs:
       tts_ts_quickstart: ${{ steps.filter.outputs.tts_ts_quickstart }}
       evi_dotnet_quickstart: ${{ steps.filter.outputs.evi_dotnet_quickstart }}
       tts_dotnet_quickstart: ${{ steps.filter.outputs.tts_dotnet_quickstart }}
+      exp_meas_ts_raw_text_processor: ${{ steps.filter.outputs.exp_meas_ts_raw_text_processor }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -103,6 +104,8 @@ jobs:
               - 'evi/evi-dotnet-quickstart/**'
             tts_dotnet_quickstart:
               - 'tts/tts-dotnet-quickstart/**'
+            exp_meas_ts_raw_text_processor:
+              - 'expression-measurement/batch/typescript-raw-text-processor/**'
 
   test-evi-typescript-quickstart:
     needs: detect-changes
@@ -169,6 +172,31 @@ jobs:
           TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
           TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
         run: pnpm run test
+
+  test-exp-meas-typescript-raw-text-processor:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.exp_meas_ts_raw_text_processor == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: expression-measurement/batch/typescript-raw-text-processor/package-lock.json
+
+      - name: Install deps (expression-measurement batch typescript-raw-text-processor)
+        working-directory: expression-measurement/batch/typescript-raw-text-processor
+        run: npm ci
+
+      - name: Run tests in typescript-raw-text-processor
+        working-directory: expression-measurement/batch/typescript-raw-text-processor
+        env:
+          HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY_EXP_MEASUREMENT }}
+        run: npm run test
 
   test-evi-python-quickstart:
     needs: detect-changes
@@ -560,11 +588,12 @@ jobs:
     needs:
       - test-evi-typescript-quickstart
       - test-tts-typescript-quickstart
+      - test-exp-meas-typescript-raw-text-processor
+      - evi-next-js-app-router-quickstart
       - test-evi-python-quickstart
       - test-tts-python-quickstart
       - evi-dotnet-quickstart
       - tts-dotnet-quickstart
-      - evi-next-js-app-router-quickstart
     # always() ensures we run even when one of the test jobs failed, so we can post the result to Slack
     if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
@@ -574,6 +603,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           EVI_TS: ${{ needs.test-evi-typescript-quickstart.result }}
           TTS_TS: ${{ needs.test-tts-typescript-quickstart.result }}
+          EXP_MEAS_TS_RAW_TEXT_PROCESSOR: ${{ needs.test-exp-meas-typescript-raw-text-processor.result }}
           EVI_PY: ${{ needs.test-evi-python-quickstart.result }}
           TTS_PY: ${{ needs.test-tts-python-quickstart.result }}
           EVI_DOTNET: ${{ needs.evi-dotnet-quickstart.result }}
@@ -588,13 +618,14 @@ jobs:
           fi
           status() { [ "$1" = "success" ] && echo "✅ $1" || echo "❌ $1"; }
           text="*Daily tests (cron) finished*
-          • evi-typescript-quickstart: $(status "$EVI_TS")
-          • tts-typescript-quickstart: $(status "$TTS_TS")
-          • evi-python-quickstart: $(status "$EVI_PY")
-          • tts-python-quickstart: $(status "$TTS_PY")
-          • evi-dotnet-quickstart: $(status "$EVI_DOTNET")
-          • tts-dotnet-quickstart: $(status "$TTS_DOTNET")
-          • evi-next-js-app-router-quickstart: $(status "$EVI_APP")
+          • TS SDK: evi-typescript-quickstart: $(status "$EVI_TS")
+          • TS SDK: tts-typescript-quickstart: $(status "$TTS_TS")
+          • TS SDK: exp-meas-ts-raw-text-processor: $(status "$EXP_MEAS_TS_RAW_TEXT_PROCESSOR")
+          • React SDK @humeai/voice-react: evi-next-js-app-router-quickstart: $(status "$EVI_APP")
+          • Py SDK: evi-python-quickstart: $(status "$EVI_PY")
+          • Py SDK: tts-python-quickstart: $(status "$TTS_PY")
+          • .NET SDK: evi-dotnet-quickstart: $(status "$EVI_DOTNET")
+          • .NET SDK: tts-dotnet-quickstart: $(status "$TTS_DOTNET")
           <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
           payload=$(jq -n --arg text "$(echo "$text" | sed 's/^[[:space:]]*//')" '{text: $text}')
           res=$(curl -sS -w "%{http_code}" -o /tmp/slack_resp -X POST -H "Content-Type: application/json" --data "$payload" "$SLACK_WEBHOOK_URL") || true
