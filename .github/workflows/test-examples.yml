@@ -42,6 +42,7 @@ jobs:
       tts_ts_quickstart: ${{ steps.filter.outputs.tts_ts_quickstart }}
       evi_dotnet_quickstart: ${{ steps.filter.outputs.evi_dotnet_quickstart }}
       tts_dotnet_quickstart: ${{ steps.filter.outputs.tts_dotnet_quickstart }}
+      exp_meas_ts_raw_text_processor: ${{ steps.filter.outputs.exp_meas_ts_raw_text_processor }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -103,6 +104,8 @@ jobs:
               - 'evi/evi-dotnet-quickstart/**'
             tts_dotnet_quickstart:
               - 'tts/tts-dotnet-quickstart/**'
+            exp_meas_ts_raw_text_processor:
+              - 'expression-measurement/batch/typescript-raw-text-processor/**'
 
   test-evi-typescript-quickstart:
     needs: detect-changes
@@ -169,6 +172,31 @@ jobs:
           TEST_HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
           TEST_HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
         run: pnpm run test
+
+  test-exp-meas-typescript-raw-text-processor:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.exp_meas_ts_raw_text_processor == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: expression-measurement/batch/typescript-raw-text-processor/package-lock.json
+
+      - name: Install deps (expression-measurement batch typescript-raw-text-processor)
+        working-directory: expression-measurement/batch/typescript-raw-text-processor
+        run: npm ci
+
+      - name: Run tests in typescript-raw-text-processor
+        working-directory: expression-measurement/batch/typescript-raw-text-processor
+        env:
+          HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY_EXP_MEASUREMENT }}
+        run: npm run test
 
   test-evi-python-quickstart:
     needs: detect-changes
