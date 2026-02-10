@@ -444,14 +444,14 @@ typeguard = "2.13.3"
 
 [[package]]
 name = "fastapi"
-version = "0.128.6"
+version = "0.128.7"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "fastapi-0.128.6-py3-none-any.whl", hash = "sha256:bb1c1ef87d6086a7132d0ab60869d6f1ee67283b20fbf84ec0003bd335099509"},
-    {file = "fastapi-0.128.6.tar.gz", hash = "sha256:0cb3946557e792d731b26a42b04912f16367e3c3135ea8290f620e234f2b604f"},
+    {file = "fastapi-0.128.7-py3-none-any.whl", hash = "sha256:6bd9bd31cb7047465f2d3fa3ba3f33b0870b17d4eaf7cdb36d1576ab060ad662"},
+    {file = "fastapi-0.128.7.tar.gz", hash = "sha256:783c273416995486c155ad2c0e2b45905dedfaf20b9ef8d9f6a9124670639a24"},
 ]
 
 [package.dependencies]
@@ -1557,4 +1557,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "4341766a2d1b9d76c65728be354d04d91f0fb46322c5014a4879622385dd9f23"
+content-hash = "d0cb07da161313f418c11aed42a93ae43efcd1e227e24735ed4eec9e5e1a3f59"
