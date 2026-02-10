@@ -142,10 +142,10 @@ async def test_session_settings_on_connect(hume_client, hume_client_sync):
     assert parsed_settings["system_prompt"] == "You are a helpful assistant"
     assert parsed_settings["custom_session_id"] == "my-custom-session-id"
 
-    # Validate variables (all saved as strings on the backend, numbers as floats)
+    # Validate variables (all saved as strings on the backend, numbers as floats, booleans as JSON "true"/"false")
     assert parsed_settings["variables"]["userName"] == "John"
     assert parsed_settings["variables"]["userAge"] == "30.0"
-    assert parsed_settings["variables"]["isPremium"] == "True"
+    assert parsed_settings["variables"]["isPremium"] == "true"
 
 
 @pytest.mark.asyncio
