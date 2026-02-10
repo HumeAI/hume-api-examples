@@ -126,7 +126,7 @@ wheels = [
 
 [[package]]
 name = "hume"
-version = "0.13.6"
+version = "0.13.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -138,9 +138,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/71/36/26d002af7011340324c44670ad9ef0af15aa2714ad4b4e06da7cbbbf93c9/hume-0.13.6.tar.gz", hash = "sha256:6a35086ca1622d410ffa04dcb7c4fd942bf83cb66f7ac8cc730be8609900460a", size = 143740, upload-time = "2026-01-08T16:54:06.354Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/5b/849ac072161e985ce5758f19f792043274b64a9f9dd73fdd14333b7446f4/hume-0.13.8.tar.gz", hash = "sha256:067691b0ce0353e4438d32d5fbfcbb6ed2099533bf5e06af99084c8c76fad24f", size = 142326, upload-time = "2026-02-10T16:05:22.234Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d0/a6/b0a2f54cd884b291b12e0d2717dbd815cce3e06d5bb7dd2c8aaf27ff1732/hume-0.13.6-py3-none-any.whl", hash = "sha256:0aa601f2132800a1ea810be05817019c7be839c9ea7a4e80483e90c8d84d005c", size = 346487, upload-time = "2026-01-08T16:54:05.128Z" },
+    { url = "https://files.pythonhosted.org/packages/48/10/ec2c1e9a0401a39c3575ff8c5e42ad4b03687d5dbdefaa94ec5d52dbe088/hume-0.13.8-py3-none-any.whl", hash = "sha256:8295c095e4e04918512eec2df3adf4a0900b8d7ef06e3e8487c45ab520ed0ad5", size = 353023, upload-time = "2026-02-10T16:05:20.537Z" },
 ]
 
 [[package]]
@@ -162,7 +162,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "hume", specifier = "==0.13.6" },
+    { name = "hume", specifier = "==0.13.8" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
     { name = "python-dotenv" },
@@ -431,11 +431,11 @@ wheels = [
 
 [[package]]
 name = "python-dotenv"
-version = "1.1.0"
+version = "1.2.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/88/2c/7bb1416c5620485aa793f2de31d3df393d3686aa8a8506d11e10e13c5baf/python_dotenv-1.1.0.tar.gz", hash = "sha256:41f90bc6f5f177fb41f53e87666db362025010eb28f60a01c9143bfa33a2b2d5", size = 39920, upload-time = "2025-03-25T10:14:56.835Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f0/26/19cadc79a718c5edbec86fd4919a6b6d3f681039a2f6d66d14be94e75fb9/python_dotenv-1.2.1.tar.gz", hash = "sha256:42667e897e16ab0d66954af0e60a9caa94f0fd4ecf3aaf6d2d260eec1aa36ad6", size = 44221, upload-time = "2025-10-26T15:12:10.434Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1e/18/98a99ad95133c6a6e2005fe89faedf294a748bd5dc803008059409ac9b1e/python_dotenv-1.1.0-py3-none-any.whl", hash = "sha256:d7c01d9e2293916c18baf562d95698754b0dbbb5e74d457c45d4f6561fb9d55d", size = 20256, upload-time = "2025-03-25T10:14:55.034Z" },
+    { url = "https://files.pythonhosted.org/packages/14/1b/a298b06749107c305e1fe0f814c6c74aea7b2f1e10989cb30f544a1b3253/python_dotenv-1.2.1-py3-none-any.whl", hash = "sha256:b81ee9561e9ca4004139c6cbba3a238c32b03e4894671e181b671e8cb8425d61", size = 21230, upload-time = "2025-10-26T15:12:09.109Z" },
 ]
 
 [[package]]
