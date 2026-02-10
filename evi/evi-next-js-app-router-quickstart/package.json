@@ -31,7 +31,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@playwright/test": "^1.58.2",
-    "@types/node": "25.2.2",
+    "@types/node": "25.2.3",
     "@types/react-virtualized": "^9.22.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
