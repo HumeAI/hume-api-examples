@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@humeai/voice-embed':
-        specifier: ^0.2.13
-        version: 0.2.13
+        specifier: ^0.2.14
+        version: 0.2.14
       vue:
         specifier: ^3.5.28
         version: 3.5.28(typescript@5.9.3)
@@ -203,8 +203,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@humeai/voice-embed@0.2.13':
-    resolution: {integrity: sha512-pC5zVgBkaTIE1QY6mkLmQ+33P1lAosqSsCNhiFKgDKHa3KQt0SlpvqzAslqPQnHqDeNp5F27/YUgKRcg9bvdbw==}
+  '@humeai/voice-embed@0.2.14':
+    resolution: {integrity: sha512-e686aYMrMGjQcB/VBmLg1Lzs1HPs1jcWSrFL+ztZjciYWl5kz6OUuBrpMzWSxeEynwULPRfvCi3+8cYH3P+sNw==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -420,8 +420,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.12:
-    resolution: {integrity: sha512-0pB6PPDBEFkuZXFn6fHHZRBJGYyCdsczuFanBjAbVo8B3lZ6702WioQP8CcDBIVp84hAgviyTO29ZKru9GEwOw==}
+  hume@0.15.13:
+    resolution: {integrity: sha512-ZMdC6t1nUSxhbjPL+7luyszDVmqenvR2IPncsYc66iWztESlcsg8hqM2mSXoiw9a+SJHJWidZ1WFmup9ULplWQ==}
     engines: {node: '>=18.0.0'}
 
   magic-string@0.30.21:
@@ -528,8 +528,8 @@ packages:
       typescript:
         optional: true
 
-  ws@8.18.3:
-    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+  ws@8.19.0:
+    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -636,9 +636,9 @@ snapshots:
   '@esbuild/win32-x64@0.27.2':
     optional: true
 
-  '@humeai/voice-embed@0.2.13':
+  '@humeai/voice-embed@0.2.14':
     dependencies:
-      hume: 0.15.12
+      hume: 0.15.13
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -851,10 +851,10 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.12:
+  hume@0.15.13:
     dependencies:
       uuid: 9.0.1
-      ws: 8.18.3
+      ws: 8.19.0
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -951,6 +951,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  ws@8.18.3: {}
+  ws@8.19.0: {}
 
   zod@3.25.76: {}
