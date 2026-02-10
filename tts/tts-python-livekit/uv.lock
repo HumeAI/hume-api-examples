@@ -874,16 +874,16 @@ wheels = [
 
 [[package]]
 name = "livekit-plugins-silero"
-version = "1.1.2"
+version = "1.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "livekit-agents" },
     { name = "numpy" },
     { name = "onnxruntime" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f0/e0/1aa89c74d5e12f95244852eb8857994b8ee312db4d699a3cd3c312f7d976/livekit_plugins_silero-1.1.2.tar.gz", hash = "sha256:b93543e79c199b5f9c8030456ee377a16b6bc5c20aee75f8e82e7a368afe5511", size = 1952540, upload-time = "2025-06-20T14:22:35.837Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1b/3c/c8006dc2e5526c3b5583a2d80dc8340ec4f2126e7b0d5bf0781b12867bde/livekit_plugins_silero-1.4.1.tar.gz", hash = "sha256:f82326e2c52363e3c38ce06ed67e9b422ccc27ce228328835c6784355a2b561c", size = 1955647, upload-time = "2026-02-06T21:38:34.225Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4e/e9/9b31bbd413f4c17ab888fb13f6f962d940895de91f35c061e7c2b7465750/livekit_plugins_silero-1.1.2-py3-none-any.whl", hash = "sha256:652f4d0aa1cd7472a933fbf3f0cca80305c280aff3fa5e8811bbe24b6b01c41e", size = 3898406, upload-time = "2025-06-20T14:22:34.028Z" },
+    { url = "https://files.pythonhosted.org/packages/13/fb/1095e28bade2826ed69c3cec13c4ecd0357f40605e281b1476d1d10b8728/livekit_plugins_silero-1.4.1-py3-none-any.whl", hash = "sha256:0f5748f4037b6f31e1c12fa3cfb9416d36276f7a99994ad3f98926c6f2d7bfc9", size = 3903690, upload-time = "2026-02-06T21:38:32.758Z" },
 ]
 
 [[package]]
