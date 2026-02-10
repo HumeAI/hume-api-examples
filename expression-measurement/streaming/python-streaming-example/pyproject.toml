@@ -3,16 +3,10 @@ name = "hume-stream-simple"
 version = "0.1.0"
 description = "Simple Hume streaming example using language model"
 requires-python = ">=3.9"
-dependencies = [
-    "hume==0.13.6",
-    "python-dotenv",
-]
+dependencies = ["hume==0.13.7", "python-dotenv"]
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=8.0.0",
-    "pytest-asyncio>=0.24.0",
-]
+dev = ["pytest>=8.0.0", "pytest-asyncio>=0.24.0"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
