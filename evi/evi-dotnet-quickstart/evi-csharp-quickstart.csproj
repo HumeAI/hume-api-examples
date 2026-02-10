@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hume" Version="0.2.4" />
-    <PackageReference Include="DotNetEnv" Version="3.1.1" />
+    <PackageReference Include="Hume" />
+    <PackageReference Include="DotNetEnv" />
   </ItemGroup>
 
 </Project>

@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hume" Version="0.2.3" />
-    <PackageReference Include="DotNetEnv" Version="3.1.1" />
-    <PackageReference Include="OneOf" Version="3.0.271" />
-    <PackageReference Include="OneOf.Extended" Version="3.0.271" />
-    <PackageReference Include="System.Text.Json" Version="10.0.2" />
+    <PackageReference Include="Hume" />
+    <PackageReference Include="DotNetEnv" />
+    <PackageReference Include="OneOf" />
+    <PackageReference Include="OneOf.Extended" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
 </Project>
