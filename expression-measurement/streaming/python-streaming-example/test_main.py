@@ -1,7 +1,5 @@
-# run tests locally with:
+# run with:
 # uv run pytest test_main.py -v
-#
-# Requires HUME_API_KEY or TEST_HUME_API_KEY in environment or .env.
 
 import io
 import os
@@ -11,10 +9,8 @@ from unittest.mock import patch
 import pytest
 from dotenv import load_dotenv
 
-# Load .env so HUME_API_KEY is available when the fixture runs
 load_dotenv()
 
-# Ensure main's directory is on path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 

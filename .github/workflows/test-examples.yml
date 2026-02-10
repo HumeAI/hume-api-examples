@@ -43,6 +43,7 @@ jobs:
       evi_dotnet_quickstart: ${{ steps.filter.outputs.evi_dotnet_quickstart }}
       tts_dotnet_quickstart: ${{ steps.filter.outputs.tts_dotnet_quickstart }}
       exp_meas_ts_raw_text_processor: ${{ steps.filter.outputs.exp_meas_ts_raw_text_processor }}
+      exp_meas_py_streaming: ${{ steps.filter.outputs.exp_meas_py_streaming }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -106,6 +107,8 @@ jobs:
               - 'tts/tts-dotnet-quickstart/**'
             exp_meas_ts_raw_text_processor:
               - 'expression-measurement/batch/typescript-raw-text-processor/**'
+            exp_meas_py_streaming:
+              - 'expression-measurement/streaming/python-streaming-example/**'
 
   test-evi-typescript-quickstart:
     needs: detect-changes
@@ -197,6 +200,26 @@ jobs:
         env:
           HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY_EXP_MEASUREMENT }}
         run: npm run test
+
+  test-exp-meas-python-streaming:
+    needs: detect-changes
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.exp_meas_py_streaming == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Run tests in expression-measurement/streaming/python-streaming-example
+        working-directory: expression-measurement/streaming/python-streaming-example
+        env:
+          HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY_EXP_MEASUREMENT }}
+        run: uv sync --extra dev && uv run pytest test_main.py -v
 
   test-evi-python-quickstart:
     needs: detect-changes
@@ -589,6 +612,7 @@ jobs:
       - test-evi-typescript-quickstart
       - test-tts-typescript-quickstart
       - test-exp-meas-typescript-raw-text-processor
+      - test-exp-meas-python-streaming
       - evi-next-js-app-router-quickstart
       - test-evi-python-quickstart
       - test-tts-python-quickstart
@@ -606,6 +630,7 @@ jobs:
           EXP_MEAS_TS_RAW_TEXT_PROCESSOR: ${{ needs.test-exp-meas-typescript-raw-text-processor.result }}
           EVI_PY: ${{ needs.test-evi-python-quickstart.result }}
           TTS_PY: ${{ needs.test-tts-python-quickstart.result }}
+          EXP_MEAS_PY_STREAMING: ${{ needs.test-exp-meas-python-streaming.result }}
           EVI_DOTNET: ${{ needs.evi-dotnet-quickstart.result }}
           TTS_DOTNET: ${{ needs.tts-dotnet-quickstart.result }}
           EVI_APP: ${{ needs.evi-next-js-app-router-quickstart.result }}
@@ -617,13 +642,14 @@ jobs:
             exit 0
           fi
           status() { [ "$1" = "success" ] && echo "✅ $1" || echo "❌ $1"; }
-          text="*Daily tests (cron) finished*
+          text="*Daily test-examples cron job finished*
           • TS SDK: evi-typescript-quickstart: $(status "$EVI_TS")
           • TS SDK: tts-typescript-quickstart: $(status "$TTS_TS")
-          • TS SDK: exp-meas-ts-raw-text-processor: $(status "$EXP_MEAS_TS_RAW_TEXT_PROCESSOR")
+          • TS SDK: exp-meas-ts-raw-text-processor (batch): $(status "$EXP_MEAS_TS_RAW_TEXT_PROCESSOR")
           • React SDK @humeai/voice-react: evi-next-js-app-router-quickstart: $(status "$EVI_APP")
           • Py SDK: evi-python-quickstart: $(status "$EVI_PY")
           • Py SDK: tts-python-quickstart: $(status "$TTS_PY")
+          • Py SDK: exp-meas-python-streaming: $(status "$EXP_MEAS_PY_STREAMING")
           • .NET SDK: evi-dotnet-quickstart: $(status "$EVI_DOTNET")
           • .NET SDK: tts-dotnet-quickstart: $(status "$TTS_DOTNET")
           <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
