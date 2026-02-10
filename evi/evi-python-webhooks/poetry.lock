@@ -216,14 +216,14 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "hume"
-version = "0.13.6"
+version = "0.13.8"
 description = "A Python SDK for Hume AI"
 optional = false
 python-versions = "<4,>=3.9"
 groups = ["main"]
 files = [
-    {file = "hume-0.13.6-py3-none-any.whl", hash = "sha256:0aa601f2132800a1ea810be05817019c7be839c9ea7a4e80483e90c8d84d005c"},
-    {file = "hume-0.13.6.tar.gz", hash = "sha256:6a35086ca1622d410ffa04dcb7c4fd942bf83cb66f7ac8cc730be8609900460a"},
+    {file = "hume-0.13.8-py3-none-any.whl", hash = "sha256:8295c095e4e04918512eec2df3adf4a0900b8d7ef06e3e8487c45ab520ed0ad5"},
+    {file = "hume-0.13.8.tar.gz", hash = "sha256:067691b0ce0353e4438d32d5fbfcbb6ed2099533bf5e06af99084c8c76fad24f"},
 ]
 
 [package.dependencies]
@@ -234,7 +234,7 @@ httpx = ">=0.21.2"
 pydantic = ">=1.9.2"
 pydantic-core = ">=2.18.2"
 typing_extensions = ">=4.0.0"
-websockets = ">=13.1,<14.0"
+websockets = ">=12.0"
 
 [package.extras]
 examples = ["jupyter (>=1.0.0,<2.0.0)"]
@@ -579,4 +579,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "f2f5ad87ef61d0662b39393327177a586887c0a76835b6b3aaa5f604a99b99b7"
+content-hash = "7e8b96b1d78d11d3a69190b95ff70434022b28f63fe4fe442adbafd62821fc04"
