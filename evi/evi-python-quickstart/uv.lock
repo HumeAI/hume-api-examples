@@ -148,7 +148,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "hume", extras = ["microphone"], specifier = ">=0.13.5" },
+    { name = "hume", extras = ["microphone"], specifier = ">=0.13.8" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
 ]
 
@@ -209,7 +209,7 @@ wheels = [
 
 [[package]]
 name = "hume"
-version = "0.13.5"
+version = "0.13.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -221,9 +221,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cf/f6/7724b4a585af6bb724f0df96e72a6753b6b7d4183fd28c9ff936cf59ff41/hume-0.13.5.tar.gz", hash = "sha256:fdf814acee0f75215f55ecbbe6183bb92bdc1f483017ecea91c9c93e88ae73a8", size = 153249, upload-time = "2025-11-21T20:59:54.871Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/5b/849ac072161e985ce5758f19f792043274b64a9f9dd73fdd14333b7446f4/hume-0.13.8.tar.gz", hash = "sha256:067691b0ce0353e4438d32d5fbfcbb6ed2099533bf5e06af99084c8c76fad24f", size = 142326, upload-time = "2026-02-10T16:05:22.234Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/cb/46dde1e74738b5babaa83be867ef67eda6723b7021b6526dedf852f8dc05/hume-0.13.5-py3-none-any.whl", hash = "sha256:45f9ee86a0699849e8f96475108cf2021944cbef24b9eef64e08399d5591e15f", size = 355857, upload-time = "2025-11-21T20:59:53.645Z" },
+    { url = "https://files.pythonhosted.org/packages/48/10/ec2c1e9a0401a39c3575ff8c5e42ad4b03687d5dbdefaa94ec5d52dbe088/hume-0.13.8-py3-none-any.whl", hash = "sha256:8295c095e4e04918512eec2df3adf4a0900b8d7ef06e3e8487c45ab520ed0ad5", size = 353023, upload-time = "2026-02-10T16:05:20.537Z" },
 ]
 
 [package.optional-dependencies]
