@@ -622,6 +622,9 @@ jobs:
     if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Notify Slack
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -642,16 +645,26 @@ jobs:
             exit 0
           fi
           status() { [ "$1" = "success" ] && echo "✅ $1" || echo "❌ $1"; }
+          # SDK versions from repo manifests (package name + version spec)
+          EVI_TS_VER=$(jq -r '.dependencies.hume' evi/evi-typescript-quickstart/package.json 2>/dev/null || echo "?")
+          TTS_TS_VER=$(jq -r '.dependencies.hume' tts/tts-typescript-quickstart/package.json 2>/dev/null || echo "?")
+          EXP_MEAS_TS_VER=$(jq -r '.dependencies.hume' expression-measurement/batch/typescript-raw-text-processor/package.json 2>/dev/null || echo "?")
+          EVI_APP_VER=$(jq -r '.dependencies["@humeai/voice-react"]' evi/evi-next-js-app-router-quickstart/package.json 2>/dev/null || echo "?")
+          EVI_PY_VER=$(python3 -c "import tomllib; d=tomllib.load(open('evi/evi-python-quickstart/pyproject.toml','rb')); deps=d.get('project',{}).get('dependencies',[]); print(next((x for x in deps if 'hume' in x), ''))" 2>/dev/null || echo "?")
+          TTS_PY_VER=$(python3 -c "import tomllib; d=tomllib.load(open('tts/tts-python-quickstart/pyproject.toml','rb')); deps=d.get('project',{}).get('dependencies',[]); print(next((x for x in deps if 'hume' in x), ''))" 2>/dev/null || echo "?")
+          EXP_MEAS_PY_VER=$(python3 -c "import tomllib; d=tomllib.load(open('expression-measurement/streaming/python-streaming-example/pyproject.toml','rb')); deps=d.get('project',{}).get('dependencies',[]); print(next((x for x in deps if 'hume' in x), ''))" 2>/dev/null || echo "?")
+          EVI_DOTNET_VER=$(sed -n 's/.*PackageReference Include="Hume" Version="\([^"]*\)".*/\1/p' evi/evi-dotnet-quickstart/*.csproj 2>/dev/null | head -1 || echo "?")
+          TTS_DOTNET_VER=$(sed -n 's/.*PackageReference Include="Hume" Version="\([^"]*\)".*/\1/p' tts/tts-dotnet-quickstart/*.csproj 2>/dev/null | head -1 || echo "?")
           text="*Daily test-examples cron job finished*
-          • TS SDK: evi-typescript-quickstart: $(status "$EVI_TS")
-          • TS SDK: tts-typescript-quickstart: $(status "$TTS_TS")
-          • TS SDK: exp-meas-ts-raw-text-processor (batch): $(status "$EXP_MEAS_TS_RAW_TEXT_PROCESSOR")
-          • React SDK @humeai/voice-react: evi-next-js-app-router-quickstart: $(status "$EVI_APP")
-          • Py SDK: evi-python-quickstart: $(status "$EVI_PY")
-          • Py SDK: tts-python-quickstart: $(status "$TTS_PY")
-          • Py SDK: exp-meas-python-streaming: $(status "$EXP_MEAS_PY_STREAMING")
-          • .NET SDK: evi-dotnet-quickstart: $(status "$EVI_DOTNET")
-          • .NET SDK: tts-dotnet-quickstart: $(status "$TTS_DOTNET")
+          • TS SDK (hume $EVI_TS_VER): evi-typescript-quickstart: $(status "$EVI_TS")
+          • TS SDK (hume $TTS_TS_VER): tts-typescript-quickstart: $(status "$TTS_TS")
+          • TS SDK (hume $EXP_MEAS_TS_VER): exp-meas-ts-raw-text-processor (batch): $(status "$EXP_MEAS_TS_RAW_TEXT_PROCESSOR")
+          • React SDK (@humeai/voice-react $EVI_APP_VER): evi-next-js-app-router-quickstart: $(status "$EVI_APP")
+          • Py SDK (hume $EVI_PY_VER): evi-python-quickstart: $(status "$EVI_PY")
+          • Py SDK (hume $TTS_PY_VER): tts-python-quickstart: $(status "$TTS_PY")
+          • Py SDK (hume $EXP_MEAS_PY_VER): exp-meas-python-streaming: $(status "$EXP_MEAS_PY_STREAMING")
+          • .NET SDK (Hume $EVI_DOTNET_VER): evi-dotnet-quickstart: $(status "$EVI_DOTNET")
+          • .NET SDK (Hume $TTS_DOTNET_VER): tts-dotnet-quickstart: $(status "$TTS_DOTNET")
           <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
           payload=$(jq -n --arg text "$(echo "$text" | sed 's/^[[:space:]]*//')" '{text: $text}')
           res=$(curl -sS -w "%{http_code}" -o /tmp/slack_resp -X POST -H "Content-Type: application/json" --data "$payload" "$SLACK_WEBHOOK_URL") || true
