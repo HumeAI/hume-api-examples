@@ -9,7 +9,7 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "^3.11"
 python-dotenv = "^1.2.1"
-hume = "^0.13.6"
+hume = "^0.13.8"
 
 
 [build-system]
