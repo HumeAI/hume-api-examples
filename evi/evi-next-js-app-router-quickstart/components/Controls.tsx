@@ -1,5 +1,5 @@
 "use client";
-import { useVoice } from "@humeai/voice-react";
+import { useMicFft, useVoice } from "@humeai/voice-react";
 import { Button } from "./ui/button";
 import { Mic, MicOff, Phone } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -14,8 +14,9 @@ const E2E_ENABLED =
   process.env.NEXT_PUBLIC_ENABLE_E2E_HOOKS !== "false";
 
 export default function Controls() {
-  const { disconnect, status, isMuted, unmute, mute, micFft, sendSessionSettings } =
+  const { disconnect, status, isMuted, unmute, mute, sendSessionSettings } =
     useVoice();
+  const micFft = useMicFft();
 
   useEffect(() => {
     trackVoiceStatus(status.value);
