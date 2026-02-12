@@ -8,7 +8,7 @@ export default function MicFFT({
   fft,
   className,
 }: {
-  fft: number[];
+  fft: readonly number[];
   className?: string;
 }) {
   return (

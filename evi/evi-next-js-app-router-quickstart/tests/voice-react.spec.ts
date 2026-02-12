@@ -9,7 +9,7 @@ const secretKey =
 
 if (!apiKey || !apiKey.trim()) {
   throw new Error(
-    "API key is required. Set TEST_HUME_API_KEY (CI) or HUME_API_KEY (local)."
+    "API key is required. Set TEST_HUME_API_KEY (CI) or HUME_API_KEY (local).",
   );
 }
 
@@ -56,7 +56,7 @@ test.describe("connect to EVI with Access Token", () => {
   }) => {
     if (!secretKey || !secretKey.trim()) {
       throw new Error(
-        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or HUME_SECRET_KEY (local)."
+        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or HUME_SECRET_KEY (local).",
       );
     }
 
@@ -82,7 +82,7 @@ test.describe("connect to EVI with Access Token", () => {
   }) => {
     if (!secretKey || !secretKey.trim()) {
       throw new Error(
-        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or HUME_SECRET_KEY (local)."
+        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or HUME_SECRET_KEY (local).",
       );
     }
 
@@ -101,7 +101,7 @@ test.describe("connect to EVI with Access Token", () => {
 
     const events = await fetchChatEvents(chatId);
     const sessionSettingsEvent = events.find(
-      (event) => (event.type as string) === "SESSION_SETTINGS"
+      (event) => (event.type as string) === "SESSION_SETTINGS",
     );
 
     expect(sessionSettingsEvent?.messageText).toBeDefined();
@@ -123,8 +123,8 @@ test.describe("connect to EVI with Access Token", () => {
       if (!(key in parsedSettings)) {
         throw new Error(
           `SESSION_SETTINGS event missing "${key}". Keys received: ${Object.keys(
-            parsedSettings
-          ).join(", ")}`
+            parsedSettings,
+          ).join(", ")}`,
         );
       }
       expect(parsedSettings[key]).toBe(value);
@@ -133,7 +133,7 @@ test.describe("connect to EVI with Access Token", () => {
     expect(parsedSettings.audio).toBeDefined();
     expect(parsedSettings.audio.encoding).toBe(sessionSettings.audio.encoding);
     expect(parsedSettings.audio.sample_rate).toBe(
-      sessionSettings.audio.sampleRate
+      sessionSettings.audio.sampleRate,
     );
     expect(parsedSettings.audio.channels).toBe(sessionSettings.audio.channels);
 
@@ -143,13 +143,13 @@ test.describe("connect to EVI with Access Token", () => {
 
     expect(parsedSettings.variables).toBeDefined();
     expect(parsedSettings.variables.userName).toBe(
-      String(sessionSettings.variables.userName)
+      String(sessionSettings.variables.userName),
     );
     expect(parsedSettings.variables.userAge).toBe(
-      String(sessionSettings.variables.userAge)
+      String(sessionSettings.variables.userAge),
     );
     expect(parsedSettings.variables.isPremium).toBe(
-      String(sessionSettings.variables.isPremium)
+      String(sessionSettings.variables.isPremium),
     );
   });
 
@@ -159,7 +159,7 @@ test.describe("connect to EVI with Access Token", () => {
   }) => {
     if (!secretKey || !secretKey.trim()) {
       throw new Error(
-        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or HUME_SECRET_KEY (local)."
+        "Secret key is required. Set TEST_HUME_SECRET_KEY (CI) or HUME_SECRET_KEY (local).",
       );
     }
 
@@ -193,7 +193,7 @@ test.describe("connect to EVI with Access Token", () => {
 
     const events = await fetchChatEvents(chatId);
     const sessionSettingsEvents = events.filter(
-      (event) => (event.type as string) === "SESSION_SETTINGS"
+      (event) => (event.type as string) === "SESSION_SETTINGS",
     );
 
     expect(sessionSettingsEvents.length).toBeGreaterThanOrEqual(2);
@@ -209,7 +209,7 @@ test.describe("connect to EVI with Access Token", () => {
     const parsedSettings = JSON.parse(updatedSessionSettingsEvent.messageText);
     expect(parsedSettings.type).toBe("session_settings");
     expect(parsedSettings.system_prompt).toBe(
-      updatedSessionSettings.systemPrompt
+      updatedSessionSettings.systemPrompt,
     );
   });
 });
@@ -219,11 +219,11 @@ async function waitForChatMetadataFromPage(page: Page, timeoutMs = 30_000) {
     () => {
       const events = (window as any).__voiceEvents ?? [];
       const metadata = events.find(
-        (event: any) => event?.type === "chat_metadata" && event?.chatId
+        (event: any) => event?.type === "chat_metadata" && event?.chatId,
       );
       return metadata?.chatId ?? null;
     },
-    { timeout: timeoutMs }
+    { timeout: timeoutMs },
   );
   const chatId = (await handle.jsonValue()) as string | null;
   if (!chatId) {
@@ -233,7 +233,7 @@ async function waitForChatMetadataFromPage(page: Page, timeoutMs = 30_000) {
 }
 
 async function fetchChatEvents(
-  chatId: string
+  chatId: string,
 ): Promise<Hume.empathicVoice.ReturnChatEvent[]> {
   const key = process.env.TEST_HUME_API_KEY || process.env.HUME_API_KEY;
   if (!key?.trim()) {
