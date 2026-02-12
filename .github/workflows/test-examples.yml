@@ -653,8 +653,8 @@ jobs:
           EVI_PY_VER=$(python3 -c "import tomllib; d=tomllib.load(open('evi/evi-python-quickstart/pyproject.toml','rb')); deps=d.get('project',{}).get('dependencies',[]); print(next((x for x in deps if 'hume' in x), ''))" 2>/dev/null || echo "?")
           TTS_PY_VER=$(python3 -c "import tomllib; d=tomllib.load(open('tts/tts-python-quickstart/pyproject.toml','rb')); deps=d.get('project',{}).get('dependencies',[]); print(next((x for x in deps if 'hume' in x), ''))" 2>/dev/null || echo "?")
           EXP_MEAS_PY_VER=$(python3 -c "import tomllib; d=tomllib.load(open('expression-measurement/streaming/python-streaming-example/pyproject.toml','rb')); deps=d.get('project',{}).get('dependencies',[]); print(next((x for x in deps if 'hume' in x), ''))" 2>/dev/null || echo "?")
-          EVI_DOTNET_VER=$(sed -n 's/.*PackageReference Include="Hume" Version="\([^"]*\)".*/\1/p' evi/evi-dotnet-quickstart/*.csproj 2>/dev/null | head -1 || echo "?")
-          TTS_DOTNET_VER=$(sed -n 's/.*PackageReference Include="Hume" Version="\([^"]*\)".*/\1/p' tts/tts-dotnet-quickstart/*.csproj 2>/dev/null | head -1 || echo "?")
+          EVI_DOTNET_VER=$(sed -n 's/.*PackageVersion Include="Hume" Version="\([^"]*\)".*/\1/p' Directory.Packages.props 2>/dev/null | head -1 || echo "?")
+          TTS_DOTNET_VER=$(sed -n 's/.*PackageVersion Include="Hume" Version="\([^"]*\)".*/\1/p' Directory.Packages.props 2>/dev/null | head -1 || echo "?")
           text="*Daily test-examples cron job finished*
           • TS SDK (hume $EVI_TS_VER): evi-typescript-quickstart: $(status "$EVI_TS")
           • TS SDK (hume $TTS_TS_VER): tts-typescript-quickstart: $(status "$TTS_TS")
