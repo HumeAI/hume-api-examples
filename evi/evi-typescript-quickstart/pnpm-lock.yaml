@@ -16,8 +16,8 @@ importers:
         specifier: ^25.2.3
         version: 25.2.3
       dotenv:
-        specifier: ^17.2.4
-        version: 17.2.4
+        specifier: ^17.3.1
+        version: 17.3.1
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -369,8 +369,8 @@ packages:
     resolution: {integrity: sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==}
     engines: {node: '>=18'}
 
-  dotenv@17.2.4:
-    resolution: {integrity: sha512-mudtfb4zRB4bVvdj0xRo+e6duH1csJRM8IukBqfTRvHotn9+LBXB8ynAidP9zHqoRC/fsllXgk4kCKlR21fIhw==}
+  dotenv@17.3.1:
+    resolution: {integrity: sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA==}
     engines: {node: '>=12'}
 
   es-module-lexer@1.7.0:
@@ -790,7 +790,7 @@ snapshots:
 
   chai@6.2.2: {}
 
-  dotenv@17.2.4: {}
+  dotenv@17.3.1: {}
 
   es-module-lexer@1.7.0: {}
 
