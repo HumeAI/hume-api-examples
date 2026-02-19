@@ -16,7 +16,7 @@
     "@types/react-virtualized": "^9.22.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.34.1",
+    "framer-motion": "^12.34.2",
     "geist": "^1.7.0",
     "hume": "^0.15.13",
     "lucide-react": "^0.574.0",
@@ -26,17 +26,17 @@
     "react-virtualized": "^9.22.6",
     "remeda": "^2.33.6",
     "server-only": "^0.0.1",
-    "tailwind-merge": "^3.4.1",
+    "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.18",
-    "@types/node": "25.2.3",
+    "@tailwindcss/postcss": "^4.2.0",
+    "@types/node": "25.3.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^10.0.0",
     "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.2.0",
     "typescript": "^5"
   }
 }
