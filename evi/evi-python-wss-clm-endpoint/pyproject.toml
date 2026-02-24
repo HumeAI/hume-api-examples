@@ -6,7 +6,7 @@ authors = ["Brian Kitano <brian@hume.ai>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-fastapi = "^0.131.0"
+fastapi = "^0.133.0"
 modal = "^1.2.1"
 python = "^3.11"
 aws-cdk-lib = "2.239.0"
