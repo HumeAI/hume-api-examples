@@ -11,24 +11,24 @@
     "android": "expo run:android"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~6.1.2",
-    "expo": "~54.0.33",
-    "expo-build-properties": "~1.0.10",
-    "expo-router": "^6.0.23",
-    "expo-status-bar": "~3.0.9",
-    "hume": "0.15.13",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "react-native": "0.81.5",
-    "react-native-web": "~0.21.2",
+    "@expo/metro-runtime": "~5.0.4",
+    "expo": "~53.0.20",
+    "expo-build-properties": "~0.14.8",
+    "expo-router": "^5.1.4",
+    "expo-status-bar": "~2.0.0",
+    "hume": "0.13.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "0.79.5",
+    "react-native-web": "~0.20.0",
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@types/react": "~19.2.14",
-    "eslint": "^10.0.2",
-    "eslint-config-expo": "~10.0.0",
-    "typescript": "~5.9.3"
+    "@babel/core": "^7.25.2",
+    "@types/react": "~19.0.10",
+    "eslint": "^9.25.0",
+    "eslint-config-expo": "~9.2.0",
+    "typescript": "~5.8.3"
   },
   "private": true
 }
