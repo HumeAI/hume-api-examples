@@ -7,8 +7,8 @@ on:
     branches: [main, master]
   workflow_dispatch:
   schedule:
-    # Run tests for all packages that have tests daily
-    - cron: '0 12 * * *'
+    # Run tests for all packages that have tests weekly on Tuesday
+    - cron: '0 12 * * 2'
 
 permissions:
   contents: read
