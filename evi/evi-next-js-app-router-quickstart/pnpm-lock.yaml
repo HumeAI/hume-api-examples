@@ -30,8 +30,8 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0(next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       hume:
-        specifier: ^0.15.13
-        version: 0.15.13
+        specifier: ^0.15.15
+        version: 0.15.15
       lucide-react:
         specifier: ^0.575.0
         version: 0.575.0(react@19.2.4)
@@ -1354,6 +1354,10 @@ packages:
 
   hume@0.15.13:
     resolution: {integrity: sha512-ZMdC6t1nUSxhbjPL+7luyszDVmqenvR2IPncsYc66iWztESlcsg8hqM2mSXoiw9a+SJHJWidZ1WFmup9ULplWQ==}
+    engines: {node: '>=18.0.0'}
+
+  hume@0.15.15:
+    resolution: {integrity: sha512-p0eQ70EZWiseg/XzQFe4gPxPQgYmmWso/5ar1QyPWm2E5dAy6gx5oC24lxZjhEtMnwiOB+9ctU6OQJpHg1qKBQ==}
     engines: {node: '>=18.0.0'}
 
   ignore@5.3.2:
@@ -3481,6 +3485,15 @@ snapshots:
       hermes-estree: 0.25.1
 
   hume@0.15.13:
+    dependencies:
+      uuid: 9.0.1
+      ws: 8.19.0
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  hume@0.15.15:
     dependencies:
       uuid: 9.0.1
       ws: 8.19.0
