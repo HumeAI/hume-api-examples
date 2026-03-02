@@ -162,7 +162,7 @@ requires-dist = [
     { name = "audioop-lts", marker = "python_full_version >= '3.13'" },
     { name = "flask" },
     { name = "flask-sock" },
-    { name = "hume", specifier = "==0.13.8" },
+    { name = "hume", specifier = "==0.13.10" },
     { name = "numpy" },
     { name = "pydub" },
     { name = "python-dotenv" },
@@ -250,7 +250,7 @@ wheels = [
 
 [[package]]
 name = "hume"
-version = "0.13.8"
+version = "0.13.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -262,9 +262,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/93/5b/849ac072161e985ce5758f19f792043274b64a9f9dd73fdd14333b7446f4/hume-0.13.8.tar.gz", hash = "sha256:067691b0ce0353e4438d32d5fbfcbb6ed2099533bf5e06af99084c8c76fad24f", size = 142326, upload-time = "2026-02-10T16:05:22.234Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/78/d7/97845c3903ef5782b6f4581138f06a595513c2e129b2cbeacfc6e3645f61/hume-0.13.10.tar.gz", hash = "sha256:425596d17bd8b85bdf4f27bd0d3680c50ce50b4339f64adf39f69557907dc41c", size = 144063, upload-time = "2026-02-27T21:06:17.913Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/48/10/ec2c1e9a0401a39c3575ff8c5e42ad4b03687d5dbdefaa94ec5d52dbe088/hume-0.13.8-py3-none-any.whl", hash = "sha256:8295c095e4e04918512eec2df3adf4a0900b8d7ef06e3e8487c45ab520ed0ad5", size = 353023, upload-time = "2026-02-10T16:05:20.537Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/ee/52598b811660f874f84b880b2b46481c78f8f7df2d9cff95b8130af95826/hume-0.13.10-py3-none-any.whl", hash = "sha256:a724b6cd9fc2278dff0b831276b1b2c82604edece3e036e0d46c312aea2d70b8", size = 355071, upload-time = "2026-02-27T21:06:14.847Z" },
 ]
 
 [[package]]
