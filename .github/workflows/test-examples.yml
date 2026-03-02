@@ -184,17 +184,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
-
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
-          cache: 'pnpm'
-          cache-dependency-path: expression-measurement/batch/typescript-raw-text-processor/pnpm-lock.yaml
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
 
       - name: Install deps (expression-measurement batch typescript-raw-text-processor)
         working-directory: expression-measurement/batch/typescript-raw-text-processor

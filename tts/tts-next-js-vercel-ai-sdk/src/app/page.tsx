@@ -36,7 +36,7 @@ export default function Page() {
                 startTransition(async () => {
                   const { uint8Array, mimeType, text, instructions, voice } = await tts(formData);
 
-                  const blob = new Blob([uint8Array], { type: mimeType });
+                  const blob = new Blob([uint8Array as BlobPart], { type: mimeType });
                   const url = URL.createObjectURL(blob);
                   
                   setClips((prev) => [{ voice, text, instructions, url }, ...prev]);
