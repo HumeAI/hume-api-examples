@@ -8,7 +8,7 @@ dependencies = [
   "flask",
   "flask-sock",
   "python-dotenv",
-  "hume==0.13.8",
+  "hume==0.13.10",
   "pydub",
   "numpy",
   "scipy",
