@@ -118,15 +118,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.20.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
 
       - name: Install deps (EVI quickstart)
         working-directory: evi/evi-typescript-quickstart
@@ -151,15 +151,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.20.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
 
       - name: Install deps (TTS quickstart)
         working-directory: tts/tts-typescript-quickstart
@@ -184,17 +184,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: expression-measurement/batch/typescript-raw-text-processor/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
 
       - name: Install deps (expression-measurement batch typescript-raw-text-processor)
         working-directory: expression-measurement/batch/typescript-raw-text-processor
@@ -583,17 +583,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: evi/evi-next-js-app-router-quickstart/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
 
       - name: Install dependencies
         working-directory: evi/evi-next-js-app-router-quickstart
@@ -697,17 +697,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: evi/evi-next-js-function-calling/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
 
       - name: Install dependencies
         working-directory: evi/evi-next-js-function-calling
@@ -728,17 +728,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: evi/evi-next-js-pages-router-quickstart/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
 
       - name: Install dependencies
         working-directory: evi/evi-next-js-pages-router-quickstart
@@ -756,17 +756,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: evi/evi-react-native/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
 
       - name: Install dependencies
         working-directory: evi/evi-react-native
@@ -784,17 +784,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: evi/evi-typescript-chat-history/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
 
       - name: Install dependencies
         working-directory: evi/evi-typescript-chat-history
@@ -812,15 +812,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.20.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
 
       - name: Install dependencies
         working-directory: evi/evi-typescript-function-calling
@@ -838,15 +838,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.20.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
 
       - name: Install dependencies
         working-directory: evi/evi-typescript-webhooks
@@ -860,15 +860,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.20.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
 
       - name: Install dependencies
         working-directory: evi/evi-vue-widget
@@ -886,17 +886,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: tts/tts-next-js-agora/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
 
       - name: Install dependencies
         working-directory: tts/tts-next-js-agora
@@ -914,17 +914,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: tts/tts-next-js-vercel-ai-sdk/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
 
       - name: Install dependencies
         working-directory: tts/tts-next-js-vercel-ai-sdk
@@ -942,15 +942,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.20.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
 
       - name: Install dependencies
         working-directory: tts/tts-typescript-lipsync
