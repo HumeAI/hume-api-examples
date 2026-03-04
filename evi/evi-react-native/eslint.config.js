@@ -7,4 +7,11 @@ module.exports = defineConfig([
   {
     ignores: ['dist/*'],
   },
+  {
+    // expo-modules-core is a native dep; import/no-unresolved fails for platform-specific modules
+    files: ['modules/**/*.ts'],
+    rules: {
+      'import/no-unresolved': 'off',
+    },
+  },
 ]);
