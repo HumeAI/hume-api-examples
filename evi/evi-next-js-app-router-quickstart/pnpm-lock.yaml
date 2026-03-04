@@ -24,8 +24,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       framer-motion:
-        specifier: ^12.34.4
-        version: 12.34.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^12.34.5
+        version: 12.34.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       geist:
         specifier: ^1.7.0
         version: 1.7.0(next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
@@ -1243,8 +1243,8 @@ packages:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
     engines: {node: '>= 0.4'}
 
-  framer-motion@12.34.4:
-    resolution: {integrity: sha512-q1PwNhc1XJ3qYG7nc9+pEU5P3tnjB6Eh9vv5gGzy61nedDLB4+xk5peMCWhKM0Zn6sfhgunf/q9n0UgCoyKOBA==}
+  framer-motion@12.34.5:
+    resolution: {integrity: sha512-Z2dQ+o7BsfpJI3+u0SQUNCrN+ajCKJen1blC4rCHx1Ta2EOHs+xKJegLT2aaD9iSMbU3OoX+WabQXkloUbZmJQ==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -1648,8 +1648,8 @@ packages:
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
-  motion-dom@12.34.3:
-    resolution: {integrity: sha512-sYgFe+pR9aIM7o4fhs2aXtOI+oqlUd33N9Yoxcgo1Fv7M20sRkHtCmzE/VRNIcq7uNJ+qio+Xubt1FXH3pQ+eQ==}
+  motion-dom@12.34.5:
+    resolution: {integrity: sha512-k33CsnxO2K3gBRMUZT+vPmc4Utlb5menKdG0RyVNLtlqRaaJPRWlE9fXl8NTtfZ5z3G8TDvqSu0MENLqSTaHZA==}
 
   motion-utils@12.29.2:
     resolution: {integrity: sha512-G3kc34H2cX2gI63RqU+cZq+zWRRPSsNIOjpdl9TN4AQwC4sgwYPl/Q/Obf/d53nOm569T0fYK+tcoSV50BWx8A==}
@@ -3374,9 +3374,9 @@ snapshots:
     dependencies:
       is-callable: 1.2.7
 
-  framer-motion@12.34.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  framer-motion@12.34.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
-      motion-dom: 12.34.3
+      motion-dom: 12.34.5
       motion-utils: 12.29.2
       tslib: 2.8.1
     optionalDependencies:
@@ -3758,7 +3758,7 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  motion-dom@12.34.3:
+  motion-dom@12.34.5:
     dependencies:
       motion-utils: 12.29.2
 
