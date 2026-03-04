@@ -254,31 +254,31 @@ typeguard = "2.13.3"
 
 [[package]]
 name = "aws-cdk-asset-node-proxy-agent-v6"
-version = "2.1.0"
+version = "2.1.1"
 description = "@aws-cdk/asset-node-proxy-agent-v6"
 optional = false
-python-versions = "~=3.8"
+python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "aws_cdk.asset_node_proxy_agent_v6-2.1.0-py3-none-any.whl", hash = "sha256:24a388b69a44d03bae6dbf864c4e25ba650d4b61c008b4568b94ffbb9a69e40e"},
-    {file = "aws_cdk_asset_node_proxy_agent_v6-2.1.0.tar.gz", hash = "sha256:1f292c0631f86708ba4ee328b3a2b229f7e46ea1c79fbde567ee9eb119c2b0e2"},
+    {file = "aws_cdk_asset_node_proxy_agent_v6-2.1.1-py3-none-any.whl", hash = "sha256:a24fab484423fcb7c729fb376817a4dbb6a09c176243fd1dcbdaa05ddf62f037"},
+    {file = "aws_cdk_asset_node_proxy_agent_v6-2.1.1.tar.gz", hash = "sha256:37211fea7e308144d20666b939d8763d733000d8d837ba968dacaf4983daf574"},
 ]
 
 [package.dependencies]
-jsii = ">=1.103.1,<2.0.0"
+jsii = ">=1.126.0,<2.0.0"
 publication = ">=0.0.3"
-typeguard = ">=2.13.3,<5.0.0"
+typeguard = "2.13.3"
 
 [[package]]
 name = "aws-cdk-cloud-assembly-schema"
-version = "50.4.0"
+version = "52.2.0"
 description = "Schema for the protocol between CDK framework and CDK CLI"
 optional = false
 python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "aws_cdk_cloud_assembly_schema-50.4.0-py3-none-any.whl", hash = "sha256:3f98f06d99f68f5bae5c72f0f392494dd3ef4211197afd0e75cfe1d5fc487d1c"},
-    {file = "aws_cdk_cloud_assembly_schema-50.4.0.tar.gz", hash = "sha256:c9aa7a108ca63f3880f26594166d3e8c16b504a50424011baf785231dc009f30"},
+    {file = "aws_cdk_cloud_assembly_schema-52.2.0-py3-none-any.whl", hash = "sha256:87b918589f7d627f45e330726f592ec0b39056e1403558f3a1ba8a2134dacd6f"},
+    {file = "aws_cdk_cloud_assembly_schema-52.2.0.tar.gz", hash = "sha256:737309e2c7c7e4b46bd669cb9fe8799a36424c9a174523b54833cf1cd12b5e3f"},
 ]
 
 [package.dependencies]
@@ -288,22 +288,22 @@ typeguard = "2.13.3"
 
 [[package]]
 name = "aws-cdk-lib"
-version = "2.240.0"
+version = "2.241.0"
 description = "Version 2 of the AWS Cloud Development Kit library"
 optional = false
 python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "aws_cdk_lib-2.240.0-py3-none-any.whl", hash = "sha256:6ba3343885e0ad10cb38981ea4f7e6c721253519d2601af9d6784bb5787d1292"},
-    {file = "aws_cdk_lib-2.240.0.tar.gz", hash = "sha256:096fcb3efd41ba30cdcee0c97a54537f6cb3ab9e53a1f0ed68981a8b86860784"},
+    {file = "aws_cdk_lib-2.241.0-py3-none-any.whl", hash = "sha256:5c62f97c13a2a9e65b1d2b376f267595b7b2cc3947f6bcf710e52e39a381b5e3"},
+    {file = "aws_cdk_lib-2.241.0.tar.gz", hash = "sha256:4ea84d6caf43c3a42670a76e8a023e513ce335499e7c45f22028b2186926e7ab"},
 ]
 
 [package.dependencies]
 "aws-cdk.asset-awscli-v1" = "2.2.263"
-"aws-cdk.asset-node-proxy-agent-v6" = ">=2.1.0,<3.0.0"
-"aws-cdk.cloud-assembly-schema" = ">=50.3.0,<51.0.0"
+"aws-cdk.asset-node-proxy-agent-v6" = ">=2.1.1,<3.0.0"
+"aws-cdk.cloud-assembly-schema" = ">=52.1.0,<53.0.0"
 constructs = ">=10.5.0,<11.0.0"
-jsii = ">=1.126.0,<2.0.0"
+jsii = ">=1.127.0,<2.0.0"
 publication = ">=0.0.3"
 typeguard = "2.13.3"
 
@@ -641,14 +641,14 @@ testing = ["jaraco.test (>=5.4)", "pytest (>=6)", "pytest-checkdocs (>=2.4)", "p
 
 [[package]]
 name = "jsii"
-version = "1.126.0"
+version = "1.127.0"
 description = "Python client for jsii runtime"
 optional = false
 python-versions = "~=3.9"
 groups = ["main"]
 files = [
-    {file = "jsii-1.126.0-py3-none-any.whl", hash = "sha256:0bb3d5423fd62a499f9ce83e98668b48424ac6ef39472bff90cdf4650aa41b41"},
-    {file = "jsii-1.126.0.tar.gz", hash = "sha256:5e4739843aab3af25472490a05a271cf7d53f01a6d46167ab0f1f2cff3a8df95"},
+    {file = "jsii-1.127.0-py3-none-any.whl", hash = "sha256:92a11f39e461f5168e2467efd53351cc32b118314b95cc6323c2d044eb299eaf"},
+    {file = "jsii-1.127.0.tar.gz", hash = "sha256:631a13d73265eaa22c0c0804e77fe59c8fcc3af3a94de9923af65380b6ad267a"},
 ]
 
 [package.dependencies]
@@ -1557,4 +1557,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "80018c4e71732fd09c8bd583fd8c850df16d846a7c4cd53e397e774591d51acf"
+content-hash = "2e9c15c0e5dda790d33baf06ce91e08c8a7e71dc982863f2a71ea00901c44777"
