@@ -31,8 +31,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0(@types/node@25.4.0)(esbuild@0.27.2)
       vite-node:
-        specifier: ^5.3.0
-        version: 5.3.0(@types/node@25.4.0)(lightningcss@1.32.0)
+        specifier: ^6.0.0
+        version: 6.0.0(@types/node@25.4.0)(esbuild@0.27.2)
       vitest:
         specifier: ^4.0.18
         version: 4.0.18(@types/node@25.4.0)(lightningcss@1.32.0)
@@ -488,9 +488,9 @@ packages:
     resolution: {integrity: sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==}
     engines: {node: '>=12'}
 
-  cac@6.7.14:
-    resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
-    engines: {node: '>=8'}
+  cac@7.0.0:
+    resolution: {integrity: sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ==}
+    engines: {node: '>=20.19.0'}
 
   chai@6.2.2:
     resolution: {integrity: sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==}
@@ -689,8 +689,8 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  vite-node@5.3.0:
-    resolution: {integrity: sha512-8f20COPYJujc3OKPX6OuyBy3ZIv2det4eRRU4GY1y2MjbeGSUmPjedxg1b72KnTagCofwvZ65ThzjxDW2AtQFQ==}
+  vite-node@6.0.0:
+    resolution: {integrity: sha512-oj4PVrT+pDh6GYf5wfUXkcZyekYS8kKPfLPXVl8qe324Ec6l4K2DUKNadRbZ3LQl0qGcDz+PyOo7ZAh00Y+JjQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -1129,7 +1129,7 @@ snapshots:
 
   assertion-error@2.0.1: {}
 
-  cac@6.7.14: {}
+  cac@7.0.0: {}
 
   chai@6.2.2: {}
 
@@ -1341,18 +1341,19 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  vite-node@5.3.0(@types/node@25.4.0)(lightningcss@1.32.0):
+  vite-node@6.0.0(@types/node@25.4.0)(esbuild@0.27.2):
     dependencies:
-      cac: 6.7.14
+      cac: 7.0.0
       es-module-lexer: 2.0.0
       obug: 2.1.1
       pathe: 2.0.3
-      vite: 7.3.1(@types/node@25.4.0)(lightningcss@1.32.0)
+      vite: 8.0.0(@types/node@25.4.0)(esbuild@0.27.2)
     transitivePeerDependencies:
       - '@types/node'
+      - '@vitejs/devtools'
+      - esbuild
       - jiti
       - less
-      - lightningcss
       - sass
       - sass-embedded
       - stylus
