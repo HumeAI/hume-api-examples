@@ -52,7 +52,7 @@ jobs:
 
       - name: Detect changed folders
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         with:
           filters: |
             evi_py_quickstart:
