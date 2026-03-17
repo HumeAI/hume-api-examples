@@ -719,7 +719,7 @@ wheels = [
 
 [[package]]
 name = "livekit-agents"
-version = "1.4.5"
+version = "1.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -751,9 +751,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "watchfiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9c/06/1a23902ffea2742e60e30f957f3a96766be125892a2573ea1754051b3d8d/livekit_agents-1.4.5.tar.gz", hash = "sha256:19fdf45a2c4d02d86b4ad132b73bf3f58eadb75f79819e5015e6fadfb1263852", size = 2416100, upload-time = "2026-03-11T06:45:03.912Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/77/f0fee1970d900fed1c2708ba5cd47ab1ab0af0e54d98199365867b3284e4/livekit_agents-1.4.6.tar.gz", hash = "sha256:2162c295e5e53808d3dae6887a131e0b9cc22f9cb9f57fc4014004ba57dd52c1", size = 2424432, upload-time = "2026-03-16T19:08:02.279Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/71/ad/a7613ddd5cfb29e015913ae44b804505d41c1d02d19ffeaf2f7015d23664/livekit_agents-1.4.5-py3-none-any.whl", hash = "sha256:aff0b61dbd24b1a100cccca8e2a0056f414b861ce71ba8e4338bc5f89e149f7a", size = 2499369, upload-time = "2026-03-11T06:45:01.772Z" },
+    { url = "https://files.pythonhosted.org/packages/8c/4f/5498ea28e6be4469acea0ec7f3aec199c67937c01f4913922e78cc50dcf4/livekit_agents-1.4.6-py3-none-any.whl", hash = "sha256:e98afa121fbe3e41331a554c41912fad58b7e64948e26c7e72b2cc26d8627c45", size = 2515239, upload-time = "2026-03-16T19:08:00.135Z" },
 ]
 
 [package.optional-dependencies]
@@ -834,42 +834,42 @@ wheels = [
 
 [[package]]
 name = "livekit-plugins-groq"
-version = "1.4.5"
+version = "1.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "livekit" },
     { name = "livekit-agents", extra = ["codecs", "openai"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/03/3c/35692bbd99aec289e824c15660dfc544efeda02efb4277496f50757c8c04/livekit_plugins_groq-1.4.5.tar.gz", hash = "sha256:c76848ea343b8727af5ea9ea31efed738771aaa4a1b30cdd71c5e8e1b8153498", size = 6134, upload-time = "2026-03-11T06:45:58.038Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ac/77/4c9d4127de248fe48abae8357393f0676ef2c038ed643d44b7462e37a5b8/livekit_plugins_groq-1.4.6.tar.gz", hash = "sha256:8b15ae14117c08e2edd738c8c18e7ae5c76948020253a216783b4af8d2a13d27", size = 6096, upload-time = "2026-03-16T19:08:42.846Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c5/a8/22a46d8cd293afc9f110d566a1ba62915e53f0147fe9a69c8b999a142797/livekit_plugins_groq-1.4.5-py3-none-any.whl", hash = "sha256:b040fe4bb7c03dbe1beb593debacf475b3a4daf2f74a9b7f5b29245df31828c2", size = 7363, upload-time = "2026-03-11T06:45:56.501Z" },
+    { url = "https://files.pythonhosted.org/packages/dc/9c/ff32230d8a76228ef0689961a63586fef2793deb07b17874d8aa2256298f/livekit_plugins_groq-1.4.6-py3-none-any.whl", hash = "sha256:c5b90085e2fac00e3b05d7d7dcd2dccd9c6958910bc5f694f6bb57282eced90a", size = 7324, upload-time = "2026-03-16T19:08:42.024Z" },
 ]
 
 [[package]]
 name = "livekit-plugins-hume"
-version = "1.4.5"
+version = "1.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "livekit-agents" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3b/4a/eccdcd518995e94272145fde9bbc26f017e7f3d4d351bfe6c4bfa70e5e4b/livekit_plugins_hume-1.4.5.tar.gz", hash = "sha256:2a32e65cc00ac5f25734a2b813fa45dba59e7c6cb4fdc58e034fbe897be5aff4", size = 6326, upload-time = "2026-03-11T06:46:01.739Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/67/68/d1c5bff5961bc96ad4d1b40ce55f6be8348473f8d82f58aeb1f67bb57621/livekit_plugins_hume-1.4.6.tar.gz", hash = "sha256:1d039ef28bf021290750c1d3da3fde78818b5032b676e413f4509a124a5af85d", size = 6326, upload-time = "2026-03-16T19:08:45.847Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/0d/caeb2239ec14f12ca3524a387d494597522f23b9e0983bb9ffd2df8c0d24/livekit_plugins_hume-1.4.5-py3-none-any.whl", hash = "sha256:e3fb23c2249307840d9d786e06cbeda62e4312227ef27bad93ac3f64f64ff3b5", size = 6803, upload-time = "2026-03-11T06:46:00.592Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/b5/8a6b61685ec7e5372c7cd6c9a34aa9621fffecd32855451193fd46733d1d/livekit_plugins_hume-1.4.6-py3-none-any.whl", hash = "sha256:12e7192900190edc75988a45e4c7a4e01db8890bc31e66b5a5de70d8573e2db2", size = 6805, upload-time = "2026-03-16T19:08:44.719Z" },
 ]
 
 [[package]]
 name = "livekit-plugins-openai"
-version = "1.4.5"
+version = "1.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "livekit-agents", extra = ["codecs", "images"] },
     { name = "openai", extra = ["realtime"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3b/9f/d280c020ff52b632b56fa7c580bc19debb7d5a498fa91d07b78a839133a8/livekit_plugins_openai-1.4.5.tar.gz", hash = "sha256:80588ec801e46b40c3af73b7972ba3ebdb6b228b78353fe08d9afcb8c6bf52a5", size = 51909, upload-time = "2026-03-11T06:46:31.12Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8a/3c/f6d61d6f4af202e828eba866af6d723ac40000a69b32f7a2a28e074bf53a/livekit_plugins_openai-1.4.6.tar.gz", hash = "sha256:706168d8a702642369ee9018bb5ba5dd630b01658de935e8a3d132edb1745ab7", size = 52061, upload-time = "2026-03-16T19:09:08.447Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8b/15/dbb1aa66c6f17cf53ad3e302576d52e33e555e0f78915d85582a8fc2432d/livekit_plugins_openai-1.4.5-py3-none-any.whl", hash = "sha256:308e798d18a40df33724e5e8fb623ee7d0ace9b735af73d02e7fc9d880428725", size = 60047, upload-time = "2026-03-11T06:46:29.486Z" },
+    { url = "https://files.pythonhosted.org/packages/a2/38/211543a93399bbd858dd4a99215d47e559833a73b78837bfa179e1c05fa0/livekit_plugins_openai-1.4.6-py3-none-any.whl", hash = "sha256:0bc57ef572d19212a8e30528fccee47472117052ffceb59a3330b8833a935806", size = 60211, upload-time = "2026-03-16T19:09:07.436Z" },
 ]
 
 [[package]]
