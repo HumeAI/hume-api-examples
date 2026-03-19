@@ -30,7 +30,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "25.5.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
