@@ -19,8 +19,8 @@ importers:
         specifier: ^25.5.0
         version: 25.5.0
       typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+        specifier: ^6.0.2
+        version: 6.0.2
 
 packages:
 
@@ -35,8 +35,8 @@ packages:
     resolution: {integrity: sha512-p0eQ70EZWiseg/XzQFe4gPxPQgYmmWso/5ar1QyPWm2E5dAy6gx5oC24lxZjhEtMnwiOB+9ctU6OQJpHg1qKBQ==}
     engines: {node: '>=18.0.0'}
 
-  typescript@5.9.3:
-    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+  typescript@6.0.2:
+    resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -79,7 +79,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  typescript@5.9.3: {}
+  typescript@6.0.2: {}
 
   undici-types@7.18.2: {}
 
