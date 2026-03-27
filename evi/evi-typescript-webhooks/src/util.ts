@@ -23,6 +23,23 @@ function getHumeApiKey(): string {
 }
 
 /**
+ * Retrieves the HUME_WEBHOOK_SIGNING_KEY from environment variables.
+ *
+ * This key is used to verify the HMAC signature on incoming webhook requests.
+ * It can be provisioned via the Hume API.
+ *
+ * @returns The HUME_WEBHOOK_SIGNING_KEY as a string.
+ * @throws If the HUME_WEBHOOK_SIGNING_KEY environment variable is not set.
+ */
+function getWebhookSigningKey(): string {
+  const signingKey = process.env.HUME_WEBHOOK_SIGNING_KEY;
+  if (!signingKey) {
+    throw new Error("HUME_WEBHOOK_SIGNING_KEY is not set in the environment variables.");
+  }
+  return signingKey;
+}
+
+/**
  * Fetches all chat events for a given chat ID from the Hume API.
  *
  * This function utilizes the HumeClient to retrieve all chat events associated with the specified chat ID.
@@ -78,7 +95,7 @@ function generateTranscript(chatEvents: Hume.empathicVoice.ReturnChatEvent[]): s
 async function saveTranscriptToFile(transcript: string, chatId: string): Promise<void> {
   const directory = path.join(__dirname, 'transcripts');
   const transcriptFileName = path.join(directory, `transcript_${chatId}.txt`);
-  
+
   try {
     // Ensure the directory exists; create it if not
     await fs.mkdir(directory, { recursive: true });
@@ -116,13 +133,13 @@ export function validateHmacSignature(
     throw new Error('Missing signature header');
   }
 
-  // Retrieve the API key from environment variables
-  const apiKey = getHumeApiKey();
+  // Retrieve the webhook signing key from environment variables
+  const signingKey = getWebhookSigningKey();
 
   // Construct the message to be hashed by concatenating the payload and the timestamp
   const message = `${payload}.${timestamp}`;
   const expectedSig = crypto
-    .createHmac('sha256', apiKey)
+    .createHmac('sha256', signingKey)
     .update(message)
     .digest('hex');
 
