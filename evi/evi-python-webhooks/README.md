@@ -45,10 +45,12 @@ If you need to update or install Poetry, visit the [official Poetry website](htt
 2. Set up API credentials:
 
    - **Obtain Your API Key**: Follow the instructions in the [Hume documentation](https://dev.hume.ai/docs/introduction/api-key) to acquire your API key.
-   - **Create a `.env` File**: In the project's root directory, create a `.env` file if it doesn't exist. Add your API key:
+   - **Obtain Your Webhook Signing Key**: Provision a dedicated webhook signing key from the [Hume Developer Portal](https://app.hume.ai/developers). This key is used to verify the HMAC signature on incoming webhook requests. While HMAC verification using your API key is still supported, we recommend adopting the dedicated signing key.
+   - **Create a `.env` File**: In the project's root directory, create a `.env` file if it doesn't exist. Add your API key and webhook signing key:
 
       ```sh
       HUME_API_KEY="<YOUR_API_KEY>"
+      HUME_WEBHOOK_SIGNING_KEY="<YOUR_WEBHOOK_SIGNING_KEY>"
       ```
 
    - If you are testing the `tool_call` webhook event, add your Geocoding API key to the `.env` file. You can obtain it for free from [geocode.maps.co](https://geocode.maps.co/).
