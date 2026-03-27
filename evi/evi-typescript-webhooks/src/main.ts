@@ -1,11 +1,10 @@
 import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
 import { HumeClient, serialization as HumeSerialization } from 'hume';
-import { 
-  fetchWeatherTool, 
-  getChatTranscript, 
-  validateHmacSignature, 
-  validateTimestamp 
+import {
+  fetchWeatherTool,
+  getChatTranscript,
+  validateWebhookHeaders,
 } from './util';
 
 const { WebhookEvent } = HumeSerialization.empathicVoice;
@@ -27,8 +26,7 @@ app.post(
 
     // Validate the request headers to ensure security
     try {
-      validateHmacSignature(payloadStr, req.headers);
-      validateTimestamp(req.headers);
+      validateWebhookHeaders(payloadStr, req.headers);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       console.error(`[Header Validation] Failed: ${errorMessage}`);
@@ -58,7 +56,7 @@ app.post(
         case 'chat_ended':
           console.info("Processing chat_ended event:", event);
           // Fetch Chat events, construct a Chat transcript, and write transcript to a file
-          await getChatTranscript(event.chatId);
+          await getChatTranscript(hume, event.chatId);
           // Add additional chat_ended processing logic here
           break;
 
