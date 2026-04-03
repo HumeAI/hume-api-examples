@@ -12,8 +12,8 @@ importers:
         specifier: ^2.0.27
         version: 2.0.27(zod@3.25.76)
       ai:
-        specifier: ^6.0.143
-        version: 6.0.143(zod@3.25.76)
+        specifier: ^6.0.145
+        version: 6.0.145(zod@3.25.76)
       hume:
         specifier: ^0.15.15
         version: 0.15.15
@@ -48,8 +48,8 @@ importers:
 
 packages:
 
-  '@ai-sdk/gateway@3.0.85':
-    resolution: {integrity: sha512-oPvs3bYnxndBY/O0gFSFuc5aA/QKCJbk/CaJaRnKgA/ZPH17jeVvEtiUBE6/N8hWhK7XgX53NFI7F3CGmDfm1g==}
+  '@ai-sdk/gateway@3.0.87':
+    resolution: {integrity: sha512-knLx/VY0u5KAZGgrTorWCTbEnwK3oCCdm8yjxVQm3s14erqVo60SP08dsFWm+xNULPTusftQGVD/l0/hx5QOHg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -400,8 +400,8 @@ packages:
     resolution: {integrity: sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w==}
     engines: {node: '>= 20'}
 
-  ai@6.0.143:
-    resolution: {integrity: sha512-wVDb7StQ1EPQ9GDAOmi1AsuAXQRSii+zZT2sFK+MCisH4vV7XNEAdzXL+sKsUAFhhq+EtVFWWlB4mCk4hcoIMw==}
+  ai@6.0.145:
+    resolution: {integrity: sha512-RbMiFsPZxE4uf5Hhs8rscp5bIwvjQOrqS5dQGWNVRHGM947QZgkKX7Ih5hto8MK/7xkbtneoOZruZ8oSLO828A==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -633,10 +633,10 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/gateway@3.0.85(zod@3.25.76)':
+  '@ai-sdk/gateway@3.0.87(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.8
-      '@ai-sdk/provider-utils': 4.0.21(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.22(zod@3.25.76)
       '@vercel/oidc': 3.1.0
       zod: 3.25.76
 
@@ -904,11 +904,11 @@ snapshots:
 
   '@vercel/oidc@3.1.0': {}
 
-  ai@6.0.143(zod@3.25.76):
+  ai@6.0.145(zod@3.25.76):
     dependencies:
-      '@ai-sdk/gateway': 3.0.85(zod@3.25.76)
+      '@ai-sdk/gateway': 3.0.87(zod@3.25.76)
       '@ai-sdk/provider': 3.0.8
-      '@ai-sdk/provider-utils': 4.0.21(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.22(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
       zod: 3.25.76
 
