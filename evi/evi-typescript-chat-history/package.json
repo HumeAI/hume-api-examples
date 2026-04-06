@@ -16,7 +16,7 @@
     "hume": "^0.15.15"
   },
   "devDependencies": {
-    "@types/node": "^25.5.1",
+    "@types/node": "^25.5.2",
     "typescript": "^6.0.2"
   }
 }
