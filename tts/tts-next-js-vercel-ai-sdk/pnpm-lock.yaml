@@ -32,7 +32,7 @@ importers:
         version: 4.2.2
       '@types/node':
         specifier: ^25
-        version: 25.5.1
+        version: 25.5.2
       '@types/react':
         specifier: ^19
         version: 19.2.14
@@ -56,12 +56,6 @@ packages:
 
   '@ai-sdk/hume@2.0.27':
     resolution: {integrity: sha512-tgzuPNlS0PcZnxf5hxNiv0zWbwGjSig5Yts4wxZXSnNAkuX57jw+GTNB+7MvDDPgC1PcZhIflbL/QHnGWYFqFA==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/provider-utils@4.0.21':
-    resolution: {integrity: sha512-MtFUYI1/8mgDvRmaBDjbLJPFFrMG777AvSgyIFQtZHIMzm88R/12vYBBpnk7pfiWLFE1DSZzY4WDYzGbKAcmiw==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -385,8 +379,8 @@ packages:
   '@tailwindcss/postcss@4.2.2':
     resolution: {integrity: sha512-n4goKQbW8RVXIbNKRB/45LzyUqN451deQK0nzIeauVEqjlI49slUlgKYJM2QyUzap/PcpnS7kzSUmPb1sCRvYQ==}
 
-  '@types/node@25.5.1':
-    resolution: {integrity: sha512-lgrR3HRNQdTEeeXBnLURFO4JIIbpcVcMlLM9IG0jsNRTRNSbMkm9S2hyhxhnokke1NM25Dr9QghgeB5PQKolrw==}
+  '@types/node@25.5.2':
+    resolution: {integrity: sha512-tO4ZIRKNC+MDWV4qKVZe3Ql/woTnmHDr5JD8UI5hn2pwBrHEwOEMZK7WlNb5RKB6EoJ02gwmQS9OrjuFnZYdpg==}
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -646,13 +640,6 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.22(zod@3.25.76)
       zod: 3.25.76
 
-  '@ai-sdk/provider-utils@4.0.21(zod@3.25.76)':
-    dependencies:
-      '@ai-sdk/provider': 3.0.8
-      '@standard-schema/spec': 1.1.0
-      eventsource-parser: 3.0.6
-      zod: 3.25.76
-
   '@ai-sdk/provider-utils@4.0.22(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.8
@@ -890,7 +877,7 @@ snapshots:
       postcss: 8.5.8
       tailwindcss: 4.2.2
 
-  '@types/node@25.5.1':
+  '@types/node@25.5.2':
     dependencies:
       undici-types: 7.18.2
 
