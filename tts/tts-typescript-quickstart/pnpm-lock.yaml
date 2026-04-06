@@ -28,14 +28,14 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
       vite:
-        specifier: ^8.0.3
-        version: 8.0.3(@types/node@25.5.1)(esbuild@0.27.2)
+        specifier: ^8.0.4
+        version: 8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2)
       vite-node:
         specifier: ^6.0.0
-        version: 6.0.0(@types/node@25.5.1)(esbuild@0.27.2)
+        version: 6.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2)
       vitest:
         specifier: ^4.1.2
-        version: 4.1.2(@types/node@25.5.1)(vite@8.0.3(@types/node@25.5.1)(esbuild@0.27.2))
+        version: 4.1.2(@types/node@25.5.1)(vite@8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2))
 
 packages:
 
@@ -207,8 +207,11 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
-  '@napi-rs/wasm-runtime@1.1.1':
-    resolution: {integrity: sha512-p64ah1M1ld8xjWv3qbvFwHiFVWrq1yFvV4f7w+mzaqiR4IlSgkqhcRdHwsGgomwzBH51sRY4NEowLxnaBjcW/A==}
+  '@napi-rs/wasm-runtime@1.1.2':
+    resolution: {integrity: sha512-sNXv5oLJ7ob93xkZ1XnxisYhGYXfaG9f65/ZgYuAu3qt7b3NadcOEhLvx28hv31PgX8SZJRYrAIPQilQmFpLVw==}
+    peerDependencies:
+      '@emnapi/core': ^1.7.1
+      '@emnapi/runtime': ^1.7.1
 
   '@oxc-project/types@0.122.0':
     resolution: {integrity: sha512-oLAl5kBpV4w69UtFZ9xqcmTi+GENWOcPF7FCrczTiBbmC0ibXxCwyvZGbO39rCVEuLGAZM84DH0pUIyyv/YJzA==}
@@ -560,14 +563,14 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  vite@8.0.3:
-    resolution: {integrity: sha512-B9ifbFudT1TFhfltfaIPgjo9Z3mDynBTJSUYxTjOQruf/zHH+ezCQKcoqO+h7a9Pw9Nm/OtlXAiGT1axBgwqrQ==}
+  vite@8.0.4:
+    resolution: {integrity: sha512-baBr4jUVSLJ0RPyZ2nK0zS2+W8hNHbM4hEzfvllukmRPVS3xDG5ATTNtbRXrKIOE2b8/FsPWJAOnuIxcs7g3cw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
       '@types/node': ^20.19.0 || >=22.12.0
       '@vitejs/devtools': ^0.1.0
-      esbuild: ^0.27.0
+      esbuild: ^0.27.0 || ^0.28.0
       jiti: '>=1.21.0'
       less: ^4.0.0
       sass: ^1.70.0
@@ -756,7 +759,7 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@napi-rs/wasm-runtime@1.1.1':
+  '@napi-rs/wasm-runtime@1.1.2(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)':
     dependencies:
       '@emnapi/core': 1.9.1
       '@emnapi/runtime': 1.9.1
@@ -801,9 +804,12 @@ snapshots:
   '@rolldown/binding-openharmony-arm64@1.0.0-rc.12':
     optional: true
 
-  '@rolldown/binding-wasm32-wasi@1.0.0-rc.12':
+  '@rolldown/binding-wasm32-wasi@1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.1.1
+      '@napi-rs/wasm-runtime': 1.1.2(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.0-rc.12':
@@ -847,13 +853,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.2(vite@8.0.3(@types/node@25.5.1)(esbuild@0.27.2))':
+  '@vitest/mocker@4.1.2(vite@8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2))':
     dependencies:
       '@vitest/spy': 4.1.2
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.0.3(@types/node@25.5.1)(esbuild@0.27.2)
+      vite: 8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2)
 
   '@vitest/pretty-format@4.1.2':
     dependencies:
@@ -1014,7 +1020,7 @@ snapshots:
 
   prettier@3.8.1: {}
 
-  rolldown@1.0.0-rc.12:
+  rolldown@1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1):
     dependencies:
       '@oxc-project/types': 0.122.0
       '@rolldown/pluginutils': 1.0.0-rc.12
@@ -1031,9 +1037,12 @@ snapshots:
       '@rolldown/binding-linux-x64-gnu': 1.0.0-rc.12
       '@rolldown/binding-linux-x64-musl': 1.0.0-rc.12
       '@rolldown/binding-openharmony-arm64': 1.0.0-rc.12
-      '@rolldown/binding-wasm32-wasi': 1.0.0-rc.12
+      '@rolldown/binding-wasm32-wasi': 1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       '@rolldown/binding-win32-arm64-msvc': 1.0.0-rc.12
       '@rolldown/binding-win32-x64-msvc': 1.0.0-rc.12
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
 
   siginfo@2.0.0: {}
 
@@ -1063,14 +1072,16 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  vite-node@6.0.0(@types/node@25.5.1)(esbuild@0.27.2):
+  vite-node@6.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2):
     dependencies:
       cac: 7.0.0
       es-module-lexer: 2.0.0
       obug: 2.1.1
       pathe: 2.0.3
-      vite: 8.0.3(@types/node@25.5.1)(esbuild@0.27.2)
+      vite: 8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2)
     transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
       - '@types/node'
       - '@vitejs/devtools'
       - esbuild
@@ -1084,22 +1095,25 @@ snapshots:
       - tsx
       - yaml
 
-  vite@8.0.3(@types/node@25.5.1)(esbuild@0.27.2):
+  vite@8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
       postcss: 8.5.8
-      rolldown: 1.0.0-rc.12
+      rolldown: 1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 25.5.1
       esbuild: 0.27.2
       fsevents: 2.3.3
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
 
-  vitest@4.1.2(@types/node@25.5.1)(vite@8.0.3(@types/node@25.5.1)(esbuild@0.27.2)):
+  vitest@4.1.2(@types/node@25.5.1)(vite@8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2)):
     dependencies:
       '@vitest/expect': 4.1.2
-      '@vitest/mocker': 4.1.2(vite@8.0.3(@types/node@25.5.1)(esbuild@0.27.2))
+      '@vitest/mocker': 4.1.2(vite@8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2))
       '@vitest/pretty-format': 4.1.2
       '@vitest/runner': 4.1.2
       '@vitest/snapshot': 4.1.2
@@ -1116,7 +1130,7 @@ snapshots:
       tinyexec: 1.0.4
       tinyglobby: 0.2.15
       tinyrainbow: 3.1.0
-      vite: 8.0.3(@types/node@25.5.1)(esbuild@0.27.2)
+      vite: 8.0.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.1)(esbuild@0.27.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.5.1
