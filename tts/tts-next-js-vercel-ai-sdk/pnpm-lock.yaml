@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ai-sdk/hume':
-        specifier: ^2.0.27
-        version: 2.0.27(zod@3.25.76)
+        specifier: ^2.0.28
+        version: 2.0.28(zod@3.25.76)
       ai:
         specifier: ^6.0.149
         version: 6.0.149(zod@3.25.76)
@@ -54,8 +54,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/hume@2.0.27':
-    resolution: {integrity: sha512-tgzuPNlS0PcZnxf5hxNiv0zWbwGjSig5Yts4wxZXSnNAkuX57jw+GTNB+7MvDDPgC1PcZhIflbL/QHnGWYFqFA==}
+  '@ai-sdk/hume@2.0.28':
+    resolution: {integrity: sha512-GLpUtXPm8d4k581k0ZoK8j9Qo1MEcXM6cEm4t2jHTpdT5EGaZrxyX00jSgGOekAOhAC97PNSh02bZu/9o+MMoQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -640,10 +640,10 @@ snapshots:
       '@vercel/oidc': 3.1.0
       zod: 3.25.76
 
-  '@ai-sdk/hume@2.0.27(zod@3.25.76)':
+  '@ai-sdk/hume@2.0.28(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.8
-      '@ai-sdk/provider-utils': 4.0.22(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.23(zod@3.25.76)
       zod: 3.25.76
 
   '@ai-sdk/provider-utils@4.0.22(zod@3.25.76)':
