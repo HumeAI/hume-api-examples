@@ -62,7 +62,6 @@ var sessionSettings = new SessionSettings
 {
     Audio = new AudioConfiguration
     {
-        Encoding = new Encoding(),
         SampleRate = sampleRate,
         Channels = channels
     }
