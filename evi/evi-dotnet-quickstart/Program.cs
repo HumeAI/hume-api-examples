@@ -62,7 +62,7 @@ var sessionSettings = new SessionSettings
 {
     Audio = new AudioConfiguration
     {
-        Encoding = "linear16",
+        Encoding = new Encoding(),
         SampleRate = sampleRate,
         Channels = channels
     }
@@ -89,7 +89,7 @@ Console.WriteLine("Done");
 /// <summary>
 /// Reads a PCM file and streams its audio data to EVI in real-time chunks.
 /// </summary>
-static async Task TransmitTestAudio(ChatApi chatApi, string filePath, int sampleRate, int channels)
+static async Task TransmitTestAudio(IChatApi chatApi, string filePath, int sampleRate, int channels)
 {
     const int chunkDurationMs = 10;
     const int bytesPerSample = 2; // 16-bit audio
@@ -128,7 +128,7 @@ static byte[][] SplitAudioIntoChunks(byte[] audioData, int bytesPerChunk)
     return chunks.ToArray();
 }
 
-static async Task SendAudioChunksAsync(ChatApi chatApi, byte[][] chunks, int chunkDurationMs)
+static async Task SendAudioChunksAsync(IChatApi chatApi, byte[][] chunks, int chunkDurationMs)
 {
     Console.WriteLine($"Sending {chunks.Length} audio chunks...");
 
