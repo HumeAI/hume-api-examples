@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       hume:
-        specifier: ^0.15.15
-        version: 0.15.15
+        specifier: ^0.15.16
+        version: 0.15.16
     devDependencies:
       '@types/node':
         specifier: ^25.5.0
@@ -394,8 +394,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.15:
-    resolution: {integrity: sha512-p0eQ70EZWiseg/XzQFe4gPxPQgYmmWso/5ar1QyPWm2E5dAy6gx5oC24lxZjhEtMnwiOB+9ctU6OQJpHg1qKBQ==}
+  hume@0.15.16:
+    resolution: {integrity: sha512-0LXz09ElrNwdA71GLT6R5RTTN1QRbxJp6PwuHfuQ1sP1kDmbC8GSTv/N/FFEoI/6QhxaP3xv9DDH+Ro+kxENiQ==}
     engines: {node: '>=18.0.0'}
 
   lightningcss-android-arm64@1.32.0:
@@ -916,7 +916,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.15:
+  hume@0.15.16:
     dependencies:
       uuid: 9.0.1
       ws: 8.19.0
