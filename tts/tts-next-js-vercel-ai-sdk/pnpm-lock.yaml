@@ -15,8 +15,8 @@ importers:
         specifier: ^6.0.154
         version: 6.0.154(zod@3.25.76)
       hume:
-        specifier: ^0.15.15
-        version: 0.15.15
+        specifier: ^0.15.16
+        version: 0.15.16
       next:
         specifier: 16.2.3
         version: 16.2.3(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.5))(react@19.2.5)
@@ -429,8 +429,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  hume@0.15.15:
-    resolution: {integrity: sha512-p0eQ70EZWiseg/XzQFe4gPxPQgYmmWso/5ar1QyPWm2E5dAy6gx5oC24lxZjhEtMnwiOB+9ctU6OQJpHg1qKBQ==}
+  hume@0.15.16:
+    resolution: {integrity: sha512-0LXz09ElrNwdA71GLT6R5RTTN1QRbxJp6PwuHfuQ1sP1kDmbC8GSTv/N/FFEoI/6QhxaP3xv9DDH+Ro+kxENiQ==}
     engines: {node: '>=18.0.0'}
 
   jiti@2.6.1:
@@ -610,8 +610,8 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  ws@8.19.0:
-    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
+  ws@8.20.0:
+    resolution: {integrity: sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -918,10 +918,10 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  hume@0.15.15:
+  hume@0.15.16:
     dependencies:
       uuid: 9.0.1
-      ws: 8.19.0
+      ws: 8.20.0
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -1088,6 +1088,6 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  ws@8.19.0: {}
+  ws@8.20.0: {}
 
   zod@3.25.76: {}
