@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@humeai/voice-react':
-        specifier: ^0.3.0-beta.2
-        version: 0.3.0-beta.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: ^0.3.0-beta.3
+        version: 0.3.0-beta.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@radix-ui/react-slot':
         specifier: ^1.2.4
         version: 1.2.4(@types/react@19.2.14)(react@19.2.5)
@@ -231,8 +231,8 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
-  '@humeai/voice-react@0.3.0-beta.2':
-    resolution: {integrity: sha512-XnwTamDaTzBs9vxT7CkIno9iyjjgHEh5lgPa9QYYk/tHIB/SeN46w+GJsgTQH37k9rBFV+HdNOi8e0Q7PHydmg==}
+  '@humeai/voice-react@0.3.0-beta.3':
+    resolution: {integrity: sha512-cwXUJpILQ+1zHCkvjjZeqBhI5+9kK3SoTn/dydgtcm9xKrsELgzUSvl1ro/uzay5cfph0bDm6cw2MdT9YBSkRQ==}
     peerDependencies:
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
@@ -1388,10 +1388,6 @@ packages:
   hermes-parser@0.25.1:
     resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
 
-  hume@0.15.15:
-    resolution: {integrity: sha512-p0eQ70EZWiseg/XzQFe4gPxPQgYmmWso/5ar1QyPWm2E5dAy6gx5oC24lxZjhEtMnwiOB+9ctU6OQJpHg1qKBQ==}
-    engines: {node: '>=18.0.0'}
-
   hume@0.15.16:
     resolution: {integrity: sha512-0LXz09ElrNwdA71GLT6R5RTTN1QRbxJp6PwuHfuQ1sP1kDmbC8GSTv/N/FFEoI/6QhxaP3xv9DDH+Ro+kxENiQ==}
     engines: {node: '>=18.0.0'}
@@ -2362,10 +2358,10 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@humeai/voice-react@0.3.0-beta.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@humeai/voice-react@0.3.0-beta.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       date-fns: 3.6.0
-      hume: 0.15.15
+      hume: 0.15.16
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
       type-fest: 4.41.0
@@ -3582,15 +3578,6 @@ snapshots:
   hermes-parser@0.25.1:
     dependencies:
       hermes-estree: 0.25.1
-
-  hume@0.15.15:
-    dependencies:
-      uuid: 9.0.1
-      ws: 8.20.0
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   hume@0.15.16:
     dependencies:
