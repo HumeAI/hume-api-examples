@@ -7,7 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "livekit-agents[hume]>=1.5.6",
     "livekit-plugins-anthropic>=1.5.6",
-    "livekit-plugins-groq>=1.5.5",
+    "livekit-plugins-groq>=1.5.6",
     "livekit-plugins-silero>=1.5.6",
     "python-dotenv>=1.1.0",
     "simpleaudio>=1.0.4",
