@@ -44,10 +44,10 @@ importers:
     devDependencies:
       autoprefixer:
         specifier: ^10.4.13
-        version: 10.4.13(postcss@8.4.31)
+        version: 10.4.13(postcss@8.5.10)
       postcss:
-        specifier: ^8.4.31
-        version: 8.4.31
+        specifier: ^8.5.10
+        version: 8.5.10
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
@@ -56,7 +56,7 @@ importers:
         version: 0.2.7(prettier@2.8.8)
       tailwindcss:
         specifier: ^3.2.1
-        version: 3.2.1(postcss@8.4.31)
+        version: 3.2.1(postcss@8.5.10)
 
 packages:
 
@@ -525,8 +525,8 @@ packages:
       react: '*'
       react-dom: '*'
 
-  nanoid@3.3.7:
-    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
+  nanoid@3.3.11:
+    resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -571,6 +571,9 @@ packages:
 
   picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
+
+  picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -619,6 +622,10 @@ packages:
 
   postcss@8.4.31:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.10:
+    resolution: {integrity: sha512-pMMHxBOZKFU6HgAZ4eyGnwXF/EvPGGqUr0MnZ5+99485wwW41kW91A4LOGxSHhgugZmSChL5AlElNdwlNgcnLQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   prettier-plugin-tailwindcss@0.2.7:
@@ -753,8 +760,8 @@ packages:
     resolution: {integrity: sha512-Ou9I5Ft9WNcCbXrU9cMgPBcCK8LiwLqcbywW3t4oDV37n1pzpuNLsYiAV8eODnjbtQlSDwZ2cUEeQz4E54Hltg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
 
-  source-map-js@1.0.2:
-    resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
+  source-map-js@1.2.1:
+    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
   source-map@0.5.6:
@@ -1040,14 +1047,14 @@ snapshots:
 
   arg@5.0.2: {}
 
-  autoprefixer@10.4.13(postcss@8.4.31):
+  autoprefixer@10.4.13(postcss@8.5.10):
     dependencies:
       browserslist: 4.21.4
       caniuse-lite: 1.0.30001579
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
-      postcss: 8.4.31
+      postcss: 8.5.10
       postcss-value-parser: 4.2.0
 
   baseline-browser-mapping@2.10.17: {}
@@ -1235,7 +1242,7 @@ snapshots:
       stacktrace-js: 2.0.2
       stylis: 4.1.4
 
-  nanoid@3.3.7: {}
+  nanoid@3.3.11: {}
 
   next@16.2.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
@@ -1273,32 +1280,34 @@ snapshots:
 
   picocolors@1.0.0: {}
 
+  picocolors@1.1.1: {}
+
   picomatch@2.3.1: {}
 
   pify@2.3.0: {}
 
-  postcss-import@14.1.0(postcss@8.4.31):
+  postcss-import@14.1.0(postcss@8.5.10):
     dependencies:
-      postcss: 8.4.31
+      postcss: 8.5.10
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.1
 
-  postcss-js@4.0.0(postcss@8.4.31):
+  postcss-js@4.0.0(postcss@8.5.10):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.4.31
+      postcss: 8.5.10
 
-  postcss-load-config@3.1.4(postcss@8.4.31):
+  postcss-load-config@3.1.4(postcss@8.5.10):
     dependencies:
       lilconfig: 2.0.6
       yaml: 1.10.2
     optionalDependencies:
-      postcss: 8.4.31
+      postcss: 8.5.10
 
-  postcss-nested@6.0.0(postcss@8.4.31):
+  postcss-nested@6.0.0(postcss@8.5.10):
     dependencies:
-      postcss: 8.4.31
+      postcss: 8.5.10
       postcss-selector-parser: 6.0.10
 
   postcss-selector-parser@6.0.10:
@@ -1310,9 +1319,15 @@ snapshots:
 
   postcss@8.4.31:
     dependencies:
-      nanoid: 3.3.7
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.10:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
 
   prettier-plugin-tailwindcss@0.2.7(prettier@2.8.8):
     dependencies:
@@ -1429,7 +1444,7 @@ snapshots:
       '@img/sharp-win32-x64': 0.34.5
     optional: true
 
-  source-map-js@1.0.2: {}
+  source-map-js@1.2.1: {}
 
   source-map@0.5.6: {}
 
@@ -1465,7 +1480,7 @@ snapshots:
 
   tailwind-merge@1.12.0: {}
 
-  tailwindcss@3.2.1(postcss@8.4.31):
+  tailwindcss@3.2.1(postcss@8.5.10):
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
@@ -1481,11 +1496,11 @@ snapshots:
       normalize-path: 3.0.0
       object-hash: 3.0.0
       picocolors: 1.0.0
-      postcss: 8.4.31
-      postcss-import: 14.1.0(postcss@8.4.31)
-      postcss-js: 4.0.0(postcss@8.4.31)
-      postcss-load-config: 3.1.4(postcss@8.4.31)
-      postcss-nested: 6.0.0(postcss@8.4.31)
+      postcss: 8.5.10
+      postcss-import: 14.1.0(postcss@8.5.10)
+      postcss-js: 4.0.0(postcss@8.5.10)
+      postcss-load-config: 3.1.4(postcss@8.5.10)
+      postcss-nested: 6.0.0(postcss@8.5.10)
       postcss-selector-parser: 6.0.10
       postcss-value-parser: 4.2.0
       quick-lru: 5.1.1
@@ -1511,7 +1526,7 @@ snapshots:
     dependencies:
       browserslist: 4.21.4
       escalade: 3.1.1
-      picocolors: 1.0.0
+      picocolors: 1.1.1
 
   util-deprecate@1.0.2: {}
 
