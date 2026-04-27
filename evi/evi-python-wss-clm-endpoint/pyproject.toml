@@ -9,7 +9,7 @@ readme = "README.md"
 fastapi = ">=0.135.3,<0.137.0"
 modal = "^1.2.1"
 python = "^3.11"
-aws-cdk-lib = "2.250.0"
+aws-cdk-lib = "2.251.0"
 constructs = ">=10.0.0,<11.0.0"
 
 
