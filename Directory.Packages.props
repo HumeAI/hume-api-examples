@@ -5,7 +5,7 @@
   <ItemGroup>
     <!-- Shared across evi and tts .NET quickstarts; Dependabot updates Hume here -->
     <PackageVersion Include="Hume" Version="0.2.7" />
-    <PackageVersion Include="DotNetEnv" Version="3.1.1" />
+    <PackageVersion Include="DotNetEnv" Version="3.2.0" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
     <PackageVersion Include="OneOf.Extended" Version="3.0.271" />
     <PackageVersion Include="System.Text.Json" Version="10.0.7" />
