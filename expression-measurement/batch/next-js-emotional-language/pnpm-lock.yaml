@@ -28,7 +28,7 @@ importers:
         version: 18.0.11
       autoprefixer:
         specifier: 10.4.14
-        version: 10.4.14(postcss@8.4.31)
+        version: 10.4.14(postcss@8.5.10)
       chroma-js:
         specifier: ^2.4.2
         version: 2.4.2
@@ -51,8 +51,8 @@ importers:
         specifier: 16.2.3
         version: 16.2.3(@babel/core@7.28.6)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       postcss:
-        specifier: 8.4.31
-        version: 8.4.31
+        specifier: 8.5.10
+        version: 8.5.10
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -73,10 +73,10 @@ importers:
         version: 1.12.0
       tailwindcss:
         specifier: 3.3.1
-        version: 3.3.1(postcss@8.4.31)
+        version: 3.3.1(postcss@8.5.10)
       tailwindcss-animate:
         specifier: ^1.0.5
-        version: 1.0.5(tailwindcss@3.3.1(postcss@8.4.31))
+        version: 1.0.5(tailwindcss@3.3.1(postcss@8.5.10))
       ts-pattern:
         specifier: ^4.2.2
         version: 4.2.2
@@ -1604,8 +1604,8 @@ packages:
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
 
-  nanoid@3.3.6:
-    resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
+  nanoid@3.3.11:
+    resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -1787,6 +1787,10 @@ packages:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postcss@8.5.10:
+    resolution: {integrity: sha512-pMMHxBOZKFU6HgAZ4eyGnwXF/EvPGGqUr0MnZ5+99485wwW41kW91A4LOGxSHhgugZmSChL5AlElNdwlNgcnLQ==}
+    engines: {node: ^10 || ^12 || >=14}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -1940,8 +1944,8 @@ packages:
     resolution: {integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==}
     engines: {node: '>= 0.4'}
 
-  source-map-js@1.0.2:
-    resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
+  source-map-js@1.2.1:
+    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
   stable-hash@0.0.5:
@@ -2982,14 +2986,14 @@ snapshots:
 
   async-function@1.0.0: {}
 
-  autoprefixer@10.4.14(postcss@8.4.31):
+  autoprefixer@10.4.14(postcss@8.5.10):
     dependencies:
       browserslist: 4.28.1
       caniuse-lite: 1.0.30001766
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.1.1
-      postcss: 8.4.31
+      postcss: 8.5.10
       postcss-value-parser: 4.2.0
 
   available-typed-arrays@1.0.7:
@@ -3874,7 +3878,7 @@ snapshots:
       object-assign: 4.1.1
       thenify-all: 1.6.0
 
-  nanoid@3.3.6: {}
+  nanoid@3.3.11: {}
 
   napi-postinstall@0.3.4: {}
 
@@ -4005,28 +4009,28 @@ snapshots:
 
   possible-typed-array-names@1.1.0: {}
 
-  postcss-import@14.1.0(postcss@8.4.31):
+  postcss-import@14.1.0(postcss@8.5.10):
     dependencies:
-      postcss: 8.4.31
+      postcss: 8.5.10
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.8
 
-  postcss-js@4.0.1(postcss@8.4.31):
+  postcss-js@4.0.1(postcss@8.5.10):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.4.31
+      postcss: 8.5.10
 
-  postcss-load-config@3.1.4(postcss@8.4.31):
+  postcss-load-config@3.1.4(postcss@8.5.10):
     dependencies:
       lilconfig: 2.1.0
       yaml: 1.10.2
     optionalDependencies:
-      postcss: 8.4.31
+      postcss: 8.5.10
 
-  postcss-nested@6.0.0(postcss@8.4.31):
+  postcss-nested@6.0.0(postcss@8.5.10):
     dependencies:
-      postcss: 8.4.31
+      postcss: 8.5.10
       postcss-selector-parser: 6.0.11
 
   postcss-selector-parser@6.0.11:
@@ -4038,9 +4042,15 @@ snapshots:
 
   postcss@8.4.31:
     dependencies:
-      nanoid: 3.3.6
+      nanoid: 3.3.11
       picocolors: 1.1.1
-      source-map-js: 1.0.2
+      source-map-js: 1.2.1
+
+  postcss@8.5.10:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
 
   prelude-ls@1.2.1: {}
 
@@ -4253,7 +4263,7 @@ snapshots:
       side-channel-map: 1.0.1
       side-channel-weakmap: 1.0.2
 
-  source-map-js@1.0.2: {}
+  source-map-js@1.2.1: {}
 
   stable-hash@0.0.5: {}
 
@@ -4341,11 +4351,11 @@ snapshots:
 
   tailwind-merge@1.12.0: {}
 
-  tailwindcss-animate@1.0.5(tailwindcss@3.3.1(postcss@8.4.31)):
+  tailwindcss-animate@1.0.5(tailwindcss@3.3.1(postcss@8.5.10)):
     dependencies:
-      tailwindcss: 3.3.1(postcss@8.4.31)
+      tailwindcss: 3.3.1(postcss@8.5.10)
 
-  tailwindcss@3.3.1(postcss@8.4.31):
+  tailwindcss@3.3.1(postcss@8.5.10):
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
@@ -4361,11 +4371,11 @@ snapshots:
       normalize-path: 3.0.0
       object-hash: 3.0.0
       picocolors: 1.1.1
-      postcss: 8.4.31
-      postcss-import: 14.1.0(postcss@8.4.31)
-      postcss-js: 4.0.1(postcss@8.4.31)
-      postcss-load-config: 3.1.4(postcss@8.4.31)
-      postcss-nested: 6.0.0(postcss@8.4.31)
+      postcss: 8.5.10
+      postcss-import: 14.1.0(postcss@8.5.10)
+      postcss-js: 4.0.1(postcss@8.5.10)
+      postcss-load-config: 3.1.4(postcss@8.5.10)
+      postcss-nested: 6.0.0(postcss@8.5.10)
       postcss-selector-parser: 6.0.11
       postcss-value-parser: 4.2.0
       quick-lru: 5.1.1
