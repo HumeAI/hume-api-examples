@@ -23,7 +23,7 @@
     "eslint-config-next": "16.1.6",
     "eslint-plugin-import": "^2.32.0",
     "next": "16.2.3",
-    "postcss": "8.4.31",
+    "postcss": "8.5.10",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.0",
