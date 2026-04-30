@@ -12,8 +12,8 @@ importers:
         specifier: ^2.0.30
         version: 2.0.30(zod@3.25.76)
       ai:
-        specifier: ^6.0.169
-        version: 6.0.169(zod@3.25.76)
+        specifier: ^6.0.170
+        version: 6.0.170(zod@3.25.76)
       hume:
         specifier: ^0.15.16
         version: 0.15.16
@@ -60,21 +60,11 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider-utils@4.0.23':
-    resolution: {integrity: sha512-z8GlDaCmRSDlqkMF2f4/RFgWxdarvIbyuk+m6WXT1LYgsnGiXRJGTD2Z1+SDl3LqtFuRtGX1aghYvQLoHL/9pg==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
   '@ai-sdk/provider-utils@4.0.24':
     resolution: {integrity: sha512-oXIw1oLmuBILuvHgSj6w5LOV8oSnFRouPSv0MGkG9sRMeukZ9JnMF17kldaRQaRq8lSJIxo6aS3NzWlVmSb+4Q==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/provider@3.0.8':
-    resolution: {integrity: sha512-oGMAgGoQdBXbZqNG0Ze56CHjDZ1IDYOwGYxYjO5KLSlz5HiNQ9udIXsPZ61VWaHGZ5XW/jyjmr6t2xz2jGVwbQ==}
-    engines: {node: '>=18'}
 
   '@ai-sdk/provider@3.0.9':
     resolution: {integrity: sha512-/ngMKqKdL9dSlY/eQ3NFDzzFyw0Hix+cbFFlyuKEKcOgpHdBt/spKUvX/i0wGrDLFPYJeVvv3N0j92LxWRL7yQ==}
@@ -404,8 +394,8 @@ packages:
     resolution: {integrity: sha512-UycprH3T6n3jH0k44NHMa7pnFHGu/N05MjojYr+Mc6I7obkoLIJujSWwin1pCvdy/eOxrI/l3uDLQsmcrOb4ug==}
     engines: {node: '>= 20'}
 
-  ai@6.0.169:
-    resolution: {integrity: sha512-eDAIc8bJJ3Ktk5qvBvWfAK7Uwj6zrOMI9VvQ6yLfF+7HdqnR0TSxgkLuIONrmowB2OujeAuVF9jalpNPJSN57g==}
+  ai@6.0.170:
+    resolution: {integrity: sha512-FWTKeGGDRcYJtPWIrdZDSuvOW5LCjI2NZUJmaml8OTOaPEsXnFdFvmawCXbT+wTGxyWKJTgZ9sZtCjbJsmjM2Q==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -431,10 +421,6 @@ packages:
   enhanced-resolve@5.20.1:
     resolution: {integrity: sha512-Qohcme7V1inbAfvjItgw0EaxVX5q2rdVEZHRBrEQdRZTssLDGsL8Lwrznl8oQ/6kuTJONLaDcGjkNP247XEhcA==}
     engines: {node: '>=10.13.0'}
-
-  eventsource-parser@3.0.6:
-    resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
-    engines: {node: '>=18.0.0'}
 
   eventsource-parser@3.0.8:
     resolution: {integrity: sha512-70QWGkr4snxr0OXLRWsFLeRBIRPuQOvt4s8QYjmUlmlkyTZkRqS7EDVRZtzU3TiyDbXSzaOeF0XUKy8PchzukQ==}
@@ -622,6 +608,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   ws@8.20.0:
@@ -654,23 +641,12 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.24(zod@3.25.76)
       zod: 3.25.76
 
-  '@ai-sdk/provider-utils@4.0.23(zod@3.25.76)':
-    dependencies:
-      '@ai-sdk/provider': 3.0.8
-      '@standard-schema/spec': 1.1.0
-      eventsource-parser: 3.0.6
-      zod: 3.25.76
-
   '@ai-sdk/provider-utils@4.0.24(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.9
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.0.8
       zod: 3.25.76
-
-  '@ai-sdk/provider@3.0.8':
-    dependencies:
-      json-schema: 0.4.0
 
   '@ai-sdk/provider@3.0.9':
     dependencies:
@@ -916,7 +892,7 @@ snapshots:
 
   '@vercel/oidc@3.2.0': {}
 
-  ai@6.0.169(zod@3.25.76):
+  ai@6.0.170(zod@3.25.76):
     dependencies:
       '@ai-sdk/gateway': 3.0.105(zod@3.25.76)
       '@ai-sdk/provider': 3.0.9
@@ -938,8 +914,6 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
-
-  eventsource-parser@3.0.6: {}
 
   eventsource-parser@3.0.8: {}
 
