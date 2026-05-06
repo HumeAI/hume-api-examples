@@ -820,16 +820,16 @@ wheels = [
 
 [[package]]
 name = "livekit-plugins-anthropic"
-version = "1.5.7"
+version = "1.5.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anthropic" },
     { name = "httpx" },
     { name = "livekit-agents" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/99/79/1e1cad75c2db2afa85044cef839814401d61ee2ec677cc083950d2205d90/livekit_plugins_anthropic-1.5.7.tar.gz", hash = "sha256:788f7b061cc2d41491698f9ec44b83c618eb3e68c2f1122c1650eba3f4d65739", size = 9006, upload-time = "2026-04-30T20:38:30.561Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/28/36/83d9b9d9460e668cb904936b573881ef36f29852b43660e183d8c9b39e79/livekit_plugins_anthropic-1.5.8.tar.gz", hash = "sha256:4115d604e55fa2b26fbf19e5824b597f614f97aa2b5aef45c97e6e638bd86fce", size = 9006, upload-time = "2026-05-05T18:46:33.629Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/45/b0/6be9e92f939f27a586ad8216f780c6ff074b89f0136275ce1c575b475c7b/livekit_plugins_anthropic-1.5.7-py3-none-any.whl", hash = "sha256:79b703cfe2a051c1bc38427d3a1ae289d56753ad8edd436ade8555fc17678999", size = 10740, upload-time = "2026-04-30T20:38:29.095Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/71/32073147d512a9e529cfbf98ba906db70761a8494f97a0ce47c6f5b5d331/livekit_plugins_anthropic-1.5.8-py3-none-any.whl", hash = "sha256:e721fcdba38e9460aa9739f5bc713c14da4a76ca0439b29dff0441dac588c36c", size = 10740, upload-time = "2026-05-05T18:46:32.266Z" },
 ]
 
 [[package]]
@@ -1669,7 +1669,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "livekit-agents", extras = ["hume"], specifier = ">=1.5.7" },
-    { name = "livekit-plugins-anthropic", specifier = ">=1.5.7" },
+    { name = "livekit-plugins-anthropic", specifier = ">=1.5.8" },
     { name = "livekit-plugins-groq", specifier = ">=1.5.7" },
     { name = "livekit-plugins-silero", specifier = ">=1.5.8" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
