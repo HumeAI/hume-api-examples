@@ -834,16 +834,16 @@ wheels = [
 
 [[package]]
 name = "livekit-plugins-groq"
-version = "1.5.7"
+version = "1.5.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "livekit" },
     { name = "livekit-agents", extra = ["codecs", "openai"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a8/d3/21f6a1e63dbaa97cd2b3856e94ad2a0efc66875170ba3fbedde0a8bc0c37/livekit_plugins_groq-1.5.7.tar.gz", hash = "sha256:67721447485eddbad61b00645c6abb31a29f11f53ec1a7d05322c02b7199e230", size = 6130, upload-time = "2026-04-30T20:39:15.834Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/40/10/165586a3892e7ee198284be31e61825c8a9634cdfc1acf06e34d6a9ae83e/livekit_plugins_groq-1.5.8.tar.gz", hash = "sha256:1ee4c3e691c8934ade0a0163854ec5bc4a300190463c1295a4cf6c9ccb39dd7d", size = 6131, upload-time = "2026-05-05T18:47:32.808Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/40/1ee754bb22d1844aae5774894d8359224d6a56eca7cbabbf3283f0dabfc2/livekit_plugins_groq-1.5.7-py3-none-any.whl", hash = "sha256:374a68d302e08006973c6bb8ffc75708cf1da9365e25aef26b58e3036fe4dee2", size = 7318, upload-time = "2026-04-30T20:39:14.432Z" },
+    { url = "https://files.pythonhosted.org/packages/47/38/c131e940e9cfd4640b2a5f0b6f2c778bf572b8128fe299d951a64e530c97/livekit_plugins_groq-1.5.8-py3-none-any.whl", hash = "sha256:74084064cd3564bdab7697cdd4ad00898f96e7eccdf6cab3735a0d815e89a13b", size = 7320, upload-time = "2026-05-05T18:47:31.174Z" },
 ]
 
 [[package]]
@@ -1670,7 +1670,7 @@ dependencies = [
 requires-dist = [
     { name = "livekit-agents", extras = ["hume"], specifier = ">=1.5.7" },
     { name = "livekit-plugins-anthropic", specifier = ">=1.5.8" },
-    { name = "livekit-plugins-groq", specifier = ">=1.5.7" },
+    { name = "livekit-plugins-groq", specifier = ">=1.5.8" },
     { name = "livekit-plugins-silero", specifier = ">=1.5.8" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "simpleaudio", specifier = ">=1.0.4" },
