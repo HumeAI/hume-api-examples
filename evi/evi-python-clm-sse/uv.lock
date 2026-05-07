@@ -86,7 +86,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.136.1" },
-    { name = "openai", specifier = ">=2.34.0" },
+    { name = "openai", specifier = ">=2.35.1" },
     { name = "uvicorn", specifier = ">=0.46.0" },
 ]
 
@@ -214,7 +214,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "2.34.0"
+version = "2.35.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -226,9 +226,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7b/89/f1e78f5f828f4e97a6ebca8f45c6b35667da12b074ac490dc8362b882279/openai-2.34.0.tar.gz", hash = "sha256:828b4efcbb126352c2b5eb97d33ae890c92a71ab72511aefc1b7fe64aeccb07b", size = 759556, upload-time = "2026-05-04T17:34:08.721Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/33/41d130d33d0ae7d1d8dcd2f61d6ff044e1edcec7246e904f86c684a3dc94/openai-2.35.1.tar.gz", hash = "sha256:ae61ad96c514295476c42fbd61d1f84b2060bc6dd8e4e4a7d85273f089614ce4", size = 752260, upload-time = "2026-05-06T21:38:12.866Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f2/40/f090499f10514515081d09cb9da09f25b821eb20497e9423afe4f07b4ecf/openai-2.34.0-py3-none-any.whl", hash = "sha256:c996a71b1a210f3569844572ad4c609307e978515fb76877cf449b72596e549e", size = 1316535, upload-time = "2026-05-04T17:34:06.773Z" },
+    { url = "https://files.pythonhosted.org/packages/d8/89/7f34d7b4ca3b758181166a67fd6a529d127e0817e103a31a3c8948601ea2/openai-2.35.1-py3-none-any.whl", hash = "sha256:38ff2e0394dbf56c3d39151c2aa05f3264223b6a76be2a499e87b466017a1263", size = 1300374, upload-time = "2026-05-06T21:38:10.834Z" },
 ]
 
 [[package]]
