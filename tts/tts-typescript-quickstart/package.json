@@ -13,7 +13,7 @@
   "dependencies": {
     "@types/ws": "^8.18.1",
     "hume": "^0.15.16",
-    "ws": "^8.20.0"
+    "ws": "^8.20.1"
   },
   "devDependencies": {
     "@types/node": "^25.6.2",
