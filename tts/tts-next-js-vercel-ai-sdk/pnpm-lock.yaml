@@ -12,8 +12,8 @@ importers:
         specifier: ^2.0.33
         version: 2.0.33(zod@3.25.76)
       ai:
-        specifier: ^6.0.180
-        version: 6.0.180(zod@3.25.76)
+        specifier: ^6.0.182
+        version: 6.0.182(zod@3.25.76)
       hume:
         specifier: ^0.15.16
         version: 0.15.16
@@ -394,8 +394,8 @@ packages:
     resolution: {integrity: sha512-UycprH3T6n3jH0k44NHMa7pnFHGu/N05MjojYr+Mc6I7obkoLIJujSWwin1pCvdy/eOxrI/l3uDLQsmcrOb4ug==}
     engines: {node: '>= 20'}
 
-  ai@6.0.180:
-    resolution: {integrity: sha512-tOyRbwD0PEjMZKGvYQcTsv95K2zktwwNhQ49QOUAh0g8MNprO7ELIO1SgANMuPc0BFtkP6Ny6OAdjq3TtxLCbQ==}
+  ai@6.0.182:
+    resolution: {integrity: sha512-ooJdziFjYrYRcsCx107roqA8gDTI3P82nUfroNWIhVvwrkYzEN3W1l50YK+XNqkUew8AiimaW0/SLBewRXMuHQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -892,7 +892,7 @@ snapshots:
 
   '@vercel/oidc@3.2.0': {}
 
-  ai@6.0.180(zod@3.25.76):
+  ai@6.0.182(zod@3.25.76):
     dependencies:
       '@ai-sdk/gateway': 3.0.114(zod@3.25.76)
       '@ai-sdk/provider': 3.0.10
