@@ -19,7 +19,7 @@
     "@types/node": "^25.8.0",
     "prettier": "^3.8.3",
     "typescript": "^6.0.3",
-    "vite": "^8.0.12",
+    "vite": "^8.0.13",
     "vite-node": "^6.0.0",
     "vitest": "^4.1.6"
   },
