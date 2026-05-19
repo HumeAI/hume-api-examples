@@ -25,7 +25,7 @@ importers:
         version: 5.8.3
     devDependencies:
       '@vitejs/plugin-react-swc':
-        specifier: ^3.5.0
+        specifier: ^3.10.1
         version: 3.10.1(vite@6.4.2)
       vite:
         specifier: ^6.4.2
@@ -763,6 +763,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   vite@6.4.2:
@@ -814,8 +815,8 @@ packages:
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
-  ws@8.18.2:
-    resolution: {integrity: sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==}
+  ws@8.20.1:
+    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1259,7 +1260,7 @@ snapshots:
       readable-stream: 4.7.0
       url-join: 4.0.1
       uuid: 9.0.1
-      ws: 8.18.2
+      ws: 8.20.1
       zod: 3.25.51
     transitivePeerDependencies:
       - bufferutil
@@ -1276,7 +1277,7 @@ snapshots:
       readable-stream: 4.7.0
       url-join: 4.0.1
       uuid: 9.0.1
-      ws: 8.18.2
+      ws: 8.20.1
       zod: 3.25.51
     transitivePeerDependencies:
       - bufferutil
@@ -1505,6 +1506,6 @@ snapshots:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
 
-  ws@8.18.2: {}
+  ws@8.20.1: {}
 
   zod@3.25.51: {}
