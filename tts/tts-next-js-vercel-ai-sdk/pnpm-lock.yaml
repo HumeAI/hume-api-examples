@@ -15,8 +15,8 @@ importers:
         specifier: ^6.0.185
         version: 6.0.185(zod@3.25.76)
       hume:
-        specifier: ^0.15.16
-        version: 0.15.16
+        specifier: ^0.15.17
+        version: 0.15.17
       next:
         specifier: 16.2.6
         version: 16.2.6(@opentelemetry/api@1.9.1)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -429,8 +429,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  hume@0.15.16:
-    resolution: {integrity: sha512-0LXz09ElrNwdA71GLT6R5RTTN1QRbxJp6PwuHfuQ1sP1kDmbC8GSTv/N/FFEoI/6QhxaP3xv9DDH+Ro+kxENiQ==}
+  hume@0.15.17:
+    resolution: {integrity: sha512-XyyiYauquWlHxxp1Y2rdLr29pYN6OZHtTzX+W+G/C/7SGIDMpWLwjXnoF91GU+e0fmYCTK0U1V5d9jps1+3dCQ==}
     engines: {node: '>=18.0.0'}
 
   jiti@2.7.0:
@@ -919,7 +919,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  hume@0.15.16:
+  hume@0.15.17:
     dependencies:
       uuid: 9.0.1
       ws: 8.20.1
