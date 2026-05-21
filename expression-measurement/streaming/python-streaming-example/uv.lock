@@ -126,7 +126,7 @@ wheels = [
 
 [[package]]
 name = "hume"
-version = "0.13.11"
+version = "0.13.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -138,9 +138,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3d/1c/cd7e18e1af8f654a8bc2fa2816bce6bdbda6b8f9e5b5ec72b6a989a69334/hume-0.13.11.tar.gz", hash = "sha256:3f01b87aa14787e9b925e834736a71f10650134af3e527d42180ddbdd03e1522", size = 146652, upload-time = "2026-04-09T18:49:05.787Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/d4/cd60136fdede44c72f12d17f5764aff63ace83d8fe2eb61695ffeda4d82b/hume-0.13.13.tar.gz", hash = "sha256:e5551de214a9ffb37ec5deee53a1f2f26b4ac6cb21555cf361b687c9b13b4caa", size = 147782, upload-time = "2026-05-21T00:42:46.86Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/43/33/2b02884a4ea48b0620811c4390eb42e65b80eca25a1a51197d1ef02736ff/hume-0.13.11-py3-none-any.whl", hash = "sha256:3c008f788b3a1cd5688bfb05a849b58a61a42d0c13ae2cc7e82a2a18d738864e", size = 360936, upload-time = "2026-04-09T18:49:03.398Z" },
+    { url = "https://files.pythonhosted.org/packages/76/b9/91d6f76ae7918a8245202775f825f70573ff8f2757a7f96f4a53841d2ef9/hume-0.13.13-py3-none-any.whl", hash = "sha256:7b7c28277e0036ba6cec6a4fb897c8cc612d174ddfe774a4c2f93615c16ef246", size = 362659, upload-time = "2026-05-21T00:42:45.214Z" },
 ]
 
 [[package]]
@@ -162,7 +162,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "hume", specifier = "==0.13.11" },
+    { name = "hume", specifier = "==0.13.13" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
     { name = "python-dotenv" },
