@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@humeai/voice-embed':
-        specifier: ^0.2.14
-        version: 0.2.14
+        specifier: ^0.2.16
+        version: 0.2.16
       vue:
         specifier: ^3.5.34
         version: 3.5.34(typescript@6.0.3)
@@ -212,8 +212,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@humeai/voice-embed@0.2.14':
-    resolution: {integrity: sha512-e686aYMrMGjQcB/VBmLg1Lzs1HPs1jcWSrFL+ztZjciYWl5kz6OUuBrpMzWSxeEynwULPRfvCi3+8cYH3P+sNw==}
+  '@humeai/voice-embed@0.2.16':
+    resolution: {integrity: sha512-toT53l7QqgFsguC41n8EkSgkUMkh8j/MXtfbNEn8Ndwyzmz39AyadMME43kHHOJLJiXDYrSTgl0nZn7Dz5Xj7Q==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -406,8 +406,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.13:
-    resolution: {integrity: sha512-ZMdC6t1nUSxhbjPL+7luyszDVmqenvR2IPncsYc66iWztESlcsg8hqM2mSXoiw9a+SJHJWidZ1WFmup9ULplWQ==}
+  hume@0.15.17:
+    resolution: {integrity: sha512-XyyiYauquWlHxxp1Y2rdLr29pYN6OZHtTzX+W+G/C/7SGIDMpWLwjXnoF91GU+e0fmYCTK0U1V5d9jps1+3dCQ==}
     engines: {node: '>=18.0.0'}
 
   lightningcss-android-arm64@1.32.0:
@@ -715,9 +715,9 @@ snapshots:
   '@esbuild/win32-x64@0.27.2':
     optional: true
 
-  '@humeai/voice-embed@0.2.14':
+  '@humeai/voice-embed@0.2.16':
     dependencies:
-      hume: 0.15.13
+      hume: 0.15.17
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -919,7 +919,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.13:
+  hume@0.15.17:
     dependencies:
       uuid: 9.0.1
       ws: 8.20.1
