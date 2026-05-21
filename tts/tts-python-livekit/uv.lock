@@ -834,16 +834,16 @@ wheels = [
 
 [[package]]
 name = "livekit-plugins-groq"
-version = "1.5.10"
+version = "1.5.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "livekit" },
     { name = "livekit-agents", extra = ["codecs", "openai"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2b/11/263027be3019bce468aa53a1106d5b209a2a5be534b63eae0ac0876306e8/livekit_plugins_groq-1.5.10.tar.gz", hash = "sha256:0c232725e64214f6288bd3ab0712302b0316a002268a5d0b071be76dc900f5cf", size = 6130, upload-time = "2026-05-18T04:00:04.271Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/38/91f4414d266623c3cea76ca84a795260439d428721e7a854ea302650577a/livekit_plugins_groq-1.5.12.tar.gz", hash = "sha256:5dc8b34cc622348203741915308260ac95b9c4850a8c55ff1f6a7f028ce52448", size = 6131, upload-time = "2026-05-21T02:28:54.212Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/a0/834c35b12976192647189267973e63ec90a3802e5c088855efe8a01e278d/livekit_plugins_groq-1.5.10-py3-none-any.whl", hash = "sha256:ff7ba15b7c7fb59fe0bf03c2ff813a79a3ec9240d1e2a292c8e3f352bf0fb71e", size = 7327, upload-time = "2026-05-18T04:00:03.187Z" },
+    { url = "https://files.pythonhosted.org/packages/32/d0/db9a7d64a500bd1a5a9ca6afc50597f7cb08114f274f470248f0d02e7e36/livekit_plugins_groq-1.5.12-py3-none-any.whl", hash = "sha256:0f1b37b3da683261680bb565ab6c981186618de28d7efbfed61ea933532aa918", size = 7326, upload-time = "2026-05-21T02:28:52.796Z" },
 ]
 
 [[package]]
@@ -1670,7 +1670,7 @@ dependencies = [
 requires-dist = [
     { name = "livekit-agents", extras = ["hume"], specifier = ">=1.5.12" },
     { name = "livekit-plugins-anthropic", specifier = ">=1.5.11" },
-    { name = "livekit-plugins-groq", specifier = ">=1.5.10" },
+    { name = "livekit-plugins-groq", specifier = ">=1.5.12" },
     { name = "livekit-plugins-silero", specifier = ">=1.5.12" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "simpleaudio", specifier = ">=1.0.4" },
