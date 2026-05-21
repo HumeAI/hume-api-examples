@@ -33,8 +33,8 @@ importers:
         specifier: ^1.7.1
         version: 1.7.1(next@16.2.6(@babel/core@7.29.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))
       hume:
-        specifier: ^0.15.16
-        version: 0.15.16
+        specifier: ^0.15.17
+        version: 0.15.17
       lucide-react:
         specifier: ^1.16.0
         version: 1.16.0(react@19.2.6)
@@ -1370,10 +1370,6 @@ packages:
 
   hermes-parser@0.25.1:
     resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
-
-  hume@0.15.16:
-    resolution: {integrity: sha512-0LXz09ElrNwdA71GLT6R5RTTN1QRbxJp6PwuHfuQ1sP1kDmbC8GSTv/N/FFEoI/6QhxaP3xv9DDH+Ro+kxENiQ==}
-    engines: {node: '>=18.0.0'}
 
   hume@0.15.17:
     resolution: {integrity: sha512-XyyiYauquWlHxxp1Y2rdLr29pYN6OZHtTzX+W+G/C/7SGIDMpWLwjXnoF91GU+e0fmYCTK0U1V5d9jps1+3dCQ==}
@@ -3554,15 +3550,6 @@ snapshots:
   hermes-parser@0.25.1:
     dependencies:
       hermes-estree: 0.25.1
-
-  hume@0.15.16:
-    dependencies:
-      uuid: 9.0.1
-      ws: 8.20.1
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   hume@0.15.17:
     dependencies:
