@@ -18,8 +18,8 @@ importers:
         specifier: ^5.2.1
         version: 5.2.1
       hume:
-        specifier: ^0.15.16
-        version: 0.15.16
+        specifier: ^0.15.17
+        version: 0.15.17
     devDependencies:
       '@types/express':
         specifier: ^5.0.6
@@ -241,8 +241,8 @@ packages:
     resolution: {integrity: sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==}
     engines: {node: '>= 0.8'}
 
-  hume@0.15.16:
-    resolution: {integrity: sha512-0LXz09ElrNwdA71GLT6R5RTTN1QRbxJp6PwuHfuQ1sP1kDmbC8GSTv/N/FFEoI/6QhxaP3xv9DDH+Ro+kxENiQ==}
+  hume@0.15.17:
+    resolution: {integrity: sha512-XyyiYauquWlHxxp1Y2rdLr29pYN6OZHtTzX+W+G/C/7SGIDMpWLwjXnoF91GU+e0fmYCTK0U1V5d9jps1+3dCQ==}
     engines: {node: '>=18.0.0'}
 
   iconv-lite@0.7.1:
@@ -662,7 +662,7 @@ snapshots:
       statuses: 2.0.2
       toidentifier: 1.0.1
 
-  hume@0.15.16:
+  hume@0.15.17:
     dependencies:
       uuid: 9.0.1
       ws: 8.20.1
