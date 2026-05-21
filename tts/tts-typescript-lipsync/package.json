@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "dist": "^0.1.2",
-    "hume": "^0.15.16"
+    "hume": "^0.15.17"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
