@@ -15,8 +15,8 @@ importers:
         specifier: ^0.15.17
         version: 0.15.17
       ws:
-        specifier: ^8.20.1
-        version: 8.20.1
+        specifier: ^8.21.0
+        version: 8.21.0
     devDependencies:
       '@types/node':
         specifier: ^25.9.1
@@ -656,8 +656,8 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
-  ws@8.20.1:
-    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -954,7 +954,7 @@ snapshots:
   hume@0.15.17:
     dependencies:
       uuid: 9.0.1
-      ws: 8.20.1
+      ws: 8.21.0
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -1145,6 +1145,6 @@ snapshots:
       siginfo: 2.0.0
       stackback: 0.0.2
 
-  ws@8.20.1: {}
+  ws@8.21.0: {}
 
   zod@3.25.76: {}
