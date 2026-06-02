@@ -48,8 +48,8 @@ importers:
         specifier: ^9.22.6
         version: 9.22.6(react-dom@19.2.6(react@19.2.7))(react@19.2.7)
       remeda:
-        specifier: ^2.36.0
-        version: 2.36.0
+        specifier: ^2.37.0
+        version: 2.37.0
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
@@ -1899,8 +1899,9 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
-  remeda@2.36.0:
-    resolution: {integrity: sha512-1xbb+9V0ENodsrMdXZAX1M/m5aK+RkqEEypaSbzvUAGFrDq88WpxVf+FlPKHpRCs/qR92bsgpIAzKbH518uNvA==}
+  remeda@2.37.0:
+    resolution: {integrity: sha512-wN6BXWua0t4o7vDamqc27J3VRxnokG9cDezsFN2nOnt2JD/IkJQHTYqM6UvmEctAZETAoviwEFQZJO3kZ4Ohew==}
+    engines: {node: '>=18.0.0'}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -4099,7 +4100,7 @@ snapshots:
       gopd: 1.2.0
       set-function-name: 2.0.2
 
-  remeda@2.36.0: {}
+  remeda@2.37.0: {}
 
   resolve-from@4.0.0: {}
 
