@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@humeai/voice-embed": "^0.2.16",
-    "vue": "^3.5.35"
+    "vue": "^3.5.38"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.7",
