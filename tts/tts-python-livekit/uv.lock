@@ -861,16 +861,16 @@ wheels = [
 
 [[package]]
 name = "livekit-plugins-groq"
-version = "1.5.16"
+version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "livekit" },
     { name = "livekit-agents", extra = ["codecs", "openai"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2b/6e/3bf428c17a999d2a11fa2c50aef1e2810c90b8a062f73124a9ed2958aa68/livekit_plugins_groq-1.5.16.tar.gz", hash = "sha256:0944a4518a10ff721cded6c41030ef66fdda04e0518cd0056132d52554680107", size = 6130, upload-time = "2026-06-01T20:53:15.402Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/22/fafd2b125612f8613de6462e5ab8add82d29c5d82145cd04d96482f50c40/livekit_plugins_groq-1.6.0.tar.gz", hash = "sha256:a3c53bf875bebba7073fa0e02a977cbcbc31d03806f04ad2cbff1103619c91ef", size = 6133, upload-time = "2026-06-11T21:37:58.854Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f6/3f/6fdf867c34ef81d822f75fa1e650964d30713754a8d432e7f8ced62809ba/livekit_plugins_groq-1.5.16-py3-none-any.whl", hash = "sha256:d16364f816b8fc544a83db079e87bb6b632445a4cdda6712de92b71d2e7c969f", size = 7328, upload-time = "2026-06-01T20:53:14.347Z" },
+    { url = "https://files.pythonhosted.org/packages/91/5b/99d34fcf62b1cf0117ed128d83b662b0b01ca3d859a5d0c44afcf4a43fda/livekit_plugins_groq-1.6.0-py3-none-any.whl", hash = "sha256:5603c90594e56df6560ffcaa5b701a5fcdad05ea3e7622967ff0bb54a66f1d6f", size = 7321, upload-time = "2026-06-11T21:37:57.893Z" },
 ]
 
 [[package]]
@@ -1752,7 +1752,7 @@ dependencies = [
 requires-dist = [
     { name = "livekit-agents", extras = ["hume"], specifier = ">=1.5.17" },
     { name = "livekit-plugins-anthropic", specifier = ">=1.6.0" },
-    { name = "livekit-plugins-groq", specifier = ">=1.5.16" },
+    { name = "livekit-plugins-groq", specifier = ">=1.6.0" },
     { name = "livekit-plugins-silero", specifier = ">=1.6.0" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "simpleaudio", specifier = ">=1.0.4" },
