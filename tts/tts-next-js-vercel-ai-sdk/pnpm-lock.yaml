@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ai-sdk/hume':
-        specifier: ^2.0.33
-        version: 2.0.33(zod@3.25.76)
+        specifier: ^2.0.34
+        version: 2.0.34(zod@3.25.76)
       ai:
         specifier: ^6.0.201
         version: 6.0.201(zod@3.25.76)
@@ -54,14 +54,20 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/hume@2.0.33':
-    resolution: {integrity: sha512-tRBKJWL8ULoVZt5SwXrMYN78nPIbNc+uJ9JWHwRwUNl4Ml7xKGkvHFuXj2NA4/zCesHeeNR/T6ho1iaInX5IHg==}
+  '@ai-sdk/hume@2.0.34':
+    resolution: {integrity: sha512-qXvGjLfkLe++SpBaMIJ9pS3cLOHjPwWI1Mjq5sGtwsba9pRIM0bEF8HLDJA4Y61N5RnMgK1eO/WKL/Ep/gkXVw==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
   '@ai-sdk/provider-utils@4.0.27':
     resolution: {integrity: sha512-ubkAJ+xODouwtmN1tYlvTPphH1hPOBfZaEQe8U7skGvFAnIRs9PPpsq57bC2+Ky/MB4yzhd6YOsxTAx9sGpazw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/provider-utils@4.0.28':
+    resolution: {integrity: sha512-nCtGJY43Kqwoyk0rYLj80a3eyXxcaWwyu+lYZDHgY+U6JbYYyvRdRTSy+XCDIB91rFH0Ul0eMDHmDr+YMYtrSw==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -635,13 +641,20 @@ snapshots:
       '@vercel/oidc': 3.2.0
       zod: 3.25.76
 
-  '@ai-sdk/hume@2.0.33(zod@3.25.76)':
+  '@ai-sdk/hume@2.0.34(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.10
-      '@ai-sdk/provider-utils': 4.0.27(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.28(zod@3.25.76)
       zod: 3.25.76
 
   '@ai-sdk/provider-utils@4.0.27(zod@3.25.76)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.10
+      '@standard-schema/spec': 1.1.0
+      eventsource-parser: 3.1.0
+      zod: 3.25.76
+
+  '@ai-sdk/provider-utils@4.0.28(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 3.0.10
       '@standard-schema/spec': 1.1.0
