@@ -19,12 +19,15 @@ export default function StartCall({
   const { status, connect } = useVoice();
 
   const EVI_CONNECT_OPTIONS: ConnectOptions = {
-    auth:
-      apiKey != null
-        ? { type: "apiKey", value: apiKey }
-        : { type: "accessToken", value: accessToken! },
+    auth: {
+      type: "apiKey",
+      value: "6KSM0nVfyufqwvqnqQICfvcExiCNC68TV6Eb8qA6iyT6xFRt",
+    },
     ...(sessionSettings != null && { sessionSettings }),
-    // configId: "<YOUR_CONFIG_ID>"
+    // configId: "ebddd014-0252-4bcb-91cd-6ea0936e2435", //default
+    // configId: "778016e5-ca19-4536-b1a2-854d4d3ec4e8", //patient
+    configId: "04c67787-6652-4653-a10f-b456412f98d9", //responsive
+    hostname: "https://test-api.hume.ai",
   };
 
   return (
