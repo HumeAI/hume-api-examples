@@ -76,7 +76,6 @@ updates:
       - '/evi/evi-python-phone-calling-proxy-server'
       - '/tts/tts-python-quickstart'
       - '/tts/tts-python-livekit'
-      - '/expression-measurement/streaming/python-streaming-example'
     schedule:
       interval: 'daily'
       time: '06:00'
