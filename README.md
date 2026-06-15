@@ -20,9 +20,6 @@ Use these examples to:
 
 - Add empathic Text-to-Speech (TTS) to your application
 - Build rich conversational agents with the Empathic Voice Interface (EVI)
-- Measure expressions with facial, vocal, and language-based analysis
-
-Whether you're using Python, TypeScript, Swift, C#, Flutter, Unity, or Next.js, there's something here to help you get started quickly.
 
 ## [Text-to-Speech (TTS)](https://dev.hume.ai/docs/text-to-speech-tts/overview)
 
@@ -69,16 +66,6 @@ Whether you're using Python, TypeScript, Swift, C#, Flutter, Unity, or Next.js, 
 | [`evi-typescript-webhooks`](/evi/evi-typescript-webhooks/README.md)                        | TypeScript | Express         |
 | [`evi-unity-quickstart`](/evi/evi-unity-quickstart/README.md)                              | C#         | Unity           |
 | [`evi-vue-widget`](/evi/evi-vue-widget/README.md)                                          | TypeScript | Vue             |
-
-## [Expression Measurement API](https://dev.hume.ai/docs/expression-measurement-api/overview)
-
-| Name                                                                                                     | Models                                | Language   | Framework   |
-| -------------------------------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------- |
-| [`visualization-example`](/expression-measurement/visualization-example/example-notebook.ipynb)          | `face`                                | Python     |             |
-| [`python-top-emotions`](/expression-measurement/batch/python-top-emotions/README.md)                     | `face`                                | Python     |             |
-| [`typescript-raw-text-processor`](/expression-measurement/batch/typescript-raw-text-processor/README.md) | `language`                            | TypeScript |             |
-| [`next-js-emotional-language`](/expression-measurement/batch/next-js-emotional-language/README.md)       | `language`                            | TypeScript | Next.js     |
-| [`next-js-streaming-example`](/expression-measurement/streaming/next-js-streaming-example/README.md)     | `language`, `face`, `burst`, `speech` | TypeScript | Next.js     |
 
 ## Authentication & Setup
 
