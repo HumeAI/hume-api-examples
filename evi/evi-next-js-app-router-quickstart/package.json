@@ -29,7 +29,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.0",
+    "@tailwindcss/postcss": "^4.3.1",
     "@playwright/test": "^1.61.0",
     "@types/node": "25.9.3",
     "@types/react-virtualized": "^9.22.3",
