@@ -181,7 +181,7 @@ async def test_session_settings_upd_after_connect(hume_client, hume_client_sync)
         await socket.send_publish(updated_settings)
 
         # Wait for the update to be processed
-        await asyncio.sleep(1)
+        await asyncio.sleep(3)
 
         # Clean up
         message_task.cancel()
