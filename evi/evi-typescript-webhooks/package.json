@@ -9,7 +9,7 @@
     "@types/dotenv": "^8.2.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "hume": "^0.15.17"
+    "hume": "^0.16.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
