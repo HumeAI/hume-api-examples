@@ -15,8 +15,8 @@ importers:
         specifier: ^6.0.207
         version: 6.0.207(zod@3.25.76)
       hume:
-        specifier: ^0.15.17
-        version: 0.15.17
+        specifier: ^0.16.0
+        version: 0.16.0
       next:
         specifier: 16.2.9
         version: 16.2.9(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -56,12 +56,6 @@ packages:
 
   '@ai-sdk/hume@2.0.36':
     resolution: {integrity: sha512-54NVPh9AVNcfaToXAdiZSp3Dn39yLXbk+z8YGiyqjqdRdZ7bc/sBCUODvy824NA+MFlSRbbKr910npWxjQwu/Q==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/provider-utils@4.0.29':
-    resolution: {integrity: sha512-uhukHaCBvqkwBHkT8C2PrnqKTCoLn3pdHXqtcR9I8ErH+flbzgW4o7VHSNIup9LRu+WBvZIZDQLsx6rwl2tiOA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -435,8 +429,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  hume@0.15.17:
-    resolution: {integrity: sha512-XyyiYauquWlHxxp1Y2rdLr29pYN6OZHtTzX+W+G/C/7SGIDMpWLwjXnoF91GU+e0fmYCTK0U1V5d9jps1+3dCQ==}
+  hume@0.16.0:
+    resolution: {integrity: sha512-GUzuGkOQw7Vpg+Zt0N6gZpMvOQywQMFm95NFs5dSeSOekd4F7RwDtZ4UhiNpuQGze+kUkyePjOr3awosjB4hAQ==}
     engines: {node: '>=18.0.0'}
 
   jiti@2.7.0:
@@ -617,8 +611,8 @@ packages:
     deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
-  ws@8.20.1:
-    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -645,13 +639,6 @@ snapshots:
     dependencies:
       '@ai-sdk/provider': 3.0.10
       '@ai-sdk/provider-utils': 4.0.30(zod@3.25.76)
-      zod: 3.25.76
-
-  '@ai-sdk/provider-utils@4.0.29(zod@3.25.76)':
-    dependencies:
-      '@ai-sdk/provider': 3.0.10
-      '@standard-schema/spec': 1.1.0
-      eventsource-parser: 3.1.0
       zod: 3.25.76
 
   '@ai-sdk/provider-utils@4.0.30(zod@3.25.76)':
@@ -932,10 +919,10 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  hume@0.15.17:
+  hume@0.16.0:
     dependencies:
       uuid: 9.0.1
-      ws: 8.20.1
+      ws: 8.21.0
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -1102,6 +1089,6 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  ws@8.20.1: {}
+  ws@8.21.0: {}
 
   zod@3.25.76: {}
