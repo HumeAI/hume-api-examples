@@ -12,8 +12,8 @@ importers:
         specifier: ^17.4.2
         version: 17.4.2
       hume:
-        specifier: ^0.15.17
-        version: 0.15.17
+        specifier: ^0.16.0
+        version: 0.16.0
     devDependencies:
       typescript:
         specifier: ^6.0.3
@@ -320,8 +320,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  hume@0.15.17:
-    resolution: {integrity: sha512-XyyiYauquWlHxxp1Y2rdLr29pYN6OZHtTzX+W+G/C/7SGIDMpWLwjXnoF91GU+e0fmYCTK0U1V5d9jps1+3dCQ==}
+  hume@0.16.0:
+    resolution: {integrity: sha512-GUzuGkOQw7Vpg+Zt0N6gZpMvOQywQMFm95NFs5dSeSOekd4F7RwDtZ4UhiNpuQGze+kUkyePjOr3awosjB4hAQ==}
     engines: {node: '>=18.0.0'}
 
   lightningcss-android-arm64@1.32.0:
@@ -479,8 +479,8 @@ packages:
       yaml:
         optional: true
 
-  ws@8.20.1:
-    resolution: {integrity: sha512-It4dO0K5v//JtTXuPkfEOaI3uUN87iYPnqo/ZzqCoG3g8uhA66QUMs/SrM0YK7/NAu+r4LMh/9dq2A7k+rHs+w==}
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -696,10 +696,10 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  hume@0.15.17:
+  hume@0.16.0:
     dependencies:
       uuid: 9.0.1
-      ws: 8.20.1
+      ws: 8.21.0
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -812,6 +812,6 @@ snapshots:
       esbuild: 0.27.2
       fsevents: 2.3.3
 
-  ws@8.20.1: {}
+  ws@8.21.0: {}
 
   zod@3.25.76: {}
