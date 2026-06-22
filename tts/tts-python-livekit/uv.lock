@@ -929,16 +929,16 @@ wheels = [
 
 [[package]]
 name = "livekit-plugins-silero"
-version = "1.6.1"
+version = "1.6.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "livekit-agents" },
     { name = "numpy" },
     { name = "onnxruntime" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/29/63/371bf4ba46d13663b7c5db5c810d3579ac3746b7d7fde9cfefb9c9427fba/livekit_plugins_silero-1.6.1.tar.gz", hash = "sha256:f4ded65ad38ba07c765dc71733b2ed0e0856c0e31b8b52e616614713a4ee0d7a", size = 1956516, upload-time = "2026-06-17T16:50:33.332Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/73/d174a7e91edb94cde283fba2670869ca121e23ab7bba8b191590ddfca9fa/livekit_plugins_silero-1.6.2.tar.gz", hash = "sha256:842ab4c73e197b0aa1127566c38c335ae4c54be882ddc8da64dc184bd3008713", size = 1956516, upload-time = "2026-06-19T22:51:16.583Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/23/11050fdb710f0c3fa0100651582fdcde7e3bf3ab3d5bed89e9f166a79f0a/livekit_plugins_silero-1.6.1-py3-none-any.whl", hash = "sha256:fa7ee0e583b567aa16a716e80d7486fb227337186b89ed4788bac2361f436119", size = 3904450, upload-time = "2026-06-17T16:50:31.567Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/ec/2e1b089b5a6cfec3faf0de3622fcd0b399fcad50d2e6e8c27865294554e0/livekit_plugins_silero-1.6.2-py3-none-any.whl", hash = "sha256:3caa50be09af7b23aa2b19c6a7c4f52609e6edb578b1977003611f896e4948c0", size = 3904450, upload-time = "2026-06-19T22:51:14.981Z" },
 ]
 
 [[package]]
@@ -1781,7 +1781,7 @@ requires-dist = [
     { name = "livekit-agents", extras = ["hume"], specifier = ">=1.6.1" },
     { name = "livekit-plugins-anthropic", specifier = ">=1.6.2" },
     { name = "livekit-plugins-groq", specifier = ">=1.6.1" },
-    { name = "livekit-plugins-silero", specifier = ">=1.6.1" },
+    { name = "livekit-plugins-silero", specifier = ">=1.6.2" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "simpleaudio", specifier = ">=1.0.4" },
 ]
