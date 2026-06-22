@@ -7,7 +7,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
-hume = "^0.13.11"
+hume = ">=0.13.11,<0.15.0"
 python-dotenv = "^1.2.2"
 fastapi = ">=0.135.3,<0.139.0"
 uvicorn = ">=0.44,<0.50"
