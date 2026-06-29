@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.1",
-    "@playwright/test": "^1.61.0",
+    "@playwright/test": "^1.61.1",
     "@types/node": "26.0.1",
     "@types/react-virtualized": "^9.22.3",
     "@types/react": "^19",
