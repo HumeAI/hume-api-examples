@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/node": "^26.0.1",
     "dotenv": "^17.4.2",
-    "prettier": "^3.9.1",
+    "prettier": "^3.9.4",
     "typescript": "^6.0.3",
     "vite": "^8.1.0",
     "vitest": "^4.1.9"
