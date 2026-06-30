@@ -61,7 +61,7 @@ importers:
         version: 3.6.0
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@4.3.1)
+        version: 1.0.7(tailwindcss@4.3.2)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.3.2
@@ -82,8 +82,8 @@ importers:
         specifier: 16.2.9
         version: 16.2.9(@typescript-eslint/parser@8.61.0(eslint@9.39.3(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.3(jiti@2.7.0))(typescript@6.0.3)
       tailwindcss:
-        specifier: ^4.3.1
-        version: 4.3.1
+        specifier: ^4.3.2
+        version: 4.3.2
       typescript:
         specifier: ^6
         version: 6.0.3
@@ -4303,9 +4303,9 @@ snapshots:
 
   tailwind-merge@3.6.0: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@4.3.1):
+  tailwindcss-animate@1.0.7(tailwindcss@4.3.2):
     dependencies:
-      tailwindcss: 4.3.1
+      tailwindcss: 4.3.2
 
   tailwindcss@4.3.1: {}
 
