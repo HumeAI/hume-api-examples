@@ -20,7 +20,7 @@
     "geist": "^1.7.2",
     "hume": "^0.16.0",
     "lucide-react": "^1.23.0",
-    "next": "^16.2.9",
+    "next": "^16.2.10",
     "react": "^19",
     "react-dom": "^19",
     "react-virtualized": "^9.22.5",
