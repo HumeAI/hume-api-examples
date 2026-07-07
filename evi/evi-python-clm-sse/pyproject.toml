@@ -5,6 +5,6 @@ description = ""
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.139.0",
-    "uvicorn>=0.50.1",
+    "uvicorn>=0.50.2",
     "openai>=2.44.0",
 ]
