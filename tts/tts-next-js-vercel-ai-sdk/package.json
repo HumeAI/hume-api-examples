@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/hume": "^3.0.5",
+    "@ai-sdk/hume": "^3.0.7",
     "hume": "^0.16.0",
     "ai": "^7.0.18",
     "next": "16.2.10",
