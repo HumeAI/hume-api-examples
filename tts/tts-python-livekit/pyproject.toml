@@ -8,7 +8,7 @@ dependencies = [
     "livekit-agents[hume]>=1.6.4",
     "livekit-plugins-anthropic>=1.6.4",
     "livekit-plugins-groq>=1.6.4",
-    "livekit-plugins-silero>=1.6.4",
+    "livekit-plugins-silero>=1.6.5",
     "python-dotenv>=1.1.0",
     "simpleaudio>=1.0.4",
 ]
