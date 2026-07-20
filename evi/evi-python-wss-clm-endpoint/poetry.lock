@@ -427,14 +427,14 @@ files = [
 
 [[package]]
 name = "constructs"
-version = "10.7.0"
+version = "10.7.1"
 description = "A programming model for software-defined state"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "constructs-10.7.0-py3-none-any.whl", hash = "sha256:4aaf04c6628fb9af71fd4bcd59d141c871eaa5aaf8f690a4b2dfd572f8bba053"},
-    {file = "constructs-10.7.0.tar.gz", hash = "sha256:e593ac6935f020e65f3a39ad73a6196cb30cb8080d80268471f06321e9317242"},
+    {file = "constructs-10.7.1-py3-none-any.whl", hash = "sha256:f212c66b37249c45eca4638c6b33c68efddae50599d27062d71d0bf81c11431e"},
+    {file = "constructs-10.7.1.tar.gz", hash = "sha256:7b33d60851fc8c6d4c4a111dc342088e467c344b22d9a562a5e0b6fbbbaf4b2a"},
 ]
 
 [package.dependencies]
