@@ -271,41 +271,39 @@ typeguard = "2.13.3"
 
 [[package]]
 name = "aws-cdk-cloud-assembly-schema"
-version = "54.2.0"
+version = "54.13.0"
 description = "Schema for the protocol between CDK framework and CDK CLI"
 optional = false
-python-versions = "~=3.10"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "aws_cdk_cloud_assembly_schema-54.2.0-py3-none-any.whl", hash = "sha256:a7038bffa1aaf3365b72147987396bcf0b9951c3b53b2eebfc181b7cb4227067"},
-    {file = "aws_cdk_cloud_assembly_schema-54.2.0.tar.gz", hash = "sha256:2e3a05fca6a28f49811b7b011fce12b03dd0adb15c37a0ad2d1b16d8d66fe95a"},
+    {file = "aws_cdk_cloud_assembly_schema-54.13.0-py3-none-any.whl", hash = "sha256:c4725b3b78fbf9532b1c839d5d5f24fbe20f4d3f22119154c47692f7e12720f4"},
+    {file = "aws_cdk_cloud_assembly_schema-54.13.0.tar.gz", hash = "sha256:78c9151a5aab95a4fd7e48548907b5f1919775ed13c101946e39759da9aa3efa"},
 ]
 
 [package.dependencies]
-jsii = ">=1.132.0,<2.0.0"
+jsii = ">=1.137.0,<2.0.0"
 publication = ">=0.0.3"
-typeguard = "2.13.3"
 
 [[package]]
 name = "aws-cdk-lib"
-version = "2.261.0"
+version = "2.262.0"
 description = "Version 2 of the AWS Cloud Development Kit library"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "aws_cdk_lib-2.261.0-py3-none-any.whl", hash = "sha256:a90bea2a90e57eb4335609e64accc22defad1e3735a69cfc74f8122ce032970f"},
-    {file = "aws_cdk_lib-2.261.0.tar.gz", hash = "sha256:a48b24f09307b2fb7638b0c28cbdc8f722fab1bf0c3ed65b6319fffc9c48927d"},
+    {file = "aws_cdk_lib-2.262.0-py3-none-any.whl", hash = "sha256:dada56daa1792f74baa4443d8488f0621c1722d6c443d480b5a21f434f2e6410"},
+    {file = "aws_cdk_lib-2.262.0.tar.gz", hash = "sha256:c09d601ac485b7aae895eaa374b94885b74b987dc76f0ac33ab2ea92bb6cb62b"},
 ]
 
 [package.dependencies]
 "aws-cdk.asset-awscli-v1" = "2.2.282"
 "aws-cdk.asset-node-proxy-agent-v6" = ">=2.1.2,<3.0.0"
-"aws-cdk.cloud-assembly-schema" = ">=54.0.0,<55.0.0"
+"aws-cdk.cloud-assembly-schema" = ">=54.11.0,<55.0.0"
 constructs = ">=10.5.0,<11.0.0"
-jsii = ">=1.133.0,<2.0.0"
+jsii = ">=1.138.0,<2.0.0"
 publication = ">=0.0.3"
-typeguard = "2.13.3"
 
 [[package]]
 name = "cattrs"
@@ -1586,4 +1584,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "ab9a5fd93ea42fa04661f14c9293b5ada88af5b3c65d9349265b14da6db1177a"
+content-hash = "5fb41ca873e4bd9b71e0f7f3c5ffd6a51e789aaba90ace15eb5a89fd2a0854ef"
