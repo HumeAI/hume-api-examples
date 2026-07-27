@@ -1776,7 +1776,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "livekit-agents", extras = ["hume"], specifier = ">=1.6.6" },
+    { name = "livekit-agents", extras = ["hume"], specifier = ">=1.6.7" },
     { name = "livekit-plugins-anthropic", specifier = ">=1.6.6" },
     { name = "livekit-plugins-groq", specifier = ">=1.6.6" },
     { name = "livekit-plugins-silero", specifier = ">=1.6.7" },
