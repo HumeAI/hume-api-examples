@@ -237,20 +237,19 @@ tests-no-zope = ["attrs[tests-mypy]", "cloudpickle ; platform_python_implementat
 
 [[package]]
 name = "aws-cdk-asset-awscli-v1"
-version = "2.2.282"
+version = "2.2.292"
 description = "A library that contains the AWS CLI for use in Lambda Layers"
 optional = false
-python-versions = "~=3.10"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "aws_cdk_asset_awscli_v1-2.2.282-py3-none-any.whl", hash = "sha256:24139da0eb1be59f8cfda22c6343d51e8d50bb89b5052b049cfab92683de7790"},
-    {file = "aws_cdk_asset_awscli_v1-2.2.282.tar.gz", hash = "sha256:f86e61653927f77fb235b5ec148c955c610117430c869d182c8b20f7e07e2df2"},
+    {file = "aws_cdk_asset_awscli_v1-2.2.292-py3-none-any.whl", hash = "sha256:01cfb33e2913df2d63448b0954ea4ed1bcb1d064514b4b7aa266eda915e8ebfc"},
+    {file = "aws_cdk_asset_awscli_v1-2.2.292.tar.gz", hash = "sha256:06da203eeaecbbbf5f1ecd3b12140104e6a59b6a7f6182cfbda5c5deda4b6344"},
 ]
 
 [package.dependencies]
-jsii = ">=1.130.0,<2.0.0"
+jsii = ">=1.139.0,<2.0.0"
 publication = ">=0.0.3"
-typeguard = "2.13.3"
 
 [[package]]
 name = "aws-cdk-asset-node-proxy-agent-v6"
@@ -287,22 +286,22 @@ publication = ">=0.0.3"
 
 [[package]]
 name = "aws-cdk-lib"
-version = "2.264.0"
+version = "2.265.0"
 description = "Version 2 of the AWS Cloud Development Kit library"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "aws_cdk_lib-2.264.0-py3-none-any.whl", hash = "sha256:bf2b2a2779af8b3125646afabc670db26d8433b4453c959548f85c5612495e8b"},
-    {file = "aws_cdk_lib-2.264.0.tar.gz", hash = "sha256:cca02d5b33b6722eecdc94718ea788440fdee90e79b2495f7c9d70205821588b"},
+    {file = "aws_cdk_lib-2.265.0-py3-none-any.whl", hash = "sha256:a6183be9237fed851b52dce42196adea65ee23437d95e1765d46dd6247d02d23"},
+    {file = "aws_cdk_lib-2.265.0.tar.gz", hash = "sha256:65d8372d3ce23d2517867f12f0b9a684eff933f0c98357153a359650ca0e8865"},
 ]
 
 [package.dependencies]
-"aws-cdk.asset-awscli-v1" = "2.2.282"
+"aws-cdk.asset-awscli-v1" = "2.2.292"
 "aws-cdk.asset-node-proxy-agent-v6" = ">=2.1.2,<3.0.0"
 "aws-cdk.cloud-assembly-schema" = ">=54.11.0,<55.0.0"
 constructs = ">=10.5.0,<11.0.0"
-jsii = ">=1.138.0,<2.0.0"
+jsii = ">=1.139.0,<2.0.0"
 publication = ">=0.0.3"
 
 [[package]]
@@ -1584,4 +1583,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "5227dd1d7e61ce103375d840f96d056d111308493fcac3eb4fbe8843953175d4"
+content-hash = "1f9cf2fb7491b0bd58c3aefeb022ee093297ab1bc52e90dd6fbc1b1f51885fbe"
