@@ -889,16 +889,16 @@ wheels = [
 
 [[package]]
 name = "livekit-plugins-groq"
-version = "1.7.0"
+version = "1.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "livekit" },
     { name = "livekit-agents", extra = ["codecs", "openai"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/46/b1/9467699390b186aa4df3297d2dfa0daa4047992b29ab7e769a47a638bd2f/livekit_plugins_groq-1.7.0.tar.gz", hash = "sha256:96a936e894e276ecbad2518f0a1bc2167f06217dced9fcfd99600e7d310f5a52", size = 6133, upload-time = "2026-08-20T18:17:22.144Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/dc/b2/9bc2e6a76419c37df16c4bd0be9bdf2024477531ea65bec18c210e4c003f/livekit_plugins_groq-1.7.1.tar.gz", hash = "sha256:d41c14e6e35b72ecdcfce1099554919fa0c43e5b798b6f52cbd919da0d87fa4d", size = 6132, upload-time = "2026-08-27T03:34:22.564Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/83/b5/94c567bb28671fffb4aaf9e00a6d46f54c2c1c6e78088fbb54c2038edabb/livekit_plugins_groq-1.7.0-py3-none-any.whl", hash = "sha256:0989b94bcfe7144d47cc87529f39a3a71191fac47a887ee381be747d744fc232", size = 7315, upload-time = "2026-08-20T18:17:20.998Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/82/6744034c6a6a658193758ad679d8907063d229d316a8a98b88a8de21fcbd/livekit_plugins_groq-1.7.1-py3-none-any.whl", hash = "sha256:220c47fc179753dd47cc6d4a2164dcab4774db665e03921c509f4af2737a309d", size = 7315, upload-time = "2026-08-27T03:34:21.394Z" },
 ]
 
 [[package]]
