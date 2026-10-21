@@ -6,9 +6,6 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
-  schedule:
-    # Run tests for all packages that have tests weekly on Tuesday
-    - cron: '0 12 * * 2'
 
 permissions:
   contents: read
@@ -106,7 +103,7 @@ jobs:
 
   test-evi-typescript-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.evi_ts_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_ts_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -139,7 +136,7 @@ jobs:
 
   test-tts-typescript-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.tts_ts_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_ts_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -172,7 +169,7 @@ jobs:
 
   test-evi-python-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.evi_py_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_py_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -207,7 +204,7 @@ jobs:
 
   test-tts-python-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.tts_py_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_py_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -465,7 +462,7 @@ jobs:
 
   evi-dotnet-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.evi_dotnet_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_dotnet_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -493,7 +490,7 @@ jobs:
 
   tts-dotnet-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.tts_dotnet_quickstart == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.tts_dotnet_quickstart == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -521,7 +518,7 @@ jobs:
 
   evi-next-js-app-router-quickstart:
     needs: detect-changes
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.detect-changes.outputs.evi_app_router == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.evi_app_router == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -559,68 +556,6 @@ jobs:
           HUME_API_KEY: ${{ secrets.TEST_HUME_API_KEY }}
           HUME_SECRET_KEY: ${{ secrets.TEST_HUME_SECRET_KEY }}
         run: pnpm run test
-
-  # Notifies Slack when the daily (cron) test run finishes. Add repo secret SLACK_WEBHOOK_URL (Incoming Webhook URL).
-  notify-slack-cron:
-    needs:
-      - test-evi-typescript-quickstart
-      - test-tts-typescript-quickstart
-      - evi-next-js-app-router-quickstart
-      - test-evi-python-quickstart
-      - test-tts-python-quickstart
-      - evi-dotnet-quickstart
-      - tts-dotnet-quickstart
-    # always() ensures we run even when one of the test jobs failed, so we can post the result to Slack
-    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Notify Slack
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          EVI_TS: ${{ needs.test-evi-typescript-quickstart.result }}
-          TTS_TS: ${{ needs.test-tts-typescript-quickstart.result }}
-          EVI_PY: ${{ needs.test-evi-python-quickstart.result }}
-          TTS_PY: ${{ needs.test-tts-python-quickstart.result }}
-          EVI_DOTNET: ${{ needs.evi-dotnet-quickstart.result }}
-          TTS_DOTNET: ${{ needs.tts-dotnet-quickstart.result }}
-          EVI_APP: ${{ needs.evi-next-js-app-router-quickstart.result }}
-        run: |
-          if [ -z "$SLACK_WEBHOOK_URL" ]; then
-            echo "::warning::SLACK_WEBHOOK_URL secret is not set. Add it in repo Settings → Secrets and variables → Actions to get Slack notifications."
-            echo "## Slack notification skipped" >> $GITHUB_STEP_SUMMARY
-            echo "Add the **SLACK_WEBHOOK_URL** repository secret (Settings → Secrets and variables → Actions) to enable Slack notifications." >> $GITHUB_STEP_SUMMARY
-            exit 0
-          fi
-          status() { [ "$1" = "success" ] && echo "✅ $1" || echo "❌ $1"; }
-          # SDK versions from repo manifests (package name + version spec)
-          EVI_TS_VER=$(jq -r '.dependencies.hume' evi/evi-typescript-quickstart/package.json 2>/dev/null || echo "?")
-          TTS_TS_VER=$(jq -r '.dependencies.hume' tts/tts-typescript-quickstart/package.json 2>/dev/null || echo "?")
-          EVI_APP_VER=$(jq -r '.dependencies["@humeai/voice-react"]' evi/evi-next-js-app-router-quickstart/package.json 2>/dev/null || echo "?")
-          EVI_PY_VER=$(python3 -c "import tomllib; d=tomllib.load(open('evi/evi-python-quickstart/pyproject.toml','rb')); deps=d.get('project',{}).get('dependencies',[]); print(next((x for x in deps if 'hume' in x), ''))" 2>/dev/null || echo "?")
-          TTS_PY_VER=$(python3 -c "import tomllib; d=tomllib.load(open('tts/tts-python-quickstart/pyproject.toml','rb')); deps=d.get('project',{}).get('dependencies',[]); print(next((x for x in deps if 'hume' in x), ''))" 2>/dev/null || echo "?")
-          EVI_DOTNET_VER=$(sed -n 's/.*PackageVersion Include="Hume" Version="\([^"]*\)".*/\1/p' Directory.Packages.props 2>/dev/null | head -1 || echo "?")
-          TTS_DOTNET_VER=$(sed -n 's/.*PackageVersion Include="Hume" Version="\([^"]*\)".*/\1/p' Directory.Packages.props 2>/dev/null | head -1 || echo "?")
-          text="*Daily test-examples cron job finished*
-          • TS SDK (hume $EVI_TS_VER): evi-typescript-quickstart: $(status "$EVI_TS")
-          • TS SDK (hume $TTS_TS_VER): tts-typescript-quickstart: $(status "$TTS_TS")
-          • React SDK (@humeai/voice-react $EVI_APP_VER): evi-next-js-app-router-quickstart: $(status "$EVI_APP")
-          • Py SDK (hume $EVI_PY_VER): evi-python-quickstart: $(status "$EVI_PY")
-          • Py SDK (hume $TTS_PY_VER): tts-python-quickstart: $(status "$TTS_PY")
-          • .NET SDK (Hume $EVI_DOTNET_VER): evi-dotnet-quickstart: $(status "$EVI_DOTNET")
-          • .NET SDK (Hume $TTS_DOTNET_VER): tts-dotnet-quickstart: $(status "$TTS_DOTNET")
-          <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
-          payload=$(jq -n --arg text "$(echo "$text" | sed 's/^[[:space:]]*//')" '{text: $text}')
-          res=$(curl -sS -w "%{http_code}" -o /tmp/slack_resp -X POST -H "Content-Type: application/json" --data "$payload" "$SLACK_WEBHOOK_URL") || true
-          if [ "$res" = "200" ]; then
-            echo "Slack notification sent successfully."
-            echo "## Slack notification sent" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "::warning::Slack webhook returned HTTP $res. Check the webhook URL and channel."
-            echo "## Slack notification failed (HTTP $res)" >> $GITHUB_STEP_SUMMARY
-          fi
 
   evi-next-js-function-calling:
     needs: detect-changes
