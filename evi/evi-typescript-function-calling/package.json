@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "typescript": "^7.0.2",
-    "vite": "^8.1.4"
+    "vite": "^8.1.6"
   },
   "engines": {
     "node": ">=18"
